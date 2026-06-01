@@ -94,7 +94,7 @@ jobs:
           cache: 'pnpm'
           registry-url: 'https://registry.npmjs.org' # Don't touch!
       - name: Setup Chrome
-        uses: browser-actions/setup-chrome@v1
+        uses: browser-actions/setup-chrome@v2
         with:
           chrome-version: stable
       - name: Git Identity
