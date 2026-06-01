@@ -831,12 +831,6 @@ importers:
       '@spcsn/babel-plugin-transform-taroapi':
         specifier: workspace:*
         version: link:../babel-plugin-transform-taroapi
-      '@spcsn/postcss-html-transform':
-        specifier: workspace:*
-        version: link:../postcss-html-transform
-      '@spcsn/postcss-pxtransform':
-        specifier: workspace:*
-        version: link:../postcss-pxtransform
       '@spcsn/taro-helper':
         specifier: workspace:*
         version: link:../taro-helper

@@ -87,7 +87,6 @@ function updatePkg(pkgPath: string, version: string) {
       ...packageMap.devDependencies,
       'babel-preset-taro': version,
       'babel-plugin-transform-taroapi': version,
-      'postcss-pxtransform': version,
     },
   };
   return packageMap;

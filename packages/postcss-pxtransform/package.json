@@ -2,6 +2,7 @@
   "name": "@spcsn/postcss-pxtransform",
   "version": "1.0.0",
   "description": "PostCSS plugin px 转小程序 rpx及h5 rem 单位",
+  "private": true,
   "author": "O2Team",
   "license": "MIT",
   "main": "index.js",
