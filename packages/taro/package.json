@@ -33,7 +33,6 @@
   "dependencies": {
     "@spcsn/taro-runtime": "workspace:*",
     "@types/postcss-url": "^10.0.4",
-    "@spcsn/taro-react": "workspace:*",
     "@spcsn/taro-shared": "workspace:*"
   },
   "devDependencies": {

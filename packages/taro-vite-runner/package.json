@@ -29,7 +29,6 @@
   "dependencies": {
     "@babel/core": "^7.24.4",
     "@spcsn/taro-helper": "workspace:*",
-    "@spcsn/taro-react": "workspace:*",
     "@spcsn/taro-runner-utils": "workspace:*",
     "@spcsn/taro-runtime": "workspace:*",
     "@spcsn/taro-shared": "workspace:*",
@@ -42,6 +41,7 @@
     "picomatch": "^4.0.2",
     "postcss": "^8.5.6",
     "postcss-modules": "^6.0.0",
+    "react-reconciler": "0.33.0",
     "regenerator-runtime": "0.11",
     "sax": "1.2.4",
     "terser": "^5.30.4",

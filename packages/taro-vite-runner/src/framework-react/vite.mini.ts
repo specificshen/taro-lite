@@ -64,6 +64,7 @@ function resolvePackageFile(packageDir: string, candidates: string[]): string {
 
 function aliasPlugin(ctx: IPluginContext): PluginOption {
   let jsxDevRuntimeShim = '';
+  const taroReactFile = path.resolve(__dirname, '../taro-react/index.js');
 
   return {
     name: 'taro-react:alias',
@@ -73,8 +74,6 @@ function aliasPlugin(ctx: IPluginContext): PluginOption {
         basedir: process.cwd(),
         mainFields,
       };
-      const taroReactDir = resolvePackageDir('@spcsn/taro-react', resolveOptions);
-      const taroReactFile = resolvePackageFile(taroReactDir, ['dist/react.esm.js']);
       const alias: { find: string | RegExp; replacement: string }[] = [
         { find: /react-dom$/, replacement: taroReactFile },
         { find: /react-dom\/client$/, replacement: taroReactFile },
@@ -84,8 +83,8 @@ function aliasPlugin(ctx: IPluginContext): PluginOption {
       if (!isProd && ctx.initialConfig.mini?.debugReact !== true) {
         const reactDir = resolvePackageDir('react', resolveOptions);
         const reactDomDir = resolvePackageDir('react-dom', resolveOptions);
-        const reconcilerDir = resolvePackageDir('react-reconciler', resolveOptions, [taroReactDir]);
-        const schedulerDir = resolvePackageDir('scheduler', resolveOptions, [taroReactDir, reactDomDir]);
+        const reconcilerDir = resolvePackageDir('react-reconciler', resolveOptions, [path.resolve(__dirname, '..')]);
+        const schedulerDir = resolvePackageDir('scheduler', resolveOptions, [path.resolve(__dirname, '..'), reactDomDir]);
 
         // 开发模式下默认使用 production 版本的 react 减小体积。debugReact 时保留 dev 版本。
         alias.push({

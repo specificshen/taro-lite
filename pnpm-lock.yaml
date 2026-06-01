@@ -239,9 +239,6 @@ importers:
 
   packages/taro:
     dependencies:
-      '@spcsn/taro-react':
-        specifier: workspace:*
-        version: link:../taro-react
       '@spcsn/taro-runtime':
         specifier: workspace:*
         version: link:../taro-runtime
@@ -594,25 +591,6 @@ importers:
         specifier: ^7.20.5
         version: 7.28.0
 
-  packages/taro-react:
-    dependencies:
-      '@spcsn/taro-runtime':
-        specifier: workspace:*
-        version: link:../taro-runtime
-      '@spcsn/taro-shared':
-        specifier: workspace:*
-        version: link:../shared
-      react-reconciler:
-        specifier: 0.33.0
-        version: 0.33.0(react@19.2.6)
-    devDependencies:
-      '@types/node':
-        specifier: ^22.19.19
-        version: 22.19.19
-      typescript:
-        specifier: ~6.0.3
-        version: 6.0.3
-
   packages/taro-runner-utils:
     dependencies:
       '@spcsn/taro-helper':
@@ -696,9 +674,6 @@ importers:
       '@spcsn/taro-helper':
         specifier: workspace:*
         version: link:../taro-helper
-      '@spcsn/taro-react':
-        specifier: workspace:*
-        version: link:../taro-react
       '@spcsn/taro-runner-utils':
         specifier: workspace:*
         version: link:../taro-runner-utils
@@ -738,6 +713,9 @@ importers:
       postcss-modules:
         specifier: ^6.0.0
         version: 6.0.1(postcss@8.5.15)
+      react-reconciler:
+        specifier: 0.33.0
+        version: 0.33.0(react@19.2.6)
       regenerator-runtime:
         specifier: '0.11'
         version: 0.11.1
