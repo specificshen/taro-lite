@@ -412,12 +412,12 @@ importers:
       '@spcsn/taro-binding':
         specifier: workspace:*
         version: link:../../crates/native_binding
+      '@spcsn/taro-components':
+        specifier: workspace:*
+        version: link:../taro-components
       '@spcsn/taro-helper':
         specifier: workspace:*
         version: link:../taro-helper
-      '@spcsn/taro-plugin-platform-weapp':
-        specifier: workspace:*
-        version: link:../taro-platform-weapp
       '@spcsn/taro-service':
         specifier: workspace:*
         version: link:../taro-service

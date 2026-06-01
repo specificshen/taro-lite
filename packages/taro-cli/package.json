@@ -45,8 +45,8 @@
   },
   "dependencies": {
     "@babel/core": "^7.24.4",
+    "@spcsn/taro-components": "workspace:*",
     "@spcsn/taro-helper": "workspace:*",
-    "@spcsn/taro-plugin-platform-weapp": "workspace:*",
     "@spcsn/taro-service": "workspace:*",
     "@spcsn/taro-shared": "workspace:*",
     "@spcsn/taro-vite-runner": "workspace:*",
@@ -85,7 +85,6 @@
   },
   "devDependencies": {
     "@spcsn/taro": "workspace:*",
-    "@spcsn/taro-plugin-platform-weapp": "workspace:*",
     "@types/babel__generator": "^7.6.8",
     "@types/babel__traverse": "^7.20.6"
   }

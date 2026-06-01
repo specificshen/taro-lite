@@ -122,7 +122,7 @@ export default class CLI {
           // 针对不同的内置平台注册对应的端平台插件
           switch (platform) {
             case 'weapp':
-              kernel.optsPlugins.push(`@spcsn/taro-plugin-platform-${platform}`);
+              kernel.optsPlugins.push(path.resolve(__dirname, 'platform-weapp'));
               break;
             default: {
               if (platform) {
@@ -150,7 +150,7 @@ export default class CLI {
             }
             platform = 'plugin';
             kernel.optsPlugins.push(path.resolve(platformsPath, 'plugin.js'));
-            kernel.optsPlugins.push(`@spcsn/taro-plugin-platform-${plugin}`);
+            kernel.optsPlugins.push(path.resolve(__dirname, 'platform-weapp'));
           }
 
           // 传递 inspect 参数即可
