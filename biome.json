@@ -1,0 +1,64 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.4.15/schema.json",
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "files": {
+    "ignoreUnknown": true,
+    "includes": [
+      "**",
+      "!dist",
+      "!dist-h5",
+      "!lib",
+      "**/src/lib",
+      "!**/*.d.ts",
+      "!**/*.ets",
+      "!coverage",
+      "!packages/_legacy",
+      "!packages/taro-cli/src/__tests__/fixtures",
+      "!packages/taro-cli/templates",
+      "!packages/taro-components/stencil.config.js",
+      "!packages/taro-components/loader",
+      "!packages/taro-components/src/components",
+      "!packages/taro-webpack5-runner/src/__tests__/__snapshots__",
+      "!packages/taro-webpack5-runner/src/__tests__/fixtures",
+      "!packages/taro-webpack5-runner/src/__tests__/bundled",
+      "!packages/taro/types",
+      "!packages/taro-router/__tests__",
+      "!packages/taro-rn-style-transformer/src/transforms/StyleSheet",
+      "!packages/taro-rn/src/lib/index.ts",
+      "!packages/taro-rn/src/__tests__",
+      "!packages/taro-runtime/src/polyfill",
+      "!packages/taro-plugin-react-devtools/src/backend",
+      "!packages/taro-helper/swc",
+      "!crates",
+      "!tests/__tests__/bundled",
+      "!harmony_project",
+      "!node_modules",
+      "!oh_modules"
+    ]
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 120
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single",
+      "semicolons": "always"
+    }
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": false
+    }
+  },
+  "assist": {
+    "enabled": false
+  }
+}

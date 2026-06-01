@@ -1,0 +1,45 @@
+{
+  "name": "@spcsn/taro-runtime",
+  "version": "0.1.2",
+  "description": "taro runtime for mini apps.",
+  "author": "O2Team",
+  "license": "MIT",
+  "browser": "dist/index.js",
+  "main:h5": "dist/runtime.esm.js",
+  "main": "dist/runtime.esm.js",
+  "module": "dist/runtime.esm.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "sideEffects": [
+    "./dist/dom-external/index.js"
+  ],
+  "scripts": {
+    "prod": "pnpm run build",
+    "prebuild": "pnpm run clean",
+    "build": "pnpm run build:types && pnpm run rolldown --environment NODE_ENV:production",
+    "build:types": "tsc --emitDeclarationOnly --declaration --noCheck && node ./scripts/copy-entry-types.mjs",
+    "clean": "rimraf ./dist",
+    "dev": "concurrently \"pnpm run build:types -- --watch\" \"pnpm run rolldown --environment NODE_ENV:development -w\"",
+    "rolldown": "rolldown --config rolldown.config.mjs",
+    "test": "vitest run",
+    "test:ci": "vitest run --coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NervJS/taro/tree/master/packages/taro-runtime"
+  },
+  "engines": {
+    "node": ">= 22"
+  },
+  "dependencies": {
+    "@spcsn/taro-shared": "workspace:*",
+    "tslib": "^2.6.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.19",
+    "lodash": "^4.17.21",
+    "typescript": "~6.0.3"
+  }
+}

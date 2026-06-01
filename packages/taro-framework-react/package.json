@@ -1,0 +1,60 @@
+{
+  "name": "@spcsn/taro-plugin-framework-react",
+  "version": "0.1.2",
+  "description": "React 框架插件",
+  "author": "O2Team",
+  "homepage": "https://github.com/nervjs/taro",
+  "license": "MIT",
+  "main": "index.js",
+  "keywords": [
+    "taro"
+  ],
+  "files": [
+    "index.js",
+    "dist"
+  ],
+  "sideEffects": [],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NervJS/taro.git"
+  },
+  "scripts": {
+    "prod": "pnpm run build",
+    "prebuild": "run-s clean",
+    "build": "pnpm run rolldown --environment NODE_ENV:production",
+    "clean": "rimraf dist",
+    "dev": "pnpm run rolldown --environment NODE_ENV:development -w",
+    "rolldown": "rolldown --config rolldown.config.mjs"
+  },
+  "bugs": {
+    "url": "https://github.com/NervJS/taro/issues"
+  },
+  "engines": {
+    "node": ">= 22"
+  },
+  "dependencies": {
+    "@spcsn/taro-react": "workspace:*",
+    "@vitejs/plugin-react": "^6.0.2",
+    "acorn": "^8.11.3",
+    "acorn-walk": "^8.3.2",
+    "lodash": "^4.17.21",
+    "tslib": "^2.6.2",
+    "vite": "^8.0.13"
+  },
+  "devDependencies": {
+    "@spcsn/taro-helper": "workspace:*",
+    "@spcsn/taro-runtime": "workspace:*",
+    "@spcsn/taro-shared": "workspace:*",
+    "@spcsn/taro-service": "workspace:*",
+    "@spcsn/taro": "workspace:*",
+    "vite": "^8.0.13"
+  },
+  "peerDependencies": {
+    "react": "^19"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
+  }
+}

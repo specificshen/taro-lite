@@ -1,0 +1,35 @@
+{
+  "name": "@spcsn/taro-runner-utils",
+  "version": "0.1.0",
+  "description": "Taro runner utilities.",
+  "author": "O2Team",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "prod": "pnpm run build",
+    "build": "tsc",
+    "dev": "tsc -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NervJS/taro.git"
+  },
+  "keywords": [
+    "taro"
+  ],
+  "engines": {
+    "node": ">= 22"
+  },
+  "dependencies": {
+    "@spcsn/taro-helper": "workspace:*",
+    "rollup": "^3.29.4",
+    "scss-bundle": "^3.1.2"
+  },
+  "devDependencies": {
+    "@spcsn/taro": "workspace:*"
+  }
+}

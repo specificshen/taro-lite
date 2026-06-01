@@ -1,0 +1,44 @@
+{
+  "name": "@spcsn/taro-react",
+  "version": "0.1.2",
+  "description": "like react-dom, but for mini apps.",
+  "author": "O2Team",
+  "license": "MIT",
+  "main": "dist/react.esm.js",
+  "module": "dist/react.esm.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NervJS/taro.git"
+  },
+  "scripts": {
+    "prod": "pnpm run build",
+    "test": "vitest run",
+    "test:ci": "vitest run --coverage",
+    "build": "pnpm run build:types && pnpm run rolldown",
+    "build:types": "tsc --emitDeclarationOnly --declaration --noCheck",
+    "dev": "concurrently \"pnpm run build:types -- --watch\" \"pnpm run rolldown -w\"",
+    "rolldown": "rolldown --config rolldown.config.mjs"
+  },
+  "bugs": {
+    "url": "https://github.com/NervJS/taro/issues"
+  },
+  "engines": {
+    "node": ">= 22"
+  },
+  "dependencies": {
+    "@spcsn/taro-shared": "workspace:*",
+    "@spcsn/taro-runtime": "workspace:*",
+    "react-reconciler": "0.33.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.19",
+    "typescript": "~6.0.3"
+  },
+  "peerDependencies": {
+    "react": "^19"
+  }
+}

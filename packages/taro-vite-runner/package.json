@@ -1,0 +1,59 @@
+{
+  "name": "@spcsn/taro-vite-runner",
+  "version": "0.1.5",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "prod": "pnpm run build",
+    "clean": "rimraf dist",
+    "dev": "pnpm run copy:template && tsc -w",
+    "build": "pnpm run clean && (tsc || true) && pnpm run copy:template",
+    "copy:template": "node ./scripts/copy-template.mjs"
+  },
+  "dependencies": {
+    "@babel/core": "^7.24.4",
+    "@spcsn/taro-helper": "workspace:*",
+    "@spcsn/taro-plugin-framework-react": "workspace:*",
+    "@spcsn/taro-runner-utils": "workspace:*",
+    "@spcsn/taro-runtime": "workspace:*",
+    "@spcsn/taro-shared": "workspace:*",
+    "acorn-walk": "^8.3.2",
+    "autoprefixer": "^10.4.19",
+    "@spcsn/babel-plugin-transform-taroapi": "workspace:*",
+    "html-minifier": "^4.0.0",
+    "lodash": "^4.17.21",
+    "mrmime": "^2.0.0",
+    "picomatch": "^4.0.2",
+    "postcss": "^8.5.6",
+    "@spcsn/postcss-html-transform": "workspace:*",
+    "postcss-modules": "^6.0.0",
+    "@spcsn/postcss-plugin-constparse": "workspace:*",
+    "@spcsn/postcss-pxtransform": "workspace:*",
+    "regenerator-runtime": "0.11",
+    "sax": "1.2.4",
+    "terser": "^5.30.4",
+    "vite": "^8.0.13",
+    "vite-plugin-static-copy": "^4.1.0"
+  },
+  "devDependencies": {
+    "@spcsn/taro": "workspace:*",
+    "@types/babel__core": "^7.20.5",
+    "@types/sax": "^1.2.4",
+    "less": "^4.2.0",
+    "rollup": "^3.29.5",
+    "sass": "1.44.0",
+    "stylus": "^0.63.0"
+  },
+  "peerDependencies": {}
+}

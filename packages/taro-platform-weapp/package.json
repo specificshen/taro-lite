@@ -1,0 +1,42 @@
+{
+  "name": "@spcsn/taro-plugin-platform-weapp",
+  "version": "0.1.0",
+  "description": "微信小程序平台插件",
+  "author": "O2Team",
+  "license": "MIT",
+  "main": "index.js",
+  "types": "dist/types/index.d.ts",
+  "keywords": [
+    "taro"
+  ],
+  "files": [
+    "index.js",
+    "dist"
+  ],
+  "scripts": {
+    "prod": "pnpm run build",
+    "build": "pnpm run build:types && pnpm run rolldown",
+    "build:types": "tsc --emitDeclarationOnly --declaration",
+    "dev": "concurrently \"pnpm run build:types -- --watch\" \"pnpm run rolldown -w\"",
+    "rolldown": "rolldown --config rolldown.config.mjs"
+  },
+  "bugs": {
+    "url": "https://github.com/NervJS/taro/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NervJS/taro.git"
+  },
+  "engines": {
+    "node": ">= 22"
+  },
+  "devDependencies": {
+    "@spcsn/taro-components": "workspace:*",
+    "@spcsn/taro-service": "workspace:*",
+    "@spcsn/taro-shared": "workspace:*"
+  },
+  "peerDependencies": {
+    "@spcsn/taro-service": "workspace:*",
+    "@spcsn/taro-shared": "workspace:*"
+  }
+}

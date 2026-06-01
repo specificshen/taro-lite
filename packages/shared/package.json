@@ -1,0 +1,39 @@
+{
+  "name": "@spcsn/taro-shared",
+  "version": "0.1.2",
+  "description": "Taro utils internal use.",
+  "author": "O2Team",
+  "license": "MIT",
+  "browser": "dist/index.js",
+  "main:h5": "dist/shared.esm.js",
+  "main": "dist/index.cjs.js",
+  "module": "dist/shared.esm.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "sideEffects": [],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NervJS/taro.git"
+  },
+  "scripts": {
+    "prod": "pnpm run build",
+    "prebuild": "pnpm run clean",
+    "clean": "rimraf ./dist",
+    "build": "pnpm run build:types && pnpm run rolldown --environment NODE_ENV:production",
+    "build:types": "tsc --emitDeclarationOnly --declaration",
+    "dev": "concurrently \"pnpm run build:types -- --watch\" \"pnpm run rolldown --environment NODE_ENV:development -w\"",
+    "rolldown": "rolldown --config rolldown.config.mjs",
+    "test": "vitest run"
+  },
+  "bugs": {
+    "url": "https://github.com/NervJS/taro/issues"
+  },
+  "engines": {
+    "node": ">= 22"
+  },
+  "devDependencies": {
+    "lodash": "^4.17.21"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "@spcsn/taro-binding-linux-arm64-gnu",
+  "description": "Native binding for taro",
+  "version": "0.1.0",
+  "os": [
+    "linux"
+  ],
+  "cpu": [
+    "arm64"
+  ],
+  "main": "taro.linux-arm64-gnu.node",
+  "files": [
+    "taro.linux-arm64-gnu.node"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">= 22"
+  },
+  "libc": [
+    "glibc"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "https://github.com/specificshen/taro"
+}

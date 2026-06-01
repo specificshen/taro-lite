@@ -1,0 +1,24 @@
+{
+  "editor.defaultFormatter": "biomejs.biome",
+  "editor.formatOnSave": true,
+  "search.exclude": {
+    "**/.git": true,
+    "**/node_modules": true,
+    "**/yarn.lock": true,
+    "**/__snapshots__": true
+  },
+  "jest.autoEnable": false,
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "files.associations": {
+    "*.ets": "typescript"
+  },
+  "rust-analyzer.linkedProjects": [
+    "./crates/taro_init/Cargo.toml",
+    "./crates/native_binding/Cargo.toml",
+    "./crates/swc_plugin_compile_mode/Cargo.toml",
+    "./crates/swc_plugin_define_config/Cargo.toml",
+    "./crates/swc_plugin_compile_mode_pre_process/Cargo.toml"
+  ],
+  "rust-analyzer.showUnlinkedFileNotification": false,
+  "cSpell.words": ["cameraroll", "Nerv", "prerender", "spcsn", "specificshen", "taroapi", "tarojs", "weapp"]
+}

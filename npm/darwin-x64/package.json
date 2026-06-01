@@ -1,0 +1,23 @@
+{
+  "name": "@spcsn/taro-binding-darwin-x64",
+  "description": "Native binding for taro",
+  "version": "0.1.0",
+  "os": [
+    "darwin"
+  ],
+  "cpu": [
+    "x64"
+  ],
+  "main": "taro.darwin-x64.node",
+  "files": [
+    "taro.darwin-x64.node"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">= 22"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "https://github.com/specificshen/taro"
+}
