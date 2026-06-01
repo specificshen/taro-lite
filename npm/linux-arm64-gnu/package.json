@@ -1,7 +1,7 @@
 {
   "name": "@spcsn/taro-binding-linux-arm64-gnu",
   "description": "Native binding for taro",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "os": [
     "linux"
   ],

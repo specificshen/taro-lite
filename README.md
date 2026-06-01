@@ -8,7 +8,7 @@
 
 这是 `@spcsn` 自己的底座产品线，不是官方 Taro 的 patch 包。
 
-- 版本从 `0.1.0` 起步，不映射上游 Taro `4.x`。
+- 当前稳定线从 `1.0.0` 起步，不映射上游 Taro `4.x`。
 - 只保证 React 19 + WeApp 小程序链路。
 - 默认使用 Vite，Webpack runner 不在维护范围内。
 - H5、React Native、Harmony、支付宝、字节、百度、QQ 等平台不在当前承诺范围内。
@@ -25,12 +25,12 @@
 ```json
 {
   "dependencies": {
-    "@spcsn/taro": "0.1.0",
-    "@spcsn/taro-components": "0.1.0",
+    "@spcsn/taro": "1.0.0",
+    "@spcsn/taro-components": "1.0.0",
     "react": "^19.2.0"
   },
   "devDependencies": {
-    "@spcsn/taro-cli": "0.1.0"
+    "@spcsn/taro-cli": "1.0.0"
   }
 }
 ```
@@ -55,13 +55,13 @@
 
 ## 版本策略
 
-当前独立版本线从 `0.1.0` 开始。
+当前独立稳定版本线从 `1.0.0` 开始。
 
-- `0.1.x`：React 19 + Vite + WeApp / Skyline 主链路的 bugfix 和依赖边界收敛。
-- `0.2.0`、`0.3.0`：底座能力边界或业务接入约定发生变化。
-- `1.0.0`：底座边界稳定，业务接入契约稳定后再考虑。
+- `1.0.x`：React 19 + Vite + WeApp / Skyline 主链路的 bugfix、发版修正和依赖边界收敛。
+- `1.x` minor：底座能力边界或业务接入约定向前兼容扩展。
+- `2.0.0`：业务接入契约发生不兼容变化时再考虑。
 
-所有可发布的 `@spcsn/*` 底座包必须成组发布、成组安装，不要只替换 CLI、runtime 或某一个插件包。
+当前所有可发布的 `@spcsn/*` 底座包必须成组发布、成组安装，不要只替换 CLI、runtime 或某一个插件包。后续包收敛目标见 [docs/package-consolidation.md](docs/package-consolidation.md)。
 
 ## 开发环境
 
@@ -117,7 +117,7 @@ npm run build
 构建输出应显示当前 `@spcsn/taro-cli` 版本，例如：
 
 ```text
-Taro v0.1.0
+Taro v1.0.0
 ```
 
 ## 发版前检查
@@ -146,7 +146,7 @@ pnpm run release:check -- --skip-bindings
 
 ## 发布流程
 
-首版 `0.1.0` 已经作为 `@spcsn` 独立版本线起点。发布前先确认登录到了目标 npm registry：
+`1.0.0` 是 `@spcsn` 独立稳定版本线起点。发布前先确认登录到了目标 npm registry：
 
 ```bash
 npm config get registry
@@ -185,11 +185,11 @@ pnpm -r --filter './packages/*' --filter './npm/*' --filter './crates/native_bin
 ```json
 {
   "dependencies": {
-    "@spcsn/taro": "0.1.0",
-    "@spcsn/taro-components": "0.1.0"
+    "@spcsn/taro": "1.0.0",
+    "@spcsn/taro-components": "1.0.0"
   },
   "devDependencies": {
-    "@spcsn/taro-cli": "0.1.0"
+    "@spcsn/taro-cli": "1.0.0"
   }
 }
 ```

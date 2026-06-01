@@ -1,6 +1,6 @@
 {
   "name": "@spcsn/taro-binding",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Node binding for taro",
   "main": "binding.js",
   "typings": "binding.d.ts",

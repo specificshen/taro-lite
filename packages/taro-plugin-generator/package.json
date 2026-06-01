@@ -1,6 +1,6 @@
 {
   "name": "@spcsn/taro-plugin-generator",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Taro 生成器插件",
   "keywords": [
     "Taro",

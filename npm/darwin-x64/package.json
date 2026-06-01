@@ -1,7 +1,7 @@
 {
   "name": "@spcsn/taro-binding-darwin-x64",
   "description": "Native binding for taro",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "os": [
     "darwin"
   ],
