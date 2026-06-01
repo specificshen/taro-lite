@@ -16,9 +16,7 @@ export default defineConfig{{#if typescript }}<'vite'>{{/if}}(async (merge, { co
     },
     sourceRoot: 'src',
     outputRoot: 'dist',
-    plugins: [
-      "@spcsn/taro-plugin-generator"
-    ],
+    plugins: [],
     defineConstants: {
     },
     copy: {

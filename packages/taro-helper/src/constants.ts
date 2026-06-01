@@ -150,7 +150,6 @@ export const UPDATE_PACKAGE_LIST = [
   '@spcsn/taro-service',
   '@spcsn/taro-plugin-platform-weapp',
   '@spcsn/taro-vite-runner',
-  '@spcsn/taro-plugin-generator',
   '@spcsn/taro-binding',
 ];
 

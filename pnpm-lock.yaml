@@ -367,6 +367,18 @@ importers:
 
   packages/taro-cli:
     dependencies:
+      '@babel/generator':
+        specifier: 7.24.4
+        version: 7.24.4
+      '@babel/parser':
+        specifier: 7.24.4
+        version: 7.24.4
+      '@babel/traverse':
+        specifier: 7.24.1
+        version: 7.24.1(supports-color@9.4.0)
+      '@babel/types':
+        specifier: 7.24.0
+        version: 7.24.0
       '@spcsn/babel-preset-taro':
         specifier: workspace:*
         version: link:../babel-preset-taro
@@ -379,9 +391,6 @@ importers:
       '@spcsn/taro-plugin-framework-react':
         specifier: workspace:*
         version: link:../taro-framework-react
-      '@spcsn/taro-plugin-generator':
-        specifier: workspace:*
-        version: link:../taro-plugin-generator
       '@spcsn/taro-plugin-platform-weapp':
         specifier: workspace:*
         version: link:../taro-platform-weapp
@@ -403,6 +412,9 @@ importers:
       cli-highlight:
         specifier: ^2.1.11
         version: 2.1.11
+      dedent:
+        specifier: ^1.6.0
+        version: 1.7.2
       download-git-repo:
         specifier: ^3.0.2
         version: 3.0.2
@@ -424,16 +436,19 @@ importers:
       semver:
         specifier: ^7.6.0
         version: 7.8.0
+      ts-morph:
+        specifier: ^26.0.0
+        version: 26.0.0
       validate-npm-package-name:
         specifier: ^5.0.0
         version: 5.0.1
     devDependencies:
-      '@babel/types':
-        specifier: ^7.24.0
-        version: 7.24.0
       '@spcsn/taro':
         specifier: workspace:*
         version: link:../taro
+      '@types/babel__generator':
+        specifier: ^7.6.8
+        version: 7.27.0
       '@types/babel__traverse':
         specifier: ^7.20.6
         version: 7.28.0
@@ -537,6 +552,8 @@ importers:
       tsconfig-paths:
         specifier: ^3.14.1
         version: 3.15.0
+
+  packages/taro-components/loader: {}
 
   packages/taro-framework-react:
     dependencies:
@@ -8453,7 +8470,7 @@ snapshots:
       '@babel/traverse': 7.24.1(supports-color@9.4.0)
       '@babel/types': 7.24.0
       convert-source-map: 2.0.0
-      debug: 4.4.3(supports-color@9.4.0)
+      debug: 4.3.4
       gensync: 1.0.0-beta.2
       json5: 2.2.3
       semver: 6.3.1
@@ -12902,7 +12919,7 @@ snapshots:
 
   extract-zip@2.0.1:
     dependencies:
-      debug: 4.3.4
+      debug: 4.4.3(supports-color@9.4.0)
       get-stream: 5.2.0
       yauzl: 2.10.0
     optionalDependencies:
