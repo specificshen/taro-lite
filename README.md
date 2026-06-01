@@ -42,7 +42,6 @@
 - `@spcsn/taro-vite-runner`
 - `@spcsn/taro-plugin-framework-react`
 - `@spcsn/taro-plugin-platform-weapp`
-- `@spcsn/babel-preset-taro`
 - `vite`
 - `postcss`
 - `terser`

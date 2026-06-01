@@ -30,9 +30,6 @@ importers:
       '@biomejs/biome':
         specifier: ^2.4.15
         version: 2.4.15
-      '@spcsn/babel-preset-taro':
-        specifier: workspace:*
-        version: link:packages/babel-preset-taro
       '@types/debug':
         specifier: ^4.1.5
         version: 4.1.13
@@ -367,21 +364,51 @@ importers:
 
   packages/taro-cli:
     dependencies:
+      '@babel/core':
+        specifier: ^7.24.4
+        version: 7.24.4
       '@babel/generator':
         specifier: 7.24.4
         version: 7.24.4
+      '@babel/helper-plugin-utils':
+        specifier: ^7.24.8
+        version: 7.28.6
       '@babel/parser':
         specifier: 7.24.4
         version: 7.24.4
+      '@babel/plugin-proposal-decorators':
+        specifier: ^7.24.1
+        version: 7.29.0(@babel/core@7.24.4)
+      '@babel/plugin-transform-class-properties':
+        specifier: ^7.24.1
+        version: 7.28.6(@babel/core@7.24.4)
+      '@babel/plugin-transform-runtime':
+        specifier: ^7.24.3
+        version: 7.29.0(@babel/core@7.24.4)
+      '@babel/preset-env':
+        specifier: ^7.24.4
+        version: 7.29.5(@babel/core@7.24.4)
+      '@babel/preset-react':
+        specifier: ^7.24.1
+        version: 7.28.5(@babel/core@7.24.4)
+      '@babel/preset-typescript':
+        specifier: ^7.24.1
+        version: 7.28.5(@babel/core@7.24.4)
+      '@babel/runtime':
+        specifier: ^7.24.4
+        version: 7.29.2
+      '@babel/runtime-corejs3':
+        specifier: ^7.24.4
+        version: 7.29.2
       '@babel/traverse':
         specifier: 7.24.1
         version: 7.24.1(supports-color@9.4.0)
       '@babel/types':
         specifier: 7.24.0
         version: 7.24.0
-      '@spcsn/babel-preset-taro':
-        specifier: workspace:*
-        version: link:../babel-preset-taro
+      '@rnx-kit/babel-preset-metro-react-native':
+        specifier: ^1.1.8
+        version: 1.1.8(@babel/core@7.24.4)(@babel/plugin-transform-typescript@7.28.6(@babel/core@7.24.4))(@babel/runtime@7.29.2)
       '@spcsn/taro-binding':
         specifier: workspace:*
         version: link:../../crates/native_binding
@@ -409,9 +436,18 @@ importers:
       axios:
         specifier: ^1.6.8
         version: 1.16.1
+      babel-plugin-dynamic-import-node:
+        specifier: ^2.3.3
+        version: 2.3.3
+      babel-plugin-transform-imports-api:
+        specifier: 1.0.0
+        version: 1.0.0
       cli-highlight:
         specifier: ^2.1.11
         version: 2.1.11
+      core-js:
+        specifier: ^3.36.1
+        version: 3.49.0
       dedent:
         specifier: ^1.6.0
         version: 1.7.2
@@ -433,6 +469,9 @@ importers:
       ora:
         specifier: ^5.4.1
         version: 5.4.1
+      react-refresh:
+        specifier: ^0.14.0
+        version: 0.14.2
       semver:
         specifier: ^7.6.0
         version: 7.8.0

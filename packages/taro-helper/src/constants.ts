@@ -132,7 +132,6 @@ export const FILE_PROCESSOR_MAP = {
 };
 
 export const UPDATE_PACKAGE_LIST = [
-  '@spcsn/babel-preset-taro',
   '@spcsn/taro-shared',
   '@spcsn/taro',
   '@spcsn/taro-cli',

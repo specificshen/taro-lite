@@ -2,6 +2,7 @@
   "name": "@spcsn/babel-preset-taro",
   "version": "1.0.0",
   "description": "Taro babel preset",
+  "private": true,
   "author": "O2Team",
   "license": "MIT",
   "homepage": "https://github.com/nervjs/taro/tree/main/packages/babel-preset-taro#readme",

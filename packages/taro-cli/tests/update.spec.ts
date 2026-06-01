@@ -85,7 +85,6 @@ function updatePkg(pkgPath: string, version: string) {
     },
     devDependencies: {
       ...packageMap.devDependencies,
-      'babel-preset-taro': version,
     },
   };
   return packageMap;

@@ -103,7 +103,6 @@
     "babel-jest": "^29.7.0",
     "babel-plugin-syntax-jsx": "6.18.0",
     "babel-preset-power-assert": "3.0.0",
-    "@spcsn/babel-preset-taro": "workspace:*",
     "chalk": "^4.1.2",
     "concurrently": "^8.2.2",
     "conventional-changelog-cli": "^2.0.1",

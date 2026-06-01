@@ -14,32 +14,34 @@ import { GeneratorError, GeneratorErrorType } from '../../utils/error';
 import type { IPluginContext } from '@spcsn/taro-service';
 
 const USE_BUILT_INS = 'useBuiltIns';
+const TARO_BABEL_PRESET = '@spcsn/taro-cli/babel-preset-taro';
+const TARO_BABEL_PRESET_REQUIRE = `require('${TARO_BABEL_PRESET}')`;
 const config = dedent(`
-    [
-        'taro',
-        {
-            framework: 'react',
-            ts: true,
-            compiler: 'vite',
-            ${USE_BUILT_INS}: process.env.TARO_ENV === 'h5' ? 'usage' : false
-        }
-    ]
+  [
+    ${TARO_BABEL_PRESET_REQUIRE},
+    {
+      framework: 'react',
+      ts: true,
+      compiler: 'vite',
+      ${USE_BUILT_INS}: process.env.TARO_ENV === 'h5' ? 'usage' : false
+    }
+  ]
 `);
 const modifyConfigError = new GeneratorError({
   type: GeneratorErrorType.modifyConfig,
   message: dedent(
     `{
-        presets: [
-            [
-                'taro',
-                {
-                    framework: 'react',
-                    ts: true,
-                    compiler: 'vite',
-                    ${USE_BUILT_INS}: process.env.TARO_ENV === 'h5' ? 'usage' : false
-                }
-            ]
+      presets: [
+        [
+          ${TARO_BABEL_PRESET_REQUIRE},
+          {
+            framework: 'react',
+            ts: true,
+            compiler: 'vite',
+            ${USE_BUILT_INS}: process.env.TARO_ENV === 'h5' ? 'usage' : false
+          }
         ]
+      ]
     }`,
   ),
   targetFile: 'babel.config.js',
@@ -84,7 +86,7 @@ export async function updateBabelConfig(ctx: IPluginContext) {
         module.exports = {
           presets: [
             [
-              'taro',
+              ${TARO_BABEL_PRESET_REQUIRE},
               {
                 framework: 'react',
                 ts: true,
@@ -174,7 +176,7 @@ function handlePresets(presets: t.ArrayExpression, nodePath: NodePath) {
    */
   const handleTaroPreset = (preset: t.ArrayExpression) => {
     const first = preset.elements[0];
-    if (t.isStringLiteral(first) && first.value === 'taro') {
+    if (isTaroPresetReference(first)) {
       const options = preset.elements[1];
       if (t.isObjectExpression(options)) {
         insertUseBuiltInsProp(options);
@@ -237,6 +239,19 @@ function handlePresets(presets: t.ArrayExpression, nodePath: NodePath) {
   if (!modified) {
     elements.push(parser.parseExpression(config));
   }
+}
+
+function isTaroPresetReference(node: t.Expression | t.SpreadElement | null | undefined) {
+  if (t.isStringLiteral(node)) {
+    return node.value === 'taro' || node.value === TARO_BABEL_PRESET;
+  }
+  return (
+    t.isCallExpression(node) &&
+    t.isIdentifier(node.callee, { name: 'require' }) &&
+    node.arguments.length === 1 &&
+    t.isStringLiteral(node.arguments[0]) &&
+    node.arguments[0].value === TARO_BABEL_PRESET
+  );
 }
 
 function insertUseBuiltInsProp(obj: t.ObjectExpression) {

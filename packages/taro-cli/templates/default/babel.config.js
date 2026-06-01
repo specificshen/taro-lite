@@ -2,7 +2,7 @@
 // https://docs.taro.zone/docs/next/babel-config
 module.exports = {
   presets: [
-    ['taro', {
+    [require('@spcsn/taro-cli/babel-preset-taro'), {
       framework: '{{ to_lower_case framework }}',
       ts: {{ typescript }},
       compiler: '{{ to_lower_case compiler }}',
