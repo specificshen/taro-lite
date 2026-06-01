@@ -30,7 +30,6 @@
     "@spcsn/taro-shared": "workspace:*",
     "acorn-walk": "^8.3.2",
     "autoprefixer": "^10.4.19",
-    "@spcsn/babel-plugin-transform-taroapi": "workspace:*",
     "html-minifier": "^4.0.0",
     "lodash": "^4.17.21",
     "mrmime": "^2.0.0",

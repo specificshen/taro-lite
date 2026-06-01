@@ -132,7 +132,6 @@ export const FILE_PROCESSOR_MAP = {
 };
 
 export const UPDATE_PACKAGE_LIST = [
-  '@spcsn/babel-plugin-transform-taroapi',
   '@spcsn/babel-preset-taro',
   '@spcsn/taro-shared',
   '@spcsn/taro',

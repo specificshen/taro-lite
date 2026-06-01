@@ -828,9 +828,6 @@ importers:
       '@babel/core':
         specifier: ^7.24.4
         version: 7.24.4
-      '@spcsn/babel-plugin-transform-taroapi':
-        specifier: workspace:*
-        version: link:../babel-plugin-transform-taroapi
       '@spcsn/taro-helper':
         specifier: workspace:*
         version: link:../taro-helper

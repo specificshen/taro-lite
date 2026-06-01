@@ -18,7 +18,6 @@
     "@spcsn/taro-binding": "0.1.0"
   },
   "devDependencies": {
-    "babel-preset-taro": "2.0.0",
-    "babel-plugin-transform-taroapi": "3.0.0-beta.6"
+    "babel-preset-taro": "2.0.0"
   }
 }
