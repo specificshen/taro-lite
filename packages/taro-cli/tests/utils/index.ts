@@ -28,7 +28,7 @@ export function run(name: string, presets: string[] = []): IRun {
       appPath: appPath,
       presets: [
         path.resolve(__dirname, '../__mocks__', 'presets.ts'),
-        ...presets.map((e) => (path.isAbsolute(e) ? e : path.resolve(__dirname, '../../presets', `${e}.ts`))),
+        ...presets.map((e) => (path.isAbsolute(e) ? e : path.resolve(__dirname, '../../src/presets', `${e}.ts`))),
       ],
       plugins: [],
       config,
@@ -37,7 +37,11 @@ export function run(name: string, presets: string[] = []): IRun {
 
     const type = options.type;
     if (typeof type === 'string' && !presets.some((e) => e.includes(type))) {
-      kernel.optsPlugins.push(require.resolve(`@spcsn/taro-plugin-platform-${options.type}`));
+      if (type === 'weapp') {
+        kernel.optsPlugins.push(path.resolve(__dirname, '../../src/platform-weapp'));
+      } else {
+        kernel.optsPlugins.push(require.resolve(`@spcsn/taro-plugin-platform-${options.type}`));
+      }
     }
 
     await kernel.run({

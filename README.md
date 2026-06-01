@@ -40,8 +40,6 @@
 - `@spcsn/taro-runtime`
 - `@spcsn/taro-react`
 - `@spcsn/taro-vite-runner`
-- `@spcsn/taro-plugin-framework-react`
-- `@spcsn/taro-plugin-platform-weapp`
 - `vite`
 - `postcss`
 - `terser`
@@ -80,8 +78,6 @@ pnpm install
 ```bash
 pnpm --filter @spcsn/taro-helper run build
 pnpm --filter @spcsn/taro-vite-runner run build
-pnpm --filter @spcsn/taro-plugin-framework-react run build
-pnpm --filter @spcsn/taro-plugin-platform-weapp run build
 pnpm --filter @spcsn/taro-cli run build
 ```
 

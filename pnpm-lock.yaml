@@ -231,79 +231,6 @@ importers:
 
   npm/win32-x64-msvc: {}
 
-  packages/babel-plugin-transform-taroapi:
-    dependencies:
-      lodash:
-        specifier: ^4.17.21
-        version: 4.17.21
-    devDependencies:
-      '@babel/core':
-        specifier: 7.24.4
-        version: 7.24.4
-      '@babel/types':
-        specifier: 7.24.0
-        version: 7.24.0
-      '@types/babel__core':
-        specifier: 7.20.5
-        version: 7.20.5
-
-  packages/babel-preset-taro:
-    dependencies:
-      '@babel/core':
-        specifier: ^7.24.4
-        version: 7.24.4
-      '@babel/helper-plugin-utils':
-        specifier: ^7.24.8
-        version: 7.28.6
-      '@babel/plugin-proposal-decorators':
-        specifier: ^7.24.1
-        version: 7.29.0(@babel/core@7.24.4)
-      '@babel/plugin-transform-class-properties':
-        specifier: ^7.24.1
-        version: 7.28.6(@babel/core@7.24.4)
-      '@babel/plugin-transform-runtime':
-        specifier: ^7.24.3
-        version: 7.29.0(@babel/core@7.24.4)
-      '@babel/preset-env':
-        specifier: ^7.24.4
-        version: 7.29.5(@babel/core@7.24.4)
-      '@babel/preset-react':
-        specifier: ^7.24.1
-        version: 7.28.5(@babel/core@7.24.4)
-      '@babel/preset-typescript':
-        specifier: ^7.24.1
-        version: 7.28.5(@babel/core@7.24.4)
-      '@babel/runtime':
-        specifier: ^7.24.4
-        version: 7.29.2
-      '@babel/runtime-corejs3':
-        specifier: ^7.24.4
-        version: 7.29.2
-      '@rnx-kit/babel-preset-metro-react-native':
-        specifier: ^1.1.8
-        version: 1.1.8(@babel/core@7.24.4)(@babel/plugin-transform-typescript@7.28.6(@babel/core@7.24.4))(@babel/runtime@7.29.2)
-      '@spcsn/taro-helper':
-        specifier: workspace:*
-        version: link:../taro-helper
-      babel-plugin-dynamic-import-node:
-        specifier: ^2.3.3
-        version: 2.3.3
-      babel-plugin-transform-imports-api:
-        specifier: 1.0.0
-        version: 1.0.0
-      core-js:
-        specifier: ^3.36.1
-        version: 3.49.0
-      react-refresh:
-        specifier: ^0.14.0
-        version: 0.14.2
-
-  packages/postcss-html-transform: {}
-
-  packages/postcss-plugin-constparse: {}
-
-  packages/postcss-pxtransform: {}
-
   packages/shared:
     devDependencies:
       lodash:
@@ -591,46 +518,6 @@ importers:
 
   packages/taro-components/loader: {}
 
-  packages/taro-framework-react:
-    dependencies:
-      '@spcsn/taro-react':
-        specifier: workspace:*
-        version: link:../taro-react
-      '@vitejs/plugin-react':
-        specifier: ^6.0.2
-        version: 6.0.2(vite@8.0.13(@types/node@22.19.19)(esbuild@0.27.7)(less@4.6.4)(sass@1.99.0)(stylus@0.63.0)(terser@5.47.1))
-      acorn:
-        specifier: ^8.11.3
-        version: 8.16.0
-      acorn-walk:
-        specifier: ^8.3.2
-        version: 8.3.5
-      lodash:
-        specifier: ^4.17.21
-        version: 4.17.21
-      tslib:
-        specifier: ^2.6.2
-        version: 2.8.1
-      vite:
-        specifier: ^8.0.13
-        version: 8.0.13(@types/node@22.19.19)(esbuild@0.27.7)(less@4.6.4)(sass@1.99.0)(stylus@0.63.0)(terser@5.47.1)
-    devDependencies:
-      '@spcsn/taro':
-        specifier: workspace:*
-        version: link:../taro
-      '@spcsn/taro-helper':
-        specifier: workspace:*
-        version: link:../taro-helper
-      '@spcsn/taro-runtime':
-        specifier: workspace:*
-        version: link:../taro-runtime
-      '@spcsn/taro-service':
-        specifier: workspace:*
-        version: link:../taro-service
-      '@spcsn/taro-shared':
-        specifier: workspace:*
-        version: link:../shared
-
   packages/taro-helper:
     dependencies:
       '@babel/core':
@@ -709,61 +596,6 @@ importers:
       '@types/babel__traverse':
         specifier: ^7.20.5
         version: 7.28.0
-
-  packages/taro-platform-weapp:
-    devDependencies:
-      '@spcsn/taro-components':
-        specifier: workspace:*
-        version: link:../taro-components
-      '@spcsn/taro-service':
-        specifier: workspace:*
-        version: link:../taro-service
-      '@spcsn/taro-shared':
-        specifier: workspace:*
-        version: link:../shared
-
-  packages/taro-plugin-generator:
-    dependencies:
-      '@babel/generator':
-        specifier: 7.24.4
-        version: 7.24.4
-      '@babel/parser':
-        specifier: 7.24.4
-        version: 7.24.4
-      '@babel/traverse':
-        specifier: 7.24.1
-        version: 7.24.1(supports-color@9.4.0)
-      '@babel/types':
-        specifier: 7.24.0
-        version: 7.24.0
-      '@spcsn/taro-helper':
-        specifier: workspace:*
-        version: link:../taro-helper
-      '@spcsn/taro-service':
-        specifier: workspace:*
-        version: link:../taro-service
-      dedent:
-        specifier: ^1.6.0
-        version: 1.7.2
-      inquirer:
-        specifier: ^8.2.6
-        version: 8.2.7(@types/node@22.19.19)
-      ts-morph:
-        specifier: ^26.0.0
-        version: 26.0.0
-    devDependencies:
-      '@types/babel__generator':
-        specifier: ^7.6.8
-        version: 7.27.0
-      '@types/babel__traverse':
-        specifier: ^7.20.5
-        version: 7.28.0
-      '@types/inquirer':
-        specifier: ^8.2.1
-        version: 8.2.12
-      typescript:
-        specifier: ~5.4.5
-        version: 5.4.5
 
   packages/taro-react:
     dependencies:
@@ -7885,11 +7717,6 @@ packages:
   typedarray.prototype.slice@1.0.5:
     resolution: {integrity: sha512-q7QNVDGTdl702bVFiI5eY4l/HkgCM6at9KhcFbgUAzezHFbOVy4+0O/lCjsABEQwbZPravVfBIiBVGo89yzHFg==}
     engines: {node: '>= 0.4'}
-
-  typescript@5.4.5:
-    resolution: {integrity: sha512-vcI4UpRgg81oIRUFwR0WSIHKt11nJ7SAVlYNIu+QpqeyXP+gpQJy/Z4+F0aGxSE4MqwjyXvW/TzgkLAx2AGHwQ==}
-    engines: {node: '>=14.17'}
-    hasBin: true
 
   typescript@6.0.3:
     resolution: {integrity: sha512-y2TvuxSZPDyQakkFRPZHKFm+KKVqIisdg9/CZwm9ftvKXLP8NRWj38/ODjNbr43SsoXqNuAisEf1GdCxqWcdBw==}
@@ -16926,8 +16753,6 @@ snapshots:
       math-intrinsics: 1.1.0
       typed-array-buffer: 1.0.3
       typed-array-byte-offset: 1.0.4
-
-  typescript@5.4.5: {}
 
   typescript@6.0.3: {}
 

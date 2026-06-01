@@ -6,7 +6,7 @@ import { emptyDirectory } from '@spcsn/taro-helper';
 
 import { run } from './utils';
 
-const runBuild = run('build', ['commands/build', require.resolve('@spcsn/taro-plugin-platform-weapp')]);
+const runBuild = run('build', ['commands/build', path.resolve(__dirname, '../src/platform-weapp')]);
 
 vi.mock('@spcsn/taro-helper', async () => {
   const helper = await vi.importActual<typeof import('@spcsn/taro-helper')>('@spcsn/taro-helper');

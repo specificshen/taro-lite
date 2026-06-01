@@ -31,7 +31,7 @@ vi.mock('@spcsn/taro-helper', async () => {
 const runInspect = run('inspect', [
   'commands/build',
   'commands/inspect',
-  require.resolve('@spcsn/taro-plugin-platform-weapp'),
+  path.resolve(__dirname, '../src/platform-weapp'),
 ]);
 
 describe('inspect', () => {

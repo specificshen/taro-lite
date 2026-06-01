@@ -10,7 +10,8 @@
   "jest.autoEnable": false,
   "typescript.tsdk": "node_modules/typescript/lib",
   "files.associations": {
-    "*.ets": "typescript"
+    "*.ets": "typescript",
+    "packages/taro-cli/templates/**/*.js": "plaintext"
   },
   "rust-analyzer.linkedProjects": [
     "./crates/taro_init/Cargo.toml",

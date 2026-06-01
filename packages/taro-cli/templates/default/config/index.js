@@ -1,10 +1,10 @@
-import { defineConfig{{#if typescript }}, type UserConfigExport{{/if}} } from '@spcsn/taro-cli'
+import { defineConfig } from '@spcsn/taro-cli'
 import devConfig from './dev'
 import prodConfig from './prod'
 
 // https://taro-docs.jd.com/docs/next/config#defineconfig-辅助函数
-export default defineConfig{{#if typescript }}<'vite'>{{/if}}(async (merge, { command, mode }) => {
-  const baseConfig{{#if typescript }}: UserConfigExport<'vite'>{{/if}} = {
+export default defineConfig(async (merge, { command, mode }) => {
+  const baseConfig = {
     projectName: '{{ projectName }}',
     date: '{{ date }}',
     designWidth: 750,
@@ -46,9 +46,9 @@ export default defineConfig{{#if typescript }}<'vite'>{{/if}}(async (merge, { co
     }
   }
 
-  {{#if buildEs5 }}
-  process.env.BROWSERSLIST_ENV = process.env.NODE_ENV
-  {{/if}}
+  if ('{{ buildEs5 }}' === 'true') {
+    process.env.BROWSERSLIST_ENV = process.env.NODE_ENV
+  }
 
   if (process.env.NODE_ENV === 'development') {
     // 本地开发构建配置（不混淆压缩）
