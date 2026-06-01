@@ -79,7 +79,7 @@
     "puppeteer": "^19.2.0",
     "sass": "^1.58.3",
     "tsconfig-paths": "^3.14.1",
-    "rollup-plugin-node-externals": "^5.0.0",
+    "rollup-plugin-node-externals": "^9.0.1",
     "rollup": "^3.29.4",
     "jest": "27.5.1",
     "jest-cli": "27.5.1",
