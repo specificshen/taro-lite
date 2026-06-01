@@ -20,7 +20,6 @@
   "devDependencies": {
     "babel-preset-taro": "2.0.0",
     "babel-plugin-transform-taroapi": "3.0.0-beta.6",
-    "postcss-plugin-constparse": "3.0.0-beta.6",
     "postcss-pxtransform": "3.0.0-beta.6"
   }
 }

@@ -135,7 +135,6 @@ export const UPDATE_PACKAGE_LIST = [
   '@spcsn/babel-plugin-transform-taroapi',
   '@spcsn/babel-preset-taro',
   '@spcsn/postcss-html-transform',
-  '@spcsn/postcss-plugin-constparse',
   '@spcsn/postcss-pxtransform',
   '@spcsn/taro-shared',
   '@spcsn/taro',

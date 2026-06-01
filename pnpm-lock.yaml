@@ -834,9 +834,6 @@ importers:
       '@spcsn/postcss-html-transform':
         specifier: workspace:*
         version: link:../postcss-html-transform
-      '@spcsn/postcss-plugin-constparse':
-        specifier: workspace:*
-        version: link:../postcss-plugin-constparse
       '@spcsn/postcss-pxtransform':
         specifier: workspace:*
         version: link:../postcss-pxtransform
@@ -8470,7 +8467,7 @@ snapshots:
       '@babel/traverse': 7.24.1(supports-color@9.4.0)
       '@babel/types': 7.24.0
       convert-source-map: 2.0.0
-      debug: 4.3.4
+      debug: 4.3.4(supports-color@9.4.0)
       gensync: 1.0.0-beta.2
       json5: 2.2.3
       semver: 6.3.1
@@ -8490,7 +8487,7 @@ snapshots:
       '@babel/traverse': 7.24.1(supports-color@9.4.0)
       '@babel/types': 7.24.0
       convert-source-map: 2.0.0
-      debug: 4.4.3(supports-color@9.4.0)
+      debug: 4.3.4(supports-color@9.4.0)
       gensync: 1.0.0-beta.2
       json5: 2.2.3
       semver: 6.3.1
@@ -10407,7 +10404,7 @@ snapshots:
 
   '@puppeteer/browsers@0.5.0(typescript@6.0.3)':
     dependencies:
-      debug: 4.3.4
+      debug: 4.3.4(supports-color@9.4.0)
       extract-zip: 2.0.1
       https-proxy-agent: 5.0.1
       progress: 2.0.3
@@ -12373,9 +12370,11 @@ snapshots:
     dependencies:
       ms: 2.0.0
 
-  debug@4.3.4:
+  debug@4.3.4(supports-color@9.4.0):
     dependencies:
       ms: 2.1.2
+    optionalDependencies:
+      supports-color: 9.4.0
 
   debug@4.4.3(supports-color@9.4.0):
     dependencies:
@@ -15763,7 +15762,7 @@ snapshots:
       '@puppeteer/browsers': 0.5.0(typescript@6.0.3)
       chromium-bidi: 0.4.7(devtools-protocol@0.0.1107588)
       cross-fetch: 3.1.5
-      debug: 4.3.4
+      debug: 4.3.4(supports-color@9.4.0)
       devtools-protocol: 0.0.1107588
       extract-zip: 2.0.1
       https-proxy-agent: 5.0.1
