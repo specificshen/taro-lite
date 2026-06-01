@@ -72,7 +72,6 @@ function updatePkg(pkgPath: string, version: string) {
       '@spcsn/taro': version,
       '@spcsn/taro-cli': version,
       '@spcsn/taro-components': version,
-      '@spcsn/taro-api': version,
       '@spcsn/taro-helper': version,
       '@spcsn/taro-react': version,
       '@spcsn/taro-runner-utils': version,

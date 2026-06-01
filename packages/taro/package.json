@@ -31,7 +31,6 @@
     "node": ">= 22"
   },
   "dependencies": {
-    "@spcsn/taro-api": "workspace:*",
     "@spcsn/taro-runtime": "workspace:*",
     "@types/postcss-url": "^10.0.4",
     "@spcsn/taro-react": "workspace:*",

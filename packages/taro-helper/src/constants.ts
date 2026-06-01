@@ -135,7 +135,6 @@ export const UPDATE_PACKAGE_LIST = [
   '@spcsn/taro-shared',
   '@spcsn/taro',
   '@spcsn/taro-cli',
-  '@spcsn/taro-api',
   '@spcsn/taro-components',
   '@spcsn/taro-helper',
   '@spcsn/taro-react',

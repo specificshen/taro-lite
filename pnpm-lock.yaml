@@ -239,9 +239,6 @@ importers:
 
   packages/taro:
     dependencies:
-      '@spcsn/taro-api':
-        specifier: workspace:*
-        version: link:../taro-api
       '@spcsn/taro-react':
         specifier: workspace:*
         version: link:../taro-react

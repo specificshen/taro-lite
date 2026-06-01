@@ -1,6 +1,7 @@
 {
   "name": "@spcsn/taro-api",
   "version": "1.0.0",
+  "private": true,
   "description": "Taro common API",
   "author": "O2Team",
   "license": "MIT",

@@ -1,5 +1,5 @@
 const { hooks } = require('@spcsn/taro-runtime');
-const taro = require('@spcsn/taro-api').default;
+const taro = require('./api').default;
 
 const { initReactHooksFallback } = require('./react-hooks-fallback');
 const { initWeappNativeApiFallback } = require('./native-api-fallback');
