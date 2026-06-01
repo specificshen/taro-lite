@@ -1,7 +1,7 @@
 import path from 'node:path';
 
 import { fs, isEmptyObject, readConfig, resolveMainFilePath, SCRIPT_EXT } from '@spcsn/taro-helper';
-import { VITE_COMPILER_LABEL } from '@spcsn/taro-runner-utils';
+import { VITE_COMPILER_LABEL } from '../../runner-utils';
 
 import { stripMultiPlatformExt } from '../../utils';
 import { logger } from '../logger';

@@ -1,4 +1,4 @@
-import { FONT_LIMIT, IMAGE_LIMIT, MEDIA_LIMIT } from '@spcsn/taro-runner-utils';
+import { FONT_LIMIT, IMAGE_LIMIT, MEDIA_LIMIT } from '../runner-utils';
 
 import type { ViteMiniBuildConfig } from '@spcsn/taro/types/compile/viteCompilerContext';
 

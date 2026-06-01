@@ -73,7 +73,6 @@ function updatePkg(pkgPath: string, version: string) {
       '@spcsn/taro-cli': version,
       '@spcsn/taro-components': version,
       '@spcsn/taro-helper': version,
-      '@spcsn/taro-runner-utils': version,
       '@spcsn/taro-runtime': version,
       '@spcsn/taro-service': version,
       '@spcsn/taro-vite-runner': version,

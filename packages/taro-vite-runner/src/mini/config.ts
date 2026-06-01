@@ -8,7 +8,7 @@ import {
   REG_NODE_MODULES_DIR,
   REG_TARO_SCOPED_PACKAGE,
 } from '@spcsn/taro-helper';
-import { getSassLoaderOption } from '@spcsn/taro-runner-utils';
+import { getSassLoaderOption } from '../runner-utils';
 import { PLATFORM_TYPE } from '@spcsn/taro-shared';
 
 import { getDefaultPostcssConfig } from './postcss';

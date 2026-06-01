@@ -2,12 +2,12 @@ import { EventEmitter } from 'node:events';
 import * as path from 'node:path';
 
 import * as helper from '@spcsn/taro-helper';
-import * as runnerUtils from '@spcsn/taro-runner-utils';
 import { getPlatformType } from '@spcsn/taro-shared';
 import { merge } from 'lodash';
 import { AsyncSeriesWaterfallHook } from 'tapable';
 
 import Plugin from './Plugin';
+import * as runnerUtils from './runner-utils';
 import { convertPluginsToObject, mergePlugins, printHelpLog, resolvePresetsOrPlugins } from './utils';
 import { IS_ADD_HOOK, IS_EVENT_HOOK, IS_MODIFY_HOOK, PluginType } from './utils/constants';
 

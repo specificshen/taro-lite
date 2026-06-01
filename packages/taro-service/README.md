@@ -12,7 +12,6 @@ Taro 插件化服务核心，基于 [tapable](https://github.com/webpack/tapable
 ## 依赖
 
 - `@spcsn/taro-helper` — 工具函数
-- `@spcsn/taro-runner-utils` — Vite 构建工具集
 - `@spcsn/taro-shared` — 共享类型与常量
 - `tapable` — 钩子系统
 - `joi` — 配置校验

@@ -1,5 +1,6 @@
 {
   "name": "@spcsn/taro-runner-utils",
+  "private": true,
   "version": "1.0.0",
   "description": "Taro runner utilities.",
   "author": "O2Team",

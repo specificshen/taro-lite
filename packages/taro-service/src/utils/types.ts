@@ -1,12 +1,12 @@
 import { AppConfig } from '@spcsn/taro';
 
 import type helper from '@spcsn/taro-helper';
-import type runnerUtils from '@spcsn/taro-runner-utils';
 import type { Func, IMiniFilesConfig, IProjectConfig } from '@spcsn/taro/types/compile';
 import type { IModifyChainData } from '@spcsn/taro/types/compile/hooks';
 import type joi from 'joi';
 import type Webpack from 'webpack';
 import type Chain from 'webpack-chain';
+import type * as runnerUtils from '../runner-utils';
 import type { PluginType } from './constants';
 
 export interface IPaths {
@@ -93,7 +93,7 @@ export declare interface IPluginContext {
    */
   helper: typeof helper;
   /**
-   * 为包 @spcsn/taro-runner-utils 的快捷使用方式，包含其所有 API
+   * Vite runner 工具集快捷入口。
    */
   runnerUtils: typeof runnerUtils;
   /**

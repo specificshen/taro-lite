@@ -31,12 +31,13 @@
   },
   "dependencies": {
     "@spcsn/taro-helper": "workspace:*",
-    "@spcsn/taro-runner-utils": "workspace:*",
     "@spcsn/taro-shared": "workspace:*",
     "joi": "^17.12.3",
     "lodash": "^4.17.21",
     "ora": "^5.4.1",
+    "rollup": "^3.29.4",
     "resolve": "^1.22.8",
+    "scss-bundle": "^3.1.2",
     "tapable": "^2.2.1",
     "webpack-merge": "^5.10.0"
   },

@@ -9,6 +9,7 @@ packages:
   - '!packages/taro-platform-weapp'
   - '!packages/taro-plugin-generator'
   - '!packages/taro-react'
+  - '!packages/taro-runner-utils'
   - '!packages/_legacy/**'
   - '!packages/taro-cli/templates/**'
   - '!packages/taro-cli/tests/fixtures/**'

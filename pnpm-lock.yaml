@@ -591,22 +591,6 @@ importers:
         specifier: ^7.20.5
         version: 7.28.0
 
-  packages/taro-runner-utils:
-    dependencies:
-      '@spcsn/taro-helper':
-        specifier: workspace:*
-        version: link:../taro-helper
-      rollup:
-        specifier: ^3.29.4
-        version: 3.30.0
-      scss-bundle:
-        specifier: ^3.1.2
-        version: 3.1.2
-    devDependencies:
-      '@spcsn/taro':
-        specifier: workspace:*
-        version: link:../taro
-
   packages/taro-runtime:
     dependencies:
       '@spcsn/taro-shared':
@@ -631,9 +615,6 @@ importers:
       '@spcsn/taro-helper':
         specifier: workspace:*
         version: link:../taro-helper
-      '@spcsn/taro-runner-utils':
-        specifier: workspace:*
-        version: link:../taro-runner-utils
       '@spcsn/taro-shared':
         specifier: workspace:*
         version: link:../shared
@@ -649,6 +630,12 @@ importers:
       resolve:
         specifier: ^1.22.8
         version: 1.22.12
+      rollup:
+        specifier: ^3.29.4
+        version: 3.30.0
+      scss-bundle:
+        specifier: ^3.1.2
+        version: 3.1.2
       tapable:
         specifier: ^2.2.1
         version: 2.3.3
@@ -674,9 +661,6 @@ importers:
       '@spcsn/taro-helper':
         specifier: workspace:*
         version: link:../taro-helper
-      '@spcsn/taro-runner-utils':
-        specifier: workspace:*
-        version: link:../taro-runner-utils
       '@spcsn/taro-runtime':
         specifier: workspace:*
         version: link:../taro-runtime
@@ -750,6 +734,9 @@ importers:
       sass:
         specifier: 1.44.0
         version: 1.44.0
+      scss-bundle:
+        specifier: ^3.1.2
+        version: 3.1.2
       stylus:
         specifier: ^0.63.0
         version: 0.63.0

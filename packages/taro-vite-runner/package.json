@@ -29,7 +29,6 @@
   "dependencies": {
     "@babel/core": "^7.24.4",
     "@spcsn/taro-helper": "workspace:*",
-    "@spcsn/taro-runner-utils": "workspace:*",
     "@spcsn/taro-runtime": "workspace:*",
     "@spcsn/taro-shared": "workspace:*",
     "acorn": "^8.11.3",
@@ -56,6 +55,7 @@
     "less": "^4.2.0",
     "rollup": "^3.29.5",
     "sass": "1.44.0",
+    "scss-bundle": "^3.1.2",
     "stylus": "^0.63.0"
   },
   "peerDependencies": {}

@@ -1,4 +1,4 @@
-import { VITE_COMPILER_LABEL } from '@spcsn/taro-runner-utils';
+import { VITE_COMPILER_LABEL } from '../runner-utils';
 import { isFunction } from '@spcsn/taro-shared';
 
 import type { UnRecursiveTemplate } from '@spcsn/taro-shared/dist/template';
