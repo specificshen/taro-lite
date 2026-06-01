@@ -45,7 +45,8 @@
     "version:git": "git add . && git commit -m \"chore(release): publish ${npm_package_version}\"",
     "version:changelog": "conventional-changelog -p angular",
     "artifacts": "pnpm --filter @spcsn/taro-helper --filter @spcsn/taro-binding run artifacts",
-    "verify:bindings": "node scripts/verify-bindings.js"
+    "verify:bindings": "node scripts/verify-bindings.js",
+    "release:check": "node scripts/check-release-readiness.js"
   },
   "taroTemp": [
     "@types/babel__core",

@@ -168,6 +168,9 @@ jobs:
       - name: build
         run: pnpm build
 
+      - name: Release readiness check
+        run: pnpm run release:check
+
       # Git stash
       - name: Drop current changes
         if: env.MOCK_PUBLISH != 'true'
@@ -192,9 +195,9 @@ jobs:
         if: env.MOCK_PUBLISH != 'true'
         run: |
           if [ '${{ github.event_name }}' == 'pull_request' ] ; then
-            pnpm publish --registry=https://registry.npmjs.org/ --publish-branch=${{ github.ref_name }} -r --filter=./packages/*
+            pnpm publish --registry=https://registry.npmjs.org/ --publish-branch=${{ github.ref_name }} -r --filter=./packages/* --filter=./npm/* --filter=./crates/native_binding
           elif [ '${{ github.event_name }}' == 'push' ] ; then
-            pnpm publish --registry=https://registry.npmjs.org/ --publish-branch=${{ github.ref_name }} -r --filter=./packages/* ${{ env.PUBLISH_PARAMS }}
+            pnpm publish --registry=https://registry.npmjs.org/ --publish-branch=${{ github.ref_name }} -r --filter=./packages/* --filter=./npm/* --filter=./crates/native_binding ${{ env.PUBLISH_PARAMS }}
           fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

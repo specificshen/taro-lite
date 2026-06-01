@@ -1,6 +1,6 @@
 {
   "name": "@spcsn/taro-shared",
-  "version": "0.1.2",
+  "version": "0.1.0",
   "description": "Taro utils internal use.",
   "author": "O2Team",
   "license": "MIT",

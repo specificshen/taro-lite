@@ -1,6 +1,6 @@
 {
   "name": "@spcsn/taro-plugin-framework-react",
-  "version": "0.1.2",
+  "version": "0.1.0",
   "description": "React 框架插件",
   "author": "O2Team",
   "homepage": "https://github.com/nervjs/taro",

@@ -1,6 +1,6 @@
 {
   "name": "@spcsn/taro-react",
-  "version": "0.1.2",
+  "version": "0.1.0",
   "description": "like react-dom, but for mini apps.",
   "author": "O2Team",
   "license": "MIT",

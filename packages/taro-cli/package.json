@@ -1,6 +1,6 @@
 {
   "name": "@spcsn/taro-cli",
-  "version": "0.1.6",
+  "version": "0.1.0",
   "description": "cli tool for taro",
   "author": "O2Team",
   "license": "MIT",

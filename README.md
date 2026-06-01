@@ -127,14 +127,21 @@ Taro v0.1.0
 - 所有发布包版本一致。
 - README 的最小依赖集与业务工程实际依赖一致。
 - 业务工程没有显式安装底座内部实现依赖。
+- native binding 平台包都已准备好对应 `.node` 产物。
 - `node packages/taro-cli/bin/taro --version` 输出正确版本。
 - 真实业务工程 `npm run build` 通过。
 
 常用检查命令：
 
 ```bash
-rg '"version": "0.1.0"' package.json packages/*/package.json npm/*/package.json -g 'package.json'
+pnpm run release:check
 rg '@spcsn/taro-runtime|@spcsn/taro-vite-runner|@spcsn/taro-plugin-framework-react|@spcsn/taro-plugin-platform-weapp' /path/to/business/package.json
+```
+
+`release:check` 会检查 `packages/*`、`npm/*` 和 `crates/native_binding` 的版本是否与根 `package.json` 一致，并校验每个 native binding 平台包是否包含预期 `.node` 文件。只想在本地快速检查版本时，可以执行：
+
+```bash
+pnpm run release:check -- --skip-bindings
 ```
 
 ## 发布流程
@@ -156,10 +163,10 @@ pnpm run build
 
 ```bash
 pnpm run artifacts
-pnpm run verify:bindings
+pnpm run release:check
 ```
 
-如果 `verify:bindings` 提示某个平台包缺少 `.node` 文件，不要发布对应平台包。
+如果 `release:check` 提示某个平台包缺少 `.node` 文件，不要发布对应平台包。
 
 先 dry-run，确认 tarball 内容和依赖版本：
 
