@@ -3,9 +3,9 @@
 module.exports = {
   presets: [
     [
-      require('@spcsn/taro-cli/babel-preset-taro'),
+      require("@spcsn/taro-cli/babel-preset-taro"),
       {
-        framework: 'react',
+        framework: "react",
         ts: false,
       },
     ],
