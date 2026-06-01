@@ -8,6 +8,11 @@
       "types": "./dist/index.d.ts",
       "require": "./dist/index.js",
       "default": "./dist/index.js"
+    },
+    "./framework-react": {
+      "types": "./dist/framework-react/index.d.ts",
+      "require": "./dist/framework-react/index.js",
+      "default": "./dist/framework-react/index.js"
     }
   },
   "license": "MIT",
@@ -24,10 +29,11 @@
   "dependencies": {
     "@babel/core": "^7.24.4",
     "@spcsn/taro-helper": "workspace:*",
-    "@spcsn/taro-plugin-framework-react": "workspace:*",
+    "@spcsn/taro-react": "workspace:*",
     "@spcsn/taro-runner-utils": "workspace:*",
     "@spcsn/taro-runtime": "workspace:*",
     "@spcsn/taro-shared": "workspace:*",
+    "acorn": "^8.11.3",
     "acorn-walk": "^8.3.2",
     "autoprefixer": "^10.4.19",
     "html-minifier": "^4.0.0",
@@ -39,6 +45,7 @@
     "regenerator-runtime": "0.11",
     "sax": "1.2.4",
     "terser": "^5.30.4",
+    "@vitejs/plugin-react": "^6.0.2",
     "vite": "^8.0.13",
     "vite-plugin-static-copy": "^4.1.0"
   },

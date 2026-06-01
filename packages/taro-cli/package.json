@@ -46,7 +46,6 @@
   "dependencies": {
     "@babel/core": "^7.24.4",
     "@spcsn/taro-helper": "workspace:*",
-    "@spcsn/taro-plugin-framework-react": "workspace:*",
     "@spcsn/taro-plugin-platform-weapp": "workspace:*",
     "@spcsn/taro-service": "workspace:*",
     "@spcsn/taro-shared": "workspace:*",

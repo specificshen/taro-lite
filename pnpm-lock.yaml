@@ -415,9 +415,6 @@ importers:
       '@spcsn/taro-helper':
         specifier: workspace:*
         version: link:../taro-helper
-      '@spcsn/taro-plugin-framework-react':
-        specifier: workspace:*
-        version: link:../taro-framework-react
       '@spcsn/taro-plugin-platform-weapp':
         specifier: workspace:*
         version: link:../taro-platform-weapp
@@ -870,9 +867,9 @@ importers:
       '@spcsn/taro-helper':
         specifier: workspace:*
         version: link:../taro-helper
-      '@spcsn/taro-plugin-framework-react':
+      '@spcsn/taro-react':
         specifier: workspace:*
-        version: link:../taro-framework-react
+        version: link:../taro-react
       '@spcsn/taro-runner-utils':
         specifier: workspace:*
         version: link:../taro-runner-utils
@@ -882,6 +879,12 @@ importers:
       '@spcsn/taro-shared':
         specifier: workspace:*
         version: link:../shared
+      '@vitejs/plugin-react':
+        specifier: ^6.0.2
+        version: 6.0.2(vite@8.0.13(@types/node@22.19.19)(esbuild@0.27.7)(less@4.6.4)(sass@1.44.0)(stylus@0.63.0)(terser@5.47.1))
+      acorn:
+        specifier: ^8.11.3
+        version: 8.16.0
       acorn-walk:
         specifier: ^8.3.2
         version: 8.3.5
@@ -11107,6 +11110,11 @@ snapshots:
 
   '@unrs/resolver-binding-win32-x64-msvc@1.12.2':
     optional: true
+
+  '@vitejs/plugin-react@6.0.2(vite@8.0.13(@types/node@22.19.19)(esbuild@0.27.7)(less@4.6.4)(sass@1.44.0)(stylus@0.63.0)(terser@5.47.1))':
+    dependencies:
+      '@rolldown/pluginutils': 1.0.1
+      vite: 8.0.13(@types/node@22.19.19)(esbuild@0.27.7)(less@4.6.4)(sass@1.44.0)(stylus@0.63.0)(terser@5.47.1)
 
   '@vitejs/plugin-react@6.0.2(vite@8.0.13(@types/node@22.19.19)(esbuild@0.27.7)(less@4.6.4)(sass@1.99.0)(stylus@0.63.0)(terser@5.47.1))':
     dependencies:

@@ -79,7 +79,6 @@ function updatePkg(pkgPath: string, version: string) {
       '@spcsn/taro-runtime': version,
       '@spcsn/taro-service': version,
       '@spcsn/taro-plugin-platform-weapp': version,
-      '@spcsn/taro-plugin-framework-react': version,
       '@spcsn/taro-vite-runner': version,
       '@spcsn/taro-binding': version,
     },

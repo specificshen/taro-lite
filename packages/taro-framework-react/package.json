@@ -2,6 +2,7 @@
   "name": "@spcsn/taro-plugin-framework-react",
   "version": "1.0.0",
   "description": "React 框架插件",
+  "private": true,
   "author": "O2Team",
   "homepage": "https://github.com/nervjs/taro",
   "license": "MIT",

@@ -13,7 +13,6 @@
     "@spcsn/taro-runtime": "3.0.0-beta.6",
     "@spcsn/taro-service": "3.0.0-beta.6",
     "@spcsn/taro-plugin-platform-weapp": "3.0.0-beta.6",
-    "@spcsn/taro-plugin-framework-react": "3.0.0-beta.6",
     "@spcsn/taro-vite-runner": "3.0.0-beta.6",
     "@spcsn/taro-binding": "0.1.0"
   },

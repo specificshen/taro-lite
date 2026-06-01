@@ -44,7 +44,7 @@ class App extends React.Component {
 `,
     frameworkArgs: 'React, ReactDOM, config',
     creator: 'createReactApp',
-    creatorLocation: require.resolve('@spcsn/taro-plugin-framework-react/dist/runtime'),
+    creatorLocation: path.resolve(__dirname, '../../framework-react/runtime'),
     importFrameworkName: 'React',
     extraImportForWeb: '',
     execBeforeCreateWebApp: '',
