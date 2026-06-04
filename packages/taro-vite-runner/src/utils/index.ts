@@ -176,9 +176,10 @@ export function getMinify(
   taroConfig: ViteMiniBuildConfig | ViteH5BuildConfig | ViteHarmonyBuildConfig,
 ): 'oxc' | 'terser' | 'esbuild' | boolean {
   const isProd = getMode(taroConfig) === 'production';
-  return !isProd
-    ? false
-    : taroConfig.jsMinimizer === 'terser'
+  const hasExplicitJsMinimizer = typeof taroConfig.jsMinimizer === 'string';
+  if (!isProd && !hasExplicitJsMinimizer) return false;
+
+  return taroConfig.jsMinimizer === 'terser'
       ? taroConfig.terser?.enable === false
         ? false
         : 'terser'
@@ -186,7 +187,7 @@ export function getMinify(
         ? taroConfig.esbuild?.minify?.enable === false
           ? false // 只有在明确配置了 esbuild.minify.enable: false 时才不启用压缩
           : 'esbuild'
-        : taroConfig.terser?.enable === false
+        : !hasExplicitJsMinimizer && taroConfig.terser?.enable === false
           ? false
           : 'oxc';
 }

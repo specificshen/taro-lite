@@ -64,7 +64,7 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
   const outputRoot = path.join(appPath, taroConfig.outputRoot || 'dist');
   const enableSourceMap = taroConfig.enableSourceMap ?? false;
   const compactWatch = taroConfig.isWatch && !enableSourceMap;
-  const minify = compactWatch ? false : getMinify(taroConfig);
+  const minify = compactWatch && !taroConfig.jsMinimizer ? false : getMinify(taroConfig);
   function getDefineOption() {
     const {
       env = {},
@@ -77,7 +77,7 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
     env.FRAMEWORK = JSON.stringify(framework);
     env.TARO_ENV = JSON.stringify(buildAdapter);
     env.TARO_PLATFORM = JSON.stringify(process.env.TARO_PLATFORM || PLATFORM_TYPE.MINI);
-    env.NODE_ENV = JSON.stringify(compactWatch ? 'production' : process.env.NODE_ENV);
+    env.NODE_ENV = JSON.stringify(process.env.NODE_ENV || getMode(taroConfig));
     env.SUPPORT_TARO_POLYFILL = env.SUPPORT_TARO_POLYFILL || '"disabled"';
     const envConstants = Object.keys(env).reduce((target, key) => {
       target[`process.env.${key}`] = env[key];
