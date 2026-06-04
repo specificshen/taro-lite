@@ -5,10 +5,49 @@ import getLatestVersion from 'latest-version';
 import ora from 'ora';
 import * as semver from 'semver';
 
-import packagesManagement from '../../config/packagesManagement';
-import { execCommand, getPkgItemByKey } from '../../util';
-
 import type { IPluginContext } from '@spcsn/taro-service';
+
+const packagesManagement = {
+  yarn: {
+    command: 'yarn install',
+    globalCommand: 'yarn global add @spcsn/taro-cli',
+  },
+  pnpm: {
+    command: 'pnpm install',
+    globalCommand: 'pnpm add -g @spcsn/taro-cli',
+  },
+  cnpm: {
+    command: 'cnpm install',
+    globalCommand: 'cnpm i -g @spcsn/taro-cli',
+  },
+  npm: {
+    command: 'npm install',
+    globalCommand: 'npm i -g @spcsn/taro-cli',
+  },
+} as const;
+
+function getPkgItemByKey(key: string) {
+  const packageMap = require(path.join(process.cwd(), 'package.json'));
+  if (Object.keys(packageMap).indexOf(key) === -1) {
+    return {};
+  }
+  return packageMap[key];
+}
+
+function execCommand(params: {
+  command: string;
+  successCallback?: (data: string) => void;
+  failCallback?: (data: string) => void;
+}) {
+  const { command, successCallback, failCallback } = params;
+  const child = require('child_process').exec(command);
+  child.stdout!.on('data', function (data) {
+    successCallback?.(data);
+  });
+  child.stderr!.on('data', function (data) {
+    failCallback?.(data);
+  });
+}
 
 export default (ctx: IPluginContext) => {
   ctx.registerCommand({

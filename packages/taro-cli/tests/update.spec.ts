@@ -1,4 +1,5 @@
 import * as path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import { type MockedFunction, afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -7,6 +8,8 @@ import { exec } from 'child_process';
 
 import { getPkgVersion } from '../src/util';
 import { run } from './utils';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const runUpdate = run('update', ['commands/update']);
 const lastestVersion = getPkgVersion();
@@ -86,7 +89,7 @@ function updatePkg(pkgPath: string, version: string) {
 }
 
 describe('update', () => {
-  const execMocked = exec as unknown as MockedFunction<typeof exec>;
+  const execMocked: any = exec;
   const shouldUseCnpmMocked = shouldUseCnpm as MockedFunction<typeof shouldUseCnpm>;
   const shouldUseYarnMocked = shouldUseYarn as MockedFunction<typeof shouldUseYarn>;
   const writeJson = fs.writeJson as MockedFunction<typeof fs.writeJson>;
@@ -164,7 +167,7 @@ describe('update', () => {
   });
 
   it('should update self to specific version', async () => {
-    const version = '3.0.0-beta.0';
+    const version = '1.0.0';
     await runUpdate('', {
       args: ['self', version],
       options: {
