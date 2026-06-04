@@ -36,7 +36,7 @@
     "@babel/preset-react": "^7.24.1",
     "@babel/preset-typescript": "^7.24.1",
     "@babel/runtime": "^7.24.4",
-    "@babel/runtime-corejs3": "^7.24.4",
+    "@babel/runtime-corejs3": "^7.29.7",
     "@rnx-kit/babel-preset-metro-react-native": "^1.1.8",
     "@spcsn/taro-helper": "workspace:*",
     "babel-plugin-dynamic-import-node": "^2.3.3",
