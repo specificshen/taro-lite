@@ -42,7 +42,7 @@
     "babel-plugin-dynamic-import-node": "^2.3.3",
     "babel-plugin-transform-imports-api": "1.0.0",
     "core-js": "^3.36.1",
-    "react-refresh": "^0.14.0"
+    "react-refresh": "^0.18.0"
   },
   "devDependencies": {}
 }
