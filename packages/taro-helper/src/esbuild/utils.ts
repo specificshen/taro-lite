@@ -1,13 +1,16 @@
 import { resolve } from 'node:path';
 
-import type { OnResolveArgs, OnResolveResult } from 'esbuild';
-
 export function externalEsbuildModule({
   path,
   namespace,
   importer,
   pluginData,
-}: Partial<OnResolveArgs>): OnResolveResult {
+}: {
+  path?: string;
+  namespace?: string;
+  importer?: string;
+  pluginData?: unknown;
+}) {
   if (namespace === 'file' && importer && path) {
     path = resolve(importer, path);
   }

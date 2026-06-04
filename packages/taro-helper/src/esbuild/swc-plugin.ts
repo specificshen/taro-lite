@@ -7,9 +7,8 @@ import { REG_SCRIPTS } from '../constants';
 import { fs } from '../utils';
 
 import type { Config, Output } from '@swc/core';
-import type { Plugin } from 'esbuild';
 
-export function getSwcPlugin(config?: Config): Plugin {
+export function getSwcPlugin(config?: Config) {
   return {
     name: 'swc-plugin',
     setup(build) {

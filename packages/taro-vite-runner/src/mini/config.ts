@@ -64,7 +64,7 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
   const outputRoot = path.join(appPath, taroConfig.outputRoot || 'dist');
   const enableSourceMap = taroConfig.enableSourceMap ?? false;
   const compactWatch = taroConfig.isWatch && !enableSourceMap;
-  const minify = compactWatch ? 'esbuild' : getMinify(taroConfig);
+  const minify = compactWatch ? false : getMinify(taroConfig);
   function getDefineOption() {
     const {
       env = {},

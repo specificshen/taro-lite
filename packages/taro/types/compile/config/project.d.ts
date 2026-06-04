@@ -112,8 +112,8 @@ export interface IProjectBaseConfig {
   /** 用于把文件从源码目录直接拷贝到编译后的生产目录 */
   copy?: ICopyOptions
 
-  /** 配置 JS 压缩工具 (默认 terser) */
-  jsMinimizer?: 'terser' | 'esbuild'
+  /** 配置 JS 压缩工具 (默认 oxc) */
+  jsMinimizer?: 'oxc' | 'terser' | 'esbuild'
 
   /** 配置 CSS 压缩工具 (默认 csso) */
   cssMinimizer?: 'csso' | 'esbuild' | 'lightningcss'
@@ -273,8 +273,8 @@ export interface IProjectConfig<T extends CompilerTypes = CompilerWebpackTypes> 
   /** 用于把文件从源码目录直接拷贝到编译后的生产目录 */
   copy?: ICopyOptions
 
-  /** 配置 JS 压缩工具 (默认 terser) */
-  jsMinimizer?: 'terser' | 'esbuild'
+  /** 配置 JS 压缩工具 (默认 oxc) */
+  jsMinimizer?: 'oxc' | 'terser' | 'esbuild'
 
   /** 配置 CSS 压缩工具 (默认 csso) */
   cssMinimizer?: 'csso' | 'esbuild' | 'lightningcss'

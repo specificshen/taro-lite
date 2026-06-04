@@ -174,17 +174,21 @@ export function getPostcssPlugins(
 
 export function getMinify(
   taroConfig: ViteMiniBuildConfig | ViteH5BuildConfig | ViteHarmonyBuildConfig,
-): 'terser' | 'esbuild' | boolean {
+): 'oxc' | 'terser' | 'esbuild' | boolean {
   const isProd = getMode(taroConfig) === 'production';
   return !isProd
     ? false
-    : taroConfig.jsMinimizer === 'esbuild'
-      ? taroConfig.esbuild?.minify?.enable === false
-        ? false // 只有在明确配置了 esbuild.minify.enable: false 时才不启用压缩
-        : 'esbuild'
-      : taroConfig.terser?.enable === false
-        ? false // 只有在明确配置了 terser.enable: false 时才不启用压缩
-        : 'terser';
+    : taroConfig.jsMinimizer === 'terser'
+      ? taroConfig.terser?.enable === false
+        ? false
+        : 'terser'
+      : taroConfig.jsMinimizer === 'esbuild'
+        ? taroConfig.esbuild?.minify?.enable === false
+          ? false // 只有在明确配置了 esbuild.minify.enable: false 时才不启用压缩
+          : 'esbuild'
+        : taroConfig.terser?.enable === false
+          ? false
+          : 'oxc';
 }
 
 export function getCSSModulesOptions(
