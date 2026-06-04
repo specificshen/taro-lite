@@ -32,7 +32,7 @@ export { MutationObserver } from './dom-external/mutation-observer';
 // others
 export { env };
 export * from './constants';
-export { Current, getCurrentInstance } from './current';
+export { Current, getCurrentInstance, setCurrentApp, whenAppReady } from './current';
 export { eventSource } from './dom/event-source';
 export {
   createComponentConfig,

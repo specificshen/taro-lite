@@ -19,6 +19,7 @@ import {
   removePageInstance,
   requestAnimationFrame,
   safeExecute,
+  setCurrentApp,
   window,
 } from '@spcsn/taro-runtime';
 import { EMPTY_OBJ, ensure, hooks, isUndefined } from '@spcsn/taro-shared';
@@ -92,7 +93,7 @@ function initNativeComponentEntry(params: InitNativeComponentEntryParams) {
 
     componentDidMount() {
       if (isDefaultEntryDom) {
-        Current.app = this;
+        setCurrentApp(this);
       } else {
         nativeComponentApp = this;
       }

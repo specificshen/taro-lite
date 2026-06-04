@@ -29,7 +29,7 @@ import {
   PAGE_INIT,
   VIEW,
 } from '../constants';
-import { Current } from '../current';
+import { Current, whenAppReady } from '../current';
 import { eventHandler } from '../dom/event';
 import { eventCenter } from '../emitter/emitter';
 import env from '../env';
@@ -172,27 +172,29 @@ export function createPageConfig(
       }
 
       const mount = () => {
-        Current.app!.mount!(component, $taroPath, () => {
-          if (process.env.TARO_ENV === 'tt' && isEnableTTDom()) {
-            pageElement = (env.document as any).getPageDocumentById(this.__webviewId__);
-          } else {
-            pageElement = env.document.getElementById<TaroRootElement>($taroPath);
-          }
-
-          ensure(pageElement !== null, '没有找到页面实例。');
-          safeExecute($taroPath, ON_LOAD, this.$taroParams);
-          loadResolver();
-          if (process.env.TARO_PLATFORM !== 'web') {
-            pageElement.ctx = this;
+        whenAppReady((app) =>
+          app.mount!(component, $taroPath, () => {
             if (process.env.TARO_ENV === 'tt' && isEnableTTDom()) {
-              (pageElement as any).sync();
+              pageElement = (env.document as any).getPageDocumentById(this.__webviewId__);
             } else {
-              pageElement.performUpdate(true, cb);
+              pageElement = env.document.getElementById<TaroRootElement>($taroPath);
             }
-          } else {
-            isFunction(cb) && cb();
-          }
-        });
+
+            ensure(pageElement !== null, '没有找到页面实例。');
+            safeExecute($taroPath, ON_LOAD, this.$taroParams);
+            loadResolver();
+            if (process.env.TARO_PLATFORM !== 'web') {
+              pageElement.ctx = this;
+              if (process.env.TARO_ENV === 'tt' && isEnableTTDom()) {
+                (pageElement as any).sync();
+              } else {
+                pageElement.performUpdate(true, cb);
+              }
+            } else {
+              isFunction(cb) && cb();
+            }
+          }),
+        );
       };
       if (unmounting) {
         prepareMountList.push(mount);
@@ -209,18 +211,20 @@ export function createPageConfig(
       // 触发onUnload生命周期
       safeExecute($taroPath, ONUNLOAD);
       unmounting = true;
-      Current.app!.unmount!($taroPath, () => {
-        unmounting = false;
-        instances.delete($taroPath);
-        if (pageElement) {
-          pageElement.ctx = null;
-          pageElement = null;
-        }
-        if (prepareMountList.length) {
-          prepareMountList.forEach((fn) => fn());
-          prepareMountList = [];
-        }
-      });
+      whenAppReady((app) =>
+        app.unmount!($taroPath, () => {
+          unmounting = false;
+          instances.delete($taroPath);
+          if (pageElement) {
+            pageElement.ctx = null;
+            pageElement = null;
+          }
+          if (prepareMountList.length) {
+            prepareMountList.forEach((fn) => fn());
+            prepareMountList = [];
+          }
+        }),
+      );
     },
     [ONREADY]() {
       hasLoaded.then(() => {
@@ -353,28 +357,32 @@ export function createComponentConfig(
 
       const path = getPath(id, { id: this.pageIdCache });
 
-      Current.app!.mount!(component, path, () => {
-        componentElement = env.document.getElementById<TaroRootElement>(path);
-        ensure(componentElement !== null, '没有找到组件实例。');
-        this.$taroInstances = instances.get(path);
-        safeExecute(path, ON_LOAD);
-        if (process.env.TARO_PLATFORM !== 'web') {
-          componentElement.ctx = this;
-          if (process.env.TARO_ENV !== 'tt' || !isEnableTTDom()) {
-            componentElement.performUpdate(true);
+      whenAppReady((app) =>
+        app.mount!(component, path, () => {
+          componentElement = env.document.getElementById<TaroRootElement>(path);
+          ensure(componentElement !== null, '没有找到组件实例。');
+          this.$taroInstances = instances.get(path);
+          safeExecute(path, ON_LOAD);
+          if (process.env.TARO_PLATFORM !== 'web') {
+            componentElement.ctx = this;
+            if (process.env.TARO_ENV !== 'tt' || !isEnableTTDom()) {
+              componentElement.performUpdate(true);
+            }
           }
-        }
-      });
+        }),
+      );
     },
     [DETACHED]() {
       const path = getPath(id, { id: this.pageIdCache });
 
-      Current.app!.unmount!(path, () => {
-        instances.delete(path);
-        if (componentElement) {
-          componentElement.ctx = null;
-        }
-      });
+      whenAppReady((app) =>
+        app.unmount!(path, () => {
+          instances.delete(path);
+          if (componentElement) {
+            componentElement.ctx = null;
+          }
+        }),
+      );
     },
     methods: {
       eh: eventHandler,

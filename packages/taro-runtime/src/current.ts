@@ -23,4 +23,24 @@ export const Current: Current = {
   page: null,
 };
 
+type AppReadyCallback = (app: AppInstance) => void;
+
+const appReadyCallbacks: AppReadyCallback[] = [];
+
+export function setCurrentApp(app: AppInstance) {
+  Current.app = app;
+
+  while (appReadyCallbacks.length) {
+    appReadyCallbacks.shift()!(app);
+  }
+}
+
+export function whenAppReady(callback: AppReadyCallback) {
+  if (Current.app) {
+    callback(Current.app);
+  } else {
+    appReadyCallbacks.push(callback);
+  }
+}
+
 export const getCurrentInstance = () => Current;

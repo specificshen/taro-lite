@@ -8,6 +8,7 @@ import {
   injectPageInstance,
   PAGE_INIT,
   perf,
+  setCurrentApp,
 } from '@spcsn/taro-runtime';
 import { EMPTY_OBJ, ensure, hooks } from '@spcsn/taro-shared';
 
@@ -384,6 +385,6 @@ export function createReactApp(App: React.ComponentClass, react: typeof React, d
     }
   }
 
-  Current.app = appObj;
+  setCurrentApp(appObj);
   return appObj;
 }
