@@ -15,5 +15,5 @@ export const componentConfig: IComponentConfig = {
   ]),
   exclude: new Set(),
   thirdPartyComponents: new Map(),
-  includeAll: false,
+  includeAll: true,
 };

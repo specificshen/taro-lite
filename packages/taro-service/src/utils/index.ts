@@ -11,6 +11,21 @@ import type { IPlugin, IPluginsObject } from './types';
 
 export const isNpmPkg: (name: string) => boolean = (name) => !/^(\.|\/)/.test(name);
 
+const cliBuiltinPlugins: Record<string, string> = {
+  '@spcsn/taro-plugin-generator': 'dist/presets/plugins/generator/index.js',
+  '@spcsn/taro-plugin-platform-weapp': 'dist/platform-weapp/index.js',
+};
+
+function resolveCliBuiltinPlugin(item: string, root: string): string | undefined {
+  const builtinPath = cliBuiltinPlugins[item];
+  if (!builtinPath) return;
+
+  const cliPackageJson = require.resolve('@spcsn/taro-cli/package.json', {
+    paths: [__dirname, root].filter(Boolean),
+  });
+  return path.join(path.dirname(cliPackageJson), builtinPath);
+}
+
 export function getPluginPath(pluginPath: string) {
   if (isNpmPkg(pluginPath) || path.isAbsolute(pluginPath)) return pluginPath;
   throw new Error('plugin 和 preset 配置必须为绝对路径或者包名');
@@ -63,8 +78,13 @@ export function resolvePresetsOrPlugins(
     } catch (err) {
       if ((err as any).code === 'MODULE_NOT_FOUND') {
         try {
+          fPath = resolveCliBuiltinPlugin(item, root);
+        } catch (e) {}
+      }
+      if (!fPath && (err as any).code === 'MODULE_NOT_FOUND') {
+        try {
           const cliPath = require.resolve('@spcsn/taro-cli/package.json', { paths: [__dirname, root].filter(Boolean) });
-          fPath = resolve.sync(item, { basedir: require('path').dirname(cliPath), extensions: ['.js', '.ts'] });
+          fPath = resolve.sync(item, { basedir: path.dirname(cliPath), extensions: ['.js', '.ts'] });
         } catch (e) {}
       }
       if (!fPath) {
@@ -80,6 +100,11 @@ export function resolvePresetsOrPlugins(
           process.exit(1);
         }
       }
+    }
+    const existingPlugin = resolvedPresetsOrPlugins.find((plugin) => plugin.id === fPath);
+    if (existingPlugin) {
+      existingPlugin.opts = merge({}, existingPlugin.opts, args[item] || {});
+      continue;
     }
     const resolvedItem = {
       id: fPath,
