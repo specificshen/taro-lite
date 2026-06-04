@@ -1,43 +1,43 @@
-import { ComponentType } from 'react'
-import { StandardProps, CommonEventFunction } from './common'
+import { ComponentType } from 'react';
+import { StandardProps, CommonEventFunction } from './common';
 interface OfficialAccountProps extends StandardProps {
   /** 组件加载成功时触发
    * @supported weapp
    */
-  onLoad?: CommonEventFunction<OfficialAccountProps.Detail>
+  onLoad?: CommonEventFunction<OfficialAccountProps.Detail>;
   /** 组件加载失败时触发
    * @supported weapp
    */
-  onError?: CommonEventFunction<OfficialAccountProps.Detail>
+  onError?: CommonEventFunction<OfficialAccountProps.Detail>;
 }
 declare namespace OfficialAccountProps {
   /** detail 对象 */
   interface Detail {
     /** 状态码 */
-    status: number
+    status: number;
     /** 错误信息 */
-    errMsg: string
+    errMsg: string;
   }
   /** status 有效值 */
   interface Status {
     /** 网络错误 */
-    '-2'
+    '-2';
     /** 数据解析错误 */
-    '-1'
+    '-1';
     /** 加载成功 */
-    0
+    0;
     /** 小程序关注公众号功能被封禁 */
-    1
+    1;
     /** 关联公众号被封禁 */
-    2
+    2;
     /** 关联关系解除或未选中关联公众号 */
-    3
+    3;
     /** 未开启关注公众号功能 */
-    4
+    4;
     /** 场景值错误 */
-    5
+    5;
     /** 重复创建 */
-    6
+    6;
   }
 }
 /** 公众号关注组件。当用户扫小程序码打开小程序时，开发者可在小程序内配置公众号关注组件，方便用户快捷关注公众号，可嵌套在原生组件内。
@@ -54,5 +54,5 @@ declare namespace OfficialAccountProps {
  * @supported weapp
  * @see https://developers.weixin.qq.com/miniprogram/dev/component/official-account.html
  */
-declare const OfficialAccount: ComponentType<OfficialAccountProps>
-export { OfficialAccount, OfficialAccountProps }
+declare const OfficialAccount: ComponentType<OfficialAccountProps>;
+export { OfficialAccount, OfficialAccountProps };

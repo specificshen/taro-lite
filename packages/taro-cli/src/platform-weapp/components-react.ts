@@ -1,6 +1,6 @@
 // @ts-nocheck
 // For React.createElement's type
-export * from '@spcsn/taro-components/mini';
+export * from '@spcsn/taro-components';
 export const Editor = 'editor';
 export const MatchMedia = 'match-media';
 export const FunctionalPageNavigator = 'functional-page-navigator';

@@ -1,76 +1,62 @@
-import { ComponentType } from 'react'
-import { StandardProps, CommonEventFunction } from './common'
+import { ComponentType } from 'react';
+import { StandardProps, CommonEventFunction } from './common';
 interface ShareElementProps extends StandardProps {
   /** 映射标记
    * @supported weapp
    * @deprecated 使用mapkey替换key
    */
-  key?: string
+  key?: string;
   /** 映射标记
    * @supported weapp
    * @unique
    */
-  mapkey?: string
-  /** 映射标记
-   * @supported alipay
-   */
-  name?: string
+  mapkey?: string;
   /** 是否进行动画
    * @default false
-   * @supported weapp, alipay
+   * @supported weapp
    */
-  transform?: boolean
+  transform?: boolean;
   /** 动画时长，单位毫秒
    * @default 300
-   * @supported weapp, alipay
+   * @supported weapp
    */
-  duration?: number
+  duration?: number;
   /** css缓动函数
    * @default ease-out
-   * @supported weapp, alipay
+   * @supported weapp
    */
-  easingFunction?: string
+  easingFunction?: string;
   /** 手势返回时是否进行动画
    * @supported weapp
    * @default false
    */
-  transitionOnGesture?: boolean
+  transitionOnGesture?: boolean;
   /** 指定 push 阶段的飞跃物
    * @supported weapp
    * @default "to"
    */
-  shuttleOnPush?: 'from' | 'to' | 'from' | 'to'
+  shuttleOnPush?: 'from' | 'to' | 'from' | 'to';
   /** 指定 pop 阶段的飞跃物
    * @supported weapp
    * @default "to"
    */
-  shuttleOnPop?: string
+  shuttleOnPop?: string;
   /** 动画插值曲线
    * @supported weapp
    * @default "materialRectArc"
    */
-  rectTweenType?:
-    | 'materialRectArc'
-    | 'materialRectCenterArc'
-    | 'linear'
-    | 'elasticIn'
-    | 'elasticOut'
-    | 'elasticInOut'
-    | 'bounceIn'
-    | 'bounceOut'
-    | 'bounceInOut'
-    | 'cubic-bezier(x1, y1, x2, y2)'
-  /** 动画帧回调
-   * @supported weapp
-   */
-  onFrameWorklet?: string
+  rectTweenType?: 'materialRectArc' | 'materialRectCenterArc' | 'linear' | 'elasticIn' | 'elasticOut' | 'elasticInOut' | 'bounceIn' | 'bounceOut' | 'bounceInOut' | 'cubic-bezier(x1, y1, x2, y2)';
+  /** 动画帧回调 
+  * @supported weapp
+  */
+  onFrame?: string;
 }
 /** 共享元素
  *
  * 共享元素是一种动画形式，类似于 [`flutter Hero`](https://flutterchina.club/animations/hero-animations/) 动画，表现为元素像是在页面间穿越一样。该组件需与 [`PageContainer`](/docs/components/viewContainer/page-container) 组件结合使用。
  * 使用时需在当前页放置 `ShareElement` 组件，同时在 `PageContainer` 容器中放置对应的 `ShareElement` 组件，对应关系通过属性值 key 映射。当设置 `PageContainer` `显示时，transform` 属性为 `true` 的共享元素会产生动画。当前页面容器退出时，会产生返回动画。
  * @classification skyline
- * @supported weapp, alipay
+ * @supported weapp
  * @example_react
  * ```tsx
  * // index.js
@@ -266,5 +252,5 @@ interface ShareElementProps extends StandardProps {
  * ```
  * @see https://developers.weixin.qq.com/miniprogram/dev/component/share-element.html
  */
-declare const ShareElement: ComponentType<ShareElementProps>
-export { ShareElement, ShareElementProps }
+declare const ShareElement: ComponentType<ShareElementProps>;
+export { ShareElement, ShareElementProps };

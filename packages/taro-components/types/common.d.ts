@@ -22,14 +22,9 @@ export interface StandardProps<T = any, TouchEvent extends BaseTouchEvent<any> =
   ref?: LegacyRef<T>
   /**
    * 是否开启编译模式 或者 是否是编译模式的子渲染函数
-   * @supported weapp, harmony
+   * @supported weapp
    */
   compileMode?: boolean | string | typeof COMPILE_MODE_SUB_RENDER_FN
-  /**
-   * 自定义容器组件的方向
-   * @supported harmony
-   */
-  harmonyDirection?: 'row' | 'column' | 'flex'
 }
 
 export interface FormItemProps {

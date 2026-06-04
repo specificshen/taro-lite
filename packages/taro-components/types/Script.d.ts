@@ -4,11 +4,11 @@ import { StandardProps } from './common'
 
 interface ScriptProps extends StandardProps {
   /** xs 文件的相对路径
-   * @supported weapp, alipay, swan, tt, qq, jd
+   * @supported weapp
    */
   src: string
   /** xs 模块名
-   * @supported weapp, alipay, swan, tt, qq, jd
+   * @supported weapp
    */
   module: string
 }
@@ -16,7 +16,7 @@ interface ScriptProps extends StandardProps {
 /** script 类似微信小程序的 wxs 标签，支持引用各种小程序的 xs 文件
  * 只能在 CompileMode 中使用
  * @classification viewContainer
- * @supported weapp, swan, alipay, tt, jd, qq
+ * @supported weapp
  * @example_react
  * ```tsx
  * import { Component } from 'react'

@@ -1,58 +1,58 @@
-import { ComponentType } from 'react'
-import { StandardProps, CommonEventFunction } from './common'
+import { ComponentType } from 'react';
+import { StandardProps, CommonEventFunction } from './common';
 interface EditorProps extends StandardProps {
   /** 设置编辑器为只读
    * @default false
-   * @supported weapp, jd
+   * @supported weapp
    */
-  readOnly?: boolean
+  readOnly?: boolean;
   /** 提示信息
-   * @supported weapp, jd
+   * @supported weapp
    */
-  placeholder?: string
+  placeholder?: string;
   /** 点击图片时显示图片大小控件
    * @default false
-   * @supported weapp, jd
+   * @supported weapp
    */
-  showImgSize?: boolean
+  showImgSize?: boolean;
   /** 点击图片时显示工具栏控件
    * @default false
-   * @supported weapp, jd
+   * @supported weapp
    */
-  showImgToolbar?: boolean
+  showImgToolbar?: boolean;
   /** 点击图片时显示修改尺寸控件
    * @default false
-   * @supported weapp, jd
+   * @supported weapp
    */
-  showImgResize?: boolean
+  showImgResize?: boolean;
   /** 编辑器初始化完成时触发
-   * @supported weapp, jd
+   * @supported weapp
    */
-  onReady?: CommonEventFunction
+  onReady?: CommonEventFunction;
   /** 编辑器聚焦时触发
-   * @supported weapp, jd
+   * @supported weapp
    */
-  onFocus?: CommonEventFunction<EditorProps.editorEventDetail>
+  onFocus?: CommonEventFunction<EditorProps.editorEventDetail>;
   /** 编辑器失去焦点时触发
    * detail = { html, text, delta }
-   * @supported weapp, jd
+   * @supported weapp
    */
-  onBlur?: CommonEventFunction<EditorProps.editorEventDetail>
+  onBlur?: CommonEventFunction<EditorProps.editorEventDetail>;
   /** 编辑器内容改变时触发
    * detail = { html, text, delta }
-   * @supported weapp, jd
+   * @supported weapp
    */
-  onInput?: CommonEventFunction<EditorProps.editorEventDetail>
+  onInput?: CommonEventFunction<EditorProps.editorEventDetail>;
   /** 通过 Context 方法改变编辑器内样式时触发，返回选区已设置的样式
-   * @supported weapp, jd
+   * @supported weapp
    */
-  onStatusChange?: CommonEventFunction
+  onStatusChange?: CommonEventFunction;
 }
 declare namespace EditorProps {
   interface editorEventDetail {
-    html
-    text
-    delta
+    html;
+    text;
+    delta;
   }
 }
 /** 富文本编辑器，可以对图片、文字进行编辑。
@@ -67,7 +67,7 @@ declare namespace EditorProps {
  *
  * *编辑器内支持部分 HTML 标签和内联样式，不支持 **class** 和 **id***
  * @classification forms
- * @supported weapp, jd
+ * @supported weapp
  * @example_react
  * ```tsx
  * class App extends Components {
@@ -127,5 +127,5 @@ declare namespace EditorProps {
  * ```
  * @see https://developers.weixin.qq.com/miniprogram/dev/component/editor.html
  */
-declare const Editor: ComponentType<EditorProps>
-export { Editor, EditorProps }
+declare const Editor: ComponentType<EditorProps>;
+export { Editor, EditorProps };

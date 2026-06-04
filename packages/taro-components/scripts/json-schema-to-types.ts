@@ -5,7 +5,6 @@ import * as t from '@babel/types';
 import { fs } from '@spcsn/taro-helper';
 import { camelCase, paramCase } from 'change-case';
 import { flattenDeep, isEmpty, isNil, toArray, uniq, xorWith } from 'lodash';
-import { format as prettify } from 'prettier';
 
 import { MINI_APP_TYPES } from './constants';
 import { camelCaseEnhance, getTypeFilePath, getTypesList } from './utils';
@@ -54,8 +53,12 @@ class GenerateTypes {
     if (!jsonSchema) {
       return obj;
     }
-    Object.keys(this.jsonSchemas[this.componentName]).forEach((key) => {
-      const filteredList = xorWith(props[key], Object.keys(this.jsonSchemas[this.componentName][key].properties));
+    MINI_APP_TYPES.forEach((key) => {
+      const schema = jsonSchema[key];
+      if (!schema?.properties) {
+        return;
+      }
+      const filteredList = xorWith(props[key] || [], Object.keys(schema.properties));
       if (filteredList.length > 0) {
         obj[key] = filteredList.map((item) =>
           item.match(/^bind/) ? camelCase(item.replace(/^bind/, eventStart), { transform: camelCaseEnhance }) : item,
@@ -81,7 +84,7 @@ class GenerateTypes {
     const jsonSchemas = this.jsonSchemas[this.componentName];
     const existProps: PROP_MAP = {};
 
-    traverse(ast, {
+    traverse(ast as any, {
       TSInterfaceDeclaration(astPath) {
         if (astPath.node.id.name !== `${componentName}Props`) {
           return;
@@ -124,20 +127,16 @@ class GenerateTypes {
             const isUnique = value.indexOf('@unique') !== -1;
             const isIgnore = value.indexOf('@ignore') !== -1;
 
-            // 保留内置类型
-            const inherentTypes = ['global', 'h5', 'rn', 'quickapp', 'harmony', 'harmony_hybrid'];
-            inherentTypes.forEach((type) => {
-              if (preSupportedPlatforms?.includes(type)) {
-                supportedPlatforms.push(type);
-              }
-            });
-
             // 保留 Taro 支持或平台独有特性
             if (isUnique || isIgnore) {
-              supportedPlatforms.splice(0, supportedPlatforms.length, ...preSupportedPlatforms);
+              supportedPlatforms.splice(
+                0,
+                supportedPlatforms.length,
+                ...preSupportedPlatforms.filter((type) => (MINI_APP_TYPES as readonly string[]).includes(type)),
+              );
             }
 
-            if (isEmpty(supportedPlatforms) && !(isUnique || isIgnore)) {
+            if (isEmpty(supportedPlatforms)) {
               astPath.remove();
             } else {
               astPath.node.leadingComments[0].value = value.replace(
@@ -159,7 +158,7 @@ class GenerateTypes {
   addProps(ast: AST, props: PROP = {}) {
     const componentName = this.componentName;
     const jsonSchemas = this.jsonSchemas[this.componentName];
-    traverse(ast, {
+    traverse(ast as any, {
       TSInterfaceDeclaration(astPath) {
         if (astPath.node.id.name !== `${componentName}Props`) {
           return;
@@ -189,7 +188,9 @@ class GenerateTypes {
                 if (!enumArray) {
                   value = t.tsTypeReference(t.identifier(type));
                 } else {
-                  value = t.tsUnionType(enumArray.map((item) => t.tsLiteralType(t.stringLiteral(item))));
+                  value = t.tsUnionType(
+                    (enumArray as string[]).map((item: string) => t.tsLiteralType(t.stringLiteral(item))),
+                  );
                 }
               } else if (['boolean', 'number'].includes(type)) {
                 value = t.tsTypeReference(t.identifier(type));
@@ -238,7 +239,7 @@ class GenerateTypes {
   }
 
   formatJSDoc(ast: AST) {
-    traverse(ast, {
+    traverse(ast as any, {
       enter(astPath) {
         if (astPath.node.trailingComments) {
           astPath.node.trailingComments = [];
@@ -250,7 +251,7 @@ class GenerateTypes {
   // 属性排序
   sortProps(ast: AST) {
     const componentName = this.componentName;
-    traverse(ast, {
+    traverse(ast as any, {
       TSInterfaceDeclaration(astPath) {
         if (astPath.node.id.name !== `${componentName}Props`) {
           return;
@@ -289,14 +290,12 @@ class GenerateTypes {
     this.addProps(ast, props);
     this.sortProps(ast);
     this.formatJSDoc(ast);
-    const result = generator(ast);
-    const code = prettify(result.code, {
-      parser: 'typescript',
-      semi: false,
-      singleQuote: true,
-      printWidth: 120,
+    const result = generator(ast, {
+      jsescOption: {
+        minimal: true,
+      },
     });
-    fs.writeFileSync(filePath, code);
+    fs.writeFileSync(filePath, `${result.code}\n`);
   }
 }
 

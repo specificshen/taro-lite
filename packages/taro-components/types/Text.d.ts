@@ -1,65 +1,55 @@
-import { ComponentType } from 'react'
-import { StandardProps } from './common'
+import { ComponentType } from 'react';
+import { StandardProps } from './common';
 interface TextProps extends StandardProps {
   /** 文本是否可选
    * @default false
-   * @supported weapp, alipay, swan, tt, qq, jd, h5, rn, harmony_hybrid
+   * @supported weapp
    */
-  selectable?: boolean
+  selectable?: boolean;
   /** 文本是否可选，该属性会使文本节点显示为 inline-block
    * @default false
-   * @supported weapp, h5, harmony_hybrid
+   * @supported weapp
    */
-  userSelect?: boolean
+  userSelect?: boolean;
   /** 显示连续空格
-   * @supported weapp, alipay, swan, tt, qq, jd, h5, harmony_hybrid
+   * @supported weapp
    */
-  space?: keyof TextProps.TSpace
+  space?: keyof TextProps.TSpace;
   /** 是否解码
    * @default false
-   * @supported weapp, alipay, tt, qq, jd
+   * @supported weapp
    * @h5 默认解码，不支持设置
    */
-  decode?: boolean
-  /** 多行省略，值须大于等于 1，表现同 css 的 -webkit-line-clamp 属性一致。
-   * @supported alipay
-   */
-  numberOfLines?: number
-  /**
-   * 文本溢出处理
-   * @supported weapp
-   * @default 'visible'
-   */
-  overflow?: keyof TextProps.Overflow
+  decode?: boolean;
   /** 限制文本最大行数
-   * @supported weapp, harmony
+   * @supported weapp
    */
-  maxLines?: number
+  maxLines?: number;
 }
 declare namespace TextProps {
   /** space 的合法值 */
   interface TSpace {
     /** 中文字符空格一半大小 */
-    ensp
+    ensp;
     /** 中文字符空格大小 */
-    emsp
+    emsp;
     /** 根据字体设置的空格大小 */
-    nbsp
+    nbsp;
   }
   interface Overflow {
     /** 修剪文本 */
-    clip
+    clip;
     /** 淡出 */
-    fade
+    fade;
     /** 显示省略号 */
-    ellipsis
+    ellipsis;
     /** 文本不截断 */
-    visible
+    visible;
   }
 }
 /** 文本
  * @classification base
- * @supported weapp, alipay, swan, tt, qq, jd, h5, rn, harmony, harmony_hybrid
+ * @supported weapp
  * @example_react
  * ```tsx
  * export default class PageView extends Component {
@@ -142,5 +132,5 @@ declare namespace TextProps {
  * ```
  * @see https://developers.weixin.qq.com/miniprogram/dev/component/text.html
  */
-declare const Text: ComponentType<TextProps>
-export { Text, TextProps }
+declare const Text: ComponentType<TextProps>;
+export { Text, TextProps };

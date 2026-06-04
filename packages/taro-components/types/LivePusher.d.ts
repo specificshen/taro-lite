@@ -1,343 +1,343 @@
-import { ComponentType } from 'react'
-import { StandardProps, CommonEventFunction, NetStatus } from './common'
+import { ComponentType } from 'react';
+import { StandardProps, CommonEventFunction, NetStatus } from './common';
 /** 实时音视频录制。
  * 需要用户授权 scope.camera、scope.record
  * 暂只针对国内主体如下类目的小程序开放，需要先通过类目审核，再在小程序管理后台，“设置”-“接口设置”中自助开通该组件权限。
  */
 interface LivePusherProps extends StandardProps {
   /** 推流地址。目前仅支持 rtmp 格式
-   * @supported weapp, qq
+   * @supported weapp
    */
-  url?: string
+  url?: string;
   /** SD（标清）, HD（高清）, FHD（超清）, RTC（实时通话）
    * @default "RTC"
-   * @supported weapp, qq
+   * @supported weapp
    */
-  mode?: 'SD' | 'HD' | 'FHD' | 'RTC'
+  mode?: 'SD' | 'HD' | 'FHD' | 'RTC';
   /** 自动推流
    * @default false
-   * @supported weapp, qq
+   * @supported weapp
    */
-  autopush?: boolean
+  autopush?: boolean;
   /** 自定义渲染，允许开发者自行处理所采集的视频帧
    * @default false
    * @supported weapp
    */
-  enableVideoCustomRender?: boolean
+  enableVideoCustomRender?: boolean;
   /** 是否静音。即将废弃，可用 enable-mic 替代
    * @default false
    * @deprecated
-   * @supported weapp, qq
+   * @supported weapp
    */
-  muted?: boolean
+  muted?: boolean;
   /** 开启摄像头
    * @default true
-   * @supported weapp, qq
+   * @supported weapp
    */
-  enableCamera?: boolean
+  enableCamera?: boolean;
   /** 自动聚集
    * @default true
-   * @supported weapp, qq
+   * @supported weapp
    */
-  autoFocus?: boolean
+  autoFocus?: boolean;
   /** 画面方向
    * @default "vertical"
-   * @supported weapp, qq
+   * @supported weapp
    */
-  orientation?: keyof LivePusherProps.Orientation
+  orientation?: keyof LivePusherProps.Orientation;
   /** 美颜，取值范围 0-9 ，0 表示关闭
    * @default 0
-   * @supported weapp, qq
+   * @supported weapp
    */
-  beauty?: number
+  beauty?: number;
   /** 美白，取值范围 0-9 ，0 表示关闭
    * @default 0
-   * @supported weapp, qq
+   * @supported weapp
    */
-  whiteness?: number
+  whiteness?: number;
   /** 宽高比，可选值有 3:4, 9:16
    * @default "9:16"
-   * @supported weapp, qq
+   * @supported weapp
    */
-  aspect?: '9:16' | '3:4'
+  aspect?: '9:16' | '3:4';
   /** 最小码率
    * @default 200
-   * @supported weapp, qq
+   * @supported weapp
    */
-  minBitrate?: number
+  minBitrate?: number;
   /** 最大码率
    * @default 1000
-   * @supported weapp, qq
+   * @supported weapp
    */
-  maxBitrate?: number
+  maxBitrate?: number;
   /** 高音质(48KHz)或低音质(16KHz)，值为high, low
    * @default "high"
-   * @supported weapp, qq
+   * @supported weapp
    */
-  audioQuality?: string
+  audioQuality?: string;
   /** 进入后台时推流的等待画面
-   * @supported weapp, qq
+   * @supported weapp
    */
-  waitingImage?: string
+  waitingImage?: string;
   /** 等待画面资源的MD5值
-   * @supported weapp, qq
+   * @supported weapp
    */
-  waitingImageHash?: string
+  waitingImageHash?: string;
   /** 调整焦距
    * @default false
-   * @supported weapp, qq
+   * @supported weapp
    */
-  zoom?: boolean
+  zoom?: boolean;
   /** 前置或后置，值为front, back
    * @default "front"
-   * @supported weapp, qq
+   * @supported weapp
    */
-  devicePosition?: string
+  devicePosition?: string;
   /** 进入后台时是否静音
    * @default false
-   * @supported weapp, qq
+   * @supported weapp
    */
-  backgroundMute?: boolean
+  backgroundMute?: boolean;
   /** 设置推流画面是否镜像，产生的效果在 LivePlayer 反应到
    * @default false
-   * @supported weapp, qq
+   * @supported weapp
    */
-  mirror?: boolean
+  mirror?: boolean;
   /** 设置推流画面是否镜像，产生的效果在 LivePlayer 反应到
    *
    * **Note:** 同 mirror 属性，后续 mirror 将废弃
    * @default false
    * @supported weapp
    */
-  remoteMirror?: boolean
+  remoteMirror?: boolean;
   /** 控制本地预览画面是否镜像
    * @default "auto"
    * @supported weapp
    */
-  localMirror?: keyof LivePusherProps.LocalMirror
+  localMirror?: keyof LivePusherProps.LocalMirror;
   /** 音频混响类型
    * @default 0
-   * @supported weapp, qq
+   * @supported weapp
    */
-  audioReverbType?: keyof LivePusherProps.AudioReverbType
+  audioReverbType?: keyof LivePusherProps.AudioReverbType;
   /** 开启或关闭麦克风
    * @default true
    * @supported weapp
    */
-  enableMic?: boolean
+  enableMic?: boolean;
   /** 是否开启音频自动增益
    * @default false
    * @supported weapp
    */
-  enableAgc?: boolean
+  enableAgc?: boolean;
   /** 是否开启音频噪声抑制
    * @default false
    * @supported weapp
    */
-  enableAns?: boolean
+  enableAns?: boolean;
   /** 音量类型
    * @default "voicecall"
    * @supported weapp
    */
-  audioVolumeType?: keyof LivePusherProps.AudioVolumeType
+  audioVolumeType?: keyof LivePusherProps.AudioVolumeType;
   /** 上推的视频流的分辨率宽度
    * @default 360
    * @supported weapp
    */
-  videoWidth?: number
+  videoWidth?: number;
   /** 上推的视频流的分辨率高度
    * @default 640
    * @supported weapp
    */
-  videoHeight?: number
+  videoHeight?: number;
   /** 设置美颜类型
    * @default smooth
    * @supported weapp
    */
-  beautyStyle?: keyof LivePusherProps.BeautyStyleType
+  beautyStyle?: keyof LivePusherProps.BeautyStyleType;
   /** 设置色彩滤镜
    * @default standard
    * @supported weapp
    */
-  filter?: keyof LivePusherProps.FilterType
+  filter?: keyof LivePusherProps.FilterType;
   /** 设置小窗模式： push, pop，空字符串或通过数组形式设置多种模式（如： ["push", "pop"]）
    * @supported weapp
    */
-  pictureInPictureMode?: string | any[]
+  pictureInPictureMode?: string | any[];
   /** 是否启动自定义特效，设定后不能更改
    * @supported weapp
    * @default false
    */
-  customEffect?: boolean
+  customEffect?: boolean;
   /** 自定义特效美白效果，取值 0~1。需要开启 custom-effect
    * @supported weapp
    * @default 0
    */
-  skinWhiteness?: number
+  skinWhiteness?: number;
   /** 自定义特效磨皮效果，取值 0~1。需要开启 custom-effect
    * @supported weapp
    * @default 0
    */
-  skinSmoothness?: number
+  skinSmoothness?: number;
   /** 自定义特效瘦脸效果，取值 0~1。需要开启 custom-effect
    * @supported weapp
    * @default 0
    */
-  faceThinness?: number
+  faceThinness?: number;
   /** 自定义特效大眼效果，取值 0~1。需要开启 custom-effect
    * @supported weapp
    * @default 0
    */
-  eyeBigness?: number
+  eyeBigness?: number;
   /** 0：关闭变声；1：熊孩子；2：萝莉；3：大叔；4：重金属；6：外国人；7：困兽；8：死肥仔；9：强电流；10：重机械；11：空灵
    * @supported weapp
    * @default 0
    */
-  voiceChangerType?: number
+  voiceChangerType?: number;
   /** 帧率，有效值为 1~30
    * @supported weapp
    * @default 15
    */
-  fps?: number
+  fps?: number;
   /** 状态变化事件，detail = {code}
-   * @supported weapp, qq
+   * @supported weapp
    */
-  onStateChange?: CommonEventFunction<LivePusherProps.onStateChangeEventDetail>
+  onStateChange?: CommonEventFunction<LivePusherProps.onStateChangeEventDetail>;
   /** 渲染错误事件，detail = {errMsg, errCode}
-   * @supported weapp, qq
+   * @supported weapp
    */
-  onError?: CommonEventFunction<LivePusherProps.onErrorEventDetail>
+  onError?: CommonEventFunction<LivePusherProps.onErrorEventDetail>;
   /** 背景音进度变化时触发，detail = {progress, duration}
-   * @supported weapp, qq
+   * @supported weapp
    */
-  onBgmProgress?: CommonEventFunction<LivePusherProps.onBgmProgressEventDetail>
+  onBgmProgress?: CommonEventFunction<LivePusherProps.onBgmProgressEventDetail>;
   /** 背景音播放完成时触发
-   * @supported weapp, qq
+   * @supported weapp
    */
-  onBgmComplete?: CommonEventFunction
+  onBgmComplete?: CommonEventFunction;
   /** 返回麦克风采集的音量大小
    * @supported weapp
    */
-  onAudioVolumeNotify?: CommonEventFunction
+  onAudioVolumeNotify?: CommonEventFunction;
   /** 网络状态通知，detail = {info}
-   * @supported weapp, qq
+   * @supported weapp
    */
-  onNetStatus?: CommonEventFunction
+  onNetStatus?: CommonEventFunction;
   /** 进入小窗
    * @supported weapp
    */
-  onEnterPictureInPicture?: string
+  onEnterPictureInPicture?: string;
   /** 退出小窗
    * @supported weapp
    */
-  onLeavePictureInPicture?: string
+  onLeavePictureInPicture?: string;
   /** 背景音开始播放时触发
-   * @supported weapp, qq
+   * @supported weapp
    */
-  onBgmStart?: CommonEventFunction
+  onBgmStart?: CommonEventFunction;
 }
 declare namespace LivePusherProps {
   /** orientation 的合法值 */
   interface Orientation {
     /** 竖直 */
-    vertical
+    vertical;
     /** 水平 */
-    horizontal
+    horizontal;
   }
   /** localMirror 的合法值 */
   interface LocalMirror {
     /** 前置摄像头镜像，后置摄像头不镜像 */
-    auto
+    auto;
     /** 前后置摄像头均镜像 */
-    enable
+    enable;
     /** 前后置摄像头均不镜像 */
-    disable
+    disable;
   }
   /** audioReverbType 的合法值 */
   interface AudioReverbType {
     /** 关闭 */
-    0
+    0;
     /** KTV */
-    1
+    1;
     /** 小房间 */
-    2
+    2;
     /** 大会堂 */
-    3
+    3;
     /** 低沉 */
-    4
+    4;
     /** 洪亮 */
-    5
+    5;
     /** 金属声 */
-    6
+    6;
     /** 磁性 */
-    7
+    7;
   }
   /** audioVolumeType 的合法值 */
   interface AudioVolumeType {
     /** 自动 */
-    auto
+    auto;
     /** 媒体音量 */
-    media
+    media;
     /** 通话音量 */
-    voicecall
+    voicecall;
   }
   /** beautyStyleType 的合法值 */
   interface BeautyStyleType {
     /** 光滑美颜 */
-    smooth
+    smooth;
     /** 自然美颜 */
-    nature
+    nature;
   }
   /** filterType 的合法值 */
   interface FilterType {
     /** 标准 */
-    standard
+    standard;
     /** 粉嫩 */
-    pink
+    pink;
     /** 怀旧 */
-    nostalgia
+    nostalgia;
     /** 蓝调 */
-    blues
+    blues;
     /** 浪漫 */
-    romantic
+    romantic;
     /** 清凉 */
-    cool
+    cool;
     /** 清新 */
-    fresher
+    fresher;
     /** 日系 */
-    solor
+    solor;
     /** 唯美 */
-    aestheticism
+    aestheticism;
     /** 美白 */
-    whitening
+    whitening;
     /** 樱红 */
-    cerisered
+    cerisered;
   }
   interface onStateChangeEventDetail {
     /** 状态码 */
-    code: number
+    code: number;
   }
   interface onNetstatusEventDetail {
     /** 网络状态 */
-    info: NetStatus
+    info: NetStatus;
   }
   interface onErrorEventDetail {
     /** 错误信息 */
-    errMsg: string
+    errMsg: string;
     /** 错误码 */
-    errCode: string | number
+    errCode: string | number;
   }
   interface onBgmProgressEventDetail {
     /** 进展 */
-    progress
+    progress;
     /** 持续时间 */
-    duration: number
+    duration: number;
   }
 }
 /** 实时音视频录制。需要用户授权 scope.camera、scope.record
  * 需要先通过类目审核，再在小程序管理后台，「开发」-「接口设置」中自助开通该组件权限。
  * @classification media
- * @supported weapp, qq
+ * @supported weapp
  * @example_react
  * ```tsx
  * class App extends Components {
@@ -356,5 +356,5 @@ declare namespace LivePusherProps {
  * ```
  * @see https://developers.weixin.qq.com/miniprogram/dev/component/live-pusher.html
  */
-declare const LivePusher: ComponentType<LivePusherProps>
-export { LivePusher, LivePusherProps }
+declare const LivePusher: ComponentType<LivePusherProps>;
+export { LivePusher, LivePusherProps };

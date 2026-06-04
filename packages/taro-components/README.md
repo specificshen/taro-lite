@@ -2,8 +2,6 @@
 
 Taro 组件库。
 
-在小程序端，React/Nerv 指向 `mini/index.js`，Vue 无需使用此包。
+当前包只面向 React 开发的微信小程序构建，运行时源码入口为 `src/index.ts`，发布入口为 `dist/index.js`，类型入口为 `types/index.d.ts`。
 
-在 H5 端，React/Nerv 指向 `h5/react/index.js`，Vue 指向 `h5/vue/index.js`。H5 端使用 [stencil](https://stenciljs.com/) 把组件编译为 Web Components 以提供跨框架调用。
-
-> NOTE: `@stencil/react-output-target`、`@stencil/vue-output-target` 在 @tarojs/components-library-* 中存在一些特殊处理，验证过无问题可以自行升级。
+H5、React Native、Vue、Solid 以及非微信小程序平台不再作为本包支持范围。

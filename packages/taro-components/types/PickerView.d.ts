@@ -1,66 +1,58 @@
-import { ComponentType } from 'react'
-import { StandardProps, CommonEventFunction } from './common'
+import { ComponentType } from 'react';
+import { StandardProps, CommonEventFunction } from './common';
 interface PickerViewProps extends StandardProps {
   /** 数组中的数字依次表示 picker-view 内的 picker-view-column 选择的第几项（下标从 0 开始），数字大于 picker-view-column 可选项长度时，选择最后一项。
-   * @supported weapp, alipay, swan, tt, qq, jd, rn
+   * @supported weapp
    */
-  value?: number[]
+  value?: number[];
   /** 设置 React 非受控状态下的初始取值
-   * @supported weapp, alipay, swan, tt, qq, jd, rn
+   * @supported weapp
    * @unique
    */
-  defaultValue?: number[]
+  defaultValue?: number[];
   /** 设置选择器中间选中框的样式
-   * @supported weapp, alipay, swan, tt, qq, jd, rn
+   * @supported weapp
    */
-  indicatorStyle?: string
+  indicatorStyle?: string;
   /** 设置选择器中间选中框的类名
-   * @supported weapp, alipay, swan, tt, qq, jd
+   * @supported weapp
    */
-  indicatorClass?: string
+  indicatorClass?: string;
   /** 设置蒙层的样式
-   * @supported weapp, alipay, swan, tt, qq, jd
+   * @supported weapp
    */
-  maskStyle?: string
+  maskStyle?: string;
   /** 设置蒙层的类名
-   * @supported weapp, alipay, swan, tt, qq, jd
+   * @supported weapp
    */
-  maskClass?: string
+  maskClass?: string;
   /** 是否在手指松开时立即触发 change 事件。若不开启则会在滚动动画结束后触发 change 事件。
-   * @supported weapp, alipay, tt
+   * @supported weapp
    * @default false
    */
-  immediateChange?: boolean
-  /** 选择器标题，建议标题控制在 12 个中文汉字长度内，避免出现截断现象, 截断部分将以 ... 形式展示
-   * @supported swan
-   */
-  title?: string
-  /** 无障碍访问，（属性）元素的额外描述
-   * @supported qq
-   */
-  ariaLabel?: string
+  immediateChange?: boolean;
   /** 当滚动选择，value 改变时触发 change 事件，event.detail = {value: value}；value为数组，表示 picker-view 内的 picker-view-column 当前选择的是第几项（下标从 0 开始）
-   * @supported weapp, alipay, swan, tt, qq, jd, rn
+   * @supported weapp
    */
-  onChange?: CommonEventFunction<PickerViewProps.onChangeEventDetail>
+  onChange?: CommonEventFunction<PickerViewProps.onChangeEventDetail>;
   /** 当滚动选择开始时候触发事件
-   * @supported weapp, alipay, tt, qq
+   * @supported weapp
    */
-  onPickStart?: CommonEventFunction
+  onPickStart?: CommonEventFunction;
   /** 当滚动选择结束时候触发事件
-   * @supported weapp, alipay, tt, qq
+   * @supported weapp
    */
-  onPickEnd?: CommonEventFunction
+  onPickEnd?: CommonEventFunction;
 }
 declare namespace PickerViewProps {
   interface onChangeEventDetail {
-    value: number[]
+    value: number[];
   }
 }
 /** 嵌入页面的滚动选择器
  * 其中只可放置 picker-view-column 组件，其它节点不会显示
  * @classification forms
- * @supported weapp, alipay, swan, tt, qq, jd, h5, rn, harmony_hybrid
+ * @supported weapp
  * @example_react
  * ```tsx
  * export default class Picks extends Component {
@@ -194,5 +186,5 @@ declare namespace PickerViewProps {
  * ```
  * @see https://developers.weixin.qq.com/miniprogram/dev/component/picker-view.html
  */
-declare const PickerView: ComponentType<PickerViewProps>
-export { PickerView, PickerViewProps }
+declare const PickerView: ComponentType<PickerViewProps>;
+export { PickerView, PickerViewProps };

@@ -1,20 +1,20 @@
-import { ComponentType } from 'react'
-import { StandardProps, CommonEventFunction, FormItemProps } from './common'
+import { ComponentType } from 'react';
+import { StandardProps, CommonEventFunction, FormItemProps } from './common';
 interface CheckboxGroupProps extends StandardProps, FormItemProps {
   /** 表单组件中加上 name 来作为 key
-   * @supported alipay, tt, h5, harmony_hybrid
+   * @supported weapp
    */
-  name?: string
+
   /** `<CheckboxGroup/>` 中选中项发生改变是触发 change 事件
-   * @supported weapp, alipay, swan, tt, qq, jd, h5, rn, harmony_hybrid
+   * @supported weapp
    */
   onChange?: CommonEventFunction<{
-    value: string[]
-  }>
+    value: string[];
+  }>;
 }
 /** 多项选择器，内部由多个checkbox组成
  * @classification forms
- * @supported weapp, alipay, swan, tt, qq, jd, h5, rn, harmony, harmony_hybrid
+ * @supported weapp
  * @example
  * ```tsx
  * export default class PageCheckbox extends Component {
@@ -77,5 +77,5 @@ interface CheckboxGroupProps extends StandardProps, FormItemProps {
  * ```
  * @see https://developers.weixin.qq.com/miniprogram/dev/component/checkbox-group.html
  */
-declare const CheckboxGroup: ComponentType<CheckboxGroupProps>
-export { CheckboxGroup, CheckboxGroupProps }
+declare const CheckboxGroup: ComponentType<CheckboxGroupProps>;
+export { CheckboxGroup, CheckboxGroupProps };

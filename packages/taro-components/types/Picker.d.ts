@@ -1,311 +1,272 @@
-import { ComponentType } from 'react'
-import { StyleProp, TextStyle, ViewStyle } from 'react-native'
-import { StandardProps, CommonEventFunction, FormItemProps } from './common'
+import { ComponentType } from 'react';
+import { StandardProps, CommonEventFunction, FormItemProps } from './common';
 /** 选择器通用参数 */
 interface PickerStandardProps extends StandardProps, FormItemProps {
   /**
    * 选择器的标题，微信小程序中仅安卓可用
    * @supported weapp
    */
-  headerText?: string
+  headerText?: string;
   /**
    * 选择器类型，默认是普通选择器
    * @default "selector"
-   * @supported weapp, h5, rn, harmony, harmony_hybrid
+   * @supported weapp
    */
-  mode?: keyof PickerStandardProps.Mode
+  mode?: keyof PickerStandardProps.Mode;
   /**
    * 是否禁用
    * @default false
-   * @supported weapp, h5, rn, harmony_hybrid
+   * @supported weapp
    */
-  disabled?: boolean
+  disabled?: boolean;
   /**
    * 取消选择或点遮罩层收起 picker 时触发
-   * @supported weapp, h5, rn, harmony, harmony_hybrid
+   * @supported weapp
    */
-  onCancel?: CommonEventFunction
-  /**
-   * 用于替换组件内部文本
-   * @supported h5, harmony, harmony_hybrid
-   */
-  textProps?: PickerStandardProps.PickerText
+  onCancel?: CommonEventFunction;
 }
 declare namespace PickerStandardProps {
   /** 选择器类型 */
   interface Mode {
     /** 普通选择器 */
-    selector
+    selector;
     /** 多列选择器 */
-    multiSelector
+    multiSelector;
     /** 时间选择器 */
-    time
+    time;
     /** 日期选择器 */
-    date
+    date;
     /** 省市区选择器 */
-    region
-  }
-  interface PickerText {
-    okText?: string
-    cancelText?: string
+    region;
   }
 }
 /** 普通选择器：mode = selector */
 interface PickerSelectorProps extends PickerStandardProps {
   /** 选择器类型 */
-  mode?: 'selector'
+  mode?: 'selector';
   /**
    * mode为 selector 或 multiSelector 时，range 有效
-   * @supported weapp, h5, rn, harmony, harmony_hybrid
+   * @supported weapp
    * @default []
    */
-  range: string[] | number[] | Record<string, any>[]
+  range: string[] | number[] | Record<string, any>[];
   /**
    * 当 range 是一个 Object Array 时，通过 rangeKey 来指定 Object 中 key 的值作为选择器显示内容
-   * @supported weapp, h5, rn, harmony, harmony_hybrid
+   * @supported weapp
    */
-  rangeKey?: string
+  rangeKey?: string;
   /**
    * 表示选择了 range 中的第几个（下标从 0 开始）
-   * @supported weapp, h5, rn, harmony, harmony_hybrid
+   * @supported weapp
    * @default 0
    */
-  value?: number
+  value?: number;
   /** 设置 React 非受控状态下的初始取值
-   * @supported weapp, h5, rn, harmony_hybrid
+   * @supported weapp
    */
-  defaultValue?: number
-  /**
-   * mode为 selector 或 multiSelector 时 itemStyle 有效
-   * @supported rn
-   * @default {}
-   */
-  itemStyle?: StyleProp<TextStyle>
-  /**
-   * mode为 selector 或 multiSelector 时 indicatorStyle 有效
-   * @supported rn
-   * @default {}
-   */
-  indicatorStyle?: StyleProp<ViewStyle>
+  defaultValue?: number;
   /**
    * value 改变时触发 change 事件
-   * @supported weapp, h5, rn, harmony, harmony_hybrid
+   * @supported weapp
    */
-  onChange?: CommonEventFunction<PickerSelectorProps.ChangeEventDetail>
+  onChange?: CommonEventFunction<PickerSelectorProps.ChangeEventDetail>;
 }
 declare namespace PickerSelectorProps {
   interface ChangeEventDetail {
     /** 表示变更值的下标 */
-    value: string | number
+    value: string | number;
   }
 }
 /** 多列选择器：mode = multiSelector */
 interface PickerMultiSelectorProps extends PickerStandardProps {
   /** 选择器类型 */
-  mode: 'multiSelector'
+  mode: 'multiSelector';
   /**
    * mode为 selector 或 multiSelector 时，range 有效
-   * @supported weapp, h5, rn, harmony, harmony_hybrid
+   * @supported weapp
    * @default []
    */
-  range: Array<string[]> | Array<number[]> | Array<Record<string, any>[]>
+  range: Array<string[]> | Array<number[]> | Array<Record<string, any>[]>;
   /**
    * 当 range 是一个 Object Array 时，通过 rangeKey 来指定 Object 中 key 的值作为选择器显示内容
-   * @supported weapp, h5, rn, harmony, harmony_hybrid
+   * @supported weapp
    */
-  rangeKey?: string
+  rangeKey?: string;
   /**
    * 表示选择了 range 中的第几个（下标从 0 开始）
-   * @supported weapp, h5, rn, harmony, harmony_hybrid
+   * @supported weapp
    * @default []
    */
-  value: number[] | string[] | Record<string, any>[]
-  /**
-   * mode为 selector 或 multiSelector 时 itemStyle 有效
-   * @supported rn
-   * @default {}
-   */
-  itemStyle?: StyleProp<TextStyle>
-  /**
-   * mode为 selector 或 multiSelector 时 indicatorStyle 有效
-   * @supported rn
-   * @default {}
-   */
-  indicatorStyle?: StyleProp<ViewStyle>
+  value: number[] | string[] | Record<string, any>[];
   /**
    * 当 value 改变时触发 change 事件
-   * @supported weapp, h5, rn, harmony, harmony_hybrid
+   * @supported weapp
    */
-  onChange: CommonEventFunction<PickerMultiSelectorProps.ChangeEventDetail>
+  onChange: CommonEventFunction<PickerMultiSelectorProps.ChangeEventDetail>;
   /**
    * 列改变时触发
-   * @supported weapp, h5, rn, harmony, harmony_hybrid
+   * @supported weapp
    */
-  onColumnChange?: CommonEventFunction<PickerMultiSelectorProps.ColumnChangeEventDetail>
+  onColumnChange?: CommonEventFunction<PickerMultiSelectorProps.ColumnChangeEventDetail>;
 }
 declare namespace PickerMultiSelectorProps {
   interface ChangeEventDetail {
     /** 表示变更值的下标 */
-    value: number[]
+    value: number[];
   }
   interface ColumnChangeEventDetail {
     /** 表示改变了第几列（下标从0开始） */
-    column: number
+    column: number;
     /** 表示变更值的下标 */
-    value: number
+    value: number;
   }
 }
 /** 时间选择器：mode = time */
 interface PickerTimeProps extends PickerStandardProps {
   /** 选择器类型 */
-  mode: 'time'
+  mode: 'time';
   /**
    * value 的值表示选择了 range 中的第几个（下标从 0 开始）
-   * @supported weapp, h5, rn, harmony, harmony_hybrid
+   * @supported weapp
    */
-  value?: string
+  value?: string;
   /** 设置 React 非受控状态下的初始取值
-   * @supported weapp, h5, rn
+   * @supported weapp
    */
-  defaultValue?: string
+  defaultValue?: string;
   /**
    * 仅当 mode 为 "time" 或 "date" 时有效，表示有效时间范围的开始，字符串格式为"hh:mm"
-   * @supported weapp, h5, rn, harmony, harmony_hybrid
+   * @supported weapp
    */
-  start?: string
+  start?: string;
   /**
    * 仅当 mode 为 "time" 或 "date" 时有效，表示有效时间范围的结束，字符串格式为"hh:mm"
-   * @supported weapp, h5, rn, harmony, harmony_hybrid
+   * @supported weapp
    */
-  end?: string
+  end?: string;
   /**
    * value 改变时触发 change 事件
-   * @supported weapp, h5, rn, harmony, harmony_hybrid
+   * @supported weapp
    */
-  onChange: CommonEventFunction<PickerTimeProps.ChangeEventDetail>
+  onChange: CommonEventFunction<PickerTimeProps.ChangeEventDetail>;
 }
 declare namespace PickerTimeProps {
   interface ChangeEventDetail {
     /** 表示选中的时间 */
-    value: string
+    value: string;
   }
 }
 /** 日期选择器：mode = date */
 interface PickerDateProps extends PickerStandardProps {
   /** 选择器类型 */
-  mode: 'date'
+  mode: 'date';
   /**
    * 表示选中的日期，格式为"YYYY-MM-DD"
-   * @supported weapp, h5, rn, harmony, harmony_hybrid
+   * @supported weapp
    * @default 0
    */
-  value: string
+  value: string;
   /** 设置 React 非受控状态下的初始取值
-   * @supported weapp, h5, rn
+   * @supported weapp
    */
-  defaultValue?: string
+  defaultValue?: string;
   /**
    * 仅当 mode 为 "time" 或 "date" 时有效，表示有效时间范围的开始，字符串格式为"YYYY-MM-DD"
-   * @supported weapp, h5, rn, harmony, harmony_hybrid
+   * @supported weapp
    */
-  start?: string
+  start?: string;
   /**
    * 仅当 mode 为 "time" 或 "date" 时有效，表示有效时间范围的结束，字符串格式为"YYYY-MM-DD"
-   * @supported weapp, h5, rn, harmony, harmony_hybrid
+   * @supported weapp
    */
-  end?: string
+  end?: string;
   /**
    * 有效值 year, month, day，表示选择器的粒度
-   * @supported weapp, h5, rn, harmony_hybrid
+   * @supported weapp
    * @default "day"
    */
-  fields?: keyof PickerDateProps.Fields
+  fields?: keyof PickerDateProps.Fields;
   /**
    * value 改变时触发 change 事件
-   * @supported weapp, h5, rn, harmony, harmony_hybrid
+   * @supported weapp
    */
-  onChange: CommonEventFunction<PickerDateProps.ChangeEventDetail>
+  onChange: CommonEventFunction<PickerDateProps.ChangeEventDetail>;
 }
 declare namespace PickerDateProps {
   interface Fields {
     /** 选择器粒度为年 */
-    year
+    year;
     /** 选择器粒度为月份 */
-    month
+    month;
     /** 选择器粒度为天 */
-    day
+    day;
   }
   interface ChangeEventDetail {
     /** 表示选中的日期 */
-    value: string
+    value: string;
   }
 }
 /** 省市区选择器：mode = region */
 interface PickerRegionProps extends PickerStandardProps {
   /** 选择器类型 */
-  mode: 'region'
+  mode: 'region';
   /**
    * 表示选中的省市区，默认选中每一列的第一个值
-   * @supported weapp, h5, rn, harmony_hybrid
+   * @supported weapp
    * @default []
    */
-  value?: string[]
+  value?: string[];
   /** 设置 React 非受控状态下的初始取值
-   * @supported weapp, h5, rn
+   * @supported weapp
    */
-  defaultValue?: string[]
+  defaultValue?: string[];
   /**
    * 可为每一列的顶部添加一个自定义的项
-   * @supported weapp, h5, rn, harmony_hybrid
+   * @supported weapp
    */
-  customItem?: string
+  customItem?: string;
   /**
    * 选择器层级
    * @supported weapp
    * @default "region"
    */
-  level?: keyof PickerRegionProps.Level
-  /**
-   * 自定义省市区数据
-   * @supported rn
-   */
-  regionData?: PickerRegionProps.RegionData[]
+  level?: keyof PickerRegionProps.Level;
   /**
    * value 改变时触发 change 事件
-   * @supported weapp, h5, rn, harmony_hybrid
+   * @supported weapp
    */
-  onChange: CommonEventFunction<PickerRegionProps.ChangeEventDetail>
+  onChange: CommonEventFunction<PickerRegionProps.ChangeEventDetail>;
 }
 declare namespace PickerRegionProps {
   interface ChangeEventDetail {
     /** 表示选中的省市区 */
-    value: string[]
+    value: string[];
     /** 统计用区划代码 */
-    code: string[]
+    code: string[];
     /** 邮政编码 */
-    postcode?: string
+    postcode?: string;
   }
   interface RegionData {
-    value: string
-    code: string
-    postcode?: string
-    children?: RegionData[]
+    value: string;
+    code: string;
+    postcode?: string;
+    children?: RegionData[];
   }
   interface Level {
     /** 省级选择器 */
-    province
+    province;
     /** 市级选择器 */
-    city
+    city;
     /** 区级选择器 */
-    region
+    region;
     /** 街道选择器 */
-    'sub-district'
+    'sub-district';
   }
 }
 /**
  * 从底部弹起的滚动选择器
  * @classification forms
- * @supported weapp, swan, alipay, tt, h5, rn, harmony, harmony_hybrid
+ * @supported weapp
  * @example_react
  * ```tsx
  * export default class PagePicker extends Component {
@@ -438,15 +399,5 @@ declare namespace PickerRegionProps {
  * ```
  * @see https://developers.weixin.qq.com/miniprogram/dev/component/picker.html
  */
-declare const Picker: ComponentType<
-  PickerMultiSelectorProps | PickerTimeProps | PickerDateProps | PickerRegionProps | PickerSelectorProps
->
-export {
-  Picker,
-  PickerStandardProps,
-  PickerSelectorProps,
-  PickerMultiSelectorProps,
-  PickerTimeProps,
-  PickerDateProps,
-  PickerRegionProps,
-}
+declare const Picker: ComponentType<PickerMultiSelectorProps | PickerTimeProps | PickerDateProps | PickerRegionProps | PickerSelectorProps>;
+export { Picker, PickerStandardProps, PickerSelectorProps, PickerMultiSelectorProps, PickerTimeProps, PickerDateProps, PickerRegionProps };

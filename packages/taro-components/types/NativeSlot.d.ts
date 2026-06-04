@@ -5,14 +5,14 @@ import type { ComponentType, ReactNode } from 'react'
 interface NativeSlotProps extends StandardProps {
   /** 指定插入的 slot 位置
    * @default none
-   * @supported weapp, swan, alipay, tt, jd, qq
+   * @supported weapp
    */
   name?: string
 }
 
 /** 编译的原生组件支持使用 slot 插槽
  * @classification viewContainer
- * @supported weapp, swan, alipay, tt, jd, qq, h5, harmony_hybrid
+ * @supported weapp
  * @version 3.5.7+
  * @example
  * ```tsx
