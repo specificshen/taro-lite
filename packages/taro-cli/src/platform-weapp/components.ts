@@ -1,11 +1,14 @@
-// @ts-nocheck
+type ComponentAttributeMap = Record<string, string>;
+
+type ComponentMap = Record<string, ComponentAttributeMap>;
+
 const _true = 'true';
 const _false = 'false';
 const _empty = '';
 const _zero = '0';
 const _object = '{}';
 
-export const components = {
+export const components: ComponentMap = {
   // ======== 调整属性 ========
   Progress: {
     'border-radius': _zero,
