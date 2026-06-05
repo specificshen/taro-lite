@@ -2,13 +2,116 @@ import * as path from 'node:path';
 
 import { dotenvParse, patchEnv } from '@spcsn/taro-helper';
 import { Config, Kernel } from '@spcsn/taro-service';
-import minimist from 'minimist';
 
 import customCommand from './commands/custom-command';
 import { getPkgVersion } from './util';
 
 const DEFAULT_FRAMEWORK = 'react';
 const SUPPORTED_COMMANDS = new Set(['build', 'init']);
+
+interface CliArgs {
+  _: string[];
+  [key: string]: boolean | number | string | string[] | undefined;
+}
+
+const ARG_ALIASES: Record<string, string[]> = {
+  envPrefix: ['env-prefix'],
+  help: ['h'],
+  port: ['p'],
+  version: ['v'],
+};
+
+const BOOLEAN_ARGS = new Set(['disable-global-config', 'h', 'help', 'v', 'version']);
+
+function parseArgValue(value: string): number | string {
+  if (value.trim() !== '' && /^-?\d+(\.\d+)?$/.test(value)) {
+    return Number(value);
+  }
+
+  return value;
+}
+
+function setArgValue(args: CliArgs, key: string, value: boolean | number | string) {
+  args[key] = value;
+
+  for (const [canonicalKey, aliases] of Object.entries(ARG_ALIASES)) {
+    if (key === canonicalKey || aliases.includes(key)) {
+      args[canonicalKey] = value;
+      aliases.forEach((alias) => {
+        args[alias] = value;
+      });
+      return;
+    }
+  }
+}
+
+function getStringArg(args: CliArgs, key: string): string | undefined {
+  const value = args[key];
+  return typeof value === 'string' ? value : undefined;
+}
+
+function getNumberArg(args: CliArgs, key: string): number | undefined {
+  const value = args[key];
+  return typeof value === 'number' ? value : undefined;
+}
+
+function parseCliArgs(argv: string[]): CliArgs {
+  const args: CliArgs = {
+    _: [],
+    build: true,
+    check: true,
+    h: false,
+    help: false,
+    'inject-global-style': true,
+    v: false,
+    version: false,
+  };
+
+  for (let index = 0; index < argv.length; index++) {
+    const item = argv[index];
+    if (!item.startsWith('-') || item === '-') {
+      args._.push(item);
+      continue;
+    }
+
+    if (item === '--') {
+      args._.push(...argv.slice(index + 1));
+      break;
+    }
+
+    const normalizedItem = item.replace(/^--?/, '');
+    const equalIndex = normalizedItem.indexOf('=');
+    const rawKey = equalIndex >= 0 ? normalizedItem.slice(0, equalIndex) : normalizedItem;
+    const inlineValue = equalIndex >= 0 ? normalizedItem.slice(equalIndex + 1) : undefined;
+    const isNegativeBoolean = rawKey.startsWith('no-');
+    const key = isNegativeBoolean ? rawKey.slice(3) : rawKey;
+
+    if (isNegativeBoolean) {
+      setArgValue(args, key, false);
+      continue;
+    }
+
+    if (inlineValue !== undefined) {
+      setArgValue(args, key, parseArgValue(inlineValue));
+      continue;
+    }
+
+    if (BOOLEAN_ARGS.has(key)) {
+      setArgValue(args, key, true);
+      continue;
+    }
+
+    const nextItem = argv[index + 1];
+    if (nextItem && !nextItem.startsWith('-')) {
+      setArgValue(args, key, parseArgValue(nextItem));
+      index++;
+    } else {
+      setArgValue(args, key, true);
+    }
+  }
+
+  return args;
+}
 
 export default class CLI {
   appPath: string;
@@ -25,20 +128,7 @@ export default class CLI {
   }
 
   async parseArgs() {
-    const args = minimist(process.argv.slice(2), {
-      alias: {
-        version: ['v'],
-        help: ['h'],
-        port: ['p'],
-        envPrefix: ['env-prefix'],
-      },
-      boolean: ['version', 'help', 'disable-global-config'],
-      default: {
-        build: true,
-        check: true,
-        'inject-global-style': true,
-      },
-    });
+    const args = parseCliArgs(process.argv.slice(2));
     const _ = args._;
     const command = _[0];
     if (command) {
@@ -53,20 +143,23 @@ export default class CLI {
       }
 
       // 设置环境变量
-      process.env.NODE_ENV ||= args.env;
+      const env = getStringArg(args, 'env');
+      const envPrefix = getStringArg(args, 'envPrefix');
+      process.env.NODE_ENV ||= env;
       if (process.env.NODE_ENV === 'undefined' && command === 'build') {
         process.env.NODE_ENV = args.watch ? 'development' : 'production';
       }
-      args.type ||= args.t;
+      args.type ||= getStringArg(args, 't');
       if (!args.type && command === 'build') {
         args.type = 'weapp';
       }
-      if (args.type) {
-        process.env.TARO_ENV = args.type;
+      const type = getStringArg(args, 'type');
+      if (type) {
+        process.env.TARO_ENV = type;
       }
-      const mode = args.mode || process.env.NODE_ENV;
+      const mode = getStringArg(args, 'mode') || process.env.NODE_ENV || 'production';
       // 这里解析 dotenv 以便于 config 解析时能获取 dotenv 配置信息
-      const expandEnv = dotenvParse(appPath, args.envPrefix, mode);
+      const expandEnv = dotenvParse(appPath, envPrefix, mode);
 
       const disableGlobalConfig = !!args['disable-global-config'];
 
@@ -99,7 +192,7 @@ export default class CLI {
 
       switch (command) {
         case 'build': {
-          let platform = args.type;
+          let platform = getStringArg(args, 'type');
 
           // 针对不同的内置平台注册对应的端平台插件
           switch (platform) {
@@ -135,9 +228,9 @@ export default class CLI {
             withoutBuild: !args.build,
             noInjectGlobalStyle: !args['inject-global-style'],
             noCheck: !args.check,
-            port: args.port,
-            env: args.env,
-            deviceType: args.platform,
+            port: getNumberArg(args, 'port'),
+            env,
+            deviceType: getStringArg(args, 'platform'),
             qr: !!args.qr,
             blended: Boolean(args.blended),
             h: args.h,
@@ -148,16 +241,16 @@ export default class CLI {
           await customCommand(command, kernel, {
             _,
             appPath,
-            projectName: _[1] || args.name,
-            description: args.description,
+            projectName: _[1] || getStringArg(args, 'name'),
+            description: getStringArg(args, 'description'),
             typescript: args.typescript,
-            framework: args.framework,
-            compiler: args.compiler,
-            npm: args.npm,
-            templateSource: args['template-source'],
+            framework: getStringArg(args, 'framework'),
+            compiler: getStringArg(args, 'compiler'),
+            npm: getStringArg(args, 'npm'),
+            templateSource: getStringArg(args, 'template-source'),
             clone: !!args.clone,
-            template: args.template,
-            css: args.css,
+            template: getStringArg(args, 'template'),
+            css: getStringArg(args, 'css'),
             autoInstall: args.autoInstall,
             h: args.h,
           });

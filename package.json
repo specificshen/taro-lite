@@ -113,7 +113,6 @@
     "jest-environment-node": "^29.7.0",
     "jest-light-runner": "^0.6.0",
     "jsdom": "^24.0.0",
-    "minimist": "^1.2.8",
     "npm-run-all": "^4.1.2",
     "postcss": "^8.5.6",
     "postcss-less": "^6.0.0",
