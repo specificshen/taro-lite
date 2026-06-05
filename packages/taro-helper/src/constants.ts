@@ -1,5 +1,7 @@
 import * as os from 'node:os';
 
+import type { ChalkInstance } from 'chalk';
+
 import { chalk } from './terminal';
 
 type GlobalWithPlatforms = typeof global & {
@@ -28,7 +30,7 @@ export const enum processTypeEnum {
 export interface IProcessTypeMap {
   [key: string]: {
     name: string;
-    color: string | chalk.Chalk;
+    color: string | ChalkInstance;
   };
 }
 
