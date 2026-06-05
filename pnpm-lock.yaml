@@ -304,9 +304,6 @@ importers:
       ora:
         specifier: ^5.4.1
         version: 5.4.1
-      semver:
-        specifier: ^7.6.0
-        version: 7.8.0
     devDependencies:
       '@spcsn/taro':
         specifier: workspace:*

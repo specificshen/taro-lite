@@ -58,8 +58,7 @@
     "download-git-repo": "^3.0.2",
     "inquirer": "^8.2.6",
     "minimist": "^1.2.8",
-    "ora": "^5.4.1",
-    "semver": "^7.6.0"
+    "ora": "^5.4.1"
   },
   "devDependencies": {
     "@spcsn/taro": "workspace:*"

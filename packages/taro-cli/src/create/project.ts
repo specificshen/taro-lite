@@ -15,7 +15,6 @@ import { isArray } from '@spcsn/taro-shared';
 import axios from 'axios';
 import * as inquirer from 'inquirer';
 import ora from 'ora';
-import * as semver from 'semver';
 
 import { clearConsole, getPkgVersion, getRootPath } from '../util';
 import { TEMPLATE_CREATOR } from './constants';
@@ -66,8 +65,8 @@ export default class Project extends Creator {
 
   constructor(options: IProjectConfOptions) {
     super(options.sourceRoot);
-    const unSupportedVer = semver.lt(process.version, 'v18.0.0');
-    if (unSupportedVer) {
+    const nodeMajorVersion = Number(process.versions.node.split('.')[0]);
+    if (nodeMajorVersion < 18) {
       throw new Error('Node.js 版本过低，推荐升级 Node.js 至 v18.0.0+');
     }
     this.rootPath = this._rootPath;
