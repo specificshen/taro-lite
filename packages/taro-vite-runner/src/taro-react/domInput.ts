@@ -10,7 +10,7 @@ function updateInputWrapper(element: TaroElement, oldValue: RestoreType, props: 
   const checked = props.checked;
 
   if (checked != null) {
-    console.warn('updateCheck 未实现', node);
+    console.warn('updateCheck is not supported for mini controlled inputs', node);
     return;
   }
 
@@ -18,12 +18,12 @@ function updateInputWrapper(element: TaroElement, oldValue: RestoreType, props: 
   updateNamedCousins(element, props);
 }
 
-// react 中原本处理 type=radio 的逻辑，这里留个空，暂时不处理
+// react 中原本处理 type=radio 的逻辑；mini 运行时保留 no-op 兼容分支。
 function updateNamedCousins(rootNode, props) {
   const name = props.name;
 
   if (props.type === 'radio' && name != null) {
-    console.warn('radio updateNamedCousins 未实现', rootNode, props);
+    console.warn('radio updateNamedCousins is not supported for mini controlled inputs', rootNode, props);
   }
 }
 
@@ -48,14 +48,26 @@ export function updateWrapper(element: TaroElement, oldValue: RestoreType, props
 // oldValue 为 event.detail.value，value 为 fiber.props.value
 // 如果 oldValue 和 value 不相等，代表受控组件需要更新
 // 更新的原则为，fiber.props.value 永远为用户所需要的值，因此 node.value = toString(value)
+function hasDifferentNumericValue(oldValue: RestoreType, value: unknown): boolean {
+  if (oldValue === value) {
+    return false;
+  }
+
+  const previousNumericValue = Number(oldValue);
+  const nextNumericValue = Number(value);
+  if (!Number.isNaN(previousNumericValue) && !Number.isNaN(nextNumericValue)) {
+    return previousNumericValue !== nextNumericValue;
+  }
+
+  return String(oldValue) !== String(value);
+}
+
 export function setNodeValue(node: FormElement, oldValue: RestoreType, value, type = 'string') {
   if (value != null) {
     if (type === 'number') {
       if (
         (value === 0 && node.value === '') ||
-        // We explicitly want to coerce to number here if possible.
-        // eslint-disable-next-line
-        oldValue != value
+        hasDifferentNumericValue(oldValue, value)
       ) {
         node.value = toString(value);
       }
