@@ -385,6 +385,11 @@ function checkBusinessVisibleTypeContract() {
   const configIndexPath = path.join(rootDir, 'packages/taro/types/compile/config/index.d.ts');
   const configIndexSource = fs.readFileSync(configIndexPath, 'utf8');
   const exposesUnsupportedConfig = unsupportedConfigExports.some((pattern) => pattern.test(configIndexSource));
+  const unsupportedConfigTypePaths = [
+    'packages/taro/types/compile/config/h5.d.ts',
+    'packages/taro/types/compile/config/harmony.d.ts',
+    'packages/taro/types/compile/config/rn.d.ts',
+  ];
   const supportedConfigTypePaths = [
     'packages/taro/types/compile/compiler.d.ts',
     'packages/taro/types/compile/config/mini.d.ts',
@@ -401,6 +406,13 @@ function checkBusinessVisibleTypeContract() {
     errors.push(
       `${relative(configIndexPath)}: business-visible config types must only export WeApp/Vite supported config.`,
     );
+  }
+
+  for (const typePath of unsupportedConfigTypePaths) {
+    if (!fs.existsSync(path.join(rootDir, typePath))) continue;
+
+    hasBusinessFixtureContractErrors = true;
+    errors.push(`${typePath}: unsupported H5/RN/Harmony config type files must not be published.`);
   }
 
   for (const typePath of supportedConfigTypePaths) {
