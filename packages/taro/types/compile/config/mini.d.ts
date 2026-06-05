@@ -1,4 +1,4 @@
-import type { Compiler, CompilerTypes, CompilerWebpackTypes } from '../compiler'
+import type { Compiler, CompilerTypes, CompilerViteTypes } from '../compiler'
 import type { OutputExt } from './project'
 import type { IOption, IPostcssOption, IUrlLoaderOption } from './util'
 
@@ -18,7 +18,7 @@ interface Runtime {
   enableMutationObserver?: boolean
 }
 
-export interface IMiniAppConfig<T extends CompilerTypes = CompilerWebpackTypes> {
+export interface IMiniAppConfig<T extends CompilerTypes = CompilerViteTypes> {
   /** 用于控制是否生成 js、css 对应的 sourceMap (默认值：watch 模式下为 true，否则为 false) */
   enableSourceMap?: boolean
 

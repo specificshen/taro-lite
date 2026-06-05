@@ -453,6 +453,27 @@ function checkBusinessVisibleTypeContract() {
         /targetUnit\?: 'rpx' \||baseFontSize|maxRootSize|minRootSize|platform\?: 'weapp' \||IPostcssOption<T extends 'h5'|'h5' \| 'harmony'|\b(SWAN|ALIPAY|TT|QQ|QUICKAPP) = /g,
       message: 'business-visible compile utility types must not expose H5/Harmony px/postcss config branches.',
     },
+    {
+      path: 'packages/taro/types/compile/compiler.d.ts',
+      pattern: /Compiler<T extends CompilerTypes = CompilerWebpackTypes>/g,
+      message: 'business-visible compiler type defaults must prefer Vite.',
+    },
+    {
+      path: 'packages/taro/types/compile/config/project.d.ts',
+      pattern:
+        /CompilerWebpackTypes|framework\?: 'react' \||framework\?: 'react' \| 'preact'|可选值：react、preact|可选值：webpack5/g,
+      message: 'business-visible project config types must only expose React + Vite defaults.',
+    },
+    {
+      path: 'packages/taro/types/compile/config/mini.d.ts',
+      pattern: /CompilerWebpackTypes/g,
+      message: 'business-visible mini config types must default to Vite.',
+    },
+    {
+      path: 'packages/taro-cli/src/util/defineConfig.ts',
+      pattern: /CompilerWebpackTypes/g,
+      message: 'defineConfig public helper must default to Vite.',
+    },
   ];
 
   if (exposesUnsupportedConfig) {

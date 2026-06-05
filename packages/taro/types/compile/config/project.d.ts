@@ -1,5 +1,5 @@
 import type { AppConfig } from '../../index'
-import type { Compiler, CompilerTypes, CompilerWebpackTypes } from '../compiler'
+import type { Compiler, CompilerTypes, CompilerViteTypes } from '../compiler'
 import type { IModifyChainData } from '../hooks'
 import type { IMiniAppConfig, IMiniFilesConfig } from './mini'
 import type { ICopyOptions, IOption, ISassOptions, TogglableOptions } from './util'
@@ -140,11 +140,11 @@ export interface IProjectBaseConfig {
   /** 模板循环次数 */
   baseLevel?: number
 
-  /** 使用的开发框架。可选值：react、preact、vue3 */
-  framework?: 'react' | 'preact' | 'solid' | 'vue3'
+  /** 使用的开发框架。可选值：react */
+  framework?: 'react'
   frameworkExts?: string[]
 
-  /** 使用的编译工具。可选值：webpack5 */
+  /** 使用的编译工具。可选值：vite */
   compiler?: Compiler
 
   /** Webpack5 持久化缓存配置。具体配置请参考 [WebpackConfig.cache](https://webpack.js.org/configuration/cache/#cache) */
@@ -207,7 +207,7 @@ export interface IProjectBaseConfig {
 }
 
 /** 暴露出来给 config/index 使用的配置类型，参考 https://github.com/NervJS/taro-doctor/blob/main/assets/config_schema.json */
-export interface IProjectConfig<T extends CompilerTypes = CompilerWebpackTypes> {
+export interface IProjectConfig<T extends CompilerTypes = CompilerViteTypes> {
   /** 项目名称 */
   projectName?: string
 
@@ -296,8 +296,8 @@ export interface IProjectConfig<T extends CompilerTypes = CompilerWebpackTypes> 
   /** 一个 preset 是一系列 Taro 插件的集合，配置语法同 plugins */
   presets?: PluginItem[]
 
-  /** 使用的开发框架。可选值：react、preact、solid、vue3、 none */
-  framework?: 'react' | 'preact' | 'solid' | 'vue3' | 'none'
+  /** 使用的开发框架。可选值：react */
+  framework?: 'react'
 
   /** Webpack5 持久化缓存配置。具体配置请参考 [WebpackConfig.cache](https://webpack.js.org/configuration/cache/#cache) */
   cache?: ICache
@@ -305,7 +305,7 @@ export interface IProjectConfig<T extends CompilerTypes = CompilerWebpackTypes> 
   /** 控制 Taro 编译日志的输出方式 */
   logger?: ILogger
 
-  /** 使用的编译工具。可选值：webpack5、vite */
+  /** 使用的编译工具。可选值：vite */
   compiler?: Compiler<T>
 
   /** 专属于小程序的配置 */

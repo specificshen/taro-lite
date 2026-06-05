@@ -28,4 +28,4 @@ interface ICompiler<T> {
   errorLevel?: number
 }
 
-export type Compiler<T extends CompilerTypes = CompilerWebpackTypes> = T | ICompiler<T>
+export type Compiler<T extends CompilerTypes = CompilerViteTypes> = T | ICompiler<T>

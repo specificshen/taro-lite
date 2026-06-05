@@ -37,7 +37,6 @@ export default (ctx: IPluginContext) => {
         ...config[configName],
       };
       delete config.mini;
-      delete config.h5;
 
       const isProduction = process.env.NODE_ENV === 'production';
       const outputPath = options.output || options.o;
