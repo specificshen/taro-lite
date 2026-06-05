@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-
 export const GeneratorErrorType = {
   modifyConfig: 'modifyConfig',
   emitFile: 'emitFile',
@@ -40,14 +38,14 @@ export async function safely<T>(
     if (isGeneratorError(error)) {
       switch (error.type) {
         case GeneratorErrorType.modifyConfig: {
-          console.log('❌ 更新配置文件失败');
-          console.log(`请添加如下代码至 ${error.targetFile ?? 'config/index.{ts,js}'} 中\n`);
+          globalThis.console.log('❌ 更新配置文件失败');
+          globalThis.console.log(`请添加如下代码至 ${error.targetFile ?? 'config/index.{ts,js}'} 中\n`);
           break;
         }
         case GeneratorErrorType.emitFile: {
-          console.log('❌ 生成文件失败');
+          globalThis.console.log('❌ 生成文件失败');
           if (error.targetFile) {
-            console.log(`请手动添加文件 ${error.targetFile}，并添加如下代码至 ${error.targetFile} 中\n`);
+            globalThis.console.log(`请手动添加文件 ${error.targetFile}，并添加如下代码至 ${error.targetFile} 中\n`);
           }
           break;
         }
@@ -55,9 +53,9 @@ export async function safely<T>(
           break;
         }
       }
-      console.log(error.message);
+      globalThis.console.log(error.message);
     } else {
-      console.log(error);
+      globalThis.console.log(error);
     }
     return options?.fallback;
   }

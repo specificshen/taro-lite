@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-
 import { updatePkgJson } from '../../utils';
 
 import type { IPluginContext } from '@spcsn/taro-service';

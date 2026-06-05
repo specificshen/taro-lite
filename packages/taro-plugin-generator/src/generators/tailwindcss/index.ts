@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-
 import * as inquirer from 'inquirer';
 
 import { getCompilerType } from '../../utils';
@@ -27,5 +25,5 @@ export async function tailwindcssGenerator(ctx: IPluginContext) {
   await updateConfig({ ctx, compilerType });
   await emit(ctx);
   await updateDeps({ ctx, tailwindcssVersion });
-  console.log('✅ 启用「Tailwind CSS」成功');
+  globalThis.console.log('✅ 启用「Tailwind CSS」成功');
 }

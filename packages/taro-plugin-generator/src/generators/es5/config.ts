@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import generate from '@babel/generator';
 import * as parser from '@babel/parser';
 import traverse from '@babel/traverse';
@@ -81,7 +80,7 @@ export async function updateConfig(options: { ctx: IPluginContext; compilerType:
   }
   const { code } = generate(ast);
   await fs.outputFile(ctx.paths.configPath, code, { encoding: 'utf-8' });
-  console.log('✅ 更新配置文件成功\n');
+  globalThis.console.log('✅ 更新配置文件成功\n');
 }
 
 function modifyViteCompileConfig(config: t.ObjectExpression) {

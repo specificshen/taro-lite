@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { spawn } from 'node:child_process';
 import * as path from 'node:path';
 
@@ -98,8 +97,8 @@ export async function updatePkgJson(ctx: IPluginContext, patch: PackageJson) {
 
   try {
     await installDeps(ctx);
-    console.log(ctx.helper.chalk.green('\n✅ 安装依赖完成'));
+    globalThis.console.log(ctx.helper.chalk.green('\n✅ 安装依赖完成'));
   } catch {
-    console.log(ctx.helper.chalk.red('\n❌ 安装依赖失败，请手动安装'));
+    globalThis.console.log(ctx.helper.chalk.red('\n❌ 安装依赖失败，请手动安装'));
   }
 }

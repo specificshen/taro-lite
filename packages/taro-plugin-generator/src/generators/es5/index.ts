@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { getCompilerType, readPkgJson } from '../../utils';
 import { updateBabelConfig } from './babel';
 import { updateConfig } from './config';
@@ -13,7 +12,7 @@ export async function es5Generator(ctx: IPluginContext) {
   await updateBrowserList(ctx);
   await updateConfig({ ctx, compilerType });
   await updateBabelConfig(ctx);
-  console.log('✅ 启用「编译为 ES5」成功');
+  globalThis.console.log('✅ 启用「编译为 ES5」成功');
 }
 
 async function updateBrowserList(ctx: IPluginContext) {
@@ -29,5 +28,5 @@ async function updateBrowserList(ctx: IPluginContext) {
     encoding: 'utf-8',
     spaces: 2,
   });
-  console.log('✅ 更新 browserslist 成功\n');
+  globalThis.console.log('✅ 更新 browserslist 成功\n');
 }

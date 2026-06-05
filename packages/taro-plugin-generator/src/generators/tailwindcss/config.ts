@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import generator from '@babel/generator';
 import * as parser from '@babel/parser';
 import traverse, { type NodePath } from '@babel/traverse';
@@ -25,7 +24,7 @@ export async function updateConfig(options: { ctx: IPluginContext; compilerType:
   }
   const { code: latestConfig } = generator(ast);
   await fs.writeFile(ctx.paths.configPath, latestConfig, { encoding: 'utf-8' });
-  console.log('✅ 更新配置文件成功\n');
+  globalThis.console.log('✅ 更新配置文件成功\n');
 }
 
 function processImportDecl(

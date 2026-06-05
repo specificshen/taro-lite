@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /* eslint-disable brace-style */
 import path from 'node:path';
 
@@ -150,7 +149,7 @@ export async function updateBabelConfig(ctx: IPluginContext) {
   });
 
   await fs.writeFile(babelConfigPath, generate(ast).code, { encoding: 'utf-8', flag: 'w' });
-  console.log('✅ 更新 babel.config.js 成功\n');
+  globalThis.console.log('✅ 更新 babel.config.js 成功\n');
 }
 
 /**
