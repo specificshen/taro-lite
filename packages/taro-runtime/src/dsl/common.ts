@@ -1,4 +1,3 @@
-/* eslint-disable dot-notation */
 import {
   EMPTY_OBJ,
   ensure,
