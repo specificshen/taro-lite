@@ -293,4 +293,58 @@ describe('MutationObserver', () => {
       });
     });
   });
+
+  describe('should observe moved node mutations', () => {
+    test('moving a node between parents records removal and insertion', async () => {
+      expect.assertions(3);
+      const source = document.createElement('div');
+      const target = document.createElement('view');
+      const child = document.createElement('text');
+
+      source.appendChild(child);
+      observer.observe(source, { childList: true });
+      target.appendChild(child);
+
+      return Promise.resolve().then(() => {
+        expect(mutations.length).toBe(1);
+        expect(source.childNodes.length).toBe(0);
+        expect(mutations).toEqual([
+          {
+            target: source,
+            type: 'childList',
+            previousSibling: null,
+            nextSibling: null,
+            removedNodes: [child],
+          },
+        ]);
+      });
+    });
+
+    test('moving a node in the same parent only records insertion reorder', async () => {
+      expect.assertions(3);
+      const target = document.createElement('div');
+      const first = document.createElement('view');
+      const second = document.createElement('text');
+
+      target.appendChild(first);
+      target.appendChild(second);
+      observer.observe(target, { childList: true });
+      target.appendChild(first);
+
+      return Promise.resolve().then(() => {
+        expect(mutations.length).toBe(1);
+        expect(target.childNodes).toEqual([second, first]);
+        expect(mutations).toEqual([
+          {
+            target: target,
+            type: 'childList',
+            previousSibling: second,
+            nextSibling: null,
+            removedNodes: [],
+            addedNodes: [first],
+          },
+        ]);
+      });
+    });
+  });
 });

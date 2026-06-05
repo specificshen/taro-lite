@@ -13,10 +13,12 @@ import type { TFunc, UpdatePayload } from '../interface';
 import type { TaroDocument } from './document';
 import type { TaroElement } from './element';
 import type { TaroRootElement } from './root';
+import type { TaroText } from './text';
 
 interface RemoveChildOptions {
   cleanRef?: boolean;
   doUpdate?: boolean;
+  recordMutation?: boolean;
 }
 
 const CHILDNODES = Shortcuts.Childnodes;
@@ -25,8 +27,8 @@ const nodeId = incrementId();
 export class TaroNode extends TaroEventTarget {
   public uid: string;
   public sid: string;
-  public nodeType: NodeType;
-  public nodeName: string;
+  public nodeType!: NodeType;
+  public nodeName!: string;
   public parentNode: TaroNode | null = null;
   public childNodes: TaroNode[] = [];
 
@@ -37,13 +39,13 @@ export class TaroNode extends TaroEventTarget {
     eventSource.set(this.sid, this);
   }
 
-  private hydrate = (node: TaroNode) => () => hydrate(node as TaroElement);
+  private hydrate = (node: TaroNode) => () => hydrate(node as TaroElement | TaroText);
 
   private updateChildNodes(isClean?: boolean) {
     const cleanChildNodes = () => [];
     const rerenderChildNodes = () => {
       const childNodes = this.childNodes.filter((node) => !isComment(node));
-      return childNodes.map(hydrate);
+      return childNodes.map((childNode) => hydrate(childNode as TaroElement | TaroText));
     };
 
     this.enqueueUpdate({
@@ -119,11 +121,13 @@ export class TaroNode extends TaroEventTarget {
     return childNodes[childNodes.length - 1] || null;
   }
 
+  public get textContent(): string {
+    return this.childNodes.map((childNode) => childNode.textContent).join('');
+  }
+
   /**
-   * @textContent 目前只能置空子元素
-   * @TODO 等待完整 innerHTML 实现
+   * @textContent 当前实现会用纯文本节点替换全部子节点。
    */
-  // eslint-disable-next-line accessor-pairs
   public set textContent(text: string) {
     const removedNodes = this.childNodes.slice();
     const addedNodes: TaroNode[] = [];
@@ -137,12 +141,12 @@ export class TaroNode extends TaroEventTarget {
       this.updateChildNodes(true);
     } else {
       const newText = env.document.createTextNode(text);
+      newText.parentNode = this;
+      this.childNodes.push(newText);
       addedNodes.push(newText);
-      this.appendChild(newText);
       this.updateChildNodes();
     }
 
-    // @Todo: appendChild 会多触发一次
     MutationObserver.record({
       type: MutationRecordType.CHILD_LIST,
       target: this,
@@ -171,7 +175,8 @@ export class TaroNode extends TaroEventTarget {
     // Parent release newChild
     //   - cleanRef: false (No need to clean eventSource, because newChild is about to be inserted)
     //   - update: true (Need to update parent.childNodes, because parent.childNodes is reordered)
-    newChild.remove({ cleanRef: false });
+    const previousParentNode = newChild.parentNode;
+    newChild.remove({ cleanRef: false, recordMutation: !!previousParentNode && previousParentNode !== this });
 
     let index = 0;
     // Data structure
@@ -284,11 +289,9 @@ export class TaroNode extends TaroEventTarget {
    *   2. remove C
    */
   public removeChild<T extends TaroNode>(child: T, options: RemoveChildOptions = {}): T {
-    const { cleanRef, doUpdate } = options;
+    const { cleanRef, doUpdate, recordMutation } = options;
 
-    if (cleanRef !== false && doUpdate !== false) {
-      // appendChild/replaceChild/insertBefore 不应该触发
-      // @Todo: 但其实如果 newChild 的父节点是另一颗子树的节点，应该是要触发的
+    if ((cleanRef !== false && doUpdate !== false) || recordMutation) {
       MutationObserver.record({
         type: MutationRecordType.CHILD_LIST,
         target: this,
