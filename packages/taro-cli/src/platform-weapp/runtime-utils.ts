@@ -1,23 +1,45 @@
-// @ts-nocheck
 import { Shortcuts, toCamelCase } from '@spcsn/taro-shared';
 
 import { initNativeApi } from './apis';
 
-declare const getCurrentPages: any;
+interface MiniPageInstance {
+  setData(data: Record<string, unknown>): void;
+}
+
+interface MiniLifecycleConfig {
+  page: string[][];
+}
+
+interface TransferHydrateData {
+  nn: string;
+  [key: string]: unknown;
+}
+
+interface TransferElement {
+  isTransferElement?: boolean;
+  dataName: string;
+  sid: string;
+}
+
+declare const getCurrentPages: () => MiniPageInstance[];
 
 export { initNativeApi };
 export * from './apis-list';
 export * from './components';
 export const hostConfig = {
   initNativeApi,
-  getMiniLifecycle(config) {
+  getMiniLifecycle(config: MiniLifecycleConfig) {
     const methods = config.page[5];
     if (methods.indexOf('onSaveExitState') === -1) {
       methods.push('onSaveExitState');
     }
     return config;
   },
-  transferHydrateData(data, element, componentsAlias) {
+  transferHydrateData(
+    data: TransferHydrateData,
+    element: TransferElement,
+    componentsAlias: Record<string, { _num?: string } | undefined>,
+  ) {
     if (element.isTransferElement) {
       const pages = getCurrentPages();
       const page = pages[pages.length - 1];
