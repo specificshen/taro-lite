@@ -2,8 +2,13 @@ import * as os from 'node:os';
 
 import { chalk } from './terminal';
 
-// eslint-disable-next-line dot-notation
-export const PLATFORMS = (global['PLATFORMS'] = global['PLATFORMS'] || {});
+type GlobalWithPlatforms = typeof global & {
+  PLATFORMS?: Record<string, string>;
+};
+
+const globalWithPlatforms = global as GlobalWithPlatforms;
+
+export const PLATFORMS = (globalWithPlatforms.PLATFORMS = globalWithPlatforms.PLATFORMS || {});
 
 export const enum processTypeEnum {
   START = 'start',
