@@ -87,7 +87,7 @@ declare module '../../index' {
   interface TaroStatic {
     /**
      * 调起客户端扫码界面，扫码成功后返回对应的结果
-     * @supported weapp, swan, jd, qq, tt, h5, rn
+     * @supported weapp
      * @example
      * ```tsx
      * // 允许从相机和相册扫码

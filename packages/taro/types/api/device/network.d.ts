@@ -89,25 +89,10 @@ declare module '../../index' {
 
   interface TaroStatic {
     /** 监听弱网状态变化事件
-     * @supported weapp, swan, qq, tt
-     * @example
-     * ```tsx
-     * Taro.onNetworkWeakChange(function (res) {
-     *   console.log(res.weakNet)
-     *   console.log(res.networkType)
-     * })
-     * // 取消监听
-     * Taro.offNetworkWeakChange()
-     * ```
-     * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/network/wx.onNetworkWeakChange.html
-     */
-    onNetworkWeakChange(
-      /** 弱网状态变化事件的回调函数 */
-      callback: onNetworkWeakChange.Callback,
-    ): void
+     * @supported weapp
 
     /** 监听网络状态变化。
-     * @supported weapp, swan, h5, rn, tt, harmony, harmony_hybrid
+     * @supported weapp
      * @example
      * ```tsx
      * Taro.onNetworkStatusChange(function (res) {
@@ -123,7 +108,7 @@ declare module '../../index' {
     ): void
 
     /** 取消监听弱网状态变化事件
-     * @supported weapp, swan
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/network/wx.offNetworkWeakChange.html
      */
     offNetworkWeakChange(
@@ -132,7 +117,7 @@ declare module '../../index' {
     ): void
 
     /** 取消监听网络状态变化事件，参数为空，则取消所有的事件监听。
-     * @supported weapp, swan, h5, rn, harmony, harmony_hybrid
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/network/wx.offNetworkStatusChange.html
      */
     offNetworkStatusChange(
@@ -141,7 +126,7 @@ declare module '../../index' {
     ): void
 
     /** 获取网络类型。
-     * @supported weapp, swan, qq, h5, rn, tt, harmony, harmony_hybrid
+     * @supported weapp
      * @example
      * ```tsx
      * Taro.getNetworkType({

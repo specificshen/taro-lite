@@ -736,6 +736,36 @@ function checkBusinessVisibleTypeContract() {
         /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|swan|tt|rn|h5)\b/g,
       message: 'business-visible accessibility comments must not advertise unsupported platforms.',
     },
+    {
+      path: 'packages/taro/types/api/device/network.d.ts',
+      pattern:
+        /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|swan|tt|rn|h5)\b/g,
+      message: 'business-visible network comments must not advertise unsupported platforms.',
+    },
+    {
+      path: 'packages/taro/types/api/device/battery.d.ts',
+      pattern:
+        /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|swan|tt|rn|h5)\b/g,
+      message: 'business-visible battery comments must not advertise unsupported platforms.',
+    },
+    {
+      path: 'packages/taro/types/api/device/scan.d.ts',
+      pattern:
+        /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|swan|tt|rn|h5)\b/g,
+      message: 'business-visible scan comments must not advertise unsupported platforms.',
+    },
+    {
+      path: 'packages/taro/types/api/device/calendar.d.ts',
+      pattern:
+        /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|swan|tt|rn|h5)\b/g,
+      message: 'business-visible calendar comments must not advertise unsupported platforms.',
+    },
+    {
+      path: 'packages/taro/types/api/device/phone.d.ts',
+      pattern:
+        /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|swan|tt|rn|h5)\b/g,
+      message: 'business-visible phone comments must not advertise unsupported platforms.',
+    },
   ];
 
   if (exposesUnsupportedConfig) {

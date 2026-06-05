@@ -85,12 +85,12 @@ declare module '../../index' {
 
   interface TaroStatic {
     /** 向系统日历添加重复事件
-     * @supported weapp, h5
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/calendar/wx.addPhoneRepeatCalendar.html
      */
     addPhoneRepeatCalendar(option: addPhoneRepeatCalendar.Option): Promise<TaroGeneral.CallbackResult>
     /** 向系统日历添加事件
-     * @supported weapp, tt, h5
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/calendar/wx.addPhoneCalendar.html
      */
     addPhoneCalendar(option: addPhoneCalendar.Option): Promise<TaroGeneral.CallbackResult>
