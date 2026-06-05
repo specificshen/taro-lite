@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/indent */
 import { document, FormElement } from '@spcsn/taro-runtime';
 import { isBoolean, isUndefined, noop } from '@spcsn/taro-shared';
 import { createContext } from 'react';
@@ -206,8 +205,7 @@ const hostConfig: HostConfig<
     const styleProp = props.style as { display?: any };
     let display = styleProp?.hasOwnProperty('display') ? styleProp.display : null;
     display = display == null || isBoolean(display) || display === '' ? '' : ('' + display).trim();
-    // eslint-disable-next-line dot-notation
-    instance.style['display'] = display;
+    instance.style.setProperty('display', display);
   },
   unhideTextInstance(textInstance, text) {
     textInstance.nodeValue = text;
@@ -238,8 +236,7 @@ if (process.env.NODE_ENV !== 'production') {
     rendererPackageName: 'taro-react',
   });
   if (!foundDevTools) {
-    // eslint-disable-next-line no-console
-    console.info(
+    globalThis.console.info(
       '%cDownload the React DevTools ' +
         'for a better development experience: ' +
         'https://reactjs.org/link/react-devtools',
