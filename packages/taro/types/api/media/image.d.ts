@@ -24,12 +24,10 @@ declare module '../../index' {
       current?: string | number
       /**
        * 是否支持长按下载图片
-       * @supported alipay 基础库: 1.13.0
        */
       enablesavephoto?: boolean
       /**
        * 是否在右下角显示下载入口
-       * @supported alipay 基础库: 1.13.0
        */
       enableShowPhotoDownload?: boolean
       /** @supported weapp 最低版本：2.13.0。是否显示长按菜单，默认值：true */
@@ -141,17 +139,17 @@ declare module '../../index' {
     interface Option {
       /** 最多可以选择的图片张数
        * @default 9
-       * @supported weapp, alipay, swan, tt, h5, rn
+       * @supported weapp
        */
       count?: number
       /** 所选的图片的尺寸
        * @default ['original', 'compressed']
-       * @supported weapp, alipay, swan, tt, rn
+       * @supported weapp
        */
       sizeType?: Array<keyof sizeType>
       /** 选择图片的来源
        * @default ['album', 'camera']
-       * @supported weapp, alipay, swan, tt, h5, rn
+       * @supported weapp
        */
       sourceType?: Array<keyof sourceType>
       /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -161,7 +159,6 @@ declare module '../../index' {
       /** 接口调用成功的回调函数 */
       success?: (result: SuccessCallbackResult) => void
       /** 用来上传的input元素ID（仅h5端
-       * @supported h5
        */
       imageId?: string
     }
@@ -198,11 +195,9 @@ declare module '../../index' {
       /** 本地临时文件大小，单位 B */
       size: number
       /** 文件的 MIME 类型
-       * @supported h5
        */
       type?: string
       /** 原始的浏览器 File 对象
-       * @supported h5
        */
       originalFileObj?: File
     }
@@ -324,7 +319,7 @@ declare module '../../index' {
 
   interface TaroStatic {
     /** 保存图片到系统相册。需要[用户授权](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/authorize.html) scope.writePhotosAlbum
-     * @supported weapp, alipay, swan, tt, h5, rn, harmony_hybrid
+     * @supported weapp
      * @example
      * ```tsx
      * Taro.saveImageToPhotosAlbum({
@@ -348,7 +343,7 @@ declare module '../../index' {
     previewMedia(option: previewMedia.Option): Promise<TaroGeneral.CallbackResult>
 
     /** 在新页面中全屏预览图片。预览的过程中用户可以进行保存图片、发送给朋友等操作。
-     * @supported weapp, alipay, swan, tt, h5, rn, harmony_hybrid
+     * @supported weapp
      * @example
      * ```tsx
      * Taro.previewImage({
@@ -361,7 +356,7 @@ declare module '../../index' {
     previewImage(option: previewImage.Option): Promise<TaroGeneral.CallbackResult>
 
     /** 获取图片信息。网络图片需先配置download域名才能生效。
-     * @supported weapp, alipay, swan, tt, h5, rn, harmony, harmony_hybrid
+     * @supported weapp
      * @example
      * ```tsx
      * Taro.getImageInfo({
@@ -400,7 +395,7 @@ declare module '../../index' {
     editImage(option: editImage.Option): Promise<editImage.SuccessCallbackResult>
 
     /** 压缩图片接口，可选压缩质量
-     * @supported weapp, tt, rn
+     * @supported weapp
      * @example
      * ```tsx
      * Taro.compressImage({
@@ -431,7 +426,7 @@ declare module '../../index' {
 
     /**
      * 从本地相册选择图片或使用相机拍照。
-     * @supported weapp, alipay, swan, tt, h5, rn, harmony_hybrid
+     * @supported weapp
      * @example
      * ```tsx
      * Taro.chooseImage({
