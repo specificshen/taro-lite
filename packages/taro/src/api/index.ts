@@ -1,7 +1,6 @@
-/* eslint-disable camelcase */
 import { Current, eventCenter, Events, getCurrentInstance, nextTick, options } from '@spcsn/taro-runtime';
 
-import { ENV_TYPE, getEnv } from './env';
+import { ENV_TYPE as envType, getEnv } from './env';
 import Link, { interceptorify } from './interceptor';
 import { logInterceptor, timeoutInterceptor } from './interceptor/interceptors';
 import { Behavior, getInitPxTransform, getPreload, getPxTransform } from './tools';
@@ -14,7 +13,7 @@ const interceptors = {
 const Taro: Record<string, unknown> = {
   Behavior,
   getEnv,
-  ENV_TYPE,
+  ENV_TYPE: envType,
   Link,
   interceptors,
   Current,
