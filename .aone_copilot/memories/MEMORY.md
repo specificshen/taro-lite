@@ -1,3 +1,4 @@
 - [preference] [优先采用项目现有的 skill 结构规范](preference_优先采用项目现有的_skill_结构规范.md) — 新建 skill 时遵循项目内既有命名和目录结构。
 - [preference] [skill 文件应放在项目根目录下的 .agents 目录](preference_skill_文件应放在项目根目录下的_agents_目录.md) — 项目专属 skill 放 `.agents/skills/`，不要放全局。
 - [feedback] [检查忽略应优先修复而非绕过](feedback_quality_gate.md) — 清理 TS/ESLint/格式忽略，优先修复根因。
+- [project] [8 包收敛后的代码优化方向](project_modernization_code_optimization_direction.md) — 全现代化、ESM 优先、目录规范和 kebab-case 命名。
