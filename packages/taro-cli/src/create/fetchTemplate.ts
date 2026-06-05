@@ -19,7 +19,7 @@ export interface ITemplates {
 
 const TEMP_DOWNLOAD_FOLDER = 'taro-temp';
 
-export default function fetchTemplate(
+export default async function fetchTemplate(
   templateSource: string,
   templateRootPath: string,
   clone?: boolean,
@@ -27,13 +27,13 @@ export default function fetchTemplate(
   const type = getTemplateSourceType(templateSource);
   const tempPath = path.join(templateRootPath, TEMP_DOWNLOAD_FOLDER);
   let name: string;
-  // eslint-disable-next-line no-async-promise-executor
-  return new Promise<void>(async (resolve) => {
-    // 下载文件的缓存目录
-    if (fs.existsSync(tempPath)) await fs.remove(tempPath);
-    await fs.mkdirp(templateRootPath);
-    await fs.mkdir(tempPath);
 
+  // 下载文件的缓存目录
+  if (fs.existsSync(tempPath)) await fs.remove(tempPath);
+  await fs.mkdirp(templateRootPath);
+  await fs.mkdir(tempPath);
+
+  return new Promise<void>((resolve) => {
     const spinner = ora(`正在从 ${templateSource} 拉取远程模板...`).start();
 
     if (type === 'git') {
