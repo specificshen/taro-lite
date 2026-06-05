@@ -714,6 +714,11 @@ packages:
     engines: {node: '>=6.0.0'}
     hasBin: true
 
+  '@babel/parser@7.29.0':
+    resolution: {integrity: sha512-IyDgFV5GeDUVX4YdF/3CPULtVGSXXMLh1xVIgdCgxApktqnQV0r7/8Nqthg+8YLGaAtdyIlo2qIdZrbCv4+7ww==}
+    engines: {node: '>=6.0.0'}
+    hasBin: true
+
   '@babel/parser@7.29.3':
     resolution: {integrity: sha512-b3ctpQwp+PROvU/cttc4OYl4MzfJUWy6FZg+PMXfzmt/+39iHVF0sDfqay8TQM3JA2EUOyKcFZt75jWriQijsA==}
     engines: {node: '>=6.0.0'}
@@ -6693,6 +6698,10 @@ snapshots:
     dependencies:
       '@babel/types': 7.24.0
 
+  '@babel/parser@7.29.0':
+    dependencies:
+      '@babel/types': 7.29.0
+
   '@babel/parser@7.29.3':
     dependencies:
       '@babel/types': 7.29.0
@@ -7347,7 +7356,7 @@ snapshots:
   '@babel/template@7.28.6':
     dependencies:
       '@babel/code-frame': 7.29.0
-      '@babel/parser': 7.29.3
+      '@babel/parser': 7.29.0
       '@babel/types': 7.29.0
 
   '@babel/traverse@7.24.1(supports-color@9.4.0)':
@@ -8304,7 +8313,7 @@ snapshots:
 
   '@types/babel__generator@7.27.0':
     dependencies:
-      '@babel/types': 7.24.0
+      '@babel/types': 7.29.0
 
   '@types/babel__template@7.4.4':
     dependencies:

@@ -24,14 +24,14 @@
   },
   "scripts": {
     "prod": "pnpm run build",
-    "build": "tsc || true",
+    "build": "tsc",
     "dev": "tsc -w"
   },
   "dependencies": {
-    "@babel/generator": "7.24.4",
-    "@babel/parser": "7.24.4",
-    "@babel/traverse": "7.24.1",
-    "@babel/types": "7.24.0",
+    "@babel/generator": "7.29.0",
+    "@babel/parser": "7.29.0",
+    "@babel/traverse": "7.29.0",
+    "@babel/types": "7.29.0",
     "@spcsn/taro-helper": "workspace:*",
     "@spcsn/taro-service": "workspace:*",
     "dedent": "^1.6.0",
@@ -39,8 +39,8 @@
     "ts-morph": "^26.0.0"
   },
   "devDependencies": {
-    "@types/babel__generator": "^7.6.8",
-    "@types/babel__traverse": "^7.20.5",
+    "@types/babel__generator": "7.27.0",
+    "@types/babel__traverse": "7.28.0",
     "@types/inquirer": "^8.2.1",
     "typescript": "~5.4.5"
   }

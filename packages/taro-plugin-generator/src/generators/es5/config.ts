@@ -106,8 +106,11 @@ function modifyWebpackCompileConfig(config: t.ObjectExpression) {
       (p) => t.isObjectProperty(p) && t.isIdentifier(p.key) && p.key.name === 'include',
     );
 
+    const filenameParam = t.identifier('filename');
+    filenameParam.typeAnnotation = t.tsTypeAnnotation(t.tsStringKeyword());
+
     const include = t.arrowFunctionExpression(
-      [t.identifier('filename')],
+      [filenameParam],
       t.callExpression(
         t.memberExpression(
           t.regExpLiteral(
@@ -119,7 +122,6 @@ function modifyWebpackCompileConfig(config: t.ObjectExpression) {
         [t.identifier('filename')],
       ),
     );
-    include.params[0].typeAnnotation = t.tsTypeAnnotation(t.tsStringKeyword());
 
     if (!includeProp) {
       compileProp.value.properties.push(t.objectProperty(t.identifier('include'), t.arrayExpression([include])));
