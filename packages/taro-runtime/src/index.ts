@@ -7,13 +7,13 @@ import env from './env';
 export { hooks } from '@spcsn/taro-shared';
 // bom
 export { taroDocumentProvider as document } from './bom/document';
-export { taroGetComputedStyleProvider as getComputedStyle } from './bom/getComputedStyle';
+export { taroGetComputedStyleProvider as getComputedStyle } from './bom/get-computed-style';
 export { History } from './bom/history';
 export { Location } from './bom/location';
 export { nav as navigator } from './bom/navigator';
 export { caf as cancelAnimationFrame, now, raf as requestAnimationFrame } from './bom/raf';
 export { parseUrl, TaroURLProvider as URL } from './bom/URL';
-export { URLSearchParams } from './bom/URLSearchParams';
+export { URLSearchParams } from './bom/url-search-params';
 export {
   taroHistoryProvider as history,
   taroLocationProvider as location,

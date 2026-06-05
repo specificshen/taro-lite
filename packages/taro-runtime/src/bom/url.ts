@@ -1,6 +1,6 @@
 import { isString, isUndefined } from '@spcsn/taro-shared';
 
-import { URLSearchParams } from './URLSearchParams';
+import { URLSearchParams } from './url-search-params';
 
 class TaroURL {
   static createObjectURL() {

@@ -3,7 +3,7 @@ import { isString } from '@spcsn/taro-shared';
 import { CONTEXT_ACTIONS } from '../constants';
 import { Events } from '../emitter/emitter';
 import env from '../env';
-import { taroGetComputedStyleProvider } from './getComputedStyle';
+import { taroGetComputedStyleProvider } from './get-computed-style';
 import { History } from './history';
 import { Location } from './location';
 import { nav as navigator } from './navigator';

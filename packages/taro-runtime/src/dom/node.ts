@@ -7,7 +7,7 @@ import { hydrate } from '../hydrate';
 import { extend, incrementId, isComment } from '../utils';
 import { eventSource } from './event-source';
 import { TaroEventTarget } from './event-target';
-import { NodeType } from './node_types';
+import { NodeType } from './node-types';
 
 import type { TFunc, UpdatePayload } from '../interface';
 import type { TaroDocument } from './document';

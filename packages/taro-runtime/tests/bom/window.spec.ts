@@ -61,7 +61,7 @@ vi.mock('../../src/bom/raf', () => ({
   caf: vi.fn(),
 }));
 
-vi.mock('../../src/bom/getComputedStyle', () => ({
+vi.mock('../../src/bom/get-computed-style', () => ({
   taroGetComputedStyleProvider: vi.fn(),
 }));
 

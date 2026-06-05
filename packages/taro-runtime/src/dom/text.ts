@@ -2,7 +2,7 @@ import { Shortcuts } from '@spcsn/taro-shared';
 
 import { MutationObserver, MutationRecordType } from '../dom-external/mutation-observer';
 import { TaroNode } from './node';
-import { NodeType } from './node_types';
+import { NodeType } from './node-types';
 
 export class TaroText extends TaroNode {
   public _value: string;

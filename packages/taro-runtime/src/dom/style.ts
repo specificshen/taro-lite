@@ -13,7 +13,7 @@ import {
 import { PROPERTY_THRESHOLD } from '../constants';
 import { MutationObserver, MutationRecordType } from '../dom-external/mutation-observer';
 import { TaroElement } from './element';
-import { styleProperties } from './style_properties';
+import { styleProperties } from './style-properties';
 
 function recordCss(obj: Style) {
   MutationObserver.record({

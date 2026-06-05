@@ -4,7 +4,7 @@ import { CONTEXT_ACTIONS } from '../constants';
 import { getCurrentInstance } from '../current';
 import { Events } from '../emitter/emitter';
 import { RuntimeCache } from '../utils/cache';
-import { TaroURLProvider } from './URL';
+import { TaroURLProvider } from './url';
 
 type PreValue = ReturnType<typeof TaroURLProvider.prototype._toRaw>;
 

@@ -30,7 +30,7 @@ import { extend, getComponentsAlias, isElement, isHasExtractProp, shortcutAttr }
 import { ClassList } from './class-list';
 import { eventSource } from './event-source';
 import { TaroNode } from './node';
-import { NodeType } from './node_types';
+import { NodeType } from './node-types';
 import { Style } from './style';
 import { treeToArray } from './tree';
 

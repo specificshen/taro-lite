@@ -1,5 +1,5 @@
 import { DATASET, PROPS, STYLE } from '../constants';
-import { NodeType } from '../dom/node_types';
+import { NodeType } from '../dom/node-types';
 
 import type { TaroNode } from '../dom/node';
 

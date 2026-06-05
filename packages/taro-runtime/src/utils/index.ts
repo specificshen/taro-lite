@@ -6,7 +6,7 @@ import {
 } from '@spcsn/taro-shared';
 
 import { CLASS, COMMENT, ID, ROOT_STR, STYLE, UID } from '../constants';
-import { NodeType } from '../dom/node_types';
+import { NodeType } from '../dom/node-types';
 
 import type { TaroElement } from '../dom/element';
 import type { TaroNode } from '../dom/node';

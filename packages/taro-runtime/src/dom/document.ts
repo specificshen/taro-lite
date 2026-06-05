@@ -5,7 +5,7 @@ import { TaroElement } from '../dom/element';
 import { createEvent } from '../dom/event';
 import { eventSource } from '../dom/event-source';
 import { FormElement } from '../dom/form';
-import { NodeType } from '../dom/node_types';
+import { NodeType } from '../dom/node-types';
 import { TaroRootElement } from '../dom/root';
 import { TaroText } from '../dom/text';
 import env from '../env';

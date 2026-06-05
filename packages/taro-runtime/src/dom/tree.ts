@@ -1,4 +1,4 @@
-import { NodeType } from './node_types';
+import { NodeType } from './node-types';
 
 import type { TaroElement } from './element';
 
