@@ -1,4 +1,5 @@
-/* eslint-disable no-undef */
+/// <reference path="./global.d.ts" />
+
 import { createRecursiveComponentConfig } from '@spcsn/taro-runtime';
-// @ts-ignore
+
 Component(createRecursiveComponentConfig());
