@@ -13,9 +13,6 @@ interface IPrebundle {
   exclude?: string[]
   esbuild?: Record<string, any>
   swc?: SwcConfig
-  webpack?: Record<string, any> & {
-    provide?: any[]
-  }
 }
 
 interface ICompiler<T> {

@@ -1,16 +1,7 @@
 // @ts-nocheck
-import Weapp from './program';
+const Weapp = require('./program').default;
 
-import type { IPluginContext } from '@spcsn/taro-service';
-
-// 让其它平台插件可以继承此平台
-export { Weapp };
-
-export interface IOptions {
-  enablekeyboardAccessory?: boolean;
-}
-
-export default (ctx: IPluginContext, options: IOptions) => {
+const platformWeappPlugin = (ctx, options) => {
   ctx.registerPlatform({
     name: 'weapp',
     useConfigName: 'mini',
@@ -20,3 +11,8 @@ export default (ctx: IPluginContext, options: IOptions) => {
     },
   });
 };
+
+// 让其它平台插件可以继承此平台
+module.exports = platformWeappPlugin;
+module.exports.default = platformWeappPlugin;
+module.exports.Weapp = Weapp;

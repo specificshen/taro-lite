@@ -1,5 +1,6 @@
 import type { AppConfig } from '../../index'
 import type { Compiler, CompilerTypes, CompilerViteTypes } from '../compiler'
+import type { IModifyChainData } from '../hooks'
 import type { IMiniAppConfig, IMiniFilesConfig } from './mini'
 import type { ICopyOptions, IOption, ISassOptions, TogglableOptions } from './util'
 
@@ -9,11 +10,7 @@ export type PluginItem<T = object> = string | [string, T] | [string, () => T | P
 
 interface ICache {
   /**
-   * 是否开启持久化缓存 (默认值 false)
-   * @description ```
-   * 值为 false 时：开发模式下 WebpackConfig.cache.type = 'memory'，而生产模式下 WebpackConfig.cache = false;
-   * 值为 true 时：开发模式和生产模式下均为 WebpackConfig.cache.type = 'filesystem'
-   * ```
+   * 是否开启持久化缓存。
    */
   enable?: boolean
 
@@ -23,8 +20,7 @@ interface ICache {
   buildDependencies?: Record<string, any>
 
   /**
-   * 缓存子目录的名称 (默认值 process.env.NODE_ENV-process.env.TARO_ENV)
-   * @description  详情请参考 [WebpackConfig.cache.name](https://webpack.js.org/configuration/cache/#cachename)
+   * 缓存子目录的名称。
    */
   name?: string
 }
@@ -163,7 +159,7 @@ export interface IProjectBaseConfig {
   /**
    * 编译结束（保存代码每次编译结束后都会触发）
    */
-  onBuildFinish?: (res: { error; stats; isWatch }) => Promise<any>
+  onBuildFinish?: (res: { error: unknown; stats: unknown; isWatch: boolean }) => Promise<any>
 
   modifyAppConfig?: (appConfig: AppConfig) => Promise<any>
 

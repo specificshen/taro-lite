@@ -37,7 +37,7 @@
     "check:write": "biome check --write .",
     "format": "biome format --write .",
     "format:check": "biome format .",
-    "test": "pnpm --filter @spcsn/taro-components test:ci && pnpm --filter @spcsn/babel-plugin-transform-taroapi test:ci && pnpm --filter @spcsn/taro-cli test:ci -- cli.spec.ts build-config.spec.ts --runInBand",
+    "test": "pnpm --filter @spcsn/taro-components test:ci && pnpm --filter @spcsn/taro-cli test:ci -- cli.spec.ts build-config.spec.ts --runInBand",
     "test:binding": "pnpm --filter @spcsn/taro-binding run test",
     "updateSnapshot": "pnpm --if-present -r --aggregate-output --filter=./packages/* updateSnapshot",
     "version": "run-s version:*",

@@ -1,14 +1,10 @@
 // @ts-nocheck
-import path from 'node:path';
+const path = require('node:path');
+const { TaroPlatformBase } = require('@spcsn/taro-service');
+const { components } = require('./components');
+const { Template } = require('./template');
 
-import { TaroPlatformBase } from '@spcsn/taro-service';
-
-import { components } from './components';
-import { Template } from './template';
-
-import type { IOptions } from './index';
-
-export default class Weapp extends TaroPlatformBase {
+class Weapp extends TaroPlatformBase {
   template: Template;
   platform = 'weapp';
   globalObject = 'wx';
@@ -67,3 +63,5 @@ export default class Weapp extends TaroPlatformBase {
     }
   }
 }
+
+module.exports.default = Weapp;
