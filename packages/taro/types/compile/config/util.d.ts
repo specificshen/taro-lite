@@ -1,5 +1,5 @@
-import type { Input } from 'postcss'
-import type { Options as PostcssUrlOption } from 'postcss-url'
+type PostcssInput = string | number
+type PostcssUrlOption = Record<string, any>
 
 export type Func = (...args: any[]) => any
 
@@ -72,7 +72,7 @@ export interface IPxTransformOption {
    */
   minRootSize?: number
   /** 设计稿尺寸 */
-  designWidth?: number | ((size?: string | number | Input) => number)
+  designWidth?: number | ((size?: PostcssInput) => number)
   /** 设计稿尺寸换算规则 */
   deviceRatio?: TaroGeneral.TDeviceRatio
   /** 平台 */

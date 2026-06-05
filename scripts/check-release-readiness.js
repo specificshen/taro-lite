@@ -389,6 +389,7 @@ function checkBusinessVisibleTypeContract() {
     'packages/taro/types/compile/compiler.d.ts',
     'packages/taro/types/compile/config/mini.d.ts',
     'packages/taro/types/compile/config/project.d.ts',
+    'packages/taro/types/compile/config/util.d.ts',
   ];
   const externalBuildTypeImportPattern = /from ['"](webpack|webpack-chain|rollup|postcss)['"]/g;
 
