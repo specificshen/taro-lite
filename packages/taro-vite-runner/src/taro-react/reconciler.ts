@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/indent */
 import { document, FormElement } from '@spcsn/taro-runtime';
 import { isBoolean, isUndefined, noop } from '@spcsn/taro-shared';
 import { createContext } from 'react';
