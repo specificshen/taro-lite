@@ -1,4 +1,3 @@
-// @ts-nocheck
 import {
   addLeadingSlash,
   CONTEXT_ACTIONS,
@@ -32,16 +31,22 @@ import type { Instance, MpInstance, TaroRootElement } from '@spcsn/taro-runtime'
 import type { AppInstance, PageInstance } from '@spcsn/taro';
 import type { Func } from '@spcsn/taro/types/compile';
 import type React from 'react';
+import type TReactDOM from 'react-dom';
+import type TReactDOMClient from 'react-dom/client';
+
+type ReactDOMRenderer = typeof TReactDOM & typeof TReactDOMClient & {
+  render: (element: React.ReactElement, container: unknown) => void;
+};
 
 declare const getCurrentPages: () => PageInstance[];
 
 const getNativeCompId = incrementId();
 let h: typeof React.createElement;
-let ReactDOM;
+let ReactDOM: ReactDOMRenderer;
 let nativeComponentApp: AppInstance;
 interface InitNativeComponentEntryParams {
   R: typeof React;
-  ReactDOM: typeof ReactDOM;
+  ReactDOM: ReactDOMRenderer;
   cb?: Func;
   // 是否使用默认的 DOM 入口 - app；默认为true，false的时候，会创建一个新的dom并且把它挂载在 app 下面
   isDefaultEntryDom?: boolean;
@@ -190,7 +195,7 @@ export function createNativePageConfig(
   let unmounting = false;
   let prepareMountList: (() => void)[] = [];
   let pageElement: TaroRootElement | null = null;
-  let loadResolver: (...args: unknown[]) => void;
+  let loadResolver: () => void;
   let hasLoaded: Promise<void>;
   const id = pageName ?? `taro_page_${getNativeCompId()}`;
   function setCurrentRouter(page: MpInstance) {
@@ -287,7 +292,7 @@ export function createNativePageConfig(
         this.onReady.called = true;
       });
     },
-    [ONSHOW](options = {}) {
+    [ONSHOW](this: MpInstance, options = {}) {
       hasLoaded.then(() => {
         // 设置 Current 的 page 和 router
         Current.page = this as any;
@@ -368,7 +373,7 @@ export function createNativeComponentConfig(Component, react: typeof React, reac
       props: {
         type: null,
         value: null,
-        observer(_newVal, oldVal) {
+        observer(this: { component?: { forceUpdate: () => void } }, _newVal: unknown, oldVal: unknown) {
           oldVal && this.component?.forceUpdate();
         },
       },
