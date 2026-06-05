@@ -5,7 +5,7 @@ import { Config, Kernel } from '@spcsn/taro-service';
 import minimist from 'minimist';
 
 import customCommand from './commands/custom-command';
-import { getPkgVersion, printNativeMiniDevBanner } from './util';
+import { getPkgVersion } from './util';
 
 const DEFAULT_FRAMEWORK = 'react';
 const SUPPORTED_COMMANDS = new Set(['build', 'init']);
@@ -122,9 +122,6 @@ export default class CLI {
             return;
           }
           kernel.optsPlugins.push(require.resolve('@spcsn/taro-vite-runner/framework-react'));
-          if (args.watch) {
-            printNativeMiniDevBanner();
-          }
           await customCommand(command, kernel, {
             args,
             _,

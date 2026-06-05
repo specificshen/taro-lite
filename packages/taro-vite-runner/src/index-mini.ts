@@ -30,7 +30,7 @@ export default async function (appPath: string, rawTaroConfig: ViteMiniBuildConf
   }
 
   const commonConfig: UserConfig = {
-    logLevel: 'warn',
+    logLevel: 'silent',
     plugins,
   };
 

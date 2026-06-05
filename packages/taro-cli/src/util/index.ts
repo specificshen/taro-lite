@@ -2,7 +2,7 @@ import { exec } from 'node:child_process';
 import * as path from 'node:path';
 import * as readline from 'node:readline';
 
-import { chalk, fs } from '@spcsn/taro-helper';
+import { fs } from '@spcsn/taro-helper';
 
 export function getRootPath(): string {
   return path.resolve(__dirname, '../../');
@@ -26,22 +26,6 @@ export function printPkgVersion() {
   console.log(`👽 SPCSN Taro v${taroVersion}`);
   console.log();
 }
-
-export function printNativeMiniDevBanner() {
-  if (process.env.NODE_ENV === 'test') return;
-
-  const lines = [
-    chalk.cyanBright('╭────────────────────────────────────────────╮'),
-    chalk.cyanBright('│') + chalk.magentaBright('   🚀 SPCSN Taro 原生小程序开发引擎启动中   ') + chalk.cyanBright('│'),
-    chalk.cyanBright('│') + chalk.greenBright('   React 19  ×  Vite  ×  WeApp  ×  Skyline   ') + chalk.cyanBright('│'),
-    chalk.cyanBright('│') + chalk.yellowBright('   正在编译真实微信小程序产物，请保持热爱 ✨   ') + chalk.cyanBright('│'),
-    chalk.cyanBright('╰────────────────────────────────────────────╯'),
-  ];
-
-  console.log(lines.join('\n'));
-  console.log();
-}
-
 export const getAllFilesInFolder = async (folder: string, filter: string[] = []): Promise<string[]> => {
   let files: string[] = [];
   const list = readDirWithFileTypes(folder);
@@ -89,13 +73,6 @@ export function readDirWithFileTypes(folder: string): FileStat[] {
   });
   return res;
 }
-
-export function printDevelopmentTip() {
-  if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test') return;
-
-  console.log(chalk.yellowBright('当前为开发模式，非生产模式。'));
-}
-
 export function clearConsole() {
   if (process.stdout.isTTY) {
     const blank = '\n'.repeat(process.stdout.rows);

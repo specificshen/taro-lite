@@ -43,17 +43,32 @@ export abstract class TaroPlatformBase<T extends TConfig = TConfig> extends Taro
     } else if (isObject(output.clean)) {
       this.emptyOutputDir(output.clean.keep || []);
     }
-    this.printDevelopmentTip();
+    this.printBuildSummary();
     if (this.projectConfigJson) {
       this.generateProjectConfig(this.projectConfigJson);
     }
   }
 
-  protected printDevelopmentTip() {
-    if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test') return;
+  protected printBuildSummary() {
+    if (process.env.NODE_ENV === 'test') return;
 
     const { chalk } = this.helper;
-    console.log(chalk.yellowBright('当前为开发模式，非生产模式。'));
+    const isProduction = process.env.NODE_ENV === 'production';
+    const modeLabel = isProduction ? '生产模式' : '开发模式';
+    const watchLabel = this.ctx.runOpts?.isWatch ? '监听变更' : '单次构建';
+    const minifyLabel = process.env.TARO_MINIFY === 'true' || isProduction ? '开启' : '关闭';
+
+    const lines = [
+      chalk.cyanBright('╭────────────────────────────────────────────╮'),
+      chalk.cyanBright('│') + chalk.magentaBright('   🚀 SPCSN Taro 小程序构建已启动          ') + chalk.cyanBright('│'),
+      chalk.cyanBright('│') + chalk.greenBright(`   模式：${modeLabel}  ·  ${watchLabel}                 `) + chalk.cyanBright('│'),
+      chalk.cyanBright('│') + chalk.blueBright(`   目标：${this.platform}  ·  React 19 × Vite × Skyline `) + chalk.cyanBright('│'),
+      chalk.cyanBright('│') + chalk.yellowBright(`   压缩：${minifyLabel}  ·  输出微信小程序产物          `) + chalk.cyanBright('│'),
+      chalk.cyanBright('╰────────────────────────────────────────────╯'),
+    ];
+
+    console.log(lines.join('\n'));
+    console.log();
   }
 
   /**
