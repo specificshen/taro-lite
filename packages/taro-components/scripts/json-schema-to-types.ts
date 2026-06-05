@@ -3,17 +3,16 @@ import * as parser from '@babel/parser';
 import traverse from '@babel/traverse';
 import * as t from '@babel/types';
 import { fs } from '@spcsn/taro-helper';
-import { camelCase, paramCase } from 'change-case';
 import { flattenDeep, isEmpty, isNil, toArray, uniq, xorWith } from 'lodash';
 
 import { MINI_APP_TYPES } from './constants';
-import { camelCaseEnhance, getTypeFilePath, getTypesList } from './utils';
+import { camelCase, camelCaseEnhance, getTypeFilePath, getTypesList, paramCase } from './utils';
 
 const OMIT_PROPS = ['generic:simple-component', 'style', 'class'];
 const catchStart = 'catch';
 const eventStart = 'on';
 
-type AST = parser.ParseResult<t.File>;
+type AST = t.File;
 type PROP_MAP = Partial<Record<(typeof MINI_APP_TYPES)[number], string[]>>;
 type PROP = Record<string, string[]>;
 
@@ -278,11 +277,13 @@ class GenerateTypes {
   exec() {
     const filePath = getTypeFilePath(this.componentName);
     const codeStr = fs.readFileSync(filePath, 'utf8');
-    const ast = parser.parse(codeStr, {
-      sourceType: 'module',
-      strictMode: false,
-      plugins: ['typescript'],
-    });
+    const ast = t.file(
+      parser.parse(codeStr, {
+        sourceType: 'module',
+        strictMode: false,
+        plugins: ['typescript'],
+      }).program,
+    );
     const { existProps } = this.updateComment(ast);
     const missingProps = this.getMissingProps(existProps);
     const props = this.convertProps(missingProps);

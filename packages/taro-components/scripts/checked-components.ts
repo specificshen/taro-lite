@@ -1,7 +1,5 @@
-import { pascalCase } from 'change-case';
-
 import { MINI_APP_TYPES } from './constants';
-import { getTypesList } from './utils';
+import { getTypesList, pascalCase } from './utils';
 
 /**
  * 寻找小程序端存在，但未在 taro-components 中实现的组件
