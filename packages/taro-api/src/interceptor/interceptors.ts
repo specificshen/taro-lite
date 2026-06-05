@@ -43,13 +43,11 @@ export function logInterceptor(chain: Chain) {
   const requestParams = chain.requestParams;
   const { method, data, url } = requestParams;
 
-  // eslint-disable-next-line no-console
-  console.log(`http ${method || 'GET'} --> ${url} data: `, data);
+  globalThis.console.log(`http ${method || 'GET'} --> ${url} data: `, data);
 
   const p = chain.proceed(requestParams);
   const res = p.then((res) => {
-    // eslint-disable-next-line no-console
-    console.log(`http <-- ${url} result:`, res);
+    globalThis.console.log(`http <-- ${url} result:`, res);
     return res;
   });
   return attachAbort(p, res);
