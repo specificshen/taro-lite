@@ -96,7 +96,7 @@ export interface IMiniAppConfig<T extends CompilerTypes = CompilerViteTypes> {
   compile?: {
     exclude?: any[]
     include?: any[]
-    /** 对应 Babel transform 插件的 filter 配置。只在 vite 编译模式下有效 */
+    /** 对应 Vite 小程序编译链路的文件过滤配置。 */
     filter?: (filename: string) => boolean
   }
 

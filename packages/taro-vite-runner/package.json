@@ -27,7 +27,6 @@
     "copy:template": "node ./scripts/copy-template.mjs"
   },
   "dependencies": {
-    "@babel/core": "^7.24.4",
     "@spcsn/taro-helper": "workspace:*",
     "@spcsn/taro-runtime": "workspace:*",
     "@spcsn/taro-shared": "workspace:*",
@@ -50,7 +49,6 @@
   },
   "devDependencies": {
     "@spcsn/taro": "workspace:*",
-    "@types/babel__core": "^7.20.5",
     "@types/sax": "^1.2.4",
     "less": "^4.2.0",
     "rollup": "^3.29.5",

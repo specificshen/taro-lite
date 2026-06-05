@@ -3,7 +3,6 @@ import querystring from 'node:querystring';
 
 import { isNpmPkg, normalizePath, recursiveMerge, REG_NODE_MODULES, resolveSync } from '@spcsn/taro-helper';
 import { backSlashRegEx, MINI_EXCLUDE_POSTCSS_PLUGIN_NAME, needsEscapeRegEx, quoteNewlineRegEx } from './constants';
-import { createFilterWithCompileOptions } from './create-filter';
 import { logger } from './logger';
 
 import type { IPostcssOption } from '@spcsn/taro/types/compile';
@@ -15,8 +14,6 @@ import type {
 } from '@spcsn/taro/types/compile/viteCompilerContext';
 import type { CSSModulesOptions } from 'vite';
 import type { Target } from 'vite-plugin-static-copy';
-import type { TaroBabelInputPluginOptions } from './babel';
-
 export function convertCopyOptions(taroConfig: ViteMiniBuildConfig) {
   const copy = taroConfig.copy;
   const copyOptions: Target[] = [];
@@ -204,29 +201,6 @@ export function getCSSModulesOptions(
     generateScopedName: config.generateScopedName,
   };
 }
-
-export function getBabelOption(
-  taroConfig: ViteMiniBuildConfig,
-  filterConfig: {
-    babelOption?: Partial<TaroBabelInputPluginOptions>;
-    defaultInclude?: (string | RegExp)[];
-    defaultExclude?: (string | RegExp)[];
-  } = {},
-): TaroBabelInputPluginOptions {
-  const { compile = {} } = taroConfig;
-  const { defaultExclude = [], defaultInclude = [], babelOption } = filterConfig;
-  const opts: TaroBabelInputPluginOptions = {
-    extensions: ['.js', '.jsx', '.ts', '.tsx', '.es6', '.es', '.mjs', '.mts'],
-    babelHelpers: 'runtime',
-    skipPreflightCheck: true,
-    compact: false,
-    ...babelOption,
-  };
-  opts.filter = createFilterWithCompileOptions(compile, defaultInclude, defaultExclude);
-
-  return opts;
-}
-
 export function escapePath(p: string) {
   return p.replace(/\\{1,2}/g, '/');
 }

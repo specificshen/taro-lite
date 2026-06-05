@@ -621,9 +621,6 @@ importers:
 
   packages/taro-vite-runner:
     dependencies:
-      '@babel/core':
-        specifier: ^7.24.4
-        version: 7.24.4
       '@spcsn/taro-helper':
         specifier: workspace:*
         version: link:../taro-helper
@@ -685,9 +682,6 @@ importers:
       '@spcsn/taro':
         specifier: workspace:*
         version: link:../taro
-      '@types/babel__core':
-        specifier: ^7.20.5
-        version: 7.20.5
       '@types/sax':
         specifier: ^1.2.4
         version: 1.2.7
