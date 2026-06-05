@@ -41,7 +41,8 @@
   "devDependencies": {
     "@spcsn/taro-components": "workspace:*",
     "@spcsn/taro-helper": "workspace:*",
-    "@spcsn/taro-shared": "workspace:*"
+    "@spcsn/taro-shared": "workspace:*",
+    "rolldown": "^1.0.1"
   },
   "peerDependencies": {
     "@spcsn/taro-components": "workspace:*",
