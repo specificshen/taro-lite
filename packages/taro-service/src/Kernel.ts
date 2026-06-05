@@ -3,6 +3,7 @@ import * as path from 'node:path';
 
 import * as helper from '@spcsn/taro-helper';
 import { getPlatformType } from '@spcsn/taro-shared';
+import Joi from 'joi';
 import { merge } from 'lodash';
 import { AsyncSeriesWaterfallHook } from 'tapable';
 
@@ -203,9 +204,8 @@ export default class Kernel extends EventEmitter {
       return;
     }
     this.debugger('checkPluginOpts', pluginCtx);
-    const joi = require('joi');
-    const schema = pluginCtx.optsSchema(joi);
-    if (!joi.isSchema(schema)) {
+    const schema = pluginCtx.optsSchema(Joi);
+    if (!Joi.isSchema(schema)) {
       throw new Error(`插件${pluginCtx.id}中设置参数检查 schema 有误，请检查！`);
     }
     const { error } = schema.validate(opts);

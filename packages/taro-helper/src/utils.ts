@@ -21,6 +21,8 @@ import {
 import { requireWithEsbuild } from './esbuild';
 import { chalk } from './terminal';
 
+import resolvePath from 'resolve';
+
 import type TResolve from 'resolve';
 
 const execSync = child_process.execSync;
@@ -220,8 +222,7 @@ export function isEmptyObject(obj: any): boolean {
 
 export function resolveSync(id: string, opts: TResolve.SyncOpts & { mainFields?: string[] } = {}): string | null {
   try {
-    const resolve = require('resolve').sync as (typeof TResolve)['sync'];
-    return resolve(id, {
+    return resolvePath.sync(id, {
       ...opts,
       packageFilter(pkg, pkgfile, dir) {
         if (opts.packageFilter) {
@@ -408,8 +409,7 @@ export const pascalCase: (str: string) => string = (str: string): string =>
 
 export function getInstalledNpmPkgPath(pkgName: string, basedir: string): string | null {
   try {
-    const resolve = require('resolve').sync as (typeof TResolve)['sync'];
-    return resolve(`${pkgName}/package.json`, { basedir });
+    return resolvePath.sync(`${pkgName}/package.json`, { basedir });
   } catch (err) {
     return null;
   }

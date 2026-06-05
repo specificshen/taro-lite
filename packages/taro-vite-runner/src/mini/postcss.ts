@@ -1,3 +1,5 @@
+import autoprefixerPlugin from 'autoprefixer';
+
 import type { Func, IPostcssOption } from '@spcsn/taro/types/compile';
 import postcssHtmlTransform from '../postcss/html-transform';
 import postcssPxTransform from '../postcss/px-transform';
@@ -18,7 +20,7 @@ export const getDefaultPostcssConfig = function ({
   }
 
   return [
-    ['autoprefixer', autoprefixer, require('autoprefixer')],
+    ['autoprefixer', autoprefixer, autoprefixerPlugin],
     ['postcss-pxtransform', pxtransform, postcssPxTransform],
     ['postcss-html-transform', htmltransform, postcssHtmlTransform],
     ...Object.entries(options),

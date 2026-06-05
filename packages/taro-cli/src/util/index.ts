@@ -1,18 +1,19 @@
+import { exec } from 'node:child_process';
 import * as path from 'node:path';
+import * as readline from 'node:readline';
 
 import { chalk, fs, isWindows } from '@spcsn/taro-helper';
-import { exec } from 'child_process';
 
 export function getRootPath(): string {
   return path.resolve(__dirname, '../../');
 }
 
 export function getPkgVersion(): string {
-  return require(path.join(getRootPath(), 'package.json')).version;
+  return fs.readJSONSync(path.join(getRootPath(), 'package.json')).version;
 }
 
 export function getPkgItemByKey(key: string) {
-  const packageMap = require(path.join(getRootPath(), 'package.json'));
+  const packageMap = fs.readJSONSync(path.join(getRootPath(), 'package.json'));
   if (Object.keys(packageMap).indexOf(key) === -1) {
     return {};
   } else {
@@ -107,7 +108,6 @@ ${exampleCommand}
 }
 
 export function clearConsole() {
-  const readline = require('readline');
   if (process.stdout.isTTY) {
     const blank = '\n'.repeat(process.stdout.rows);
     console.log(blank);

@@ -1,4 +1,4 @@
-const WeappPlatform = require('./program').default;
+import WeappPlatform from './program';
 
 interface PlatformPluginContext {
   registerPlatform(platform: {

@@ -1,7 +1,9 @@
+import * as path from 'node:path';
+
+import spawn from 'cross-spawn';
+import resolvePath from 'resolve';
+
 import * as Util from './utils';
-
-import type TResolve from 'resolve';
-
 const PEERS = /UNMET PEER DEPENDENCY ([a-z\-0-9.]+)@(.+)/gm;
 const npmCached = {};
 
@@ -27,7 +29,6 @@ const defaultInstallOptions: IInstallOptions = {
 export const taroPluginPrefix = '@spcsn/taro-plugin-';
 
 export function resolveNpm(pluginName: string, root?: string): Promise<string> {
-  const resolvePath = require('resolve') as typeof TResolve;
   if (!npmCached[pluginName]) {
     return new Promise((resolve, reject) => {
       resolvePath(`${pluginName}`, { basedir: root }, (err, res) => {
@@ -36,7 +37,7 @@ export function resolveNpm(pluginName: string, root?: string): Promise<string> {
             const cliPath = require.resolve('@spcsn/taro-cli/package.json', {
               paths: [__dirname, root].filter(Boolean) as string[],
             });
-            const res = resolvePath.sync(pluginName, { basedir: require('path').dirname(cliPath) });
+            const res = resolvePath.sync(pluginName, { basedir: path.dirname(cliPath) });
             if (res) {
               npmCached[pluginName] = res;
               resolve(res);
@@ -65,7 +66,6 @@ export function resolveNpm(pluginName: string, root?: string): Promise<string> {
 }
 
 export function resolveNpmSync(pluginName: string, root?: string): string {
-  const resolvePath = require('resolve') as typeof TResolve;
   try {
     if (!npmCached[pluginName]) {
       let res;
@@ -77,7 +77,7 @@ export function resolveNpmSync(pluginName: string, root?: string): string {
             const cliPath = require.resolve('@spcsn/taro-cli/package.json', {
               paths: [__dirname, root].filter(Boolean) as string[],
             });
-            return resolvePath.sync(pluginName, { basedir: require('path').dirname(cliPath) });
+            return resolvePath.sync(pluginName, { basedir: path.dirname(cliPath) });
           } catch (e2) {
             console.error('RESOLVE_FAILED', String(e2));
           }
@@ -85,7 +85,7 @@ export function resolveNpmSync(pluginName: string, root?: string): string {
             const cliPath = require.resolve('@spcsn/taro-cli/package.json', {
               paths: [__dirname, root].filter(Boolean) as string[],
             });
-            return resolvePath.sync(pluginName, { basedir: require('path').dirname(cliPath) });
+            return resolvePath.sync(pluginName, { basedir: path.dirname(cliPath) });
           } catch (e2) {
             console.error('RESOLVE_FAILED', String(e2));
           }
@@ -154,7 +154,6 @@ export function installNpmPkg(pkgList: string[] | string, options: IInstallOptio
       args.push('--save');
     }
   }
-  const spawn = require('cross-spawn');
   const output = spawn.sync(installer, args, {
     stdio: ['ignore', 'pipe', 'inherit'],
   });

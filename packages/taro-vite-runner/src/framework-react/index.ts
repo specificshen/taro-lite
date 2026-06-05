@@ -1,3 +1,4 @@
+import reactPlugin from '@vitejs/plugin-react';
 import { isString } from '@spcsn/taro-shared';
 
 import { miniVitePlugin } from './vite.mini';
@@ -54,5 +55,5 @@ export default (ctx: FrameworkPluginContext) => {
 };
 
 function VitePresetPlugin(): PluginOption {
-  return require('@vitejs/plugin-react').default();
+  return reactPlugin();
 }
