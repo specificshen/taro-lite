@@ -534,6 +534,17 @@ function checkBusinessVisibleTypeContract() {
       pattern: /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|rn|h5)\b/g,
       message: 'business-visible UI comments must not advertise unsupported platforms.',
     },
+    {
+      path: 'packages/taro/types/api/wxml/index.d.ts',
+      pattern:
+        /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|rn|h5)\b|Harmony/g,
+      message: 'business-visible WXML comments must not advertise unsupported platforms.',
+    },
+    {
+      path: 'packages/taro/types/api/ui/animation.d.ts',
+      pattern: /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|rn|h5)\b/g,
+      message: 'business-visible animation comments must not advertise unsupported platforms.',
+    },
   ];
 
   if (exposesUnsupportedConfig) {
