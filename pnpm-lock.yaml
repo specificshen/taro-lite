@@ -253,22 +253,6 @@ importers:
 
   npm/win32-x64-msvc: {}
 
-  packages/babel-plugin-transform-taroapi:
-    dependencies:
-      lodash:
-        specifier: ^4.17.21
-        version: 4.17.21
-    devDependencies:
-      '@babel/core':
-        specifier: 7.29.0
-        version: 7.29.0
-      '@babel/types':
-        specifier: 7.29.0
-        version: 7.29.0
-      '@types/babel__core':
-        specifier: 7.20.5
-        version: 7.20.5
-
   packages/shared:
     devDependencies:
       lodash:
@@ -290,18 +274,6 @@ importers:
       '@spcsn/taro-helper':
         specifier: workspace:*
         version: link:../taro-helper
-
-  packages/taro-api:
-    devDependencies:
-      '@spcsn/taro-runtime':
-        specifier: workspace:*
-        version: link:../taro-runtime
-      '@spcsn/taro-shared':
-        specifier: workspace:*
-        version: link:../shared
-      lodash:
-        specifier: 4.17.21
-        version: 4.17.21
 
   packages/taro-cli:
     dependencies:
@@ -6495,16 +6467,17 @@ snapshots:
       '@babel/helpers': 7.29.2
       '@babel/parser': 7.29.3
       '@babel/template': 7.28.6
-      '@babel/traverse': 7.29.0
+      '@babel/traverse': 7.29.0(supports-color@9.4.0)
       '@babel/types': 7.29.0
       '@jridgewell/remapping': 2.3.5
       convert-source-map: 2.0.0
-      debug: 4.4.3
+      debug: 4.4.3(supports-color@9.4.0)
       gensync: 1.0.0-beta.2
       json5: 2.2.3
       semver: 6.3.1
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   '@babel/core@7.29.0(supports-color@9.4.0)':
     dependencies:
@@ -6606,13 +6579,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@babel/helper-module-imports@7.28.6':
-    dependencies:
-      '@babel/traverse': 7.29.0
-      '@babel/types': 7.29.0
-    transitivePeerDependencies:
-      - supports-color
-
   '@babel/helper-module-imports@7.28.6(supports-color@9.4.0)':
     dependencies:
       '@babel/traverse': 7.29.0(supports-color@9.4.0)
@@ -6650,11 +6616,12 @@ snapshots:
   '@babel/helper-module-transforms@7.28.6(@babel/core@7.29.0)':
     dependencies:
       '@babel/core': 7.29.0
-      '@babel/helper-module-imports': 7.28.6
+      '@babel/helper-module-imports': 7.28.6(supports-color@9.4.0)
       '@babel/helper-validator-identifier': 7.28.5
-      '@babel/traverse': 7.29.0
+      '@babel/traverse': 7.29.0(supports-color@9.4.0)
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   '@babel/helper-optimise-call-expression@7.27.1':
     dependencies:
@@ -7383,18 +7350,6 @@ snapshots:
       '@babel/types': 7.24.0
       debug: 4.4.3(supports-color@9.4.0)
       globals: 11.12.0
-    transitivePeerDependencies:
-      - supports-color
-
-  '@babel/traverse@7.29.0':
-    dependencies:
-      '@babel/code-frame': 7.29.0
-      '@babel/generator': 7.29.1
-      '@babel/helper-globals': 7.28.0
-      '@babel/parser': 7.29.3
-      '@babel/template': 7.28.6
-      '@babel/types': 7.29.0
-      debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
 
@@ -9533,10 +9488,6 @@ snapshots:
       ms: 2.1.2
     optionalDependencies:
       supports-color: 9.4.0
-
-  debug@4.4.3:
-    dependencies:
-      ms: 2.1.3
 
   debug@4.4.3(supports-color@9.4.0):
     dependencies:

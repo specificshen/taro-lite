@@ -53,7 +53,7 @@ $ pnpm --filter [package-name] run dev
 ```json
 "pnpm": {
   "overrides": {
-    "@spcsn/taro-runner-utils": "/Users/.../taro/packages/taro-runner-utils"
+    "@spcsn/taro-runner-utils": "/Users/.../taro/archive/legacy-packages/taro-runner-utils"
   }
 },
 ```
