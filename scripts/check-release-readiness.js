@@ -844,6 +844,30 @@ function checkBusinessVisibleTypeContract() {
         /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|swan|tt|rn|h5)\b/g,
       message: 'business-visible share comments must not advertise unsupported platforms.',
     },
+    {
+      path: 'packages/taro/types/api/media/recorder.d.ts',
+      pattern:
+        /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|swan|tt|rn|h5)\b/g,
+      message: 'business-visible recorder comments must not advertise unsupported platforms.',
+    },
+    {
+      path: 'packages/taro/types/api/media/camera.d.ts',
+      pattern:
+        /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|swan|tt|rn|h5)\b/g,
+      message: 'business-visible camera comments must not advertise unsupported platforms.',
+    },
+    {
+      path: 'packages/taro/types/api/media/background-audio.d.ts',
+      pattern:
+        /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|swan|tt|rn|h5)\b/g,
+      message: 'business-visible background audio comments must not advertise unsupported platforms.',
+    },
+    {
+      path: 'packages/taro/types/api/media/map.d.ts',
+      pattern:
+        /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|swan|tt|rn|h5)\b/g,
+      message: 'business-visible map comments must not advertise unsupported platforms.',
+    },
   ];
 
   if (exposesUnsupportedConfig) {
