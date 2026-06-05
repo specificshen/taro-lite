@@ -1,15 +1,13 @@
-import * as path from 'node:path';
-
-import { TaroPlatformBase } from '@spcsn/taro-service';
-
-import { components } from './components';
-import { Template } from './template';
+const path = require('node:path');
+const { TaroPlatformBase } = require('@spcsn/taro-service');
+const { components } = require('./components');
+const { Template } = require('./template');
 
 interface WeappPluginOptions {
   enablekeyboardAccessory?: boolean;
 }
 
-export default class Weapp extends TaroPlatformBase {
+class Weapp extends TaroPlatformBase {
   template: InstanceType<typeof Template>;
   platform = 'weapp';
   globalObject = 'wx';
@@ -68,3 +66,5 @@ export default class Weapp extends TaroPlatformBase {
     }
   }
 }
+
+module.exports.default = Weapp;

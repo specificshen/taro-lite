@@ -20,9 +20,9 @@ import * as semver from 'semver';
 import { clearConsole, getPkgVersion, getRootPath } from '../util';
 import { TEMPLATE_CREATOR } from './constants';
 import Creator from './creator';
-import fetchTemplate from './fetchTemplate';
+import fetchTemplate from './fetch-template';
 
-import type { ITemplates } from './fetchTemplate';
+import type { ITemplates } from './fetch-template';
 
 export interface IProjectConf {
   projectName: string;

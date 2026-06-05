@@ -5,9 +5,9 @@ export default () => {
     plugins: [
       // hooks
       path.resolve(__dirname, 'hooks', 'build.js'),
-      path.resolve(__dirname, 'files', 'writeFileToDist.js'),
-      path.resolve(__dirname, 'files', 'generateProjectConfig.js'),
-      path.resolve(__dirname, 'files', 'generateFrameworkInfo.js'),
+      path.resolve(__dirname, 'files', 'write-file-to-dist.js'),
+      path.resolve(__dirname, 'files', 'generate-project-config.js'),
+      path.resolve(__dirname, 'files', 'generate-framework-info.js'),
     ],
   };
 };

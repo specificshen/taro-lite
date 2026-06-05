@@ -10,9 +10,9 @@ export default () => {
       path.resolve(__dirname, '../../src/presets', 'hooks', 'build.ts'),
 
       // 兼容其他平台小程序插件
-      path.resolve(__dirname, '../../src/presets', 'files', 'writeFileToDist.ts'),
-      path.resolve(__dirname, '../../src/presets', 'files', 'generateProjectConfig.ts'),
-      path.resolve(__dirname, '../../src/presets', 'files', 'generateFrameworkInfo.ts'),
+      path.resolve(__dirname, '../../src/presets', 'files', 'write-file-to-dist.ts'),
+      path.resolve(__dirname, '../../src/presets', 'files', 'generate-project-config.ts'),
+      path.resolve(__dirname, '../../src/presets', 'files', 'generate-framework-info.ts'),
     ],
   };
 };

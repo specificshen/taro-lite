@@ -4,7 +4,7 @@ import { dotenvParse, patchEnv } from '@spcsn/taro-helper';
 import { Config, Kernel } from '@spcsn/taro-service';
 import minimist from 'minimist';
 
-import customCommand from './commands/customCommand';
+import customCommand from './commands/custom-command';
 import { getPkgVersion, printNativeMiniDevBanner } from './util';
 
 const DEFAULT_FRAMEWORK = 'react';
