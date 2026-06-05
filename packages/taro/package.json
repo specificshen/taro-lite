@@ -47,8 +47,6 @@
   },
   "peerDependencies": {
     "@spcsn/taro-components": "workspace:*",
-    "@spcsn/taro-helper": "workspace:*",
-    "@spcsn/taro-shared": "workspace:*",
     "@types/react": "^19",
     "html-webpack-plugin": "^5",
     "rollup": "^3",

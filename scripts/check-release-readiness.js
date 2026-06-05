@@ -91,6 +91,7 @@ const privateWorkspacePackageNames = collectPrivateWorkspacePackageNames();
 checkPackageVersions();
 checkPublishSurfaceContract();
 checkPublicDependencyBoundaries();
+checkBusinessEntryPeerDependencyContract();
 checkReadmeBusinessDependencyContract();
 checkReadmeInternalPackageContract();
 checkInternalGuidanceDocContract();
@@ -177,6 +178,27 @@ function checkPublicDependencyBoundaries() {
     hasDependencyBoundaryErrors = true;
     errors.push(
       `${relative(packageJsonPath)}: ${packageJson.name} depends on private or workspace-excluded packages: ${invalidDependencyNames.join(', ')}`,
+    );
+  }
+}
+
+function checkBusinessEntryPeerDependencyContract() {
+  const hiddenPackageNames = [...PLANNED_INTERNAL_PACKAGES, ...bindingPackageNames];
+  const businessEntryPackageJsonPaths = publicPackageJsonPaths.filter((packageJsonPath) =>
+    BUSINESS_ENTRY_PACKAGES.includes(readJson(packageJsonPath).name),
+  );
+
+  for (const packageJsonPath of businessEntryPackageJsonPaths) {
+    const packageJson = readJson(packageJsonPath);
+    const invalidPeerDependencyNames = Object.keys(packageJson.peerDependencies || {}).filter((dependencyName) =>
+      hiddenPackageNames.includes(dependencyName),
+    );
+
+    if (invalidPeerDependencyNames.length === 0) continue;
+
+    hasDependencyBoundaryErrors = true;
+    errors.push(
+      `${relative(packageJsonPath)}: ${packageJson.name} peerDependencies must not expose internal packages: ${invalidPeerDependencyNames.join(', ')}`,
     );
   }
 }
