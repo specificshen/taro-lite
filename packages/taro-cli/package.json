@@ -15,7 +15,7 @@
     "test:coverage": "vitest run --coverage",
     "updateSnapshot": "vitest run --update",
     "prebuild": "pnpm run clean",
-    "build": "tsc || true",
+    "build": "tsc",
     "dev": "tsc -w",
     "clean": "rimraf dist"
   },
