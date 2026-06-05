@@ -35,7 +35,7 @@ declare module '../../index' {
 
   interface TaroStatic {
     /** 获取当前帐号信息
-     * @supported weapp, alipay, qq
+     * @supported weapp
      * @example
      * ```tsx
      * const accountInfo = Taro.getAccountInfoSync();

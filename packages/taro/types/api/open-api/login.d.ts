@@ -27,7 +27,7 @@ declare module '../../index' {
       /** 超时时间，单位ms */
       timeout?: number
       /** 未登录时, 是否强制调起登录框
-       * @supported tt
+       * @supported weapp
        * @default true
        */
       force?: boolean
@@ -38,11 +38,11 @@ declare module '../../index' {
       /** 调用结果 */
       errMsg: string
       /** 用于标识当前设备, 无论登录与否都会返回, 有效期 5 分钟。
-       * @supported tt
+       * @supported weapp
        */
       anonymousCode?: string
       /** 判断在当前 APP（头条、抖音等）是否处于登录状态。
-       * @supported tt
+       * @supported weapp
        */
       isLogin?: boolean
     }
@@ -67,7 +67,7 @@ declare module '../../index' {
     pluginLogin(option?: pluginLogin.Option): Promise<pluginLogin.SuccessCallbackResult>
 
     /** 调用接口获取登录凭证（code）。通过凭证进而换取用户登录态信息，包括用户的唯一标识（openid）及本次登录的会话密钥（session_key）等。用户数据的加解密通讯需要依赖会话密钥完成。更多使用方法详见 [小程序登录](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/login.html)。
-     * @supported weapp, jd, qq, tt, harmony_hybrid
+     * @supported weapp
      * @example
      * ```tsx
      * Taro.login({
@@ -95,7 +95,7 @@ declare module '../../index' {
      * 通过 Taro.login 接口获得的用户登录态拥有一定的时效性。用户越久未使用小程序，用户登录态越有可能失效。反之如果用户一直在使用小程序，则用户登录态一直保持有效。具体时效逻辑由微信维护，对开发者透明。开发者只需要调用 Taro.checkSession 接口检测当前用户登录态是否有效。
      *
      * 登录态过期后开发者可以再调用 Taro.login 获取新的用户登录态。调用 Taro.checkSession 成功说明当前 session_key 未过期，调用失败说明 session_key 已过期。更多使用方法详见 [小程序登录](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/login.html)。
-     * @supported weapp, swan, qq, tt
+     * @supported weapp
      * @example
      * ```tsx
      * Taro.checkSession({

@@ -15,7 +15,7 @@ declare module '../../index' {
       /** 收货人姓名 */
       userName: string
       /** 邮编
-       * @supported weapp, qq
+       * @supported weapp
        */
       postalCode: string
       /** 国标收货地址第一级地址 */
@@ -25,17 +25,17 @@ declare module '../../index' {
       /** 国标收货地址第三级地址 */
       countyName: string
       /** 国标收货地址第四级地址
-       * @supported weapp, qq
+       * @supported weapp
        */
       streetName: string
       /** 详细收货地址信息 */
       detailInfo: string
       /** 新选择器详细收货地址信息
-       * @supported weapp, qq
+       * @supported weapp
        */
       detailInfoNew: string
       /** 收货地址国家码
-       * @supported weapp, qq
+       * @supported weapp
        */
       nationalCode: string
       /** 收货人手机号码 */
@@ -45,7 +45,7 @@ declare module '../../index' {
 
   interface TaroStatic {
     /** 获取用户收货地址。调起用户编辑收货地址原生界面，并在编辑完成后返回用户选择的地址。
-     * @supported weapp, qq, tt, jd
+     * @supported weapp
      * @example
      * ```tsx
      * Taro.chooseAddress({

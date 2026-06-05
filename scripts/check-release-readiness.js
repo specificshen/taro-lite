@@ -772,6 +772,30 @@ function checkBusinessVisibleTypeContract() {
         /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|swan|tt|rn|h5)\b/g,
       message: 'business-visible NFC comments must not advertise unsupported platforms.',
     },
+    {
+      path: 'packages/taro/types/api/open-api/subscribe-message.d.ts',
+      pattern:
+        /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|swan|tt|rn|h5)\b/g,
+      message: 'business-visible subscribe message comments must not advertise unsupported platforms.',
+    },
+    {
+      path: 'packages/taro/types/api/open-api/address.d.ts',
+      pattern:
+        /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|swan|tt|rn|h5)\b/g,
+      message: 'business-visible address comments must not advertise unsupported platforms.',
+    },
+    {
+      path: 'packages/taro/types/api/open-api/account.d.ts',
+      pattern:
+        /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|swan|tt|rn|h5)\b/g,
+      message: 'business-visible account comments must not advertise unsupported platforms.',
+    },
+    {
+      path: 'packages/taro/types/api/open-api/login.d.ts',
+      pattern:
+        /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|swan|tt|rn|h5)\b/g,
+      message: 'business-visible login comments must not advertise unsupported platforms.',
+    },
   ];
 
   if (exposesUnsupportedConfig) {

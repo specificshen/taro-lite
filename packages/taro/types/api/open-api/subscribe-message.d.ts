@@ -5,15 +5,15 @@ declare module '../../index' {
     interface BaseOption {
       /**
        * 需要订阅的消息模板的id的集合（注意：iOS客户端7.0.6版本、Android客户端7.0.7版本之后的一次性订阅/长期订阅才支持多个模板消息，iOS客户端7.0.5版本、Android客户端7.0.6版本之前的一次订阅只支持一个模板消息）消息模板id在[微信公众平台(mp.weixin.qq.com)-功能-订阅消息]中配置
-       * @supported weapp, tt
+       * @supported weapp
        */
       tmplIds: string[]
       /** 需要订阅的消息模板 id 集合（注意：1、一次性模板 id 和长期性模板 id 不可同时使用，2、一次最多传入三个模板 id
-       * @supported alipay
+       * @supported weapp
        */
       entityIds: string[]
       /** 模板小程序 appId，仅在服务商代调用场景下需要传入
-       * @supported alipay
+       * @supported weapp
        */
       thirdTypeAppId?: string
       /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -59,7 +59,7 @@ declare module '../../index' {
        * | --- | ---- |
        * | subscribe | 订阅成功 |
        *
-       * @supported alipay
+       * @supported weapp
        */
       behavior?: string
       /** 一次性订阅，是否勾选 总是保持以上选择，不再询问。
@@ -69,7 +69,7 @@ declare module '../../index' {
        * | true | 勾选 |
        * | false | 未勾选 |
        *
-       * @supported alipay
+       * @supported weapp
        */
       keep?: boolean
       /** 长期性订阅，是否点击 拒绝，不再询问。
@@ -79,11 +79,11 @@ declare module '../../index' {
        * | true | 点击 |
        * | false | 未点击 |
        *
-       * @supported alipay
+       * @supported weapp
        */
       refuse?: boolean
       /** 订阅数据
-       * @supported alipay
+       * @supported weapp
        */
       result?: ISubscribeResult
       /** 本次订阅过程是否弹出了订阅面板。
@@ -93,7 +93,7 @@ declare module '../../index' {
        * | true | 弹出 |
        * | false | 未弹出 |
        *
-       * @supported alipay
+       * @supported weapp
        */
       show?: boolean
       /** 接口调用成功时errMsg值为'requestSubscribeMessage:ok' */
@@ -115,17 +115,17 @@ declare module '../../index' {
     interface TemplateReflex {
       /**
        * 表示用户同意订阅该条id对应的模板消息
-       * @supported weapp, alipay, tt
+       * @supported weapp
        */
       accept
       /**
        * 表示用户拒绝订阅该条id对应的模板消息
-       * @supported weapp, alipay, tt
+       * @supported weapp
        */
       reject
       /**
        * 表示已被后台封禁
-       * @supported weapp, tt
+       * @supported weapp
        */
       ban
       /**
@@ -134,7 +134,7 @@ declare module '../../index' {
        */
       filter
       /** 表示该条 id 对应的模版消息授权失败
-       * @supported tt
+       * @supported weapp
        */
       fail
     }
@@ -217,7 +217,7 @@ declare module '../../index' {
     /** 请求订阅消息
      *
      * 注意：[2.8.2](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html) 版本开始，用户发生点击行为或者发起支付回调后，才可以调起订阅消息界面。
-     * @supported weapp, tt
+     * @supported weapp
      * @example
      * ```tsx
      * Taro.requestSubscribeMessage({
@@ -255,7 +255,7 @@ declare module '../../index' {
     ): Promise<requestSubscribeDeviceMessage.SuccessCallbackResult | requestSubscribeDeviceMessage.FailCallbackResult>
 
     /** 取消当前用户已订阅的消息
-     * @supported alipay
+     * @supported weapp
      * @example
      * ```tsx
      * Taro.unsubscribeMessage({
@@ -276,7 +276,7 @@ declare module '../../index' {
     unsubscribeMessage(option: unsubscribeMessage.Option): void
 
     /** 小程序消息订阅服务，包括取消订阅和查询订阅；订阅操作详见 [form 表单](https://smartprogram.baidu.com/docs/develop/component/formlist_form/)。
-     * @supported swan
+     * @supported weapp
      * @example
      * ```tsx
      * Taro.subscribeService({
