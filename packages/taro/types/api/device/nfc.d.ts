@@ -542,47 +542,47 @@ declare module '../../index' {
   }
 
   /** NfcA 标签
-   * @supported weapp, tt
+   * @supported weapp
    * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/nfc/NfcA.html
    */
   interface NfcA {
     /** 断开连接
-     * @supported weapp, tt
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/nfc/NfcA.close.html
      */
     close(option?: NfcA.close.Option): Promise<TaroGeneral.NFCError>
     /** 连接 NFC 标签
-     * @supported weapp, tt
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/nfc/NfcA.connect.html
      */
     connect(option?: NfcA.connect.Option): Promise<TaroGeneral.NFCError>
     /** 获取 ATQA 信息
-     * @supported weapp, tt
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/nfc/NfcA.getAtqa.html
      */
     getAtqa(option?: NfcA.getAtqa.Option): Promise<TaroGeneral.NFCError>
     /** 获取最大传输长度
-     * @supported weapp, tt
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/nfc/NfcA.getMaxTransceiveLength.html
      */
     getMaxTransceiveLength(option?: NfcA.getMaxTransceiveLength.Option): Promise<TaroGeneral.NFCError>
     /** 获取 SAK 信息
-     * @supported weapp, tt
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/nfc/NfcA.getSak.html
      */
     getSak(option?: NfcA.getSak.Option): Promise<TaroGeneral.NFCError>
     /** 检查是否已连接
-     * @supported weapp, tt
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/nfc/NfcA.isConnected.html
      */
     isConnected(option?: NfcA.isConnected.Option): Promise<TaroGeneral.NFCError>
     /** 设置超时时间
-     * @supported weapp, tt
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/nfc/NfcA.setTimeout.html
      */
     setTimeout(option?: NfcA.setTimeout.Option): Promise<TaroGeneral.NFCError>
     /** 发送数据
-     * @supported weapp, tt
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/nfc/NfcA.transceive.html
      */
     transceive(option?: NfcA.transceive.Option): Promise<TaroGeneral.NFCError>
@@ -701,7 +701,7 @@ declare module '../../index' {
      */
     getIsoDep(): IsoDep
     /** 获取MifareClassic实例，实例支持MIFARE Classic标签的读写
-     * @supported weapp, tt
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/nfc/NFCAdapter.getMifareClassic.html
      */
     getMifareClassic(): MifareClassic
@@ -716,7 +716,7 @@ declare module '../../index' {
      */
     getNdef(): Ndef
     /** 获取NfcA实例，实例支持NFC-A (ISO 14443-3A)标准的读写
-     * @supported weapp, tt
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/nfc/NFCAdapter.getNfcA.html
      */
     getNfcA(): NfcA
@@ -736,7 +736,7 @@ declare module '../../index' {
      */
     getNfcV(): NfcV
     /** 取消监听 NFC Tag
-     * @supported weapp, tt
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/nfc/NFCAdapter.offDiscovered.html
      */
     offDiscovered(
@@ -744,7 +744,7 @@ declare module '../../index' {
       callback?: NFCAdapter.onDiscovered.Callback,
     ): void
     /** 监听 NFC Tag
-     * @supported weapp, tt
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/nfc/NFCAdapter.onDiscovered.html
      */
     onDiscovered(
@@ -752,12 +752,12 @@ declare module '../../index' {
       callback: NFCAdapter.onDiscovered.Callback,
     ): void
     /** 开始扫描NFC标签
-     * @supported weapp, tt
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/nfc/NFCAdapter.startDiscovery.html
      */
     startDiscovery(option?: NFCAdapter.startDiscovery.Option): Promise<TaroGeneral.NFCError>
     /** 关闭NFC标签扫描
-     * @supported weapp, tt
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/nfc/NFCAdapter.stopDiscovery.html
      */
     stopDiscovery(option?: NFCAdapter.stopDiscovery.Option): Promise<TaroGeneral.NFCError>
@@ -776,7 +776,7 @@ declare module '../../index' {
         /** NdefMessage 数组，消息格式为 {id: ArrayBuffer, type: ArrayBuffer, payload: ArrayBuffer} */
         messages: NdefMessage[]
         /** NFC标签的UID
-         * @supported tt
+         * @supported weapp
          */
         id?: ArrayBuffer
       }
@@ -1216,7 +1216,7 @@ declare module '../../index' {
     ): void
 
     /** 获取 NFC 实例
-     * @supported weapp, tt
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/nfc/wx.getNFCAdapter.html
      */
     getNFCAdapter(): NFCAdapter
