@@ -9,6 +9,16 @@ const rootPackage = readJson(path.join(rootDir, 'package.json'));
 const expectedVersion = rootPackage.version;
 const skipBindings = process.argv.includes('--skip-bindings');
 
+const BUSINESS_ENTRY_PACKAGES = ['@spcsn/taro', '@spcsn/taro-components', '@spcsn/taro-cli'];
+
+const PLANNED_INTERNAL_PACKAGES = [
+  '@spcsn/taro-service',
+  '@spcsn/taro-vite-runner',
+  '@spcsn/taro-helper',
+  '@spcsn/taro-shared',
+  '@spcsn/taro-runtime',
+];
+
 const README_BUSINESS_DEPENDENCIES = {
   dependencies: ['@spcsn/taro', '@spcsn/taro-components'],
   devDependencies: ['@spcsn/taro-cli'],
@@ -59,12 +69,16 @@ let hasVersionErrors = false;
 let hasBindingErrors = false;
 let hasDependencyBoundaryErrors = false;
 let hasReadmeContractErrors = false;
+let hasPublishSurfaceErrors = false;
 
+const bindingPackageNames = ['@spcsn/taro-binding', ...BINDINGS.map((binding) => binding.name)];
+const expectedPublicPackageNames = [...BUSINESS_ENTRY_PACKAGES, ...PLANNED_INTERNAL_PACKAGES, ...bindingPackageNames];
 const publicPackageJsonPaths = collectPublicPackageJsonPaths();
 const publicPackageNames = publicPackageJsonPaths.map((packageJsonPath) => readJson(packageJsonPath).name);
 const privateWorkspacePackageNames = collectPrivateWorkspacePackageNames();
 
 checkPackageVersions();
+checkPublishSurfaceContract();
 checkPublicDependencyBoundaries();
 checkReadmeBusinessDependencyContract();
 if (!skipBindings) checkBindingPackages();
@@ -84,13 +98,14 @@ if (errors.length > 0) {
     console.log('- Remove private or excluded workspace packages from public package dependencies.');
   if (hasReadmeContractErrors)
     console.log('- Keep README minimal business dependencies aligned with the supported public contract.');
+  if (hasPublishSurfaceErrors)
+    console.log('- Keep package publish surface aligned with docs/package-consolidation.md.');
   if (hasBindingErrors) console.log('- Run pnpm run artifacts before checking binding platform packages.');
   if (!skipBindings) console.log('- Use --skip-bindings only for a version-only local check.');
   process.exit(1);
 }
 
-console.log('Public package publish list:\n');
-publicPackageNames.forEach((packageName) => console.log(`- ${packageName}`));
+printPublishSurface();
 console.log('\nRelease readiness check passed.');
 
 function checkPackageVersions() {
@@ -105,6 +120,25 @@ function checkPackageVersions() {
         `${relative(packageJsonPath)}: ${packageJson.name} version is ${packageJson.version}, expected ${expectedVersion}`,
       );
     }
+  }
+}
+
+function checkPublishSurfaceContract() {
+  const missingPackageNames = expectedPublicPackageNames.filter(
+    (packageName) => !publicPackageNames.includes(packageName),
+  );
+  const unexpectedPackageNames = publicPackageNames.filter(
+    (packageName) => !expectedPublicPackageNames.includes(packageName),
+  );
+
+  if (missingPackageNames.length > 0) {
+    hasPublishSurfaceErrors = true;
+    errors.push(`Publish surface is missing expected public packages: ${missingPackageNames.join(', ')}`);
+  }
+
+  if (unexpectedPackageNames.length > 0) {
+    hasPublishSurfaceErrors = true;
+    errors.push(`Publish surface contains unexpected public packages: ${unexpectedPackageNames.join(', ')}`);
   }
 }
 
@@ -176,6 +210,29 @@ function checkBindingPackages() {
       errors.push(`${binding.name}: ${binding.nodeFile} is too small (${fileSizeMB}MB)`);
     }
   }
+}
+
+function printPublishSurface() {
+  console.log('Business entry packages:\n');
+  printPackageGroup(BUSINESS_ENTRY_PACKAGES);
+
+  console.log('\nPlanned internal packages still published for install compatibility:\n');
+  printPackageGroup(PLANNED_INTERNAL_PACKAGES);
+
+  console.log('\nNative binding packages:\n');
+  printPackageGroup(bindingPackageNames);
+
+  const otherPackageNames = publicPackageNames.filter(
+    (packageName) => !expectedPublicPackageNames.includes(packageName),
+  );
+  if (otherPackageNames.length > 0) {
+    console.log('\nOther public packages:\n');
+    printPackageGroup(otherPackageNames);
+  }
+}
+
+function printPackageGroup(packageNames) {
+  packageNames.forEach((packageName) => console.log(`- ${packageName}`));
 }
 
 function collectPackageJsonPaths() {
