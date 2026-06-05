@@ -1,4 +1,3 @@
-/* eslint-disable brace-style */
 import path from 'node:path';
 
 import generate from '@babel/generator';
@@ -245,9 +244,8 @@ function insertUseBuiltInsProp(obj: t.ObjectExpression) {
   // 如果有 useBuiltIns 属性，直接替换值
   if (useBuiltInProp) {
     useBuiltInProp.value = builtInValue;
-  }
-  // 没有 useBuiltIns 属性，直接添加
-  else {
+  } else {
+    // 没有 useBuiltIns 属性，直接添加
     obj.properties.push(t.objectProperty(t.identifier(USE_BUILT_INS), builtInValue));
   }
 }
