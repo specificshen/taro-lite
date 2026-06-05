@@ -81,80 +81,6 @@ declare module './index' {
      * 支持 static / manual / auto
      */
     handleWebviewPreload?: string
-    /** 是否允许向下拉拽。
-     * @default: "YES"
-     * @supported alipay
-     */
-    allowsBounceVertical?: 'YES' | 'NO'
-    /**
-     * 下拉露出显示背景图的底色。例：白色 "#FFFFFF"。**仅安卓下有效，iOS 下页面背景图底色会使用 backgroundColor 的值**
-     * @supported alipay
-     * @type {HexColor}
-     */
-    backgroundImageColor?: string
-    /**
-     * 下拉露出显示背景图的链接
-     * @supported alipay
-     */
-    backgroundImageUrl?: string
-    /**
-     * 页面默认标题
-     * @supported alipay
-     */
-    defaultTitle?: string
-    /**
-     * 仅支持 Android，是否显示 WebView 滚动条。默认 YES，支持 YES / NO。
-     * @default "YES"
-     * @supported alipay
-     */
-    enableScrollBar?: string
-    /**
-     * 仅支持 iOS，是否支持手势返回。默认 YES，支持 YES / NO。
-     * @supported alipay
-     */
-    gestureBack?: string
-    /** 是否允许下拉刷新
-     * @desc
-     * 1. 下拉刷新生效的前提是 allowsBounceVertical 值为 true
-     * 2. window 全局配置后全局生效，但是如果单个页面配置了该参数，以页面的配置为准。
-     * @default true
-     * @supported alipay
-     */
-    pullRefresh?: boolean
-    /**
-     * rpx 单位是否宽度自适应 ，默认 true，当设置为 false 时，2 rpx 将恒等于 1 px，不再根据屏幕宽度进行自适应，注意，此时 750 rpx 将不再等于 100% 宽度。
-     * @supported alipay
-     */
-    responsive?: boolean
-    /**
-     * 	是否进入时显示导航栏的 loading。默认 NO，支持 YES / NO。
-     * @default "NO"
-     * @supported alipay
-     */
-    showTitleLoading?: string
-    /**
-     * 导航栏透明设置。默认 none，支持 always 一直透明 / auto 滑动自适应 / none 不透明。
-     * @default "none"
-     * @supported alipay
-     */
-    transparentTitle?: string
-    /**
-     * 是否允许导航栏点击穿透。默认 NO，支持 YES / NO。
-     * @default "NO"
-     * @supported alipay
-     */
-    titlePenetrate?: string
-    /**
-     * 导航栏图片地址。
-     * @supported alipay
-     */
-    titleImage?: string
-    /**
-     * 导航栏背景色。例：白色 "#FFFFFF"。
-     * @supported alipay
-     * @type {HexColor}
-     */
-    titleBarColor?: string
   }
 
   interface PageConfig extends CommonConfig {
@@ -246,18 +172,6 @@ declare module './index' {
      * shared 表示页面 wxss 样式将影响到自定义组件，自定义组件 wxss 中指定的样式也会影响页面和其他设置了 apply-shared 或 shared 的自定义组件。（这个选项在插件中不可用。）
      */
     styleIsolation?: 'isolated' | 'apply-shared' | 'shared'
-    /**
-     * 设置导航栏额外图标，目前支持设置属性 icon，值为图标 url（以 https/http 开头）或 base64 字符串，大小建议 30*30 px
-     *
-     * 点击后触发 onOptionMenuClick（**注意**：该配置即将废弃。）。
-     *  @supported alipay
-     */
-    optionMenu?: Record<string, string>
-    /**
-     * 设置导航栏图标主题，仅支持真机预览。"default" 为蓝色图标，"light" 为白色图标。
-     * @supported alipay
-     */
-    barButtonTheme?: string
   }
 
   interface WindowConfig extends CommonConfig {}
@@ -415,20 +329,6 @@ declare module './index' {
       [key: string]: unknown
     }
   }
-
-  interface Behavior {
-    /**
-     * 使用小程序默认分享功能时（即不显式设置 Page.onShareAppMessage），当设置此字段后，会使客户端生成的用于分享的 scheme 带上当前用户打开的页面所携带的 query 参数。
-     * @supported alipay 基础库 2.7.10 及以上开始支持，同时需使用 IDE 2.7.0 及以上版本进行构建。
-     */
-    shareAppMessage?: 'appendQuery'
-    /**
-     * 小程序在解析全局参数、页面参数时默认会对键/值做 encodeURIComponent。当设置为 disable 后，则不再对键/值做encodeURIComponent
-     * @supported alipay 基础库 2.7.19 及以上开始支持，同时需使用 IDE 3.0.0 及以上版本进行构建。
-     */
-    decodeQuery?: 'disable'
-  }
-
   export interface AppConfig {
     /** 小程序默认启动首页，未指定 entryPagePath 时，数组的第一项代表小程序的初始页面（首页）。 */
     entryPagePath?: string
@@ -631,11 +531,6 @@ declare module './index' {
      * @since 3.3.18
      */
     appId?: string
-    /** 是否开启 h5 端路由动画功能，默认开启
-     * @supported h5
-     * @since 3.3.18
-     */
-    animation?: RouterAnimate | boolean
     /**
      * 指定小程序全局的默认渲染后端。
      * @default "webview"
@@ -673,21 +568,6 @@ declare module './index' {
      * @see https://dev.weixin.qq.com/docs/framework/guideline/devtools/condition-compile.html#%E8%B5%84%E6%BA%90
      */
     static?: { pattern: string; platforms: string[] }[]
-    /**
-     * 	动态插件配置规则,声明小程序需要使用动态插件
-     * @supported alipay
-     */
-    useDynamicPlugins?: boolean
-    /**
-     * 用于改变小程序若干运行行为
-     * @supported alipay
-     */
-    behavior?: Behavior
-    /**
-     * 用于开启抖音小程序的 tt-dom 渲染模式
-     * @supported tt
-     */
-    enableTTDom?: boolean
   }
 
   interface Config extends PageConfig, AppConfig {

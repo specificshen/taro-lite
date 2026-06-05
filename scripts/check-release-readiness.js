@@ -410,6 +410,24 @@ function checkBusinessVisibleTypeContract() {
   ];
   const externalBuildTypeImportPattern = /from ['"](webpack|webpack-chain|rollup|postcss)['"]/g;
   const unsupportedCompilerContextPattern = /Vite(H5|Harmony)(BuildConfig|CompilerContext)|IH5Config|IHarmonyConfig/g;
+  const unsupportedBusinessVisibleTypePatterns = [
+    {
+      path: 'packages/taro/types/taro.config.d.ts',
+      pattern:
+        /allowsBounceVertical|backgroundImageColor|backgroundImageUrl|defaultTitle|enableScrollBar|gestureBack|pullRefresh|responsive|showTitleLoading|transparentTitle|titlePenetrate|titleImage|titleBarColor|optionMenu|barButtonTheme|useDynamicPlugins|enableTTDom|interface Behavior\b|behavior\?: Behavior|animation\?: RouterAnimate/g,
+      message: 'business-visible app/page config types must not expose unsupported H5/Alipay/TT fields.',
+    },
+    {
+      path: 'packages/taro/types/taro.component.d.ts',
+      pattern: /onKeyboardHeight\?/g,
+      message: 'business-visible lifecycle types must not expose unsupported Alipay lifecycle hooks.',
+    },
+    {
+      path: 'packages/taro-components/types/Button.d.ts',
+      pattern: /keyof openTypeKeys\['(alipay|qq|tt|ascf)'\]|\b(alipay|qq|tt|ascf): \{/g,
+      message: 'business-visible Button open-type types must only expose WeApp supported values.',
+    },
+  ];
 
   if (exposesUnsupportedConfig) {
     hasBusinessFixtureContractErrors = true;
@@ -440,6 +458,16 @@ function checkBusinessVisibleTypeContract() {
     errors.push(
       `${relative(apiEntryPath)}: business-visible API types must only expose WeApp supported API references.`,
     );
+  }
+
+  for (const typeContract of unsupportedBusinessVisibleTypePatterns) {
+    const typePath = path.join(rootDir, typeContract.path);
+    const source = fs.readFileSync(typePath, 'utf8');
+    const unsupportedTypeMatches = [...new Set(source.match(typeContract.pattern) || [])];
+    if (unsupportedTypeMatches.length === 0) continue;
+
+    hasBusinessFixtureContractErrors = true;
+    errors.push(`${typeContract.path}: ${typeContract.message} ${unsupportedTypeMatches.join(', ')}`);
   }
 
   for (const typePath of supportedConfigTypePaths) {
