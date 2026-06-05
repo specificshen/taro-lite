@@ -53,20 +53,19 @@ export class TaroElement extends TaroNode {
   }
 
   private _stopPropagation(event: TaroEvent) {
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    let target = this;
-    // eslint-disable-next-line no-cond-assign
-    while ((target = target.parentNode as this)) {
-      const listeners = target.__handlers[event.type];
+    let parentNode = this.parentNode as TaroElement | null;
 
-      if (!isArray(listeners)) {
-        continue;
+    while (parentNode) {
+      const listeners = parentNode.__handlers[event.type];
+
+      if (isArray(listeners)) {
+        for (let i = listeners.length; i--; ) {
+          const listener = listeners[i];
+          listener._stop = true;
+        }
       }
 
-      for (let i = listeners.length; i--; ) {
-        const l = listeners[i];
-        l._stop = true;
-      }
+      parentNode = parentNode.parentNode as TaroElement | null;
     }
   }
 
