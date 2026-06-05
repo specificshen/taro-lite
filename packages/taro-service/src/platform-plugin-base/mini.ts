@@ -60,22 +60,34 @@ export abstract class TaroPlatformBase<T extends TConfig = TConfig> extends Taro
     const watchHint = this.ctx.runOpts?.isWatch ? '我盯着文件，你放心写' : '一锤定音，构建完就收工';
     const minifyLabel = process.env.TARO_MINIFY === 'true' || isProduction ? '开启' : '关闭';
     const humorLine = isProduction ? '✨ 今天的产物会比较克制，适合上线见人。' : '☕ 别慌，代码正在穿微信小程序外套。';
+    const contentWidth = 54;
+    const line = (content: string, color: (value: string) => string) => {
+      return chalk.cyanBright('│') + color(this.padEndByDisplayWidth(content, contentWidth)) + chalk.cyanBright('│');
+    };
 
     const lines = [
-      chalk.cyanBright('╭────────────────────────────────────────────────────╮'),
-      chalk.cyanBright('│') + chalk.magentaBright('  🚀 SPCSN Taro 小程序构建站已开张                 ') + chalk.cyanBright('│'),
-      chalk.cyanBright('│') + chalk.gray('                                                    ') + chalk.cyanBright('│'),
-      chalk.cyanBright('│') + chalk.greenBright(`  模式  ${modeLabel}  ·  ${modeHint}              `) + chalk.cyanBright('│'),
-      chalk.cyanBright('│') + chalk.blueBright(`  目标  ${this.platform}  ·  React 19 × Vite × Skyline     `) + chalk.cyanBright('│'),
-      chalk.cyanBright('│') + chalk.yellowBright(`  压缩  ${minifyLabel}  ·  输出微信小程序产物              `) + chalk.cyanBright('│'),
-      chalk.cyanBright('│') + chalk.cyanBright(`  节奏  ${watchLabel}  ·  ${watchHint}          `) + chalk.cyanBright('│'),
-      chalk.cyanBright('│') + chalk.gray('                                                    ') + chalk.cyanBright('│'),
-      chalk.cyanBright('│') + chalk.whiteBright(`  ${humorLine}       `) + chalk.cyanBright('│'),
-      chalk.cyanBright('╰────────────────────────────────────────────────────╯'),
+      chalk.cyanBright(`╭${'─'.repeat(contentWidth)}╮`),
+      line('  🚀 SPCSN Taro 小程序构建站已开张', chalk.magentaBright),
+      line('', chalk.gray),
+      line(`  模式  ${modeLabel}  ·  ${modeHint}`, chalk.greenBright),
+      line(`  目标  ${this.platform}  ·  React 19 × Vite × Skyline`, chalk.blueBright),
+      line(`  压缩  ${minifyLabel}  ·  输出微信小程序产物`, chalk.yellowBright),
+      line(`  节奏  ${watchLabel}  ·  ${watchHint}`, chalk.cyanBright),
+      line('', chalk.gray),
+      line(`  ${humorLine}`, chalk.whiteBright),
+      chalk.cyanBright(`╰${'─'.repeat(contentWidth)}╯`),
     ];
 
     console.log(lines.join('\n'));
     console.log();
+  }
+
+  private padEndByDisplayWidth(content: string, targetWidth: number) {
+    const contentWidth = Array.from(content).reduce((width, character) => {
+      return width + (/[^\u0020-\u007e]/.test(character) ? 2 : 1);
+    }, 0);
+
+    return content + ' '.repeat(Math.max(targetWidth - contentWidth, 0));
   }
 
   /**
