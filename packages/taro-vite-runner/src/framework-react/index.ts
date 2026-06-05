@@ -1,19 +1,36 @@
-// @ts-nocheck
 import { isString } from '@spcsn/taro-shared';
 
 import { miniVitePlugin } from './vite.mini';
 
 import type { PluginOption } from 'vite';
 
-type IPluginContext = any;
-
 export type Frameworks = 'react';
 
-export function isReactLike(framework: any = 'react'): framework is Frameworks {
+export interface FrameworkPluginContext {
+  initialConfig: {
+    framework?: unknown;
+    mini?: {
+      debugReact?: boolean;
+    };
+  };
+  modifyRunnerOpts: (fn: (args: { opts?: RunnerOptions }) => void) => void;
+  runnerUtils: {
+    getViteMiniCompilerContext: (rollupContext: unknown) => { loaderMeta?: Record<string, unknown> } | undefined;
+  };
+}
+
+interface RunnerOptions {
+  compiler?: string | {
+    type: string;
+    vitePlugins?: PluginOption[];
+  };
+}
+
+export function isReactLike(framework: unknown = 'react'): framework is Frameworks {
   return framework === 'react';
 }
 
-export default (ctx: IPluginContext) => {
+export default (ctx: FrameworkPluginContext) => {
   const { framework = 'react' } = ctx.initialConfig;
 
   if (!isReactLike(framework)) return;
@@ -37,12 +54,5 @@ export default (ctx: IPluginContext) => {
 };
 
 function VitePresetPlugin(): PluginOption {
-  return require('@vitejs/plugin-react').default({
-    babel: {
-      plugins: [
-        ['@babel/plugin-proposal-decorators', { legacy: true }],
-        ['@babel/plugin-transform-class-properties', { loose: true }],
-      ],
-    },
-  });
+  return require('@vitejs/plugin-react').default();
 }

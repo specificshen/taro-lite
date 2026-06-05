@@ -13,14 +13,12 @@ import { PLATFORM_TYPE } from '@spcsn/taro-shared';
 
 import { getDefaultPostcssConfig } from './postcss';
 import {
-  getBabelOption,
   getCSSModulesOptions,
   getMinify,
   getMode,
   getPostcssPlugins,
   stripMultiPlatformExt,
 } from '../utils';
-import { createBabelTransformPlugin } from '../utils/babel';
 import { DEFAULT_TERSER_OPTIONS, MINI_EXCLUDE_POSTCSS_PLUGIN_NAME } from '../utils/constants';
 import { logger } from '../utils/logger';
 
@@ -60,7 +58,7 @@ async function removeSourceMapFiles(dir: string) {
 }
 
 export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOption {
-  const { taroConfig, cwd: appPath, sourceDir } = viteCompilerContext;
+  const { taroConfig, cwd: appPath } = viteCompilerContext;
   const outputRoot = path.join(appPath, taroConfig.outputRoot || 'dist');
   const enableSourceMap = taroConfig.enableSourceMap ?? false;
   const compactWatch = taroConfig.isWatch && !enableSourceMap;
@@ -266,14 +264,6 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
               chunkFileNames: taroConfig.output!.chunkFileNames,
               manualChunks: getManualChunks(),
             },
-            plugins: [
-              createBabelTransformPlugin(
-                getBabelOption(taroConfig, {
-                  defaultExclude: [],
-                  defaultInclude: [sourceDir, /(?<=node_modules[\\/]).*taro/],
-                }),
-              ),
-            ],
           },
           commonjsOptions: {
             exclude: [/\.esm/, /[/\\]esm[/\\]/],
