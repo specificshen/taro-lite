@@ -43,7 +43,6 @@
     "autoprefixer": "^10.4.19",
     "html-minifier": "^4.0.0",
     "lodash": "^4.17.21",
-    "mrmime": "^2.0.0",
     "picomatch": "^4.0.2",
     "postcss": "^8.5.6",
     "postcss-modules": "^6.0.0",

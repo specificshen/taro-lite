@@ -1,6 +1,7 @@
+import * as path from 'node:path';
+
 import { fs, REG_FONT, REG_IMAGE, REG_MEDIA } from '@spcsn/taro-helper';
 import { isBoolean, isString } from '@spcsn/taro-shared';
-import mrmime from 'mrmime';
 
 import { isVirtualModule } from '../utils';
 
@@ -14,6 +15,29 @@ const queryRE = /\?.*$/s;
 const hashRE = /#.*$/s;
 
 const cleanUrl = (url: string): string => url.replace(hashRE, '').replace(queryRE, '');
+
+const ASSET_MIME_TYPES: Record<string, string> = {
+  '.aac': 'audio/aac',
+  '.gif': 'image/gif',
+  '.jpeg': 'image/jpeg',
+  '.jpg': 'image/jpeg',
+  '.m4a': 'audio/mp4',
+  '.mp3': 'audio/mpeg',
+  '.mp4': 'video/mp4',
+  '.otf': 'font/otf',
+  '.png': 'image/png',
+  '.svg': 'image/svg+xml',
+  '.ttf': 'font/ttf',
+  '.wav': 'audio/wav',
+  '.webm': 'video/webm',
+  '.webp': 'image/webp',
+  '.woff': 'font/woff',
+  '.woff2': 'font/woff2',
+};
+
+function getAssetMimeType(id: string): string {
+  return ASSET_MIME_TYPES[path.extname(cleanUrl(id)).toLowerCase()] ?? 'application/octet-stream';
+}
 
 export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOption {
   const { taroConfig, sourceDir } = viteCompilerContext;
@@ -65,7 +89,7 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
 
       let url: string;
       if (limit === true || (typeof limit === 'number' && source.length < limit)) {
-        const mimeType = mrmime.lookup(id) ?? 'application/octet-stream';
+        const mimeType = getAssetMimeType(id);
         url = `data:${mimeType};base64,${source.toString('base64')}`;
       } else {
         let fileName = id.replace(sourceDir + '/', '');
