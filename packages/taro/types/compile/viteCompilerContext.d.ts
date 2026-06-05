@@ -1,5 +1,3 @@
-import type { RecursiveTemplate, UnRecursiveTemplate } from '@spcsn/taro-shared/dist/template'
-
 import type { PluginContext } from 'rollup'
 import type { IMiniFilesConfig, IH5Config, IHarmonyConfig, IMiniAppConfig } from './config'
 import type { IProjectConfig } from './config/project'
@@ -26,6 +24,17 @@ export interface ViteFileType {
   templ: string
   style: string
   xs?: string
+}
+
+export interface ViteMiniTemplate {
+  isSupportRecursive: boolean
+  isUseCompileMode?: boolean
+  isUseXS?: boolean
+  buildBaseComponentTemplate: (ext: string) => string
+  buildCustomComponentTemplate: (ext: string) => string
+  buildPageTemplate: (baseTempPath: string, page?: { content: Record<string, any>; path: string }) => string
+  buildTemplate: (componentConfig: IComponentConfig) => string
+  buildXScript: () => string
 }
 
 export interface ViteAppMeta {
@@ -84,7 +93,7 @@ export interface ViteMiniBuildConfig extends CommonBuildConfig, IMiniAppConfig<'
   nodeModulesPath: string
   fileType: ViteFileType
   globalObject: string
-  template: RecursiveTemplate | UnRecursiveTemplate
+  template: ViteMiniTemplate
   runtimePath?: string | string[]
   taroComponentsPath: string
   blended?: boolean

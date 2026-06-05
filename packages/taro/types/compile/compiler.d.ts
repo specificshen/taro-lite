@@ -1,5 +1,6 @@
-import type { swc } from '@spcsn/taro-helper'
 import type Webpack from 'webpack'
+
+export type SwcConfig = Record<string, any>
 
 export type CompilerViteTypes = 'vite'
 
@@ -15,7 +16,7 @@ interface IPrebundle {
   include?: string[]
   exclude?: string[]
   esbuild?: Record<string, any>
-  swc?: swc.Config
+  swc?: SwcConfig
   webpack?: Webpack.Configuration & {
     provide?: any[]
   }

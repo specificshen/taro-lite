@@ -1,9 +1,13 @@
-import type { options } from '@spcsn/taro-runtime'
-
 import Taro from './index'
+
+export interface TaroRuntimeOptions {
+  prerender: boolean
+  debug: boolean
+  miniGlobal?: any
+}
 
 declare module './index' {
   interface TaroStatic {
-    options: typeof options
+    options: TaroRuntimeOptions
   }
 }
