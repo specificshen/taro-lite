@@ -545,6 +545,26 @@ function checkBusinessVisibleTypeContract() {
       pattern: /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|rn|h5)\b/g,
       message: 'business-visible animation comments must not advertise unsupported platforms.',
     },
+    {
+      path: 'packages/taro/types/api/ui/interaction.d.ts',
+      pattern: /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|rn|h5)\b/g,
+      message: 'business-visible interaction comments must not advertise unsupported platforms.',
+    },
+    {
+      path: 'packages/taro/types/api/navigate/index.d.ts',
+      pattern: /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|rn|h5)\b/g,
+      message: 'business-visible navigate comments must not advertise unsupported platforms.',
+    },
+    {
+      path: 'packages/taro/types/api/route/index.d.ts',
+      pattern: /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|rn|h5)\b/g,
+      message: 'business-visible route comments must not advertise unsupported platforms.',
+    },
+    {
+      path: 'packages/taro/types/api/framework/index.d.ts',
+      pattern: /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|rn|h5)\b/g,
+      message: 'business-visible framework comments must not advertise unsupported platforms.',
+    },
   ];
 
   if (exposesUnsupportedConfig) {
