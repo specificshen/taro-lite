@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Current } from '@spcsn/taro-runtime';
 import { isArray, isFunction } from '@spcsn/taro-shared';
 

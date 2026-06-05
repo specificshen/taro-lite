@@ -1,15 +1,11 @@
 import { VITE_COMPILER_LABEL } from './constant';
 
-import type {
-  ViteH5CompilerContext,
-  ViteHarmonyCompilerContext,
-  ViteMiniCompilerContext,
-} from '@spcsn/taro/types/compile/viteCompilerContext';
+import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
 import type { PluginContext } from 'rollup';
 
 export async function getViteH5CompilerContext(
   rollupPluginContext: PluginContext,
-): Promise<ViteH5CompilerContext | void> {
+): Promise<ViteMiniCompilerContext | void> {
   const info =
     process.env.NODE_ENV === 'production'
       ? rollupPluginContext.getModuleInfo(VITE_COMPILER_LABEL)
@@ -20,7 +16,7 @@ export async function getViteH5CompilerContext(
 
 export async function getViteHarmonyCompilerContext(
   rollupPluginContext: PluginContext,
-): Promise<ViteHarmonyCompilerContext | void> {
+): Promise<ViteMiniCompilerContext | void> {
   const info =
     process.env.NODE_ENV === 'production'
       ? rollupPluginContext.getModuleInfo(VITE_COMPILER_LABEL)

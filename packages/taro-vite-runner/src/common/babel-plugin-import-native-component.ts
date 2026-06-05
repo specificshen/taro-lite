@@ -3,15 +3,12 @@ import path from 'node:path';
 import { resolveMainFilePath } from '@spcsn/taro-helper';
 
 import type * as BabelCore from '@babel/core';
-import type {
-  ViteHarmonyCompilerContext,
-  ViteMiniCompilerContext,
-} from '@spcsn/taro/types/compile/viteCompilerContext';
+import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
 
 const IMPORT_COMPONENT_NAME = 'importNativeComponent';
 
 type TCallback = (path: string | false, name?: string, exportName?: string) => string;
-export default (compiler: ViteHarmonyCompilerContext | ViteMiniCompilerContext, id: string, cb: TCallback) => {
+export default (compiler: ViteMiniCompilerContext, id: string, cb: TCallback) => {
   return function pluginImportNativeComponent(babel: typeof BabelCore): BabelCore.PluginObj<BabelCore.PluginPass> {
     const t = babel.types as any;
     let enableImportComponent = true;

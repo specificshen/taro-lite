@@ -1,15 +1,14 @@
-// @ts-nocheck
 import path from 'node:path';
 
 import * as acorn from 'acorn';
 import * as walk from 'acorn-walk';
 
-import { Frameworks } from './index';
+import type { Frameworks } from './index';
 
 import type { ILoaderMeta } from '@spcsn/taro/types/compile/config/plugin';
 
-function addConfig(source) {
-  const configsMap = {
+function addConfig(source: string) {
+  const configsMap: Record<string, string[]> = {
     enableShareAppMessage: ['onShareAppMessage', 'useShareAppMessage'],
     enableShareTimeline: ['onShareTimeline', 'useShareTimeline'],
   };
@@ -45,7 +44,7 @@ function addConfig(source) {
       } else if (callee.type === 'MemberExpression') {
         if (callee.property.type === 'Identifier') {
           check(callee.property.name);
-        } else if (callee.property.type === 'Literal') {
+        } else if (callee.property.type === 'Literal' && typeof callee.property.value === 'string') {
           check(callee.property.value);
         }
       }
@@ -65,8 +64,8 @@ function addConfig(source) {
         if (method.type === 'MethodDefinition') {
           if (method.key.type === 'Identifier') {
             check(method.key.name);
-          } else if (method.key.type === 'Literal') {
-            check(method.key.value as string);
+          } else if (method.key.type === 'Literal' && typeof method.key.value === 'string') {
+            check(method.key.value);
           }
         }
       });
@@ -80,8 +79,8 @@ function addConfig(source) {
         if (method.type === 'MethodDefinition') {
           if (method.key.type === 'Identifier') {
             check(method.key.name);
-          } else if (method.key.type === 'Literal') {
-            check(method.key.value as string);
+          } else if (method.key.type === 'Literal' && typeof method.key.value === 'string') {
+            check(method.key.value);
           }
         }
       });

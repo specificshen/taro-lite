@@ -1,7 +1,6 @@
-// @ts-nocheck
 import { EMPTY_OBJ } from '@spcsn/taro-shared';
 
-import type React from 'react';
+import type * as React from 'react';
 
 interface ReactMeta {
   PageContext: React.Context<string>;
@@ -9,6 +8,6 @@ interface ReactMeta {
 }
 
 export const reactMeta: ReactMeta = {
-  PageContext: EMPTY_OBJ,
-  R: EMPTY_OBJ,
+  PageContext: EMPTY_OBJ as React.Context<string>,
+  R: EMPTY_OBJ as typeof React,
 };

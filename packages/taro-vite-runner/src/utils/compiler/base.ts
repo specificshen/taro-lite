@@ -11,14 +11,12 @@ import type { IMiniFilesConfig } from '@spcsn/taro/types/compile';
 import type {
   ViteAppMeta,
   ViteCompilerContext,
-  ViteH5BuildConfig,
-  ViteHarmonyBuildConfig,
   ViteMiniBuildConfig,
   VitePageMeta,
 } from '@spcsn/taro/types/compile/viteCompilerContext';
 import type { PluginContext } from 'rollup';
 
-export class CompilerContext<T extends ViteH5BuildConfig | ViteHarmonyBuildConfig | ViteMiniBuildConfig>
+export class CompilerContext<T extends ViteMiniBuildConfig>
   implements ViteCompilerContext<T>
 {
   static label = VITE_COMPILER_LABEL;

@@ -5,7 +5,7 @@ import mrmime from 'mrmime';
 import { isVirtualModule } from '../utils';
 
 import type { IUrlLoaderOption } from '@spcsn/taro/types/compile';
-import type { ViteH5CompilerContext, ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
+import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
 import type { PluginOption, ResolvedConfig } from 'vite';
 
 const rawRE = /(?:\?|&)raw(?:&|$)/;
@@ -15,7 +15,7 @@ const hashRE = /#.*$/s;
 
 const cleanUrl = (url: string): string => url.replace(hashRE, '').replace(queryRE, '');
 
-export default function (viteCompilerContext: ViteH5CompilerContext | ViteMiniCompilerContext): PluginOption {
+export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOption {
   const { taroConfig, sourceDir } = viteCompilerContext;
   let resolvedConfig: ResolvedConfig;
   const assetsCache: WeakMap<ResolvedConfig, Map<string, string>> = new WeakMap();

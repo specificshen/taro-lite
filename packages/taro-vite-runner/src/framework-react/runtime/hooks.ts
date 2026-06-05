@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Current, getPageInstance, injectPageInstance } from '@spcsn/taro-runtime';
 import { isArray, isFunction } from '@spcsn/taro-shared';
 
@@ -12,14 +11,15 @@ const createTaroHook = (lifecycle: keyof PageLifeCycle | keyof AppInstance) => {
   return (fn: Func) => {
     const { R: React, PageContext } = reactMeta;
     const id = React.useContext(PageContext) || HOOKS_APP_ID;
-    const instRef = React.useRef<Instance<PageProps>>();
+    const instRef = React.useRef<Instance<PageProps> | undefined>(undefined);
 
     // hold fn ref and keep up to date
     const fnRef = React.useRef(fn);
     if (fnRef.current !== fn) fnRef.current = fn;
 
     React.useLayoutEffect(() => {
-      let inst = (instRef.current = getPageInstance(id));
+      let inst = getPageInstance(id) as Instance<PageProps> | undefined;
+      instRef.current = inst;
       let first = false;
       if (!inst) {
         first = true;
@@ -37,12 +37,12 @@ const createTaroHook = (lifecycle: keyof PageLifeCycle | keyof AppInstance) => {
       }
 
       if (first) {
-        injectPageInstance(inst!, id);
+        injectPageInstance(inst, id);
       }
       return () => {
         const inst = instRef.current;
         if (!inst) return;
-        const list = inst![lifecycle];
+        const list = inst[lifecycle];
         if (list === callback) {
           inst[lifecycle] = undefined;
         } else if (isArray(list)) {

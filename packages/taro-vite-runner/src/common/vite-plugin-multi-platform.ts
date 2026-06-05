@@ -4,11 +4,7 @@ import { REG_NODE_MODULES, SCRIPT_EXT } from '@spcsn/taro-helper';
 
 import { isVirtualModule } from '../utils';
 
-import type {
-  ViteH5CompilerContext,
-  ViteHarmonyCompilerContext,
-  ViteMiniCompilerContext,
-} from '@spcsn/taro/types/compile/viteCompilerContext';
+import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
 import type { ResolvedId } from 'rollup';
 import type { PluginOption } from 'vite';
 
@@ -21,9 +17,7 @@ function isViteDepsPath(filePath: string) {
   return isViteDeps;
 }
 
-export default function (
-  compiler: ViteH5CompilerContext | ViteHarmonyCompilerContext | ViteMiniCompilerContext,
-): PluginOption {
+export default function (compiler: ViteMiniCompilerContext): PluginOption {
   const { taroConfig } = compiler;
 
   return {

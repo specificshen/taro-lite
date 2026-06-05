@@ -9,10 +9,6 @@ import { logger } from './logger';
 import type { IPostcssOption } from '@spcsn/taro/types/compile';
 import type { TRollupResolveMethod } from '@spcsn/taro/types/compile/config/plugin';
 import type {
-  ViteH5BuildConfig,
-  ViteH5CompilerContext,
-  ViteHarmonyBuildConfig,
-  ViteHarmonyCompilerContext,
   ViteMiniBuildConfig,
   ViteMiniCompilerContext,
   VitePageMeta,
@@ -21,7 +17,7 @@ import type { CSSModulesOptions } from 'vite';
 import type { Target } from 'vite-plugin-static-copy';
 import type { TaroBabelInputPluginOptions } from './babel';
 
-export function convertCopyOptions(taroConfig: ViteMiniBuildConfig | ViteH5BuildConfig | ViteHarmonyBuildConfig) {
+export function convertCopyOptions(taroConfig: ViteMiniBuildConfig) {
   const copy = taroConfig.copy;
   const copyOptions: Target[] = [];
   copy?.patterns.forEach(({ from, to }) => {
@@ -50,7 +46,7 @@ export function prettyPrintJson(obj = {}) {
 }
 
 export function getComponentName(
-  viteCompilerContext: ViteH5CompilerContext | ViteHarmonyCompilerContext | ViteMiniCompilerContext,
+  viteCompilerContext: ViteMiniCompilerContext,
   componentPath: string,
 ) {
   let componentName: string;
@@ -106,7 +102,7 @@ export const addTrailingSlash = (url = '') => (url.charAt(url.length - 1) === '/
 export const stripTrailingSlash = (url = '') =>
   url.charAt(url.length - 1) === '/' ? url.substring(0, url.length - 1) : url;
 
-export function getMode(config: ViteH5BuildConfig | ViteHarmonyBuildConfig | ViteMiniBuildConfig) {
+export function getMode(config: ViteMiniBuildConfig) {
   const preMode = config.mode || process.env.NODE_ENV;
   const modes: ('production' | 'development' | 'none')[] = ['production', 'development', 'none'];
   const mode =
@@ -173,7 +169,7 @@ export function getPostcssPlugins(
 }
 
 export function getMinify(
-  taroConfig: ViteMiniBuildConfig | ViteH5BuildConfig | ViteHarmonyBuildConfig,
+  taroConfig: ViteMiniBuildConfig,
 ): 'oxc' | 'terser' | 'esbuild' | boolean {
   const isProd = getMode(taroConfig) === 'production';
   const hasExplicitJsMinimizer = typeof taroConfig.jsMinimizer === 'string';
@@ -193,7 +189,7 @@ export function getMinify(
 }
 
 export function getCSSModulesOptions(
-  taroConfig: ViteMiniBuildConfig | ViteH5BuildConfig | ViteHarmonyBuildConfig,
+  taroConfig: ViteMiniBuildConfig,
 ): false | CSSModulesOptions {
   if (taroConfig.postcss?.cssModules?.enable !== true) return false;
   const config = recursiveMerge(
@@ -210,7 +206,7 @@ export function getCSSModulesOptions(
 }
 
 export function getBabelOption(
-  taroConfig: ViteMiniBuildConfig | ViteH5BuildConfig | ViteHarmonyBuildConfig,
+  taroConfig: ViteMiniBuildConfig,
   filterConfig: {
     babelOption?: Partial<TaroBabelInputPluginOptions>;
     defaultInclude?: (string | RegExp)[];

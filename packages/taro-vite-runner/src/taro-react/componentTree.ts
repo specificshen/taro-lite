@@ -67,7 +67,7 @@ export function updateFiberProps(node: TaroElement | TaroText, props: Props): vo
   node[internalPropsKey] = props;
 
   if (process.env.TARO_PLATFORM === 'harmony') {
-    // @ts-ignore
-    node.updateTextNode();
+    const harmonyNode = node as typeof node & { updateTextNode?: () => void };
+    harmonyNode.updateTextNode?.();
   }
 }

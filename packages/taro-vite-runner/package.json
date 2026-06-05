@@ -23,7 +23,7 @@
     "prod": "pnpm run build",
     "clean": "rimraf dist",
     "dev": "pnpm run copy:template && tsc -w",
-    "build": "pnpm run clean && (tsc || true) && pnpm run copy:template",
+    "build": "pnpm run clean && tsc && pnpm run copy:template",
     "copy:template": "node ./scripts/copy-template.mjs"
   },
   "dependencies": {

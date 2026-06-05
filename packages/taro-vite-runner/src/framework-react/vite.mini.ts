@@ -1,4 +1,3 @@
-// @ts-nocheck
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -7,17 +6,15 @@ import { defaultMainFields, resolveSync } from '@spcsn/taro-helper';
 import { getLoaderMeta } from './loader-meta';
 
 import type { PluginOption } from 'vite';
-import type { Frameworks } from './index';
-
-type IPluginContext = any;
+import type { FrameworkPluginContext, Frameworks } from './index';
 
 const JSX_DEV_RUNTIME_SHIM_ID = '\0taro-react-jsx-dev-runtime-shim';
 
-export function miniVitePlugin(ctx: IPluginContext, framework: Frameworks): PluginOption {
+export function miniVitePlugin(ctx: FrameworkPluginContext, framework: Frameworks): PluginOption {
   return [injectLoaderMeta(ctx, framework), aliasPlugin(ctx)];
 }
 
-function injectLoaderMeta(ctx: IPluginContext, framework: Frameworks): PluginOption {
+function injectLoaderMeta(ctx: FrameworkPluginContext, framework: Frameworks): PluginOption {
   return {
     name: 'taro-react:loader-meta',
     buildStart() {
@@ -62,7 +59,7 @@ function resolvePackageFile(packageDir: string, candidates: string[]): string {
   throw new Error(`Cannot resolve package file from: ${packageDir}`);
 }
 
-function aliasPlugin(ctx: IPluginContext): PluginOption {
+function aliasPlugin(ctx: FrameworkPluginContext): PluginOption {
   let jsxDevRuntimeShim = '';
   const taroReactFile = path.resolve(__dirname, '../taro-react/index.js');
 

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { hooks } from '@spcsn/taro-shared';
 
 import * as taroHooks from './hooks';

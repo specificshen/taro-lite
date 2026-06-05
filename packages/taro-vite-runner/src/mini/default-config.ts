@@ -2,7 +2,7 @@ import { FONT_LIMIT, IMAGE_LIMIT, MEDIA_LIMIT } from '../runner-utils';
 
 import type { ViteMiniBuildConfig } from '@spcsn/taro/types/compile/viteCompilerContext';
 
-const platform = 'mini';
+const platform = 'weapp';
 
 const defaultConfig: Partial<ViteMiniBuildConfig> = {
   sourceRoot: 'src',

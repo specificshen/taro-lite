@@ -1,4 +1,37 @@
-// @ts-nocheck
+type DesignWidthOption = number | ((input: string) => number);
+
+type RootValueOption = number | ((input: string, match?: string, pixelValue?: string) => number);
+
+interface PxTransformOptions {
+  baseFontSize?: number;
+  designWidth?: DesignWidthOption;
+  deviceRatio?: Record<number, number>;
+  exclude?: (filePath?: string) => boolean;
+  mediaQuery?: boolean;
+  methods?: string[];
+  minPixelValue?: number;
+  minRootSize?: number;
+  onePxTransform?: boolean;
+  platform?: string;
+  propList?: string[];
+  propWhiteList?: string[];
+  prop_white_list?: string[];
+  replace?: boolean;
+  rootValue?: RootValueOption;
+  root_value?: RootValueOption;
+  selectorBlackList?: Array<string | RegExp>;
+  targetUnit?: string;
+  unitPrecision?: number;
+  unit_precision?: number;
+  selector_black_list?: Array<string | RegExp>;
+  media_query?: boolean;
+}
+
+interface ResolvedPxTransformOptions extends PxTransformOptions {
+  designWidth: DesignWidthOption;
+  deviceRatio: Record<number, number>;
+  platform: string;
+}
 
 const defaults = {
   methods: ['platform', 'size'],
@@ -56,32 +89,33 @@ const filterPropList = {
     list.filter((item) => item.match(/^\![^\*]+\*$/)).map((item) => item.substr(1, item.length - 2)),
 };
 
-const postcssPxTransform = (options = {}) => {
-  options = Object.assign({}, DEFAULT_WEAPP_OPTIONS, options);
-  const exclude = options.exclude;
+const postcssPxTransform = (options: PxTransformOptions = {}) => {
+  const resolvedOptions: ResolvedPxTransformOptions = Object.assign({}, DEFAULT_WEAPP_OPTIONS, options);
+  const exclude = resolvedOptions.exclude;
   const transUnits = ['px'];
-  const baseFontSize = options.baseFontSize || (options.minRootSize >= 1 ? options.minRootSize : 20);
-  const designWidth = (input) =>
-    typeof options.designWidth === 'function' ? options.designWidth(input) : options.designWidth;
+  const minRootSize = resolvedOptions.minRootSize ?? 0;
+  const baseFontSize = resolvedOptions.baseFontSize || (minRootSize >= 1 ? minRootSize : 20);
+  const designWidth = (input: string) =>
+    typeof resolvedOptions.designWidth === 'function' ? resolvedOptions.designWidth(input) : resolvedOptions.designWidth;
 
-  platform = options.platform;
-  switch (options.platform) {
+  platform = resolvedOptions.platform;
+  switch (resolvedOptions.platform) {
     case 'h5': {
-      targetUnit = options.targetUnit ?? 'rem';
+      targetUnit = resolvedOptions.targetUnit ?? 'rem';
 
       switch (targetUnit) {
         case 'vw':
         case 'vmin':
-          options.rootValue = (input) => {
+          resolvedOptions.rootValue = (input) => {
             return designWidth(input) / 100;
           };
           break;
         case 'px':
-          options.rootValue = (input) => (1 / options.deviceRatio[designWidth(input)]) * 2;
+          resolvedOptions.rootValue = (input) => (1 / resolvedOptions.deviceRatio[designWidth(input)]) * 2;
           break;
         default:
-          options.rootValue = (input) => {
-            return (baseFontSize / options.deviceRatio[designWidth(input)]) * 2;
+          resolvedOptions.rootValue = (input) => {
+            return (baseFontSize / resolvedOptions.deviceRatio[designWidth(input)]) * 2;
           };
           break;
       }
@@ -90,39 +124,39 @@ const postcssPxTransform = (options = {}) => {
       break;
     }
     case 'rn': {
-      options.rootValue = (input) => (1 / options.deviceRatio[designWidth(input)]) * 2;
+      resolvedOptions.rootValue = (input) => (1 / resolvedOptions.deviceRatio[designWidth(input)]) * 2;
       targetUnit = 'px';
       break;
     }
     case 'quickapp': {
-      options.rootValue = () => 1;
+      resolvedOptions.rootValue = () => 1;
       targetUnit = 'px';
       break;
     }
     case 'harmony': {
-      options.rootValue = (input) => 1 / options.deviceRatio[designWidth(input)];
+      resolvedOptions.rootValue = (input) => 1 / resolvedOptions.deviceRatio[designWidth(input)];
       targetUnit = 'px';
       unConvertTargetUnit = 'ch';
       transUnits.push(...SPECIAL_PIXEL);
       break;
     }
     default: {
-      targetUnit = options.targetUnit ?? 'rpx';
+      targetUnit = resolvedOptions.targetUnit ?? 'rpx';
 
       if (targetUnit === 'rem') {
-        options.rootValue = (input) => (baseFontSize / options.deviceRatio[designWidth(input)]) * 2;
+        resolvedOptions.rootValue = (input) => (baseFontSize / resolvedOptions.deviceRatio[designWidth(input)]) * 2;
       } else if (targetUnit === 'px') {
-        options.rootValue = (input) => (1 / options.deviceRatio[designWidth(input)]) * 2;
+        resolvedOptions.rootValue = (input) => (1 / resolvedOptions.deviceRatio[designWidth(input)]) * 2;
       } else {
-        options.rootValue = (input) => 1 / options.deviceRatio[designWidth(input)];
+        resolvedOptions.rootValue = (input) => 1 / resolvedOptions.deviceRatio[designWidth(input)];
       }
     }
   }
 
-  convertLegacyOptions(options);
+  convertLegacyOptions(resolvedOptions);
 
-  const opts = Object.assign({}, defaults, options);
-  const onePxTransform = typeof options.onePxTransform === 'undefined' ? true : options.onePxTransform;
+  const opts = Object.assign({}, defaults, resolvedOptions);
+  const onePxTransform = typeof resolvedOptions.onePxTransform === 'undefined' ? true : resolvedOptions.onePxTransform;
   const pxRgx = pxRegex(transUnits);
 
   const satisfyPropList = createPropListMatcher(opts.propList);
@@ -152,7 +186,7 @@ const postcssPxTransform = (options = {}) => {
 
           if (!opts.methods.includes('platform')) return;
 
-          if (options.platform === 'rn') {
+          if (resolvedOptions.platform === 'rn') {
             if (comment.text === 'postcss-pxtransform rn eject enable') {
               let next = comment.next();
               while (next) {
@@ -168,7 +202,7 @@ const postcssPxTransform = (options = {}) => {
 
           const wordList = comment.text.split(' ');
           if (wordList.indexOf('#ifdef') > -1) {
-            if (wordList.indexOf(options.platform) === -1) {
+            if (wordList.indexOf(resolvedOptions.platform) === -1) {
               let next = comment.next();
               while (next) {
                 if (next.type === 'comment' && next.text.trim() === '#endif') {
@@ -182,7 +216,7 @@ const postcssPxTransform = (options = {}) => {
           }
 
           if (wordList.indexOf('#ifndef') > -1) {
-            if (wordList.indexOf(options.platform) > -1) {
+            if (wordList.indexOf(resolvedOptions.platform) > -1) {
               let next = comment.next();
               while (next) {
                 if (next.type === 'comment' && next.text.trim() === '#endif') {
