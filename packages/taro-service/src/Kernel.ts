@@ -294,7 +294,6 @@ export default class Kernel extends EventEmitter {
           {
             name: hook.plugin!,
             stage: hook.stage || 0,
-            // @ts-ignore
             before: hook.before,
           },
           async (arg) => {
