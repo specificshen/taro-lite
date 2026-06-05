@@ -1,4 +1,4 @@
-import { DATASET, OBJECT, PROPS, STYLE } from '../constants';
+import { DATASET, PROPS, STYLE } from '../constants';
 import { NodeType } from '../dom/node_types';
 
 import type { TaroNode } from '../dom/node';
@@ -15,8 +15,7 @@ export function cloneNode(this: TaroNode, isDeep = false) {
 
   for (const key in this) {
     const value: any = this[key];
-    // eslint-disable-next-line valid-typeof
-    if ([PROPS, DATASET].includes(key) && typeof value === OBJECT) {
+    if ([PROPS, DATASET].includes(key) && typeof value === 'object') {
       newNode[key] = { ...value };
     } else if (key === '_value') {
       newNode[key] = value;
