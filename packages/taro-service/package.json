@@ -37,13 +37,9 @@
     "ora": "^5.4.1",
     "rollup": "^3.29.4",
     "resolve": "^1.22.8",
-    "scss-bundle": "^3.1.2",
-    "tapable": "^2.2.1",
-    "webpack-merge": "^5.10.0"
+    "tapable": "^2.2.1"
   },
   "devDependencies": {
-    "@spcsn/taro": "workspace:*",
-    "webpack": "^5.91.0",
-    "webpack-chain": "^6.5.1"
+    "@spcsn/taro": "workspace:*"
   }
 }

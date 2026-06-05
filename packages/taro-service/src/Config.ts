@@ -12,8 +12,8 @@ import {
   TARO_GLOBAL_CONFIG_DIR,
   TARO_GLOBAL_CONFIG_FILE,
 } from '@spcsn/taro-helper';
+import { merge } from 'lodash';
 import ora from 'ora';
-import { merge } from 'webpack-merge';
 
 import { filterGlobalConfig } from './utils';
 import { CONFIG_DIR_NAME, DEFAULT_CONFIG_FILE } from './utils/constants';

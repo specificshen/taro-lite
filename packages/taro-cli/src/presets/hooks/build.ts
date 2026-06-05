@@ -5,12 +5,10 @@ import type { IPluginContext } from '@spcsn/taro-service';
 export default (ctx: IPluginContext) => {
   [
     hooks.MODIFY_APP_CONFIG,
-    hooks.MODIFY_WEBPACK_CHAIN,
     hooks.MODIFY_VITE_CONFIG,
     hooks.MODIFY_BUILD_ASSETS,
     hooks.MODIFY_MINI_CONFIGS,
     hooks.MODIFY_COMPONENT_CONFIG,
-    hooks.ON_COMPILER_MAKE,
     hooks.ON_PARSE_CREATE_ELEMENT,
     hooks.ON_BUILD_START,
     hooks.ON_BUILD_FINISH,

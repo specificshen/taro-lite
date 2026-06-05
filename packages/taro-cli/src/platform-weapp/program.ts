@@ -48,7 +48,6 @@ export default class Weapp extends TaroPlatformBase {
     this.setupTransaction.addWrapper({
       close: () => {
         this.modifyTemplate(pluginOptions);
-        this.modifyWebpackConfig();
       },
     });
   }
@@ -66,18 +65,5 @@ export default class Weapp extends TaroPlatformBase {
       template.voidElements.delete('input');
       template.voidElements.delete('textarea');
     }
-  }
-
-  /**
-   * 修改 Webpack 配置
-   */
-  modifyWebpackConfig() {
-    this.ctx.modifyWebpackChain(({ chain }) => {
-      // 解决微信小程序 sourcemap 映射失败的问题，#9412
-      chain.output.devtoolModuleFilenameTemplate((info) => {
-        const resourcePath = info.resourcePath.replace(/[/\\]/g, '_');
-        return `webpack://${info.namespace}/${resourcePath}`;
-      });
-    });
   }
 }

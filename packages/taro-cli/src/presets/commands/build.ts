@@ -123,17 +123,6 @@ export default (ctx: IPluginContext) => {
                 },
               });
             },
-            async modifyWebpackChain(chain, webpack, data) {
-              await ctx.applyPlugins({
-                name: hooks.MODIFY_WEBPACK_CHAIN,
-                initialVal: chain,
-                opts: {
-                  chain,
-                  webpack,
-                  data,
-                },
-              });
-            },
             async modifyViteConfig(viteConfig, data, viteCompilerContext) {
               await ctx.applyPlugins({
                 name: hooks.MODIFY_VITE_CONFIG,
@@ -170,16 +159,6 @@ export default (ctx: IPluginContext) => {
                 opts: {
                   componentConfig,
                   config,
-                },
-              });
-            },
-            async onCompilerMake(compilation, compiler, plugin) {
-              await ctx.applyPlugins({
-                name: hooks.ON_COMPILER_MAKE,
-                opts: {
-                  compilation,
-                  compiler,
-                  plugin,
                 },
               });
             },
