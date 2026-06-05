@@ -13,7 +13,7 @@
     "test": "vitest run",
     "test:ci": "vitest run --coverage",
     "test:dev": "vitest",
-    "updateSnapshot": "vitest run --updateSnapshot"
+    "updateSnapshot": "vitest run -u"
   },
   "engines": {
     "node": ">= 22"
