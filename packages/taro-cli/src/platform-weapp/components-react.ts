@@ -1,4 +1,3 @@
-// @ts-nocheck
 // For React.createElement's type
 export const View = 'view';
 export const Block = 'block';
