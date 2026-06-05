@@ -9,7 +9,7 @@
     "prod": "pnpm run build",
     "prebuild": "pnpm run clean",
     "clean": "rimraf ./dist",
-    "build": "tsc --noEmitOnError false || true",
+    "build": "tsc",
     "test": "vitest run",
     "test:ci": "vitest run --coverage",
     "test:dev": "vitest",
@@ -22,8 +22,8 @@
     "lodash": "^4.17.21"
   },
   "devDependencies": {
-    "@babel/core": "7.24.4",
-    "@babel/types": "7.24.0",
+    "@babel/core": "7.29.0",
+    "@babel/types": "7.29.0",
     "@types/babel__core": "7.20.5"
   },
   "peerDependencies": {
