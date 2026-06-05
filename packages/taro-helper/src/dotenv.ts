@@ -2,7 +2,7 @@ import * as path from 'node:path';
 
 import { parse } from 'dotenv';
 import { expand } from 'dotenv-expand';
-import * as fs from 'fs-extra';
+import * as fs from 'node:fs';
 
 interface ConfigWithEnv {
   env?: Record<string, unknown>;

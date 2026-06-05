@@ -60,7 +60,7 @@ export default (ctx: IPluginContext, pluginOpts) => {
 }
 {{/if}}
 {{#if (eq pluginType "plugin-template") }}
-import * as fs from 'fs-extra'
+import * as fs from 'node:fs'
 const path = require('path')
 const download = require('download')
 const unzip = require("unzip")

@@ -8,7 +8,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "prod": "pnpm run build",
-    "clean": "rimraf dist",
+    "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
     "prebuild": "pnpm run clean",
     "build": "tsc",
     "postbuild": "pnpm run swc:backup",
@@ -51,7 +51,6 @@
     "dotenv": "^16.4.5",
     "dotenv-expand": "^11.0.6",
     "find-yarn-workspace-root": "^2.0.0",
-    "fs-extra": "^11.2.0",
     "lodash": "^4.17.21",
     "require-from-string": "^2.0.2",
     "resolve": "^1.22.8",

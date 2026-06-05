@@ -16,7 +16,7 @@
     "prod": "pnpm run build",
     "prebuild": "pnpm run clean",
     "build": "pnpm run rolldown --environment NODE_ENV:production",
-    "clean": "rimraf ./dist",
+    "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
     "dev": "pnpm run rolldown --environment NODE_ENV:development -w",
     "rolldown": "rolldown --config rolldown.config.mjs"
   },

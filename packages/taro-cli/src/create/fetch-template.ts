@@ -1,3 +1,4 @@
+import * as nativeFs from 'node:fs';
 import * as path from 'node:path';
 
 import { chalk, fs } from '@spcsn/taro-helper';
@@ -56,9 +57,9 @@ export default async function fetchTemplate(
       const zipPath = path.join(tempPath, name + '.zip');
       const unZipPath = path.join(tempPath, name);
       axios
-        .get<fs.ReadStream>(templateSource, { responseType: 'stream' })
+        .get<nativeFs.ReadStream>(templateSource, { responseType: 'stream' })
         .then((response) => {
-          const ws = fs.createWriteStream(zipPath);
+          const ws = nativeFs.createWriteStream(zipPath);
           response.data.pipe(ws);
           ws.on('finish', () => {
             // unzip

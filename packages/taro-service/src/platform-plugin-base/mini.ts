@@ -83,11 +83,41 @@ export abstract class TaroPlatformBase<T extends TConfig = TConfig> extends Taro
   }
 
   private padEndByDisplayWidth(content: string, targetWidth: number) {
-    const contentWidth = Array.from(content).reduce((width, character) => {
-      return width + (/[^\u0020-\u007e]/.test(character) ? 2 : 1);
-    }, 0);
-
+    const contentWidth = this.getTerminalDisplayWidth(content);
     return content + ' '.repeat(Math.max(targetWidth - contentWidth, 0));
+  }
+
+  private getTerminalDisplayWidth(content: string) {
+    return Array.from(content).reduce((width, character) => {
+      const codePoint = character.codePointAt(0);
+      if (!codePoint || this.isZeroWidthCodePoint(codePoint)) return width;
+      return width + (this.isFullWidthCodePoint(codePoint) ? 2 : 1);
+    }, 0);
+  }
+
+  private isZeroWidthCodePoint(codePoint: number) {
+    return (
+      codePoint === 0x200d ||
+      (codePoint >= 0x0300 && codePoint <= 0x036f) ||
+      (codePoint >= 0xfe00 && codePoint <= 0xfe0f)
+    );
+  }
+
+  private isFullWidthCodePoint(codePoint: number) {
+    return (
+      codePoint >= 0x1100 &&
+      (codePoint <= 0x115f ||
+        codePoint === 0x2329 ||
+        codePoint === 0x232a ||
+        (codePoint >= 0x2e80 && codePoint <= 0xa4cf && codePoint !== 0x303f) ||
+        (codePoint >= 0xac00 && codePoint <= 0xd7a3) ||
+        (codePoint >= 0xf900 && codePoint <= 0xfaff) ||
+        (codePoint >= 0xfe10 && codePoint <= 0xfe19) ||
+        (codePoint >= 0xfe30 && codePoint <= 0xfe6f) ||
+        (codePoint >= 0xff00 && codePoint <= 0xff60) ||
+        (codePoint >= 0xffe0 && codePoint <= 0xffe6) ||
+        (codePoint >= 0x1f300 && codePoint <= 0x1faff))
+    );
   }
 
   /**

@@ -4,7 +4,7 @@ import * as os from 'node:os';
 import * as path from 'node:path';
 
 import * as babel from '@babel/core';
-import * as fs from 'fs-extra';
+import * as nativeFs from 'node:fs';
 import { camelCase, defaults, flatMap, isPlainObject, mergeWith } from 'lodash';
 
 import {
@@ -26,6 +26,102 @@ import resolvePath from 'resolve';
 import type TResolve from 'resolve';
 
 const execSync = child_process.execSync;
+
+interface NativeFsCompat {
+  access: typeof nativeFs.access;
+  constants: typeof nativeFs.constants;
+  existsSync: typeof nativeFs.existsSync;
+  lstatSync: typeof nativeFs.lstatSync;
+  mkdirSync: typeof nativeFs.mkdirSync;
+  rmdirSync: typeof nativeFs.rmdirSync;
+  readFile: typeof nativeFs.promises.readFile;
+  readFileSync: typeof nativeFs.readFileSync;
+  readdir: typeof nativeFs.promises.readdir;
+  readdirSync: typeof nativeFs.readdirSync;
+  realpathSync: typeof nativeFs.realpathSync;
+  remove: (targetPath: nativeFs.PathLike) => Promise<void>;
+  renameSync: typeof nativeFs.renameSync;
+  rmSync: typeof nativeFs.rmSync;
+  stat: typeof nativeFs.promises.stat;
+  statSync: typeof nativeFs.statSync;
+  unlinkSync: typeof nativeFs.unlinkSync;
+  writeFile: typeof nativeFs.promises.writeFile;
+  writeFileSync: typeof nativeFs.writeFileSync;
+  ensureDirSync: (directoryPath: nativeFs.PathLike) => void;
+  mkdir: typeof nativeFs.promises.mkdir;
+  mkdirp: (directoryPath: nativeFs.PathLike) => Promise<string | undefined>;
+  move: (sourcePath: string, targetPath: string, options?: { overwrite?: boolean }) => Promise<void>;
+  pathExists: (targetPath: nativeFs.PathLike) => Promise<boolean>;
+  createFile: (filePath: nativeFs.PathLike) => Promise<void>;
+  readJSON: <T = any>(filePath: nativeFs.PathLike) => Promise<T>;
+  readJSONSync: <T = any>(filePath: nativeFs.PathOrFileDescriptor) => T;
+  writeJSON: (filePath: nativeFs.PathLike, data: unknown) => Promise<void>;
+}
+
+const fs: NativeFsCompat = {
+  access: nativeFs.access,
+  constants: nativeFs.constants,
+  existsSync: nativeFs.existsSync,
+  lstatSync: nativeFs.lstatSync,
+  mkdirSync: nativeFs.mkdirSync,
+  rmdirSync: nativeFs.rmdirSync,
+  readFile: nativeFs.promises.readFile,
+  readFileSync: nativeFs.readFileSync,
+  readdir: nativeFs.promises.readdir,
+  readdirSync: nativeFs.readdirSync,
+  realpathSync: nativeFs.realpathSync,
+  renameSync: nativeFs.renameSync,
+  rmSync: nativeFs.rmSync,
+  stat: nativeFs.promises.stat,
+  statSync: nativeFs.statSync,
+  unlinkSync: nativeFs.unlinkSync,
+  writeFile: nativeFs.promises.writeFile,
+  writeFileSync: nativeFs.writeFileSync,
+  async createFile(filePath) {
+    const targetFilePath = filePath.toString();
+    await nativeFs.promises.mkdir(path.dirname(targetFilePath), { recursive: true });
+    const fileHandle = await nativeFs.promises.open(targetFilePath, 'a');
+    await fileHandle.close();
+  },
+  ensureDirSync(directoryPath) {
+    nativeFs.mkdirSync(directoryPath, { recursive: true });
+  },
+  async readJSON(filePath) {
+    return JSON.parse(await nativeFs.promises.readFile(filePath, 'utf8'));
+  },
+  readJSONSync(filePath) {
+    return JSON.parse(nativeFs.readFileSync(filePath, 'utf8'));
+  },
+  async writeJSON(filePath, data) {
+    const targetFilePath = filePath.toString();
+    await nativeFs.promises.mkdir(path.dirname(targetFilePath), { recursive: true });
+    await nativeFs.promises.writeFile(targetFilePath, JSON.stringify(data, null, 2));
+  },
+  async remove(targetPath) {
+    await nativeFs.promises.rm(targetPath, { recursive: true, force: true });
+  },
+  mkdir: nativeFs.promises.mkdir,
+  async mkdirp(directoryPath) {
+    return nativeFs.promises.mkdir(directoryPath, { recursive: true });
+  },
+  async move(sourcePath, targetPath, options = {}) {
+    if (options.overwrite) {
+      await nativeFs.promises.rm(targetPath, { recursive: true, force: true });
+    }
+    await nativeFs.promises.mkdir(path.dirname(targetPath), { recursive: true });
+    await nativeFs.promises.rename(sourcePath, targetPath).catch(async (error: NodeJS.ErrnoException) => {
+      if (error.code !== 'EXDEV') throw error;
+      await nativeFs.promises.cp(sourcePath, targetPath, { recursive: true });
+      await nativeFs.promises.rm(sourcePath, { recursive: true, force: true });
+    });
+  },
+  async pathExists(targetPath) {
+    return nativeFs.promises
+      .access(targetPath)
+      .then(() => true)
+      .catch(() => false);
+  },
+};
 
 export function normalizePath(path: string) {
   return path.replace(/\\/g, '/').replace(/\/{2,}/g, '/');
