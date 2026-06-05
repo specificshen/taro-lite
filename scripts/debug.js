@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 const { exec } = require('child_process');
 const concurrently = require('concurrently');
 const minimist = require('minimist');
@@ -25,10 +24,10 @@ function execCommand(command, successMessage, errorMessage) {
   return new Promise((resolve, reject) => {
     exec(command, (error) => {
       if (error) {
-        console.error(chalk.red(errorMessage), error);
+        globalThis.console.error(chalk.red(errorMessage), error);
         return reject(error);
       }
-      console.log(chalk.green(successMessage));
+      globalThis.console.log(chalk.green(successMessage));
       resolve();
     });
   });
@@ -59,7 +58,7 @@ function linkToLocal() {
 }
 
 function forceInstall() {
-  console.log(chalk.green('正在项目中为您安装unlink的包...'));
+  globalThis.console.log(chalk.green('正在项目中为您安装unlink的包...'));
   return execCommand(
     `cd ${projectPath} && yarn install --force`,
     `已在项目中为您安装unlink的包`,
@@ -86,13 +85,13 @@ function runDevConcurrently() {
   });
 
   return result.catch((error) => {
-    console.error(chalk.red('自动编译出错:'), error);
+    globalThis.console.error(chalk.red('自动编译出错:'), error);
   });
 }
 
 async function main() {
   if (!projectPath || !packages?.length) {
-    console.error(chalk.red('参数错误~'));
+    globalThis.console.error(chalk.red('参数错误~'));
     return;
   }
 
@@ -107,7 +106,7 @@ async function main() {
       await runDevConcurrently();
     }
   } catch (error) {
-    console.error(chalk.red('工作流执行出错:'), error);
+    globalThis.console.error(chalk.red('工作流执行出错:'), error);
   }
 }
 

@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-/* eslint-disable no-console */
 
 const fs = require('fs');
 const path = require('path');
@@ -48,7 +47,7 @@ let hasErrors = false;
 const errors = [];
 const warnings = [];
 
-console.log('🔍 验证 Binding 包完整性...\n');
+globalThis.console.log('🔍 验证 Binding 包完整性...\n');
 
 for (const binding of BINDINGS) {
   const bindingDir = path.join(rootDir, binding.path);
@@ -95,27 +94,27 @@ for (const binding of BINDINGS) {
     continue;
   }
 
-  console.log(`✅ ${binding.name}: ${binding.nodeFile} (${fileSizeMB}MB)`);
+  globalThis.console.log(`✅ ${binding.name}: ${binding.nodeFile} (${fileSizeMB}MB)`);
 }
 
-console.log('');
+globalThis.console.log('');
 
 if (warnings.length > 0) {
-  console.log('⚠️  警告:\n');
-  warnings.forEach((warning) => console.log(warning));
-  console.log('');
+  globalThis.console.log('⚠️  警告:\n');
+  warnings.forEach((warning) => globalThis.console.log(warning));
+  globalThis.console.log('');
 }
 
 if (hasErrors) {
-  console.log('❌ 验证失败:\n');
-  errors.forEach((error) => console.log(error));
-  console.log('\n💡 提示:');
-  console.log('   1. 确保已运行构建命令: pnpm build:binding:release');
-  console.log('   2. 确保 CI 构建产物已正确下载');
-  console.log('   3. 确保已运行 artifacts 命令: pnpm artifacts');
-  console.log('');
+  globalThis.console.log('❌ 验证失败:\n');
+  errors.forEach((error) => globalThis.console.log(error));
+  globalThis.console.log('\n💡 提示:');
+  globalThis.console.log('   1. 确保已运行构建命令: pnpm build:binding:release');
+  globalThis.console.log('   2. 确保 CI 构建产物已正确下载');
+  globalThis.console.log('   3. 确保已运行 artifacts 命令: pnpm artifacts');
+  globalThis.console.log('');
   process.exit(1);
 }
 
-console.log('✨ 所有 Binding 包验证通过！\n');
+globalThis.console.log('✨ 所有 Binding 包验证通过！\n');
 process.exit(0);

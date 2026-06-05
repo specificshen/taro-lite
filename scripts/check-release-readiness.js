@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-/* eslint-disable no-console */
 
 const fs = require('fs');
 const path = require('path');
@@ -112,31 +111,31 @@ checkBusinessVisibleTypeContract();
 if (!skipBindings) checkBindingPackages();
 
 if (warnings.length > 0) {
-  console.log('Warnings:\n');
-  warnings.forEach((warning) => console.log(`- ${warning}`));
-  console.log('');
+  globalThis.console.log('Warnings:\n');
+  warnings.forEach((warning) => globalThis.console.log(`- ${warning}`));
+  globalThis.console.log('');
 }
 
 if (errors.length > 0) {
-  console.log('Release readiness check failed:\n');
-  errors.forEach((error) => console.log(`- ${error}`));
-  console.log('\nHints:');
-  if (hasVersionErrors) console.log(`- Align package versions with root version ${expectedVersion}.`);
+  globalThis.console.log('Release readiness check failed:\n');
+  errors.forEach((error) => globalThis.console.log(`- ${error}`));
+  globalThis.console.log('\nHints:');
+  if (hasVersionErrors) globalThis.console.log(`- Align package versions with root version ${expectedVersion}.`);
   if (hasDependencyBoundaryErrors)
-    console.log('- Remove private or excluded workspace packages from public package dependencies.');
+    globalThis.console.log('- Remove private or excluded workspace packages from public package dependencies.');
   if (hasReadmeContractErrors)
-    console.log('- Keep README minimal business dependencies aligned with the supported public contract.');
+    globalThis.console.log('- Keep README minimal business dependencies aligned with the supported public contract.');
   if (hasPublishSurfaceErrors)
-    console.log('- Keep package publish surface aligned with docs/package-consolidation.md.');
+    globalThis.console.log('- Keep package publish surface aligned with docs/package-consolidation.md.');
   if (hasBusinessFixtureContractErrors)
-    console.log('- Keep the business fixture limited to public business-facing @spcsn packages.');
-  if (hasBindingErrors) console.log('- Run pnpm run artifacts before checking binding platform packages.');
-  if (!skipBindings) console.log('- Use --skip-bindings only for a version-only local check.');
+    globalThis.console.log('- Keep the business fixture limited to public business-facing @spcsn packages.');
+  if (hasBindingErrors) globalThis.console.log('- Run pnpm run artifacts before checking binding platform packages.');
+  if (!skipBindings) globalThis.console.log('- Use --skip-bindings only for a version-only local check.');
   process.exit(1);
 }
 
 printPublishSurface();
-console.log('\nRelease readiness check passed.');
+globalThis.console.log('\nRelease readiness check passed.');
 
 function checkPackageVersions() {
   const packageJsonPaths = collectPackageJsonPaths();
@@ -1020,26 +1019,26 @@ function checkBindingPackages() {
 }
 
 function printPublishSurface() {
-  console.log('Business entry packages:\n');
+  globalThis.console.log('Business entry packages:\n');
   printPackageGroup(BUSINESS_ENTRY_PACKAGES);
 
-  console.log('\nPlanned internal packages still published for install compatibility:\n');
+  globalThis.console.log('\nPlanned internal packages still published for install compatibility:\n');
   printPackageGroup(PLANNED_INTERNAL_PACKAGES);
 
-  console.log('\nNative binding packages:\n');
+  globalThis.console.log('\nNative binding packages:\n');
   printPackageGroup(bindingPackageNames);
 
   const otherPackageNames = publicPackageNames.filter(
     (packageName) => !expectedPublicPackageNames.includes(packageName),
   );
   if (otherPackageNames.length > 0) {
-    console.log('\nOther public packages:\n');
+    globalThis.console.log('\nOther public packages:\n');
     printPackageGroup(otherPackageNames);
   }
 }
 
 function printPackageGroup(packageNames) {
-  packageNames.forEach((packageName) => console.log(`- ${packageName}`));
+  packageNames.forEach((packageName) => globalThis.console.log(`- ${packageName}`));
 }
 
 function collectPackageJsonPaths() {
