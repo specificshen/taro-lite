@@ -27,7 +27,9 @@
     "templates",
     "postinstall.js",
     "index.js",
-    "global.d.ts"
+    "global.d.ts",
+    "plugin.d.ts",
+    "plugin.js"
   ],
   "repository": {
     "type": "git",

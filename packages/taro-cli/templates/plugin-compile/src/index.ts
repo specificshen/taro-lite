@@ -1,4 +1,4 @@
-import type { IPluginContext } from '@spcsn/taro-service'
+import type { IPluginContext } from '@spcsn/taro-cli/plugin'
 {{#if (eq pluginType "plugin-build") }}
 import webpackChain from 'webpack-chain'
 
