@@ -1,9 +1,9 @@
 ---
-name: spcsn-taro-lite-modernization-status
-description: Use when updating, reviewing, or continuing the React-only modernization plan/status in the @spcsn Taro Lite monorepo.
+name: modernization-updater
+description: Use when updating, reviewing, or continuing the React-only modernization plan and progress in this monorepo.
 ---
 
-## SPCSN Taro Lite Modernization Status
+## Modernization Updater
 
 Use this skill when the task touches `docs/taro-react-only-modernization.md`, current modernization status, package consolidation progress, or next-step planning in `taro-lite`.
 

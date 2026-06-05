@@ -1,9 +1,9 @@
 ---
-name: spcsn-taro-lite-vite-weapp-debug
-description: Use when debugging or implementing the React 19 + Vite + WeApp + Skyline/glass-easel build/runtime path in @spcsn Taro Lite.
+name: vite-weapp-debugger
+description: Use when debugging or implementing the React 19 + Vite + WeApp + Skyline/glass-easel build/runtime path.
 ---
 
-## SPCSN Taro Lite Vite WeApp Debugging
+## Vite WeApp Debugger
 
 Use this skill for build failures, runtime behavior, config handling, React framework integration, or WeApp/Skyline output issues in `taro-lite`.
 

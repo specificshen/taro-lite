@@ -1,9 +1,9 @@
 ---
-name: spcsn-taro-lite-chinese-commit
-description: Use when committing changes in the @spcsn Taro Lite monorepo and the user asks for a Chinese commit message.
+name: chinese-commit-writer
+description: Use when committing changes in this monorepo and the user asks for a concise Chinese commit message.
 ---
 
-## SPCSN Taro Lite Chinese Commit
+## Chinese Commit Writer
 
 Use this skill when the user asks to commit changes in `taro-lite` using Chinese.
 

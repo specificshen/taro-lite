@@ -1,9 +1,9 @@
 ---
-name: spcsn-taro-lite-package-workflow
-description: Use for dependency boundary, package consolidation, workspace, or public/private package changes in the @spcsn Taro Lite monorepo.
+name: package-boundary-reviewer
+description: Use when reviewing dependency boundaries, package consolidation, workspace membership, or public/private package changes in this monorepo.
 ---
 
-## SPCSN Taro Lite Package Workflow
+## Package Boundary Reviewer
 
 Use this skill when changing package dependencies, workspace membership, public publish surface, exports, build outputs, or business installation guidance in `taro-lite`.
 

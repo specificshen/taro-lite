@@ -1,9 +1,9 @@
 ---
-name: spcsn-taro-lite-orientation
-description: Use when working in /Users/shen/Desktop/study/taro-lite or answering what this @spcsn Taro Lite monorepo is doing; captures product boundaries, module map, and first-pass inspection workflow.
+name: repo-orienter
+description: Use when orienting work in this monorepo or explaining its product boundaries, module map, and first-pass inspection workflow.
 ---
 
-## SPCSN Taro Lite Orientation
+## Repo Orienter
 
 Use this skill whenever the user asks to understand, explain, triage, or plan work in the `taro-lite` repository.
 

@@ -1,9 +1,9 @@
 ---
-name: spcsn-taro-lite-release-binding
-description: Use for @spcsn Taro Lite release preparation, version alignment, native binding artifacts, platform packages, and publish readiness checks.
+name: release-binding-preparer
+description: Use when preparing releases, aligning versions, checking native binding artifacts, platform packages, or publish readiness.
 ---
 
-## SPCSN Taro Lite Release And Binding Workflow
+## Release Binding Preparer
 
 Use this skill when preparing a release, changing versions, touching `@spcsn/taro-binding`, modifying `npm/*` platform packages, or checking publish readiness in `taro-lite`.
 
