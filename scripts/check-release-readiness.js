@@ -28,6 +28,7 @@ const README_PATH = 'README.md';
 const INTERNAL_GUIDANCE_DOC_PATHS = ['docs/package-consolidation.md', 'docs/taro-react-only-modernization.md'];
 const BUSINESS_FIXTURE_PACKAGE_JSON_PATH = 'fixtures/weapp-react19-vite-skyline/package.json';
 const BUSINESS_FIXTURE_CONFIG_PATH = 'fixtures/weapp-react19-vite-skyline/config/index.ts';
+const BUSINESS_TEMPLATE_PACKAGE_JSON_PATH = 'packages/taro-cli/templates/default/package.json.tmpl';
 const BUSINESS_VISIBLE_TYPE_DIRS = ['packages/taro/types', 'packages/taro-components/types'];
 
 const BINDINGS = [
@@ -93,6 +94,7 @@ checkInternalGuidanceDocContract();
 checkBusinessFixtureDependencyContract();
 checkBusinessFixtureConfigContract();
 checkBusinessFixtureScriptContract();
+checkBusinessTemplateScriptContract();
 checkBusinessVisibleTypeContract();
 if (!skipBindings) checkBindingPackages();
 
@@ -240,6 +242,21 @@ function checkBusinessFixtureScriptContract() {
   hasBusinessFixtureContractErrors = true;
   errors.push(
     `${BUSINESS_FIXTURE_PACKAGE_JSON_PATH}: fixture scripts should use default weapp commands: "taro build" and "taro build --watch"`,
+  );
+}
+
+function checkBusinessTemplateScriptContract() {
+  const templatePackageJson = fs.readFileSync(path.join(rootDir, BUSINESS_TEMPLATE_PACKAGE_JSON_PATH), 'utf8');
+  const hasDefaultBuildScript = templatePackageJson.includes('"build": "taro build"');
+  const hasDefaultDevScript = templatePackageJson.includes('"dev": "taro build --watch"');
+  const hasLegacyWeappScript =
+    templatePackageJson.includes('build:weapp') || templatePackageJson.includes('--type weapp');
+
+  if (hasDefaultBuildScript && hasDefaultDevScript && !hasLegacyWeappScript) return;
+
+  hasBusinessFixtureContractErrors = true;
+  errors.push(
+    `${BUSINESS_TEMPLATE_PACKAGE_JSON_PATH}: business template scripts should use default weapp commands: "taro build" and "taro build --watch"`,
   );
 }
 

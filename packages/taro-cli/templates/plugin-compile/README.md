@@ -1,6 +1,8 @@
 # {{ projectName }}
 
 > {{ description }}
+>
+> 这是底座插件开发模板，不是业务应用接入模板。业务应用只需要使用 `@spcsn/taro`、`@spcsn/taro-components` 和 `@spcsn/taro-cli`。
 
 ## 使用
 
