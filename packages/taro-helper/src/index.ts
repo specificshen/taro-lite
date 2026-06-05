@@ -9,6 +9,6 @@ export * from './constants';
 export * from './dotenv';
 export * from './esbuild';
 export * as npm from './npm';
-export { default as createSwcRegister } from './swcRegister';
+export { default as createSwcRegister } from './swc-register';
 export * from './terminal';
 export * from './utils';
