@@ -59,6 +59,7 @@
     "ora": "^5.4.1"
   },
   "devDependencies": {
-    "@spcsn/taro": "workspace:*"
+    "@spcsn/taro": "workspace:*",
+    "@types/inquirer": "^8.2.1"
   }
 }

@@ -54,6 +54,8 @@
   },
   "devDependencies": {
     "@spcsn/taro": "workspace:*",
-    "@types/babel__core": "^7.20.5"
+    "@types/babel__core": "^7.20.5",
+    "@types/debug": "^4.1.5",
+    "@types/resolve": "^1.20.6"
   }
 }

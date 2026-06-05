@@ -40,6 +40,7 @@
     "tapable": "^2.2.1"
   },
   "devDependencies": {
-    "@spcsn/taro": "workspace:*"
+    "@spcsn/taro": "workspace:*",
+    "@types/resolve": "^1.20.6"
   }
 }
