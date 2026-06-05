@@ -1,11 +1,14 @@
-// @ts-nocheck
 const path = require('node:path');
 const { TaroPlatformBase } = require('@spcsn/taro-service');
 const { components } = require('./components');
 const { Template } = require('./template');
 
+interface WeappPluginOptions {
+  enablekeyboardAccessory?: boolean;
+}
+
 class Weapp extends TaroPlatformBase {
-  template: Template;
+  template: InstanceType<typeof Template>;
   platform = 'weapp';
   globalObject = 'wx';
   projectConfigJson: string = this.config.projectConfigName || 'project.config.json';
@@ -27,7 +30,7 @@ class Weapp extends TaroPlatformBase {
    * 5. build
    * 6. buildTransaction - close
    */
-  constructor(ctx, config, pluginOptions?: IOptions) {
+  constructor(ctx, config, pluginOptions?: WeappPluginOptions) {
     super(ctx, config);
     const platformDirectory = path.dirname(ctx.path);
     this.runtimePath = path.join(platformDirectory, 'runtime');
@@ -51,7 +54,7 @@ class Weapp extends TaroPlatformBase {
   /**
    * 增加组件或修改组件属性
    */
-  modifyTemplate(pluginOptions?: IOptions) {
+  modifyTemplate(pluginOptions?: WeappPluginOptions) {
     const template = this.template;
     template.mergeComponents(this.ctx, components);
     template.voidElements.add('voip-room');
