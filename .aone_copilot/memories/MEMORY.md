@@ -3,3 +3,4 @@
 - [feedback] [检查忽略应优先修复而非绕过](feedback_quality_gate.md) — 清理 TS/ESLint/格式忽略，优先修复根因。
 - [feedback] [代码现代化遵循第一性原理](feedback_first_principles_modernization.md) — 动机先行、最短路径、根因追踪、原生优先、极简通讯。
 - [project] [8 包收敛后的代码优化方向](project_modernization_code_optimization_direction.md) — 全现代化、ESM 优先、目录规范和 kebab-case 命名。
+- [feedback] [完成后可自主寻找后续优化](feedback_autonomous_followup_work.md) — 明确任务完成后，可继续低风险、符合项目理念的清理。
