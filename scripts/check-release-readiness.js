@@ -9,6 +9,11 @@ const rootPackage = readJson(path.join(rootDir, 'package.json'));
 const expectedVersion = rootPackage.version;
 const skipBindings = process.argv.includes('--skip-bindings');
 
+const README_BUSINESS_DEPENDENCIES = {
+  dependencies: ['@spcsn/taro', '@spcsn/taro-components'],
+  devDependencies: ['@spcsn/taro-cli'],
+};
+
 const BINDINGS = [
   {
     name: '@spcsn/taro-binding-darwin-x64',
@@ -52,8 +57,16 @@ const errors = [];
 const warnings = [];
 let hasVersionErrors = false;
 let hasBindingErrors = false;
+let hasDependencyBoundaryErrors = false;
+let hasReadmeContractErrors = false;
+
+const publicPackageJsonPaths = collectPublicPackageJsonPaths();
+const publicPackageNames = publicPackageJsonPaths.map((packageJsonPath) => readJson(packageJsonPath).name);
+const privateWorkspacePackageNames = collectPrivateWorkspacePackageNames();
 
 checkPackageVersions();
+checkPublicDependencyBoundaries();
+checkReadmeBusinessDependencyContract();
 if (!skipBindings) checkBindingPackages();
 
 if (warnings.length > 0) {
@@ -67,12 +80,18 @@ if (errors.length > 0) {
   errors.forEach((error) => console.log(`- ${error}`));
   console.log('\nHints:');
   if (hasVersionErrors) console.log(`- Align package versions with root version ${expectedVersion}.`);
+  if (hasDependencyBoundaryErrors)
+    console.log('- Remove private or excluded workspace packages from public package dependencies.');
+  if (hasReadmeContractErrors)
+    console.log('- Keep README minimal business dependencies aligned with the supported public contract.');
   if (hasBindingErrors) console.log('- Run pnpm run artifacts before checking binding platform packages.');
   if (!skipBindings) console.log('- Use --skip-bindings only for a version-only local check.');
   process.exit(1);
 }
 
-console.log('Release readiness check passed.');
+console.log('Public package publish list:\n');
+publicPackageNames.forEach((packageName) => console.log(`- ${packageName}`));
+console.log('\nRelease readiness check passed.');
 
 function checkPackageVersions() {
   const packageJsonPaths = collectPackageJsonPaths();
@@ -85,6 +104,38 @@ function checkPackageVersions() {
       errors.push(
         `${relative(packageJsonPath)}: ${packageJson.name} version is ${packageJson.version}, expected ${expectedVersion}`,
       );
+    }
+  }
+}
+
+function checkPublicDependencyBoundaries() {
+  for (const packageJsonPath of publicPackageJsonPaths) {
+    const packageJson = readJson(packageJsonPath);
+    const dependencyNames = collectDependencyNames(packageJson);
+    const invalidDependencyNames = dependencyNames.filter((dependencyName) =>
+      privateWorkspacePackageNames.includes(dependencyName),
+    );
+
+    if (invalidDependencyNames.length === 0) continue;
+
+    hasDependencyBoundaryErrors = true;
+    errors.push(
+      `${relative(packageJsonPath)}: ${packageJson.name} depends on private or workspace-excluded packages: ${invalidDependencyNames.join(', ')}`,
+    );
+  }
+}
+
+function checkReadmeBusinessDependencyContract() {
+  const readmePath = path.join(rootDir, 'README.md');
+  const readme = fs.readFileSync(readmePath, 'utf8');
+
+  for (const [dependencySection, packageNames] of Object.entries(README_BUSINESS_DEPENDENCIES)) {
+    for (const packageName of packageNames) {
+      const dependencyPattern = new RegExp(`"${escapeRegExp(packageName)}"\\s*:\\s*"${escapeRegExp(expectedVersion)}"`);
+      if (dependencyPattern.test(readme)) continue;
+
+      hasReadmeContractErrors = true;
+      errors.push(`README.md: minimal ${dependencySection} must include ${packageName} at version ${expectedVersion}`);
     }
   }
 }
@@ -133,6 +184,35 @@ function collectPackageJsonPaths() {
     ...collectChildPackageJsons(path.join(rootDir, 'npm')),
     path.join(rootDir, 'crates/native_binding/package.json'),
   ];
+}
+
+function collectPublicPackageJsonPaths() {
+  return collectPackageJsonPaths().filter((packageJsonPath) => readJson(packageJsonPath).private !== true);
+}
+
+function collectPrivateWorkspacePackageNames() {
+  const workspacePackageJsonPaths = [
+    ...collectChildPackageJsons(path.join(rootDir, 'packages')),
+    ...collectChildPackageJsons(path.join(rootDir, 'crates')),
+  ];
+
+  return workspacePackageJsonPaths
+    .map((packageJsonPath) => readJson(packageJsonPath))
+    .filter((packageJson) => packageJson.private === true)
+    .map((packageJson) => packageJson.name)
+    .filter(Boolean);
+}
+
+function collectDependencyNames(packageJson) {
+  return [
+    ...Object.keys(packageJson.dependencies || {}),
+    ...Object.keys(packageJson.optionalDependencies || {}),
+    ...Object.keys(packageJson.peerDependencies || {}),
+  ];
+}
+
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 function collectChildPackageJsons(parentDir) {

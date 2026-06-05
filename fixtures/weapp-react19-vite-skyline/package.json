@@ -1,0 +1,23 @@
+{
+  "name": "@spcsn/fixture-weapp-react19-vite-skyline",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Minimal business-like fixture for React 19 + Vite + WeApp + Skyline / glass-easel validation.",
+  "scripts": {
+    "build": "taro build --type weapp",
+    "dev": "NODE_ENV=development TARO_MINIFY=true taro build --type weapp --watch"
+  },
+  "dependencies": {
+    "@spcsn/taro": "link:../../packages/taro",
+    "@spcsn/taro-components": "link:../../packages/taro-components",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@spcsn/taro-cli": "link:../../packages/taro-cli",
+    "@types/node": "^22.19.19",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "typescript": "~6.0.3"
+  }
+}

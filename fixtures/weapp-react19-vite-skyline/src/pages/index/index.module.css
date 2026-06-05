@@ -1,0 +1,16 @@
+.container {
+  min-height: 100vh;
+  padding: 48px 32px;
+  box-sizing: border-box;
+}
+
+.title {
+  font-size: 36px;
+  font-weight: 600;
+}
+
+.description {
+  margin-top: 16px;
+  color: #646a73;
+  font-size: 28px;
+}

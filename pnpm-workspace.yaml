@@ -1,5 +1,6 @@
 packages:
   - 'packages/**'
+  - 'fixtures/*'
   - '!packages/babel-plugin-transform-taroapi'
   - '!packages/babel-preset-taro'
   - '!packages/postcss-html-transform'
