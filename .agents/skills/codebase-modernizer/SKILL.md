@@ -21,6 +21,16 @@ Optimize for:
 - predictable package, directory, and file organization;
 - readable base-source learning experience for maintainers.
 
+### Decision principles
+
+Use first-principles reasoning before and during modernization work:
+
+1. Trace motivation first. When the physical or product motivation is unclear, stop and ask Socratic clarification questions instead of assuming the target.
+2. Prefer the shortest logical path. If the current approach is not the minimum-complexity solution, propose the simpler architecture directly.
+3. Track root causes. Do not implement patch-style fixes; connect bug fixes and feature choices to the underlying runtime, language, or build-system reason.
+4. Apply Occam's razor. Prefer native language, platform, and repository primitives unless an added dependency or abstraction clearly lowers total entropy.
+5. Communicate minimally. Report only decision-changing facts, blockers, and validation results.
+
 ### Modernization principles
 
 Prefer these defaults unless current code, tooling, or runtime compatibility proves otherwise:
@@ -28,14 +38,14 @@ Prefer these defaults unless current code, tooling, or runtime compatibility pro
 1. Use ESM-style `import` and `export` for source code.
 2. Avoid new CommonJS patterns such as `require`, `module.exports`, or `exports.*` in TypeScript/modern source files.
 3. Keep CommonJS only when required by Node runtime entrypoints, legacy tool contracts, or package publish compatibility.
-4. Prefer named exports for reusable utilities and domain modules.
-5. Use default exports only when the surrounding package already has a strong convention or the exported value is naturally singleton-like.
+4. Prefer named exports for reusable utilities and domain modules when compatible with existing API shape.
+5. Use default exports only when the surrounding package already has a strong convention, the exported value is naturally singleton-like, or a public contract already depends on it.
 6. Keep public entrypoints explicit and narrow. Do not expose internal modules accidentally through broad barrel exports.
 7. Preserve existing runtime behavior before performing stylistic refactors.
 
 ### Directory and naming conventions
 
-Use kebab-case for new or renamed source directories and files.
+Use kebab-case for new or renamed source directories and files. For case-only renames, rename through a distinct intermediate or final filename that Git can track reliably on case-insensitive filesystems.
 
 Examples:
 
