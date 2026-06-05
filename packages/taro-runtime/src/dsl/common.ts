@@ -2,12 +2,10 @@
 import {
   EMPTY_OBJ,
   ensure,
-  EventChannel,
   getComponentsAlias,
   hooks,
   internalComponents,
   isArray,
-  isEnableTTDom,
   isFunction,
   isString,
   isUndefined,
@@ -92,11 +90,7 @@ export function stringify(obj?: Record<string, unknown>) {
 
 export function getPath(id: string, options?: Record<string, unknown>): string {
   const idx = id.indexOf('?');
-  if (process.env.TARO_PLATFORM === 'web') {
-    return `${idx > -1 ? id.substring(0, idx) : id}${stringify(options?.stamp ? { stamp: options.stamp } : {})}`;
-  } else {
-    return `${idx > -1 ? id.substring(0, idx) : id}${stringify(options)}`;
-  }
+  return `${idx > -1 ? id.substring(0, idx) : id}${stringify(options)}`;
 }
 
 export function getOnReadyEventKey(path: string) {
@@ -126,8 +120,7 @@ export function createPageConfig(
   let prepareMountList: (() => void)[] = [];
 
   function setCurrentRouter(page: MpInstance) {
-    const router =
-      process.env.TARO_PLATFORM === 'web' ? page.$taroPath : page.route || page.__route__ || page.$taroPath;
+    const router = page.route || page.__route__ || page.$taroPath;
     Current.router = {
       params: page.$taroParams!,
       path: addLeadingSlash(router),
@@ -140,7 +133,7 @@ export function createPageConfig(
       Current.router.exitState = page.exitState;
     }
   }
-  let loadResolver: (...args: unknown[]) => void;
+  let loadResolver: () => void;
   let hasLoaded: Promise<void>;
   const config: PageInstance = {
     [ONLOAD](this: MpInstance, options: Readonly<Record<string, unknown>> = {}, cb?: TFunc) {
@@ -156,9 +149,6 @@ export function createPageConfig(
       // this.$taroPath 是页面唯一标识
       const uniqueOptions = Object.assign({}, options, { $taroTimestamp: Date.now() });
       const $taroPath = (this.$taroPath = getPath(id, uniqueOptions));
-      if (process.env.TARO_PLATFORM === 'web') {
-        config.path = $taroPath;
-      }
       // this.$taroParams 作为暴露给开发者的页面参数对象，可以被随意修改
       if (this.$taroParams == null) {
         this.$taroParams = uniqueOptions;
@@ -167,32 +157,18 @@ export function createPageConfig(
       setCurrentRouter(this);
 
       // 初始化当前页面的上下文信息
-      if (process.env.TARO_PLATFORM !== 'web') {
-        taroWindowProvider.trigger(CONTEXT_ACTIONS.INIT, $taroPath);
-      }
+      taroWindowProvider.trigger(CONTEXT_ACTIONS.INIT, $taroPath);
 
       const mount = () => {
         whenAppReady((app) =>
           app.mount!(component, $taroPath, () => {
-            if (process.env.TARO_ENV === 'tt' && isEnableTTDom()) {
-              pageElement = (env.document as any).getPageDocumentById(this.__webviewId__);
-            } else {
-              pageElement = env.document.getElementById<TaroRootElement>($taroPath);
-            }
+            pageElement = env.document.getElementById<TaroRootElement>($taroPath);
 
             ensure(pageElement !== null, '没有找到页面实例。');
             safeExecute($taroPath, ON_LOAD, this.$taroParams);
             loadResolver();
-            if (process.env.TARO_PLATFORM !== 'web') {
-              pageElement.ctx = this;
-              if (process.env.TARO_ENV === 'tt' && isEnableTTDom()) {
-                (pageElement as any).sync();
-              } else {
-                pageElement.performUpdate(true, cb);
-              }
-            } else {
-              isFunction(cb) && cb();
-            }
+            pageElement.ctx = this;
+            pageElement.performUpdate(true, cb);
           }),
         );
       };
@@ -202,12 +178,10 @@ export function createPageConfig(
         mount();
       }
     },
-    [ONUNLOAD]() {
+    [ONUNLOAD](this: MpInstance) {
       const $taroPath = this.$taroPath;
       // 销毁当前页面的上下文信息
-      if (process.env.TARO_PLATFORM !== 'web') {
-        taroWindowProvider.trigger(CONTEXT_ACTIONS.DESTROY, $taroPath);
-      }
+      taroWindowProvider.trigger(CONTEXT_ACTIONS.DESTROY, $taroPath);
       // 触发onUnload生命周期
       safeExecute($taroPath, ONUNLOAD);
       unmounting = true;
@@ -226,35 +200,31 @@ export function createPageConfig(
         }),
       );
     },
-    [ONREADY]() {
+    [ONREADY](this: MpInstance) {
       hasLoaded.then(() => {
         // 触发生命周期
         safeExecute(this.$taroPath, ON_READY);
         // 通过事件触发子组件的生命周期
         raf(() => eventCenter.trigger(getOnReadyEventKey(id)));
-        this.onReady.called = true;
+        (this[ONREADY] as TFunc & { called?: boolean }).called = true;
       });
     },
-    [ONSHOW](options = {}) {
+    [ONSHOW](this: MpInstance, options = {}) {
       hasLoaded.then(() => {
         // 设置 Current 的 page 和 router
         Current.page = this as any;
         setCurrentRouter(this);
         // 恢复上下文信息
-        if (process.env.TARO_PLATFORM !== 'web') {
-          taroWindowProvider.trigger(CONTEXT_ACTIONS.RECOVER, this.$taroPath);
-        }
+        taroWindowProvider.trigger(CONTEXT_ACTIONS.RECOVER, this.$taroPath);
         // 触发生命周期
         safeExecute(this.$taroPath, ON_SHOW, options);
         // 通过事件触发子组件的生命周期
         raf(() => eventCenter.trigger(getOnShowEventKey(id)));
       });
     },
-    [ONHIDE]() {
+    [ONHIDE](this: MpInstance) {
       // 缓存当前页面上下文信息
-      if (process.env.TARO_PLATFORM !== 'web') {
-        taroWindowProvider.trigger(CONTEXT_ACTIONS.RESTORE, this.$taroPath);
-      }
+      taroWindowProvider.trigger(CONTEXT_ACTIONS.RESTORE, this.$taroPath);
       // 设置 Current 的 page 和 router
       if (Current.page === this) {
         Current.page = null;
@@ -266,14 +236,6 @@ export function createPageConfig(
       eventCenter.trigger(getOnHideEventKey(id));
     },
   };
-
-  if (process.env.TARO_PLATFORM === 'web') {
-    config.getOpenerEventChannel = () => {
-      return EventChannel.pageChannel;
-    };
-  }
-
-  const isSWAN = process.env.TARO_ENV === 'swan'; // 百度小程序
   LIFECYCLES.forEach((lifecycle) => {
     let isDefer = false;
     let isEvent = false;
@@ -286,26 +248,18 @@ export function createPageConfig(
       return '';
     });
 
-    if (isEvent && process.env.TARO_ENV === 'alipay') {
-      // 初始化 config.events 对象
-      if (!config.events) config.events = {};
-      config.events[lifecycle] = function () {
-        return safeExecute(this.$taroPath, lifecycle, ...arguments);
-      };
-    } else {
-      config[lifecycle] = function () {
-        const exec = () => safeExecute(this.$taroPath, lifecycle, ...arguments);
-        if (isSWAN) {
-          return exec();
-        }
-
-        if (isDefer) {
-          hasLoaded.then(exec);
-        } else {
-          return exec();
-        }
-      };
+    if (isEvent) {
+      return;
     }
+
+    config[lifecycle] = function (this: MpInstance, ...args) {
+      const exec = () => safeExecute(this.$taroPath, lifecycle, ...args);
+      if (isDefer) {
+        hasLoaded.then(exec);
+      } else {
+        return exec();
+      }
+    };
   });
 
   // onShareAppMessage 和 onShareTimeline 一样，会影响小程序右上方按钮的选项，因此不能默认注册。
@@ -316,7 +270,7 @@ export function createPageConfig(
       component[lifecycle.replace(/^on/, 'enable')] ||
       pageConfig?.[lifecycle.replace(/^on/, 'enable')]
     ) {
-      config[lifecycle] = function (...args) {
+      config[lifecycle] = function (this: MpInstance, ...args) {
         const target = args[0]?.target;
         if (target?.id) {
           const id = target.id;
@@ -363,12 +317,8 @@ export function createComponentConfig(
           ensure(componentElement !== null, '没有找到组件实例。');
           this.$taroInstances = instances.get(path);
           safeExecute(path, ON_LOAD);
-          if (process.env.TARO_PLATFORM !== 'web') {
-            componentElement.ctx = this;
-            if (process.env.TARO_ENV !== 'tt' || !isEnableTTDom()) {
-              componentElement.performUpdate(true);
-            }
-          }
+          componentElement.ctx = this;
+          componentElement.performUpdate(true);
         }),
       );
     },
@@ -406,11 +356,7 @@ export function createRecursiveComponentConfig(componentName?: string) {
 
   const lifeCycles = isCustomWrapper
     ? {
-        [ATTACHED]() {
-          if (process.env.TARO_ENV === 'tt' && isEnableTTDom()) {
-            return;
-          }
-
+        [ATTACHED](this: any) {
           const componentId = this.data.i?.sid || this.props.i?.sid;
           if (isString(componentId)) {
             customWrapperCache.set(componentId, this);
@@ -420,11 +366,7 @@ export function createRecursiveComponentConfig(componentName?: string) {
             }
           }
         },
-        [DETACHED]() {
-          if (process.env.TARO_ENV === 'tt' && isEnableTTDom()) {
-            return;
-          }
-
+        [DETACHED](this: any) {
           const componentId = this.data.i?.sid || this.props.i?.sid;
           if (isString(componentId)) {
             customWrapperCache.delete(componentId);
@@ -436,12 +378,6 @@ export function createRecursiveComponentConfig(componentName?: string) {
         },
       }
     : EMPTY_OBJ;
-
-  // 不同平台的个性化配置
-  const extraOptions: { [key: string]: any } = {};
-  if (process.env.TARO_ENV === 'jd') {
-    extraOptions.addGlobalClass = true;
-  }
 
   return hooks.call(
     'modifyRecursiveComponentConfig',
@@ -459,7 +395,6 @@ export function createRecursiveComponentConfig(componentName?: string) {
         },
       },
       options: {
-        ...extraOptions,
         virtualHost: !isCustomWrapper,
       },
       methods: {

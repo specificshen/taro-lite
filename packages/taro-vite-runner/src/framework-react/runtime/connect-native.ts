@@ -357,15 +357,6 @@ export function createNativePageConfig(
   return pageObj;
 }
 
-export function createH5NativeComponentConfig(Component, react: typeof React, reactDOM: typeof ReactDOM) {
-  reactMeta.R = react;
-  h = react.createElement;
-  ReactDOM = reactDOM;
-  setReconciler(ReactDOM);
-
-  return Component;
-}
-
 export function createNativeComponentConfig(Component, react: typeof React, reactDOM, componentConfig) {
   reactMeta.R = react;
   h = react.createElement;
@@ -380,25 +371,11 @@ export function createNativeComponentConfig(Component, react: typeof React, reac
         type: null,
         value: null,
         observer(_newVal, oldVal) {
-          if (process.env.TARO_ENV === 'swan') {
-            // 百度模版传递 props 时 函数参数会被忽略，这里需要根据 id 获取 TaroElement 中的 props 赋值到 ctx.data 中
-            const inst: any = document.getElementById(this.id);
-            if (this.component?.ctx?.data && inst) {
-              this.component.ctx.data.props = inst?.props?.props;
-            }
-          }
           oldVal && this.component?.forceUpdate();
         },
       },
     },
     created() {
-      if (process.env.TARO_ENV === 'swan') {
-        const inst: any = document.getElementById(this.id);
-        // 百度小程序 真机上 props中的函数会被转为Object 调用报错 导致后续组件无法渲染 这里先取TaroElement上的props，在properties中会重新赋值
-        if (this.data?.props && inst) {
-          this.data.props = inst.props?.props || {};
-        }
-      }
       const app = isNewBlended ? nativeComponentApp : Current.app;
       if (!app) {
         initNativeComponentEntry({
@@ -483,21 +460,6 @@ export function createNativeComponentConfig(Component, react: typeof React, reac
     };
   }
 
-  if (process.env.TARO_ENV === 'alipay') {
-    /**
-     * 支付宝需要修改生命周期 同时宿主需要开启component2
-     * 如果不开启 props对象中的函数参数会被忽略 导致无法调用
-     * @see https://opendocs.alipay.com/mini/03dbc3#compileOptions
-     * @returns
-     */
-    componentObj.onInit = componentObj.created;
-    componentObj.didMount = componentObj.attached;
-    componentObj.didUpdate = function () {
-      this.data.props = this.props.props;
-      this?.component?.forceUpdate?.();
-    };
-    componentObj.didUnmount = componentObj.detached;
-  }
   return componentObj;
 }
 

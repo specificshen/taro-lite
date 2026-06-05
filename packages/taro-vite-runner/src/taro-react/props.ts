@@ -1,14 +1,12 @@
-import { convertNumber2PX, eventHandlerTTDom, FormElement } from '@spcsn/taro-runtime';
+import { convertNumber2PX, FormElement } from '@spcsn/taro-runtime';
 import {
   capitalize,
   internalComponents,
-  isEnableTTDom,
   isFunction,
   isNumber,
   isObject,
   isString,
   toCamelCase,
-  UNITLESS_PROPERTIES_SET,
 } from '@spcsn/taro-shared';
 
 import type { Style, TaroElement } from '@spcsn/taro-runtime';
@@ -18,8 +16,6 @@ import type { Style, TaroElement } from '@spcsn/taro-runtime';
 export type Props = Record<string, unknown>;
 
 const IS_NON_DIMENSIONAL = /aspect|acit|ex(?:s|g|n|p|$)|rph|grid|ows|mnc|ntw|ine[ch]|zoo|^ord|itera/i;
-const IS_DATASET_OR_ARIA = /^(data|aria)-/;
-
 function isEventName(s: string) {
   return s[0] === 'o' && s[1] === 'n';
 }
@@ -115,17 +111,6 @@ function setEvent(dom: TaroElement, name: string, value: unknown, oldValue?: unk
     eventName = 'tap';
   }
 
-  if (process.env.TARO_ENV === 'tt' && isEnableTTDom()) {
-    if (isFunction(oldValue)) {
-      (dom as any).removeEventListener(`bind${eventName}`, dom[`__${eventName}__`]);
-    }
-    if (isFunction(value)) {
-      dom[`__${eventName}__`] = eventHandlerTTDom.bind(null, dom, value);
-      dom.addEventListener(`bind${eventName}`, dom[`__${eventName}__`], isCapture);
-    }
-    return;
-  }
-
   if (isFunction(value)) {
     if (oldValue) {
       dom.removeEventListener(eventName, oldValue as any, false);
@@ -156,35 +141,27 @@ function setProperty(dom: TaroElement, name: string, value: unknown, oldValue?: 
   if (name === 'key' || name === 'children' || name === 'ref' || name === 'dangerouslySetInnerHTML') {
     // skip
   } else if (name === 'style') {
-    if (process.env.TARO_ENV === 'tt' && isEnableTTDom()) {
-      if (isString(value)) {
-        dom.setAttribute('style', value);
-      } else if (isObject(value)) {
-        dom.setAttribute('style', styleObjectToCss(value as StyleValue));
-      }
+    const style = dom.style;
+    if (isString(value)) {
+      style.cssText = value;
     } else {
-      const style = dom.style;
-      if (isString(value)) {
-        style.cssText = value;
-      } else {
-        if (isString(oldValue)) {
-          style.cssText = '';
-          oldValue = null;
-        }
+      if (isString(oldValue)) {
+        style.cssText = '';
+        oldValue = null;
+      }
 
-        if (isObject<StyleValue>(oldValue)) {
-          for (const i in oldValue) {
-            if (!(value && i in (value as StyleValue))) {
-              setStyle(style, i, '');
-            }
+      if (isObject<StyleValue>(oldValue)) {
+        for (const i in oldValue) {
+          if (!(value && i in (value as StyleValue))) {
+            setStyle(style, i, '');
           }
         }
+      }
 
-        if (isObject<StyleValue>(value)) {
-          for (const i in value) {
-            if (!oldValue || !isEqual(value[i], (oldValue as StyleValue)[i])) {
-              setStyle(style, i, value[i]);
-            }
+      if (isObject<StyleValue>(value)) {
+        for (const i in value) {
+          if (!oldValue || !isEqual(value[i], (oldValue as StyleValue)[i])) {
+            setStyle(style, i, value[i]);
           }
         }
       }
@@ -192,28 +169,10 @@ function setProperty(dom: TaroElement, name: string, value: unknown, oldValue?: 
   } else if (isEventName(name)) {
     setEvent(dom, name, value, oldValue);
   } else if (!isFunction(value)) {
-    if (process.env.TARO_ENV === 'tt' && isEnableTTDom() && !IS_DATASET_OR_ARIA.test(name)) {
-      name = toCamelCase(name);
-    }
     if (value == null) {
       dom.removeAttribute(name);
     } else {
       dom.setAttribute(name, value as string);
     }
   }
-}
-
-function styleObjectToCss(style: StyleValue) {
-  return Object.entries(style)
-    .map(([key, value]) => {
-      const kebabCaseKey = key.replace(/([A-Z])/g, '-$1').toLowerCase();
-      const cssValue =
-        typeof value === 'number' && !UNITLESS_PROPERTIES_SET.has(kebabCaseKey)
-          ? `${value}px`
-          : value === null
-            ? ''
-            : value;
-      return `${kebabCaseKey}: ${cssValue};`;
-    })
-    .join(' ');
 }
