@@ -97,6 +97,7 @@ const privateWorkspacePackageNames = collectPrivateWorkspacePackageNames();
 checkPackageVersions();
 checkPublishSurfaceContract();
 checkPublicDependencyBoundaries();
+checkBusinessEntryRuntimeDependencyContract();
 checkBusinessEntryPeerDependencyContract();
 checkReadmeBusinessDependencyContract();
 checkReadmeInternalPackageContract();
@@ -184,6 +185,26 @@ function checkPublicDependencyBoundaries() {
     hasDependencyBoundaryErrors = true;
     errors.push(
       `${relative(packageJsonPath)}: ${packageJson.name} depends on private or workspace-excluded packages: ${invalidDependencyNames.join(', ')}`,
+    );
+  }
+}
+
+function checkBusinessEntryRuntimeDependencyContract() {
+  const businessEntryPackageJsonPaths = publicPackageJsonPaths.filter((packageJsonPath) =>
+    BUSINESS_ENTRY_PACKAGES.includes(readJson(packageJsonPath).name),
+  );
+
+  for (const packageJsonPath of businessEntryPackageJsonPaths) {
+    const packageJson = readJson(packageJsonPath);
+    const typeRuntimeDependencyNames = Object.keys(packageJson.dependencies || {}).filter((dependencyName) =>
+      dependencyName.startsWith('@types/'),
+    );
+
+    if (typeRuntimeDependencyNames.length === 0) continue;
+
+    hasDependencyBoundaryErrors = true;
+    errors.push(
+      `${relative(packageJsonPath)}: ${packageJson.name} dependencies must not expose TypeScript-only packages: ${typeRuntimeDependencyNames.join(', ')}`,
     );
   }
 }

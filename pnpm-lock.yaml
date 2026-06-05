@@ -276,9 +276,6 @@ importers:
       '@spcsn/taro-shared':
         specifier: workspace:*
         version: link:../shared
-      '@types/postcss-url':
-        specifier: ^10.0.4
-        version: 10.0.4
     devDependencies:
       '@spcsn/taro-components':
         specifier: workspace:*
