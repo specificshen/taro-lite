@@ -88,8 +88,8 @@ importers:
         specifier: 3.0.0
         version: 3.0.0(power-assert@1.6.1)
       chalk:
-        specifier: ^4.1.2
-        version: 4.1.2
+        specifier: ^5.6.2
+        version: 5.6.2
       concurrently:
         specifier: ^8.2.2
         version: 8.2.2
@@ -370,8 +370,8 @@ importers:
         specifier: ^4.3.2
         version: 4.3.2
       chalk:
-        specifier: ^4.1.2
-        version: 4.1.2
+        specifier: ^5.6.2
+        version: 5.6.2
       chokidar:
         specifier: ^3.6.0
         version: 3.6.0
