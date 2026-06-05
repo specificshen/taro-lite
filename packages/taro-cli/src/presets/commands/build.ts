@@ -52,7 +52,7 @@ export default (ctx: IPluginContext) => {
 
       if (typeof platform !== 'string') {
         console.log(chalk.red('请传入正确的编译类型！'));
-        process.exit(0);
+        process.exit(1);
       }
 
       // 校验 Taro 项目配置
@@ -88,7 +88,7 @@ export default (ctx: IPluginContext) => {
             }
           });
           console.log('');
-          process.exit(0);
+          process.exit(1);
         }
       }
 
