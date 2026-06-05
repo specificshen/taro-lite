@@ -237,8 +237,7 @@ if (process.env.NODE_ENV !== 'production') {
     rendererPackageName: 'taro-react',
   });
   if (!foundDevTools) {
-    // eslint-disable-next-line no-console
-    console.info(
+    globalThis.console.info(
       '%cDownload the React DevTools ' +
         'for a better development experience: ' +
         'https://reactjs.org/link/react-devtools',
