@@ -1,5 +1,5 @@
-import Config from './Config';
-import Kernel from './Kernel';
+import Config from './service-config';
+import Kernel from './service-kernel';
 import { TaroPlatform, TaroPlatformBase } from './platform-plugin-base';
 
 export * from './utils/types';

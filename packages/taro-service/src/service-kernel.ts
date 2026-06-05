@@ -7,13 +7,13 @@ import Joi from 'joi';
 import { merge } from 'lodash';
 import { AsyncSeriesWaterfallHook } from 'tapable';
 
-import Plugin from './Plugin';
+import Plugin from './service-plugin';
 import * as runnerUtils from './runner-utils';
 import { convertPluginsToObject, mergePlugins, printHelpLog, resolvePresetsOrPlugins } from './utils';
 import { IS_ADD_HOOK, IS_EVENT_HOOK, IS_MODIFY_HOOK, PluginType } from './utils/constants';
 
 import type { Func, IProjectConfig, PluginItem } from '@spcsn/taro/types/compile';
-import type Config from './Config';
+import type Config from './service-config';
 import type { ICommand, IHook, IPaths, IPlatform, IPlugin, IPluginsObject, IPreset } from './utils/types';
 
 interface IKernelOptions {
