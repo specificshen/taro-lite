@@ -48,8 +48,7 @@ export class TaroWindow extends Events {
     this.Date ||= Date;
 
     // 应用启动时，提供给需要读取历史信息的库使用
-    this.location = new Location({ window: this }) as any;
-    // @ts-ignore
+    this.location = new Location({ window: this });
     this.history = new History(this.location, { window: this });
 
     this.initEvent();
