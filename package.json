@@ -50,10 +50,6 @@
     "release:check": "node scripts/check-release-readiness.js"
   },
   "devDependencies": {
-    "@babel/cli": "^7.24.1",
-    "@babel/core": "^7.24.4",
-    "@babel/preset-env": "^7.24.4",
-    "@babel/runtime": "^7.24.4",
     "@biomejs/biome": "^2.4.15",
     "@types/debug": "^4.1.5",
     "@types/inquirer": "^8.2.1",
