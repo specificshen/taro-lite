@@ -25,6 +25,7 @@ const README_BUSINESS_DEPENDENCIES = {
 };
 
 const README_PATH = 'README.md';
+const INTERNAL_GUIDANCE_DOC_PATHS = ['docs/package-consolidation.md', 'docs/taro-react-only-modernization.md'];
 const BUSINESS_FIXTURE_PACKAGE_JSON_PATH = 'fixtures/weapp-react19-vite-skyline/package.json';
 const BUSINESS_FIXTURE_CONFIG_PATH = 'fixtures/weapp-react19-vite-skyline/config/index.ts';
 const BUSINESS_VISIBLE_TYPE_DIRS = ['packages/taro-components/types'];
@@ -88,6 +89,7 @@ checkPublishSurfaceContract();
 checkPublicDependencyBoundaries();
 checkReadmeBusinessDependencyContract();
 checkReadmeInternalPackageContract();
+checkInternalGuidanceDocContract();
 checkBusinessFixtureDependencyContract();
 checkBusinessFixtureConfigContract();
 checkBusinessFixtureScriptContract();
@@ -196,6 +198,18 @@ function checkReadmeInternalPackageContract() {
 
   hasReadmeContractErrors = true;
   errors.push(`README.md: business-facing docs must not mention internal plugins: ${internalPluginNames.join(', ')}`);
+}
+
+function checkInternalGuidanceDocContract() {
+  for (const docPath of INTERNAL_GUIDANCE_DOC_PATHS) {
+    const source = fs.readFileSync(path.join(rootDir, docPath), 'utf8');
+    if (source.includes('不是业务接入指导')) continue;
+
+    hasReadmeContractErrors = true;
+    errors.push(
+      `${docPath}: internal docs that mention package consolidation must state they are not business guidance.`,
+    );
+  }
 }
 
 function checkBusinessFixtureDependencyContract() {

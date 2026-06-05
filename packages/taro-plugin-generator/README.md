@@ -1,38 +1,5 @@
 # @spcsn/taro-plugin-generator
 
-## 使用
+> 内部历史包说明，不是业务接入指导。业务工程不要在配置中显式声明该插件；生成器能力由 `@spcsn/taro-cli` 闭包管理。
 
-```bash
-// config/index.ts
-export default defineConfig<'webpack5'>(async (merge, {command, mode}) => {
-    const baseConfig: UserConfigExport<'webpack5'> = {
-        ...
-        plugins: [
-            ...,
-            "@spcsn/taro-plugin-generator" // 添加插件
-        ],
-        ...
-    }
-    ...
-}
-```
-
-```json
-{
-    "scripts": {
-        ...
-        "new": "taro new"
-    }
-}
-```
-
-执行命令，选择需要开启的功能
-
-```bash
-> pnpm new
-
-✔ 获取 taro 全局配置成功
-? 启用可选功能
-❯ 启用「Tailwind CSS」支持
-  启用「编译为 ES5」
-```
+该包已并入 `@spcsn/taro-cli`，不再作为业务可见插件使用。

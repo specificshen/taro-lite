@@ -1,5 +1,6 @@
 # Taro Monorepo React-only 现代化改造方案
 
+> 本文是底座内部历史改造方案，不是业务接入指导。业务接入请以仓库根目录 `README.md` 的最小依赖和配置示例为准。
 > 目标读者：负责改造 fork 后 Taro monorepo 的 AI / 工程师。
 > 核心目标：把 Taro 从“多框架、多平台、多历史编译器兼容”的通用框架，收敛为“React + Vite + 微信小程序/Skyline 优先”的现代小程序构建与运行框架。
 

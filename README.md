@@ -35,20 +35,9 @@
 }
 ```
 
-业务工程不要显式安装这些底座内部实现依赖：
+业务工程只应显式安装上面的三个 `@spcsn` 入口包。构建器、运行时、平台适配、原生绑定、Babel/PostCSS/Vite 插件等都属于底座内部实现，由 CLI 和入口包闭包管理。
 
-- `@spcsn/taro-runtime`
-- `@spcsn/taro-react`
-- `@spcsn/taro-vite-runner`
-- `vite`
-- `postcss`
-- `terser`
-- `@vitejs/plugin-react`
-- `@babel/core`
-- `@babel/preset-react`
-- `react-refresh`
-
-这些包属于 CLI、runner、framework、platform 包的内部闭包。业务侧如果需要显式安装某个包，必须能回答“业务源码是否直接 import 它，或它是否是明确的命令行工具”。
+业务侧如果需要显式安装额外包，必须能回答“业务源码是否直接 import 它，或它是否是明确的命令行工具”。
 
 ## 版本策略
 
@@ -73,11 +62,15 @@
 pnpm install
 ```
 
-构建关键包：
+构建底座：
 
 ```bash
-pnpm --filter @spcsn/taro-helper run build
-pnpm --filter @spcsn/taro-vite-runner run build
+pnpm run build
+```
+
+局部调试 CLI 时可以只构建入口包：
+
+```bash
 pnpm --filter @spcsn/taro-cli run build
 ```
 
@@ -126,8 +119,7 @@ SPCSN Taro v1.0.0
 
 ```bash
 pnpm run release:check
-rg '@spcsn/(taro-runtime|taro-vite-runner|taro-service|taro-binding)' /path/to/business/package.json
-rg 'plugins\s*:' /path/to/business/config
+pnpm run verify:fixture:weapp
 ```
 
 `release:check` 会检查 `packages/*`、`npm/*` 和 `crates/native_binding` 的版本是否与根 `package.json` 一致，并校验每个 native binding 平台包是否包含预期 `.node` 文件。只想在本地快速检查版本时，可以执行：
@@ -191,7 +183,7 @@ pnpm install
 npm run build
 ```
 
-注意：native binding 已切到 `@spcsn/taro-binding` 和 `@spcsn/taro-binding-*` 平台包，发布时必须和 CLI 同批次发布。
+注意：native binding 属于安装期实现细节，发布时必须和 CLI 同批次准备、检查和发布。
 
 ## 与上游 Taro 的关系
 
