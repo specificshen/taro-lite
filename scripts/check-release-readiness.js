@@ -385,11 +385,28 @@ function checkBusinessVisibleTypeContract() {
   const configIndexPath = path.join(rootDir, 'packages/taro/types/compile/config/index.d.ts');
   const configIndexSource = fs.readFileSync(configIndexPath, 'utf8');
   const exposesUnsupportedConfig = unsupportedConfigExports.some((pattern) => pattern.test(configIndexSource));
+  const supportedConfigTypePaths = [
+    'packages/taro/types/compile/compiler.d.ts',
+    'packages/taro/types/compile/config/mini.d.ts',
+    'packages/taro/types/compile/config/project.d.ts',
+  ];
+  const externalBuildTypeImportPattern = /from ['"](webpack|webpack-chain|rollup|postcss)['"]/g;
 
   if (exposesUnsupportedConfig) {
     hasBusinessFixtureContractErrors = true;
     errors.push(
       `${relative(configIndexPath)}: business-visible config types must only export WeApp/Vite supported config.`,
+    );
+  }
+
+  for (const typePath of supportedConfigTypePaths) {
+    const source = fs.readFileSync(path.join(rootDir, typePath), 'utf8');
+    const externalBuildTypeImports = [...new Set(source.match(externalBuildTypeImportPattern) || [])];
+    if (externalBuildTypeImports.length === 0) continue;
+
+    hasBusinessFixtureContractErrors = true;
+    errors.push(
+      `${typePath}: business-visible supported config types must not require legacy build tool type packages: ${externalBuildTypeImports.join(', ')}`,
     );
   }
 

@@ -1,5 +1,3 @@
-import type Webpack from 'webpack'
-
 export type SwcConfig = Record<string, any>
 
 export type CompilerViteTypes = 'vite'
@@ -17,7 +15,7 @@ interface IPrebundle {
   exclude?: string[]
   esbuild?: Record<string, any>
   swc?: SwcConfig
-  webpack?: Webpack.Configuration & {
+  webpack?: Record<string, any> & {
     provide?: any[]
   }
 }

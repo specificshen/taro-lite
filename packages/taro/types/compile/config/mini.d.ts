@@ -1,9 +1,14 @@
-import type Webpack from 'webpack'
-import type Chain from 'webpack-chain'
-import type { IOption, IPostcssOption, IUrlLoaderOption } from './util'
-import type { OutputOptions as RollupOutputOptions } from 'rollup'
 import type { Compiler, CompilerTypes, CompilerWebpackTypes } from '../compiler'
 import type { OutputExt } from './project'
+import type { IOption, IPostcssOption, IUrlLoaderOption } from './util'
+
+type RollupOutputOptions = {
+  chunkFileNames?: string | ((chunkInfo: any) => string)
+}
+
+type WebpackChain = any
+type WebpackInstance = any
+type WebpackOutputOptions = Record<string, any>
 
 interface Runtime {
   enableSizeAPIs?: boolean
@@ -39,14 +44,14 @@ export interface IMiniAppConfig<T extends CompilerTypes = CompilerWebpackTypes> 
    * @param PARSE_AST_TYPE 小程序编译时的文件类型集合
    * @returns
    */
-  webpackChain?: (chain: Chain, webpack: typeof Webpack, PARSE_AST_TYPE: any) => void
+  webpackChain?: (chain: WebpackChain, webpack: WebpackInstance, PARSE_AST_TYPE: any) => void
 
   /** webpack 编译模式下，可用于修改、拓展 Webpack 的 output 选项，配置项参考[官方文档](https://webpack.js.org/configuration/output/)
   * vite 编译模式下，用于修改、扩展 rollup 的 output，目前仅适配 chunkFileNames 和 assetFileNames 两个配置，修改其他配置请使用 vite 插件进行修改。配置想参考[官方文档](https://rollupjs.org/configuration-options/)
   */
   output?: T extends 'vite'
     ? Pick<RollupOutputOptions, 'chunkFileNames'>  & OutputExt
-    : Webpack.Configuration['output'] & OutputExt
+    : WebpackOutputOptions & OutputExt
 
   /** 配置 postcss 相关插件 */
   postcss?: IPostcssOption<'mini'>

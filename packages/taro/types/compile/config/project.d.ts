@@ -1,11 +1,14 @@
-import type Webpack from 'webpack'
-import type Chain from 'webpack-chain'
-import type { Input } from 'postcss'
 import type { AppConfig } from '../../index'
 import type { Compiler, CompilerTypes, CompilerWebpackTypes } from '../compiler'
 import type { IModifyChainData } from '../hooks'
-import type { ICopyOptions, IOption, ISassOptions, TogglableOptions } from './util'
 import type { IMiniAppConfig, IMiniFilesConfig } from './mini'
+import type { ICopyOptions, IOption, ISassOptions, TogglableOptions } from './util'
+
+type PostcssInput = string | number
+type WebpackChain = any
+type WebpackCompilation = any
+type WebpackCompiler = any
+type WebpackInstance = any
 
 export type PluginItem<T = object> = string | [string, T] | [string, () => T | Promise<T>]
 
@@ -49,7 +52,7 @@ export interface IProjectBaseConfig {
   date?: string
 
   /** 设计稿尺寸 */
-  designWidth?: number | ((size?: string | number | Input) => number)
+  designWidth?: number | ((size?: PostcssInput) => number)
 
   /** 设计稿尺寸换算规则 */
   deviceRatio?: TaroGeneral.TDeviceRatio
@@ -171,16 +174,16 @@ export interface IProjectBaseConfig {
   /**
    * 修改编译过程中的页面组件配置
    */
-  onCompilerMake?: (compilation: Webpack.Compilation, compiler: Webpack.Compiler, plugin: any) => Promise<any>
+  onCompilerMake?: (compilation: WebpackCompilation, compiler: WebpackCompiler, plugin: any) => Promise<any>
 
-  onWebpackChainReady?: (webpackChain: Chain) => Promise<any>
+  onWebpackChainReady?: (webpackChain: WebpackChain) => Promise<any>
 
   modifyAppConfig?: (appConfig: AppConfig) => Promise<any>
 
   /**
    * 编译中修改 webpack 配置，在这个钩子中，你可以对 webpackChain 作出想要的调整，等同于配置 [`webpackChain`](./config-detail#miniwebpackchain)
    */
-  modifyWebpackChain?: (chain: Chain, webpack: typeof Webpack, data: IModifyChainData) => Promise<any>
+  modifyWebpackChain?: (chain: WebpackChain, webpack: WebpackInstance, data: IModifyChainData) => Promise<any>
 
   /**
    * 编译中修改 vite 配置
@@ -212,7 +215,7 @@ export interface IProjectConfig<T extends CompilerTypes = CompilerWebpackTypes> 
   date?: string
 
   /** 设计稿尺寸 */
-  designWidth?: number | ((size?: string | number | Input) => number)
+  designWidth?: number | ((size?: PostcssInput) => number)
 
   /** 设计稿尺寸换算规则 */
   deviceRatio?: TaroGeneral.TDeviceRatio
