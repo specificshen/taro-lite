@@ -61,9 +61,12 @@
     "csstype": "^3.1.1",
     "lodash": "^4.17.21",
     "miniapp-types": "1.6.0",
+    "@types/node": "^22.19.19",
     "@types/react": "^19.2.14",
+    "@vitest/coverage-istanbul": "^3.2.4",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^3.14.1",
+    "typescript": "~6.0.3",
     "vitest": "^3.2.4"
   }
 }

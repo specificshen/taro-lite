@@ -18,21 +18,9 @@ importers:
       '@biomejs/biome':
         specifier: ^2.4.15
         version: 2.4.15
-      '@types/node':
-        specifier: ^22.19.19
-        version: 22.19.19
-      '@vitest/coverage-istanbul':
-        specifier: ^3.2.4
-        version: 3.2.4(vitest@3.2.4(@types/debug@4.1.13)(@types/node@22.19.19)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(stylus@0.63.0)(terser@5.47.1))
       conventional-changelog-cli:
         specifier: ^2.0.1
         version: 2.2.2
-      typescript:
-        specifier: ~6.0.3
-        version: 6.0.3
-      vitest:
-        specifier: ^3.2.4
-        version: 3.2.4(@types/debug@4.1.13)(@types/node@22.19.19)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(stylus@0.63.0)(terser@5.47.1)
 
   crates/native_binding:
     dependencies:
@@ -114,6 +102,9 @@ importers:
 
   packages/shared:
     devDependencies:
+      '@types/node':
+        specifier: ^22.19.19
+        version: 22.19.19
       concurrently:
         specifier: ^8.2.2
         version: 8.2.2
@@ -123,6 +114,12 @@ importers:
       rolldown:
         specifier: ^1.0.1
         version: 1.0.1
+      typescript:
+        specifier: ~6.0.3
+        version: 6.0.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/debug@4.1.13)(@types/node@22.19.19)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(stylus@0.63.0)(terser@5.47.1)
 
   packages/taro:
     dependencies:
@@ -182,6 +179,18 @@ importers:
       '@types/inquirer':
         specifier: ^8.2.1
         version: 8.2.12
+      '@types/node':
+        specifier: ^22.19.19
+        version: 22.19.19
+      '@vitest/coverage-istanbul':
+        specifier: ^3.2.4
+        version: 3.2.4(vitest@3.2.4(@types/debug@4.1.13)(@types/node@22.19.19)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(stylus@0.63.0)(terser@5.47.1))
+      typescript:
+        specifier: ~6.0.3
+        version: 6.0.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/debug@4.1.13)(@types/node@22.19.19)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(stylus@0.63.0)(terser@5.47.1)
 
   packages/taro-components:
     dependencies:
@@ -207,9 +216,15 @@ importers:
       '@spcsn/taro-helper':
         specifier: workspace:*
         version: link:../taro-helper
+      '@types/node':
+        specifier: ^22.19.19
+        version: 22.19.19
       '@types/react':
         specifier: ^19.2.14
         version: 19.2.15
+      '@vitest/coverage-istanbul':
+        specifier: ^3.2.4
+        version: 3.2.4(vitest@3.2.4(@types/debug@4.1.13)(@types/node@22.19.19)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(stylus@0.63.0)(terser@5.47.1))
       csstype:
         specifier: ^3.1.1
         version: 3.2.3
@@ -225,6 +240,9 @@ importers:
       tsconfig-paths:
         specifier: ^3.14.1
         version: 3.15.0
+      typescript:
+        specifier: ~6.0.3
+        version: 6.0.3
       vitest:
         specifier: ^3.2.4
         version: 3.2.4(@types/debug@4.1.13)(@types/node@22.19.19)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(stylus@0.63.0)(terser@5.47.1)
@@ -274,9 +292,21 @@ importers:
       '@types/debug':
         specifier: ^4.1.5
         version: 4.1.13
+      '@types/node':
+        specifier: ^22.19.19
+        version: 22.19.19
       '@types/resolve':
         specifier: ^1.20.6
         version: 1.20.6
+      '@vitest/coverage-istanbul':
+        specifier: ^3.2.4
+        version: 3.2.4(vitest@3.2.4(@types/debug@4.1.13)(@types/node@22.19.19)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(stylus@0.63.0)(terser@5.47.1))
+      typescript:
+        specifier: ~6.0.3
+        version: 6.0.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/debug@4.1.13)(@types/node@22.19.19)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(stylus@0.63.0)(terser@5.47.1)
 
   packages/taro-runtime:
     dependencies:
@@ -293,6 +323,9 @@ importers:
       '@types/react':
         specifier: ^19.2.14
         version: 19.2.15
+      '@vitest/coverage-istanbul':
+        specifier: ^3.2.4
+        version: 3.2.4(vitest@3.2.4(@types/debug@4.1.13)(@types/node@22.19.19)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(stylus@0.63.0)(terser@5.47.1))
       concurrently:
         specifier: ^8.2.2
         version: 8.2.2
@@ -305,6 +338,9 @@ importers:
       typescript:
         specifier: ~6.0.3
         version: 6.0.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/debug@4.1.13)(@types/node@22.19.19)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(stylus@0.63.0)(terser@5.47.1)
 
   packages/taro-service:
     dependencies:
@@ -333,9 +369,18 @@ importers:
       '@spcsn/taro':
         specifier: workspace:*
         version: link:../taro
+      '@types/node':
+        specifier: ^22.19.19
+        version: 22.19.19
       '@types/resolve':
         specifier: ^1.20.6
         version: 1.20.6
+      typescript:
+        specifier: ~6.0.3
+        version: 6.0.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/debug@4.1.13)(@types/node@22.19.19)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(stylus@0.63.0)(terser@5.47.1)
 
   packages/taro-vite-runner:
     dependencies:
@@ -403,6 +448,9 @@ importers:
       '@spcsn/taro':
         specifier: workspace:*
         version: link:../taro
+      '@types/node':
+        specifier: ^22.19.19
+        version: 22.19.19
       '@types/react':
         specifier: ^19.2.14
         version: 19.2.15
@@ -430,6 +478,9 @@ importers:
       stylus:
         specifier: ^0.63.0
         version: 0.63.0
+      typescript:
+        specifier: ~6.0.3
+        version: 6.0.3
 
 packages:
 
