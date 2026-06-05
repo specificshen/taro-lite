@@ -16,17 +16,6 @@ export default defineConfig<'vite'>(() => {
     alias: {
       '@': path.resolve(__dirname, '..', 'src'),
     },
-    plugins: [
-      '@spcsn/taro-plugin-generator',
-      [
-        '@spcsn/taro-plugin-platform-weapp',
-        {
-          useExtendedLib: {
-            skyline: true,
-          },
-        },
-      ],
-    ],
     framework: 'react',
     ...(process.env.TARO_MINIFY === 'true' ? { jsMinimizer: 'oxc' as const } : {}),
     compiler: 'vite',
