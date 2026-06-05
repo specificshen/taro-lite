@@ -170,7 +170,6 @@ export function createReactApp(App: React.ComponentClass, react: typeof React, d
       const root = ReactDOM.createRoot(container as unknown as Element);
       root.render?.(h(AppWrapper));
     } else {
-      // eslint-disable-next-line react/no-deprecated
       ReactDOM.render?.(h(AppWrapper), container);
     }
   }
