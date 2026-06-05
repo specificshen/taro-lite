@@ -29,14 +29,7 @@ export const nextTick = (cb: TFunc, ctx?: Record<string, any>) => {
   function next() {
     const pageElement: TaroRootElement | null = env.document.getElementById<TaroRootElement>(path);
     if (pageElement?.pendingUpdate) {
-      if (process.env.TARO_PLATFORM === 'web') {
-        // eslint-disable-next-line dot-notation
-        pageElement.firstChild?.['componentOnReady']?.().then(() => {
-          timerFunc();
-        }) ?? timerFunc();
-      } else {
-        pageElement.enqueueUpdateCallback(cb, ctx);
-      }
+      pageElement.enqueueUpdateCallback(cb, ctx);
     } else if (Date.now() - beginTime > TIMEOUT) {
       timerFunc();
     } else {

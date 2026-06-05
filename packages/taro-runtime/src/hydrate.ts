@@ -69,12 +69,7 @@ export function hydrate(node: TaroElement | TaroText): MiniData {
     ) {
       data[propInCamelCase] = props[prop];
     }
-    if (
-      process.env.TARO_ENV !== 'swan' &&
-      nodeName === VIEW &&
-      propInCamelCase === CATCHMOVE &&
-      props[prop] !== false
-    ) {
+    if (nodeName === VIEW && propInCamelCase === CATCHMOVE && props[prop] !== false) {
       data[Shortcuts.NodeName] = CATCH_VIEW;
     }
     if (propInCamelCase === COMPILE_MODE) {

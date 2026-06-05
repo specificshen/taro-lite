@@ -1,7 +1,4 @@
-import { isObject } from '@spcsn/taro-shared'
-
 import { handleArrayFindPolyfill, handleArrayIncludesPolyfill } from './array'
-import { handleIntersectionObserverPolyfill } from './intersection-observer'
 import { handleObjectAssignPolyfill, handleObjectDefinePropertyPolyfill, handleObjectEntriesPolyfill } from './object'
 
 function handlePolyfill () {
@@ -20,15 +17,9 @@ function handlePolyfill () {
   if (process.env.SUPPORT_TARO_POLYFILL === 'enabled' || process.env.SUPPORT_TARO_POLYFILL === 'Array' || process.env.SUPPORT_TARO_POLYFILL === 'Array.includes') {
     handleArrayIncludesPolyfill()
   }
-  // Exit early if we're not running in a browser.
-  if (process.env.TARO_PLATFORM === 'web' && isObject(window)) {
-    if (process.env.SUPPORT_TARO_POLYFILL === 'enabled' || process.env.SUPPORT_TARO_POLYFILL === 'IntersectionObserver') {
-      handleIntersectionObserverPolyfill()
-    }
-  }
 }
 
-if (process.env.SUPPORT_TARO_POLYFILL !== 'disabled' && process.env.TARO_PLATFORM !== 'web') {
+if (process.env.SUPPORT_TARO_POLYFILL !== 'disabled') {
   handlePolyfill()
 }
 

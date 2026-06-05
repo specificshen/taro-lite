@@ -8,8 +8,8 @@ interface Env {
 }
 
 const env: Env = {
-  window: process.env.TARO_PLATFORM === 'web' ? window : EMPTY_OBJ,
-  document: process.env.TARO_PLATFORM === 'web' ? document : EMPTY_OBJ,
+  window: EMPTY_OBJ,
+  document: EMPTY_OBJ,
 };
 
 export default env;

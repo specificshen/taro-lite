@@ -123,7 +123,6 @@ export class TaroWindow extends Events {
 }
 
 // Note: 小程序端 vite 打包成 commonjs，const window = xxx 会报错，所以把 window 改为 taroWindowProvider，location 和 history 同理
-export const taroWindowProvider: TaroWindow =
-  process.env.TARO_PLATFORM === 'web' ? env.window : (env.window = new TaroWindow());
+export const taroWindowProvider: TaroWindow = (env.window = new TaroWindow());
 export const taroLocationProvider = taroWindowProvider.location;
 export const taroHistoryProvider = taroWindowProvider.history;
