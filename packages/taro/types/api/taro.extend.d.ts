@@ -23,7 +23,7 @@ declare module '../index' {
   }
 
   namespace setGlobalDataPlugin {
-    /** Vue3 插件，用于设置 `getApp()` 中的全局变量 */
+    /** 用于设置 `getApp()` 中的全局变量 */
     interface Plugin {
       install(app: any, data: any): void
     }
@@ -84,7 +84,7 @@ declare module '../index' {
     }): void
 
     /** 小程序获取和 Taro 相关的 App 信息
-     * @supported weapp, alipay, jd, qq, swan, tt, h5, harmony, harmony_hybrid
+     * @supported weapp
      */
     getAppInfo(): getAppInfo.AppInfo
 
@@ -112,7 +112,7 @@ declare module '../index' {
     }
 
     /** 小程序引用插件 JS 接口
-     * @supported weapp, alipay, h5, rn, jd, qq, swan, tt, quickapp
+     * @supported weapp
      */
     requirePlugin: {
       (pluginName: string): any
@@ -130,8 +130,8 @@ declare module '../index' {
     /** @ignore */
     Current: getCurrentInstance.Current
 
-    /** Vue3 插件，用于设置 `getApp()` 中的全局变量
-     * @supported weapp, alipay, h5, rn, jd, qq, swan, tt, quickapp, harmony_hybrid
+    /** 用于设置 `getApp()` 中的全局变量
+     * @supported weapp
      * @example
      * ```js
      * // 使用插件
@@ -145,8 +145,8 @@ declare module '../index' {
      */
     setGlobalDataPlugin: setGlobalDataPlugin.Plugin
 
-    /** 获取自定义 TabBar 对应的 React 或 Vue 组件实例
-     * @supported weapp, jd
+    /** 获取自定义 TabBar 对应的 React 组件实例
+     * @supported weapp
      * @param page 小程序页面对象，可以通过 Taro.getCurrentInstance().page 获取
      */
     getTabBar<T>(page: getCurrentInstance.Current['page']): T | undefined

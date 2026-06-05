@@ -474,6 +474,21 @@ function checkBusinessVisibleTypeContract() {
       pattern: /CompilerWebpackTypes/g,
       message: 'defineConfig public helper must default to Vite.',
     },
+    {
+      path: 'packages/taro/types/api/taro.hooks.d.ts',
+      pattern: /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@h5\b/g,
+      message: 'business-visible hook comments must not advertise unsupported platforms.',
+    },
+    {
+      path: 'packages/taro/types/api/base/env.d.ts',
+      pattern: /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b/g,
+      message: 'business-visible env comments must not advertise unsupported platforms.',
+    },
+    {
+      path: 'packages/taro/types/api/taro.extend.d.ts',
+      pattern: /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|Vue3|\bVue\b/g,
+      message: 'business-visible extension comments must not advertise unsupported platforms or frameworks.',
+    },
   ];
 
   if (exposesUnsupportedConfig) {
