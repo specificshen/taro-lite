@@ -1,9 +1,9 @@
-import type { PluginContext } from 'rollup'
-import type { IMiniFilesConfig, IH5Config, IHarmonyConfig, IMiniAppConfig } from './config'
+import type { IMiniAppConfig, IMiniFilesConfig } from './config'
 import type { IProjectConfig } from './config/project'
 import type { IComponentConfig } from './hooks'
-import type { IFileType } from './index'
 import type { AppConfig, PageConfig } from '../index'
+
+type RollupPluginContext = any
 
 export interface ViteNativeCompMeta {
   name: string
@@ -55,22 +55,6 @@ export interface VitePageMeta {
   cssPath?: string
 }
 
-export interface ViteH5BuildConfig extends CommonBuildConfig, IH5Config<'vite'> {
-  entryFileName?: string
-  runtimePath?: string | string[]
-}
-
-export interface ViteHarmonyBuildConfig extends CommonBuildConfig, IHarmonyConfig {
-  fileType: IFileType
-  useETS?: boolean
-  useJSON5?: boolean
-  blended?: boolean
-  runtimePath?: string | string[]
-  isPure?: boolean
-  taroComponentsPath: string
-  cssVariables?: boolean  // 是否动态解析css变量
-}
-
 export interface CommonBuildConfig extends IProjectConfig<'vite'> {
   entry: {
     app: string | string[]
@@ -120,8 +104,8 @@ export interface ViteCompilerContext<T> {
   filesConfig: IMiniFilesConfig
   configFileList: string[]
   compilePage: (pageName: string) => VitePageMeta
-  watchConfigFile: (rollupCtx: PluginContext) => void
-  collectedDeps: (rollupCtx: PluginContext, id: string, filter, cache: Set<string> = new Set()) => Promise<Set<string>>
+  watchConfigFile: (rollupCtx: RollupPluginContext) => void
+  collectedDeps: (rollupCtx: RollupPluginContext, id: string, filter, cache: Set<string> = new Set()) => Promise<Set<string>>
   getAppScriptPath: () => string
   getApp: () => ViteAppMeta
   getPages: () => VitePageMeta[]
@@ -135,32 +119,6 @@ export interface ViteCompilerContext<T> {
   getTargetFilePath: (filePath: string, targetExtName: string) => string
 }
 
-export interface ViteH5CompilerContext extends ViteCompilerContext<ViteH5BuildConfig> {
-  getBrowserslist: () => void
-  routerMeta: {
-    routerCreator: string
-    getRoutesConfig: (pageName?: string) => string
-  }
-  browserslist: string[]
-}
-
-export interface ViteHarmonyCompilerContext extends ViteCompilerContext<ViteHarmonyBuildConfig> {
-  nativeExt: string[]
-  fileType: ViteFileType
-  commonChunks: string[]
-  extraComponents: string[]
-  nativeComponents : Map<string, ViteNativeCompMeta>
-  getCommonChunks: () => string[]
-  modifyHarmonyConfig: (config: Partial<AppConfig>) => void
-  modifyHostPackage: (deps?: Record<string, string>, devDeps?: Record<string, string>) => Exclude<IHarmonyConfig['ohPackage'], void>
-  resolvePageImportPath: (scriptPath: string, pageName: string) => string
-  collectNativeComponents: (meta: ViteAppMeta | VitePageMeta | ViteNativeCompMeta) => ViteNativeCompMeta[]
-  generateNativeComponent: (rollupCtx: PluginContext, meta: ViteNativeCompMeta, implicitlyLoadedAfterOneOf: string[] = []) => void
-  getScriptPath: (filePath: string) => string
-  getStylePath: (filePath: string) => string
-  getConfigPath: (filePath: string) => string
-}
-
 export interface ViteMiniCompilerContext extends ViteCompilerContext<ViteMiniBuildConfig> {
   fileType: ViteFileType
   commonChunks: string[]
@@ -168,7 +126,7 @@ export interface ViteMiniCompilerContext extends ViteCompilerContext<ViteMiniBui
   getCommonChunks: () => string[]
   resolvePageImportPath: (scriptPath: string, pageName: string) => string
   collectNativeComponents: (meta: ViteAppMeta | VitePageMeta | ViteNativeCompMeta) => ViteNativeCompMeta[]
-  generateNativeComponent: (rollupCtx: PluginContext, meta: ViteNativeCompMeta, implicitlyLoadedAfterOneOf: string[] = []) => void
+  generateNativeComponent: (rollupCtx: RollupPluginContext, meta: ViteNativeCompMeta, implicitlyLoadedAfterOneOf: string[] = []) => void
   getScriptPath: (filePath: string) => string
   getTemplatePath: (filePath: string) => string
   getStylePath: (filePath: string) => string

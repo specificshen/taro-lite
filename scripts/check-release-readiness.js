@@ -390,8 +390,10 @@ function checkBusinessVisibleTypeContract() {
     'packages/taro/types/compile/config/mini.d.ts',
     'packages/taro/types/compile/config/project.d.ts',
     'packages/taro/types/compile/config/util.d.ts',
+    'packages/taro/types/compile/viteCompilerContext.d.ts',
   ];
   const externalBuildTypeImportPattern = /from ['"](webpack|webpack-chain|rollup|postcss)['"]/g;
+  const unsupportedCompilerContextPattern = /Vite(H5|Harmony)(BuildConfig|CompilerContext)|IH5Config|IHarmonyConfig/g;
 
   if (exposesUnsupportedConfig) {
     hasBusinessFixtureContractErrors = true;
@@ -403,12 +405,20 @@ function checkBusinessVisibleTypeContract() {
   for (const typePath of supportedConfigTypePaths) {
     const source = fs.readFileSync(path.join(rootDir, typePath), 'utf8');
     const externalBuildTypeImports = [...new Set(source.match(externalBuildTypeImportPattern) || [])];
-    if (externalBuildTypeImports.length === 0) continue;
+    const unsupportedCompilerContextTypes = [...new Set(source.match(unsupportedCompilerContextPattern) || [])];
+    if (externalBuildTypeImports.length === 0 && unsupportedCompilerContextTypes.length === 0) continue;
 
     hasBusinessFixtureContractErrors = true;
-    errors.push(
-      `${typePath}: business-visible supported config types must not require legacy build tool type packages: ${externalBuildTypeImports.join(', ')}`,
-    );
+    if (externalBuildTypeImports.length > 0) {
+      errors.push(
+        `${typePath}: business-visible supported config types must not require legacy build tool type packages: ${externalBuildTypeImports.join(', ')}`,
+      );
+    }
+    if (unsupportedCompilerContextTypes.length > 0) {
+      errors.push(
+        `${typePath}: business-visible Vite compiler context must only expose WeApp/Mini supported types: ${unsupportedCompilerContextTypes.join(', ')}`,
+      );
+    }
   }
 
   for (const typeDir of BUSINESS_VISIBLE_TYPE_DIRS) {
