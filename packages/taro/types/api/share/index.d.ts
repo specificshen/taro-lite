@@ -70,7 +70,7 @@ declare module '../../index' {
       /** 是否使用带 shareTicket 的转发[详情](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/share.html) */
       withShareTicket?: boolean
       /** QQ小程序分享功能，支持分享到QQ、QQ空间、微信好友、微信朋友圈
-       * @supported weapp, qq
+       * @supported weapp
        * @qq QQ支持的值： ['qq', 'qzone', 'wechatFriends', 'wechatMoment']
        * @weapp 微信支持：['wechatFriends', 'wechatMoment'] / ['shareAppMessage', 'shareTimeline']
        */
@@ -208,7 +208,7 @@ declare module '../../index' {
     updateShareMenu (option: updateShareMenu.Option): Promise<TaroGeneral.CallbackResult>
 
     /** 显示当前页面的转发按钮
-     * @supported weapp, qq, tt
+     * @supported weapp
      * @example
      * ```tsx
      * Taro.showShareMenu({
@@ -300,7 +300,7 @@ declare module '../../index' {
     ): void
 
     /** 隐藏当前页面的转发按钮
-     * @supported weapp, tt
+     * @supported weapp
      * @example
      * ```tsx
      * Taro.hideShareMenu()
