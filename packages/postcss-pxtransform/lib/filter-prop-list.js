@@ -1,4 +1,3 @@
-/*eslint-disable*/
 module.exports = {
   exact: function (list) {
     return list.filter(function (m) {

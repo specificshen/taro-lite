@@ -1,5 +1,3 @@
-/*eslint-disable*/
-
 // excluding regex trick: http://www.rexegg.com/regex-best-trick.html
 
 // Not anything inside double quotes
