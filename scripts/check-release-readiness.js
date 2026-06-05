@@ -640,6 +640,42 @@ function checkBusinessVisibleTypeContract() {
         /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|swan|tt|rn|h5)\b/g,
       message: 'business-visible canvas comments must not advertise unsupported platforms.',
     },
+    {
+      path: 'packages/taro/types/api/device/motion.d.ts',
+      pattern:
+        /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|swan|tt|rn|h5)\b/g,
+      message: 'business-visible motion comments must not advertise unsupported platforms.',
+    },
+    {
+      path: 'packages/taro/types/api/device/screen.d.ts',
+      pattern:
+        /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|swan|tt|rn|h5)\b/g,
+      message: 'business-visible screen comments must not advertise unsupported platforms.',
+    },
+    {
+      path: 'packages/taro/types/api/device/accelerometer.d.ts',
+      pattern:
+        /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|swan|tt|rn|h5)\b/g,
+      message: 'business-visible accelerometer comments must not advertise unsupported platforms.',
+    },
+    {
+      path: 'packages/taro/types/api/device/memory.d.ts',
+      pattern:
+        /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|swan|tt|rn|h5)\b/g,
+      message: 'business-visible memory comments must not advertise unsupported platforms.',
+    },
+    {
+      path: 'packages/taro/types/api/device/compass.d.ts',
+      pattern:
+        /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|swan|tt|rn|h5)\b/g,
+      message: 'business-visible compass comments must not advertise unsupported platforms.',
+    },
+    {
+      path: 'packages/taro/types/api/device/gyroscope.d.ts',
+      pattern:
+        /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|swan|tt|rn|h5)\b/g,
+      message: 'business-visible gyroscope comments must not advertise unsupported platforms.',
+    },
   ];
 
   if (exposesUnsupportedConfig) {
