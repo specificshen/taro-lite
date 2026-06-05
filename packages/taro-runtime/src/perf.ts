@@ -22,8 +22,7 @@ class Performance {
 
     this.recorder.delete(id);
     const time = now - prev;
-    // eslint-disable-next-line no-console
-    console.log(`${id} 时长： ${time}ms 开始时间：${this.#parseTime(prev)} 结束时间：${this.#parseTime(now)}`);
+    process.stdout.write(`${id} 时长： ${time}ms 开始时间：${this.#parseTime(prev)} 结束时间：${this.#parseTime(now)}\n`);
   }
 
   public delayStop(id: string, delay = 500) {
