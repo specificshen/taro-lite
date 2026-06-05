@@ -95,7 +95,7 @@ export function createFilterWithCompileOptions(
     if (Array.isArray(compile.include)) {
       include.unshift(...compile.include);
     }
-    // Note：如果 compile 有 传递exclude，那么就进行覆盖，与 webpack5 逻辑保持一致
+    // Note：如果 compile 有传递 exclude，那么就进行覆盖
     if (Array.isArray(compile.exclude)) {
       exclude = [...compile.exclude];
     }

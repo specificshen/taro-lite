@@ -70,10 +70,6 @@ const processed = Symbol('processed');
 
 let targetUnit;
 
-const SPECIAL_PIXEL = ['Px', 'PX', 'pX'];
-let unConvertTargetUnit;
-let platform;
-
 const pxRegex = (units = ['px']) =>
   new RegExp(`"[^"]+"|'[^']+'|url\\([^\\)]+\\)|(\\d*\\.?\\d+)(${units.join('|')})`, 'g');
 
@@ -98,59 +94,14 @@ const postcssPxTransform = (options: PxTransformOptions = {}) => {
   const designWidth = (input: string) =>
     typeof resolvedOptions.designWidth === 'function' ? resolvedOptions.designWidth(input) : resolvedOptions.designWidth;
 
-  platform = resolvedOptions.platform;
-  switch (resolvedOptions.platform) {
-    case 'h5': {
-      targetUnit = resolvedOptions.targetUnit ?? 'rem';
+  targetUnit = resolvedOptions.targetUnit ?? 'rpx';
 
-      switch (targetUnit) {
-        case 'vw':
-        case 'vmin':
-          resolvedOptions.rootValue = (input) => {
-            return designWidth(input) / 100;
-          };
-          break;
-        case 'px':
-          resolvedOptions.rootValue = (input) => (1 / resolvedOptions.deviceRatio[designWidth(input)]) * 2;
-          break;
-        default:
-          resolvedOptions.rootValue = (input) => {
-            return (baseFontSize / resolvedOptions.deviceRatio[designWidth(input)]) * 2;
-          };
-          break;
-      }
-
-      transUnits.push('rpx');
-      break;
-    }
-    case 'rn': {
-      resolvedOptions.rootValue = (input) => (1 / resolvedOptions.deviceRatio[designWidth(input)]) * 2;
-      targetUnit = 'px';
-      break;
-    }
-    case 'quickapp': {
-      resolvedOptions.rootValue = () => 1;
-      targetUnit = 'px';
-      break;
-    }
-    case 'harmony': {
-      resolvedOptions.rootValue = (input) => 1 / resolvedOptions.deviceRatio[designWidth(input)];
-      targetUnit = 'px';
-      unConvertTargetUnit = 'ch';
-      transUnits.push(...SPECIAL_PIXEL);
-      break;
-    }
-    default: {
-      targetUnit = resolvedOptions.targetUnit ?? 'rpx';
-
-      if (targetUnit === 'rem') {
-        resolvedOptions.rootValue = (input) => (baseFontSize / resolvedOptions.deviceRatio[designWidth(input)]) * 2;
-      } else if (targetUnit === 'px') {
-        resolvedOptions.rootValue = (input) => (1 / resolvedOptions.deviceRatio[designWidth(input)]) * 2;
-      } else {
-        resolvedOptions.rootValue = (input) => 1 / resolvedOptions.deviceRatio[designWidth(input)];
-      }
-    }
+  if (targetUnit === 'rem') {
+    resolvedOptions.rootValue = (input) => (baseFontSize / resolvedOptions.deviceRatio[designWidth(input)]) * 2;
+  } else if (targetUnit === 'px') {
+    resolvedOptions.rootValue = (input) => (1 / resolvedOptions.deviceRatio[designWidth(input)]) * 2;
+  } else {
+    resolvedOptions.rootValue = (input) => 1 / resolvedOptions.deviceRatio[designWidth(input)];
   }
 
   convertLegacyOptions(resolvedOptions);
@@ -185,20 +136,6 @@ const postcssPxTransform = (options: PxTransformOptions = {}) => {
           }
 
           if (!opts.methods.includes('platform')) return;
-
-          if (resolvedOptions.platform === 'rn') {
-            if (comment.text === 'postcss-pxtransform rn eject enable') {
-              let next = comment.next();
-              while (next) {
-                if (next.text === 'postcss-pxtransform rn eject disable') {
-                  break;
-                }
-                const temp = next.next();
-                next.remove();
-                next = temp;
-              }
-            }
-          }
 
           const wordList = comment.text.split(' ');
           if (wordList.indexOf('#ifdef') > -1) {
@@ -242,19 +179,8 @@ const postcssPxTransform = (options: PxTransformOptions = {}) => {
           if (!satisfyPropList(decl.prop)) return;
 
           const isBlacklisted = blacklistedSelector(opts.selectorBlackList, decl.parent.selector);
-          if (isBlacklisted && platform !== 'harmony') return;
-          let value;
-          if (isBlacklisted) {
-            if (platform === 'harmony') {
-              value = decl.value.replace(pxRgx, (match, pixelValue) =>
-                pixelValue ? pixelValue + unConvertTargetUnit : match,
-              );
-            } else {
-              return;
-            }
-          } else {
-            value = decl.value.replace(pxRgx, pxReplace);
-          }
+          if (isBlacklisted) return;
+          const value = decl.value.replace(pxRgx, pxReplace);
           if (declarationExists(decl.parent, decl.prop, value)) return;
           if (opts.replace) {
             decl.value = value;
@@ -298,26 +224,15 @@ function convertLegacyOptions(options) {
 }
 
 function createPxReplace(rootValue, unitPrecision, minPixelValue, onePxTransform) {
-  const specialPxRgx = pxRegex(SPECIAL_PIXEL);
   return function (input) {
     return function (match, pixelValue) {
       if (!pixelValue) return match;
 
-      if (platform === 'harmony' && specialPxRgx.test(match)) {
-        return pixelValue + unConvertTargetUnit;
-      }
-
       if (!onePxTransform && parseInt(pixelValue, 10) === 1) {
-        if (platform === 'harmony') {
-          return pixelValue + unConvertTargetUnit;
-        }
         return match;
       }
       const pixels = parseFloat(pixelValue);
       if (pixels < minPixelValue) {
-        if (platform === 'harmony') {
-          return pixelValue + unConvertTargetUnit;
-        }
         return match;
       }
 

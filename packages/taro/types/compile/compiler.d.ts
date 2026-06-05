@@ -2,9 +2,7 @@ export type SwcConfig = Record<string, any>
 
 export type CompilerViteTypes = 'vite'
 
-export type CompilerWebpackTypes = 'webpack5'
-
-export type CompilerTypes = CompilerWebpackTypes | CompilerViteTypes
+export type CompilerTypes = CompilerViteTypes
 
 interface IPrebundle {
   enable?: boolean

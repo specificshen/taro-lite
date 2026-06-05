@@ -65,7 +65,6 @@ export interface CommonBuildConfig extends IProjectConfig<'vite'> {
   /** special mode */
   isBuildNativeComp?: boolean
   /** hooks */
-  onCompilerMake: (compilation) => Promise<any>
   onParseCreateElement: (nodeName, componentConfig) => Promise<any>
 }
 

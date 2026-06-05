@@ -236,10 +236,6 @@ export default class Project extends Creator {
   askCompiler: AskMethods = function (conf, prompts) {
     const compilerChoices = [
       {
-        name: 'Webpack5',
-        value: CompilerType.Webpack5,
-      },
-      {
         name: 'Vite',
         value: CompilerType.Vite,
       },

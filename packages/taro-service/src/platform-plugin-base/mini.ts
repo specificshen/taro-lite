@@ -37,8 +37,6 @@ export abstract class TaroPlatformBase<T extends TConfig = TConfig> extends Taro
 
   private setupImpl() {
     const { output } = this.config;
-    // webpack5 原生支持 output.clean 选项，但是 webpack4 不支持， 为统一行为，这里做一下兼容
-    // （在 packages/taro-mini-runner/src/webpack/chain.ts 和 packages/taro-webpack-runner/src/utils/chain.ts 的 makeConfig 中对 clean 选项做了过滤）
     // 仅 output.clean 为 false 时不清空输出目录
     // eslint-disable-next-line eqeqeq
     if (output == undefined || output.clean == undefined || output.clean === true) {
@@ -54,12 +52,10 @@ export abstract class TaroPlatformBase<T extends TConfig = TConfig> extends Taro
       const { printLog, processTypeEnum } = this.ctx.helper;
       printLog(processTypeEnum.START, '开发者工具-项目目录', `${this.ctx.paths.outputPath}`);
     }
-    // Webpack5 已在 Vite-only fork 中移除，HMR 由 vite-runner 自身负责
   }
 
   protected printDevelopmentTip(platform: string) {
     const tips: string[] = [];
-    const config = this.config;
     const { chalk } = this.helper;
 
     if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test') {
@@ -74,11 +70,6 @@ Example:
 ${exampleCommand}`),
       );
     }
-
-    if (this.compiler === 'webpack5' && !config.cache?.enable) {
-      tips.push(chalk.yellowBright('webpack5 路径已 deprecated；React-only fork 仅长期维护 vite。'));
-    }
-
     if (tips.length) {
       console.log(chalk.yellowBright('Tips:'));
       tips.forEach((item, index) => console.log(`${chalk.yellowBright(index + 1)}. ${item}`));

@@ -1,7 +1,7 @@
 import type { IProjectConfig } from '@spcsn/taro/types/compile';
 import type { CompilerTypes, CompilerViteTypes } from '@spcsn/taro/types/compile/compiler';
 
-type WebpackMerge = (...configs: Array<object | null | undefined>) => object;
+type ConfigMerge = (...configs: Array<object | null | undefined>) => object;
 
 export interface ConfigEnv {
   /** taro 当前执行的命令 */
@@ -11,7 +11,7 @@ export interface ConfigEnv {
 }
 
 export type UserConfigFn<T extends CompilerTypes = CompilerViteTypes> = (
-  merge: WebpackMerge,
+  merge: ConfigMerge,
   env: ConfigEnv,
 ) => IProjectConfig<T> | Promise<IProjectConfig<T>>;
 export type UserConfigExport<T extends CompilerTypes = CompilerViteTypes> =

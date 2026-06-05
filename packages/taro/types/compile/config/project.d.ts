@@ -1,14 +1,9 @@
 import type { AppConfig } from '../../index'
 import type { Compiler, CompilerTypes, CompilerViteTypes } from '../compiler'
-import type { IModifyChainData } from '../hooks'
 import type { IMiniAppConfig, IMiniFilesConfig } from './mini'
 import type { ICopyOptions, IOption, ISassOptions, TogglableOptions } from './util'
 
 type PostcssInput = string | number
-type WebpackChain = any
-type WebpackCompilation = any
-type WebpackCompiler = any
-type WebpackInstance = any
 
 export type PluginItem<T = object> = string | [string, T] | [string, () => T | Promise<T>]
 
@@ -24,7 +19,6 @@ interface ICache {
 
   /**
    * 当依赖的文件或该文件的依赖改变时，使缓存失效。
-   * @description  详详情请参考 [WebpackConfig.cache.buildDependencies](https://webpack.js.org/configuration/cache/#cachebuilddependencies)。
    */
   buildDependencies?: Record<string, any>
 
@@ -38,7 +32,7 @@ interface ICache {
 interface ILogger {
   /** 是否简化输出日志 (默认值 true)*/
   quiet: boolean
-  /** 是否输出 Webpack Stats 信息 (默认值 false) */
+  /** 是否输出构建统计信息 (默认值 false) */
   stats: boolean
 }
 
@@ -147,7 +141,7 @@ export interface IProjectBaseConfig {
   /** 使用的编译工具。可选值：vite */
   compiler?: Compiler
 
-  /** Webpack5 持久化缓存配置。具体配置请参考 [WebpackConfig.cache](https://webpack.js.org/configuration/cache/#cache) */
+  /** 持久化缓存配置 */
   cache?: ICache
 
   /** 控制 Taro 编译日志的输出方式 */
@@ -171,19 +165,7 @@ export interface IProjectBaseConfig {
    */
   onBuildFinish?: (res: { error; stats; isWatch }) => Promise<any>
 
-  /**
-   * 修改编译过程中的页面组件配置
-   */
-  onCompilerMake?: (compilation: WebpackCompilation, compiler: WebpackCompiler, plugin: any) => Promise<any>
-
-  onWebpackChainReady?: (webpackChain: WebpackChain) => Promise<any>
-
   modifyAppConfig?: (appConfig: AppConfig) => Promise<any>
-
-  /**
-   * 编译中修改 webpack 配置，在这个钩子中，你可以对 webpackChain 作出想要的调整，等同于配置 [`webpackChain`](./config-detail#miniwebpackchain)
-   */
-  modifyWebpackChain?: (chain: WebpackChain, webpack: WebpackInstance, data: IModifyChainData) => Promise<any>
 
   /**
    * 编译中修改 vite 配置
@@ -299,7 +281,7 @@ export interface IProjectConfig<T extends CompilerTypes = CompilerViteTypes> {
   /** 使用的开发框架。可选值：react */
   framework?: 'react'
 
-  /** Webpack5 持久化缓存配置。具体配置请参考 [WebpackConfig.cache](https://webpack.js.org/configuration/cache/#cache) */
+  /** 持久化缓存配置 */
   cache?: ICache
 
   /** 控制 Taro 编译日志的输出方式 */
