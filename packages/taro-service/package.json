@@ -20,12 +20,13 @@
     "taro"
   ],
   "bugs": {
-    "url": "https://github.com/NervJS/taro/issues"
+    "url": "https://github.com/specificshen/taro-lite/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/NervJS/taro.git"
+    "url": "git+https://github.com/specificshen/taro-lite.git"
   },
+  "homepage": "https://github.com/specificshen/taro-lite#readme",
   "engines": {
     "node": ">= 22"
   },

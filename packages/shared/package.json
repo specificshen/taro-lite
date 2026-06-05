@@ -15,7 +15,7 @@
   "sideEffects": [],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/NervJS/taro.git"
+    "url": "git+https://github.com/specificshen/taro-lite.git"
   },
   "scripts": {
     "prod": "pnpm run build",
@@ -28,8 +28,9 @@
     "test": "vitest run"
   },
   "bugs": {
-    "url": "https://github.com/NervJS/taro/issues"
+    "url": "https://github.com/specificshen/taro-lite/issues"
   },
+  "homepage": "https://github.com/specificshen/taro-lite#readme",
   "engines": {
     "node": ">= 22"
   },

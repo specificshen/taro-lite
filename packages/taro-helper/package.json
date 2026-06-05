@@ -21,7 +21,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/NervJS/taro.git"
+    "url": "git+https://github.com/specificshen/taro-lite.git"
   },
   "files": [
     "index.js",
@@ -33,12 +33,12 @@
     "taro"
   ],
   "bugs": {
-    "url": "https://github.com/NervJS/taro/issues"
+    "url": "https://github.com/specificshen/taro-lite/issues"
   },
   "engines": {
     "node": ">= 22"
   },
-  "homepage": "https://github.com/NervJS/taro#readme",
+  "homepage": "https://github.com/specificshen/taro-lite#readme",
   "dependencies": {
     "@babel/core": "^7.24.4",
     "@swc/core": "1.3.96",

@@ -1,24 +1,21 @@
-# Taro Helper
+# `@spcsn/taro-helper`
 
-Taro 编译时工具库，主要供 CLI、编译器插件使用
+`@spcsn/taro-helper` 是 Taro Lite 的内部编译时工具包，主要供 CLI、service、runner 和构建脚本复用。
 
-tips:
+## 包定位
 
-执行 `build` 命令时，会把 swc-backup 文件夹里的 `.wasm` 文件移动到 swc 文件夹中，目的是为了不关注 SWC 插件的开发者无需配置 Rust 环境。但如何开发者需要修改 SWC 插件，请参考 CONTRIBUTING.md 文档中的 Rust 部分进行开发调试。
+- 内部实现包，不是业务侧显式安装入口。
+- 提供配置加载、路径解析、文件系统封装、终端输出、依赖解析、SWC 注册和常量定义等能力。
+- 当前仍需要独立发布，因为 CLI、service、runner 和组件类型生成脚本都会直接解析它。
 
-## 项目结构
+## SWC 说明
 
-``` plaintext
-.
-├── __tests__           # 单测
-├── constants.ts        # 编译时常量
-├── esbuild             # esbuild 相关工具
-│   ├── index.ts
-│   ├── swc-plugin.ts
-│   └── utils.ts
-├── index.ts
-├── npm.ts              # 依赖项管理工具
-├── swcRegister.ts      # swc register，通常用于加载项目的配置文件，如 app.config.js
-├── terminal.ts         # 终端 Terminal 工具集
-└── utils.ts            # 工具集
-```
+执行 `build` 命令时，会把 `swc-backup` 里的 `.wasm` 文件移动到 `swc` 目录。这样不关注 SWC 插件开发的维护者无需配置 Rust 环境。
+
+如果需要修改 SWC 插件，请参考仓库根目录 `CONTRIBUTING.md` 中的 Rust 相关说明。
+
+## 维护约束
+
+- 不新增业务可感知 API。
+- 工具函数应保持 Node 侧编译时语义，不混入小程序运行时逻辑。
+- 若要继续收敛本包，应先把 CLI、service、runner 的构建产物改造成可稳定内联 helper 代码。

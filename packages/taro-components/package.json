@@ -36,8 +36,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/NervJS/taro.git"
+    "url": "git+https://github.com/specificshen/taro-lite.git"
   },
+  "bugs": {
+    "url": "https://github.com/specificshen/taro-lite/issues"
+  },
+  "homepage": "https://github.com/specificshen/taro-lite#readme",
   "keywords": [],
   "author": "",
   "license": "MIT",

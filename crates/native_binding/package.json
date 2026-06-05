@@ -35,7 +35,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/specificshen/taro.git"
+    "url": "git+https://github.com/specificshen/taro-lite.git"
   },
   "keywords": [
     "taro"
@@ -50,9 +50,9 @@
     "@napi-rs/triples": "1.2.0"
   },
   "bugs": {
-    "url": "https://github.com/specificshen/taro/issues"
+    "url": "https://github.com/specificshen/taro-lite/issues"
   },
-  "homepage": "https://github.com/specificshen/taro#readme",
+  "homepage": "https://github.com/specificshen/taro-lite#readme",
   "optionalDependencies": {
     "@spcsn/taro-binding-darwin-arm64": "workspace:*",
     "@spcsn/taro-binding-darwin-x64": "workspace:*",

@@ -28,8 +28,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/NervJS/taro/tree/master/packages/taro-runtime"
+    "url": "git+https://github.com/specificshen/taro-lite.git"
   },
+  "bugs": {
+    "url": "https://github.com/specificshen/taro-lite/issues"
+  },
+  "homepage": "https://github.com/specificshen/taro-lite#readme",
   "engines": {
     "node": ">= 22"
   },

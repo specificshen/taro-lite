@@ -19,5 +19,9 @@
   "publishConfig": {
     "access": "public"
   },
-  "repository": "https://github.com/specificshen/taro"
+  "repository": "https://github.com/specificshen/taro-lite",
+  "bugs": {
+    "url": "https://github.com/specificshen/taro-lite/issues"
+  },
+  "homepage": "https://github.com/specificshen/taro-lite#readme"
 }

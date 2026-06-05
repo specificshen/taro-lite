@@ -1,5 +1,15 @@
 # `@spcsn/taro-shared`
 
-Taro 内部使用的 utils。包含了常用的类型判断、错误断言、组件类型/声明/参数等。`@spcsn/taro-shared` 会跨 node/浏览器/小程序/React Native 使用，不得使用平台特有特性。
+`@spcsn/taro-shared` 是 Taro Lite 的内部共享工具包，提供类型判断、错误断言、组件声明、运行时 hooks 和平台常量等基础能力。
 
-引入此包的必须采用 ES6 引用单个模块语法，且打包配置 external 不得包括此包。
+## 包定位
+
+- 内部实现包，不是业务侧显式安装入口。
+- 被 `@spcsn/taro`、`@spcsn/taro-runtime`、`@spcsn/taro-service`、`@spcsn/taro-cli` 和 `@spcsn/taro-vite-runner` 复用。
+- 当前仍需要作为独立包发布，直到公开入口包可以把内部依赖稳定打入自身产物。
+
+## 维护约束
+
+- 保持平台无关，不引入 Node、浏览器或小程序专属 API。
+- 优先使用具名导出，避免引入会影响 tree-shaking 的全局副作用。
+- 不向业务项目暴露新的显式接入约定。

@@ -1,6 +1,12 @@
-# @spcsn/taro-vite-runner
+# `@spcsn/taro-vite-runner`
 
 `@spcsn/taro-vite-runner` 是 `@spcsn/taro-cli` 在小程序端使用的 Vite/Rolldown 构建执行器。它负责把 Taro 页面、组件、模板、样式和静态资源组织成微信小程序可运行的产物。
+
+## 包定位
+
+- 内部实现包，不是业务侧显式安装入口。
+- 由 `@spcsn/taro-cli` 解析和调用，承载 React 19 + Vite + WeApp 构建链。
+- 当前仍需要独立发布，因为 CLI 和 service 仍通过包名解析 runner 与 `framework-react` 子路径。
 
 ## 入口
 
