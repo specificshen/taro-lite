@@ -18,7 +18,7 @@ declare module '../../index' {
 
   interface TaroStatic {
     /** 拉起手机发送短信界面
-     * @supported weapp, tt
+     * @supported weapp
      * @see declare module '../../index' 
      */
     sendSms(option: sendSms.Option): Promise<TaroGeneral.CallbackResul>

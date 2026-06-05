@@ -102,7 +102,7 @@ declare module '../../index' {
 
   interface TaroStatic {
     /** 停止搜索附近的 iBeacon 设备
-     * @supported weapp, alipay
+     * @supported weapp
      * @example
      * ```tsx
      * Taro.stopBeaconDiscovery(params).then(...)
@@ -112,7 +112,7 @@ declare module '../../index' {
     stopBeaconDiscovery(option?: stopBeaconDiscovery.Option): Promise<TaroGeneral.IBeaconError>
 
     /** 开始搜索附近的 iBeacon 设备
-     * @supported weapp, alipay
+     * @supported weapp
      * @example
      * ```tsx
      * Taro.startBeaconDiscovery({
@@ -124,7 +124,7 @@ declare module '../../index' {
     startBeaconDiscovery(option: startBeaconDiscovery.Option): Promise<TaroGeneral.IBeaconError>
 
     /** 监听 iBeacon 设备更新事件，仅能注册一个监听
-     * @supported weapp, alipay
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/ibeacon/wx.onBeaconUpdate.html
      */
     onBeaconUpdate(
@@ -133,7 +133,7 @@ declare module '../../index' {
     ): void
 
     /** 监听 iBeacon 服务状态变化事件，仅能注册一个监听
-     * @supported weapp, alipay
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/ibeacon/wx.onBeaconServiceChange.html
      */
     onBeaconServiceChange(
@@ -142,7 +142,7 @@ declare module '../../index' {
     ): void
 
     /** 取消监听 iBeacon 设备更新事件
-     * @supported weapp, alipay
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/ibeacon/wx.offBeaconUpdate.html
      */
     offBeaconUpdate(
@@ -151,7 +151,7 @@ declare module '../../index' {
     ): void
 
     /** 取消监听 iBeacon 服务状态变化事件
-     * @supported weapp, alipay
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/ibeacon/wx.offBeaconServiceChange.html
      */
     offBeaconServiceChange(
@@ -160,7 +160,7 @@ declare module '../../index' {
     ): void
 
     /** 获取所有已搜索到的 iBeacon 设备
-     * @supported weapp, alipay
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/ibeacon/wx.getBeacons.html
      */
     getBeacons(option?: getBeacons.Option): Promise<getBeacons.CallbackResult>
