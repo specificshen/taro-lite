@@ -3,7 +3,7 @@ import * as path from 'node:path';
 import { ENTRY, OUTPUT_DIR, resolveScriptPath, SOURCE_DIR } from '@spcsn/taro-helper';
 import { getPlatformType } from '@spcsn/taro-shared';
 
-import * as hooks from '../constant';
+import * as hooks from '../constant/hooks.js';
 
 import type { IPluginContext } from '@spcsn/taro-service';
 

@@ -133,6 +133,8 @@ ${exampleCommand}`),
    * @param extraOptions 需要额外传入 runner 的配置项
    */
   private async build(extraOptions = {}) {
+    if (this.config.withoutBuild) return;
+
     this.ctx.onBuildInit?.(this);
     await this.buildTransaction.perform(this.buildImpl, this, extraOptions);
   }

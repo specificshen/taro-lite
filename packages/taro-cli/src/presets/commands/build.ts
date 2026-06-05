@@ -1,9 +1,13 @@
-import { MessageKind, validateConfig } from '../../doctor/validators';
-
-import { extractCompileEntry } from '../../util/appConfig';
-import * as hooks from '../constant';
+import * as validatorsModule from '../../doctor/validators.js';
+import * as appConfigModule from '../../util/appConfig.js';
+import * as hooks from '../constant/hooks.js';
 
 import type { IPluginContext } from '@spcsn/taro-service';
+
+const validators = (validatorsModule as any).default || validatorsModule;
+const appConfig = (appConfigModule as any).default || appConfigModule;
+const { MessageKind, validateConfig } = validators;
+const { extractCompileEntry } = appConfig;
 
 export default (ctx: IPluginContext) => {
   ctx.registerCommand({
@@ -42,7 +46,7 @@ export default (ctx: IPluginContext) => {
       const { platform, isWatch, blended, newBlended, withoutBuild, noInjectGlobalStyle, noCheck } = options;
       const { fs, chalk, PROJECT_CONFIG } = ctx.helper;
       const { outputPath, configPath } = ctx.paths;
-      const { args } = options;
+      const args = options.args || {};
 
       if (!configPath || !fs.existsSync(configPath)) {
         console.log(chalk.red(`找不到项目配置文件${PROJECT_CONFIG}，请确定当前目录是 Taro 项目根目录!`));

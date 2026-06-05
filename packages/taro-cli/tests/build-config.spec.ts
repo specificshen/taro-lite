@@ -1,68 +1,52 @@
+import * as fs from 'node:fs';
 import * as path from 'node:path';
 
-import { type MockedFunction, type MockInstance, afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-
-import { emptyDirectory } from '@spcsn/taro-helper';
+import { type MockInstance, afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { run } from './utils';
 
 const runBuild = run('build', ['commands/build', path.resolve(__dirname, '../src/platform-weapp')]);
 
-vi.mock('@spcsn/taro-helper', async () => {
-  const helper = await vi.importActual<typeof import('@spcsn/taro-helper')>('@spcsn/taro-helper');
-  const fs = helper.fs;
-  return {
-    __esModule: true,
-    ...helper,
-    emptyDirectory: vi.fn(),
-    fs: {
-      ...fs,
-    },
-  };
-});
-
 const APP_PATH = path.join(__dirname, 'fixtures/default');
 const OUTPUT_PATH = path.join(__dirname, 'fixtures/default/dist');
+const KEEP_FILE_PATH = path.join(OUTPUT_PATH, 'project.config.json');
+const STALE_FILE_PATH = path.join(OUTPUT_PATH, 'stale-file.txt');
 
 describe('构建配置测试', () => {
-  const emptyDirectoryMocked = emptyDirectory as MockedFunction<typeof emptyDirectory>;
-
   beforeEach(() => {
-    emptyDirectoryMocked.mockReset();
+    fs.mkdirSync(OUTPUT_PATH, { recursive: true });
+    fs.writeFileSync(KEEP_FILE_PATH, '{"keep":true}');
+    fs.writeFileSync(STALE_FILE_PATH, 'stale');
     process.argv = [];
   });
 
   afterEach(() => {
+    fs.rmSync(STALE_FILE_PATH, { force: true });
     process.argv = [];
-    emptyDirectoryMocked.mockReset();
   });
 
   describe('小程序', () => {
     it(`项目 output.clean = clean: { keep: ['project.config.json'] } ==> 清空dist文件夹但保留指定文件`, async () => {
       const exitSpy = vi.spyOn(process, 'exit') as MockInstance<[], never>;
       const logSpy = vi.spyOn(console, 'log');
-      const errorSpy = vi.spyOn(console, 'error');
       logSpy.mockImplementation(() => {});
-      errorSpy.mockImplementation(() => {});
       exitSpy.mockImplementation(() => {
         throw new Error();
       });
 
-      try {
-        await runBuild(APP_PATH, {
-          options: {
-            type: 'weapp',
-            platform: 'weapp',
-          },
-        });
-      } catch (error) {
-        // no handler
-      }
-      expect(emptyDirectoryMocked).toBeCalledWith(OUTPUT_PATH, { excludes: ['project.config.json'] });
+      await runBuild(APP_PATH, {
+        options: {
+          type: 'weapp',
+          platform: 'weapp',
+          withoutBuild: true,
+        },
+      });
+
+      expect(fs.existsSync(KEEP_FILE_PATH)).toBe(true);
+      expect(fs.existsSync(STALE_FILE_PATH)).toBe(false);
 
       exitSpy.mockRestore();
       logSpy.mockRestore();
-      errorSpy.mockRestore();
     });
   });
 });

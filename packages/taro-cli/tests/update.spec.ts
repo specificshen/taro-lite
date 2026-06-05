@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { type MockedFunction, afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { chalk, fs, PROJECT_CONFIG, shouldUseCnpm, shouldUseYarn } from '@spcsn/taro-helper';
-import { exec } from 'child_process';
+import { exec } from 'node:child_process';
 
 import { getPkgVersion } from '../src/util';
 import { run } from './utils';
@@ -14,7 +14,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const runUpdate = run('update', ['commands/update']);
 const lastestVersion = getPkgVersion();
 
-vi.mock('child_process', () => {
+vi.mock('node:child_process', () => {
   const exec = vi.fn();
   exec.mockReturnValue({
     stdout: {
@@ -71,18 +71,12 @@ function updatePkg(pkgPath: string, version: string) {
     ...packageMap,
     dependencies: {
       ...packageMap.dependencies,
-      '@spcsn/taro-shared': version,
       '@spcsn/taro': version,
-      '@spcsn/taro-cli': version,
       '@spcsn/taro-components': version,
-      '@spcsn/taro-helper': version,
-      '@spcsn/taro-runtime': version,
-      '@spcsn/taro-service': version,
-      '@spcsn/taro-vite-runner': version,
-      '@spcsn/taro-binding': version,
     },
     devDependencies: {
       ...packageMap.devDependencies,
+      '@spcsn/taro-cli': version,
     },
   };
   return packageMap;
@@ -95,11 +89,28 @@ describe('update', () => {
   const writeJson = fs.writeJson as MockedFunction<typeof fs.writeJson>;
 
   beforeEach(() => {
+    (
+      globalThis as typeof globalThis & {
+        __TARO_CLI_TEST_EXEC__?: typeof exec;
+        __TARO_CLI_TEST_LATEST_VERSION__?: string;
+        __TARO_CLI_TEST_WRITE_JSON__?: typeof fs.writeJson;
+      }
+    ).__TARO_CLI_TEST_EXEC__ = exec;
+    (globalThis as typeof globalThis & { __TARO_CLI_TEST_LATEST_VERSION__?: string }).__TARO_CLI_TEST_LATEST_VERSION__ =
+      lastestVersion;
+    (
+      globalThis as typeof globalThis & { __TARO_CLI_TEST_WRITE_JSON__?: typeof fs.writeJson }
+    ).__TARO_CLI_TEST_WRITE_JSON__ = writeJson;
     shouldUseCnpmMocked.mockReturnValue(false);
     shouldUseYarnMocked.mockReturnValue(false);
   });
 
   afterEach(() => {
+    delete (globalThis as typeof globalThis & { __TARO_CLI_TEST_EXEC__?: typeof exec }).__TARO_CLI_TEST_EXEC__;
+    delete (globalThis as typeof globalThis & { __TARO_CLI_TEST_LATEST_VERSION__?: string })
+      .__TARO_CLI_TEST_LATEST_VERSION__;
+    delete (globalThis as typeof globalThis & { __TARO_CLI_TEST_WRITE_JSON__?: typeof fs.writeJson })
+      .__TARO_CLI_TEST_WRITE_JSON__;
     execMocked.mockClear();
     shouldUseCnpmMocked.mockReset();
     shouldUseYarnMocked.mockReset();
@@ -179,7 +190,6 @@ describe('update', () => {
   });
 
   it("should throw when there isn't a Taro project", async () => {
-    const chalkMocked = chalk.red as unknown as MockedFunction<any>;
     const exitSpy = vi.spyOn(process, 'exit');
     const logSpy = vi.spyOn(console, 'log');
     exitSpy.mockImplementation(() => {
@@ -196,7 +206,9 @@ describe('update', () => {
       });
     } catch (error) {} // eslint-disable-line no-empty
     expect(exitSpy).toBeCalledWith(1);
-    expect(chalkMocked).toBeCalledWith(`找不到项目配置文件 ${PROJECT_CONFIG}，请确定当前目录是 Taro 项目根目录!`);
+    expect(logSpy).toBeCalledWith(
+      expect.stringContaining(`找不到项目配置文件 ${PROJECT_CONFIG}，请确定当前目录是 Taro 项目根目录!`),
+    );
     exitSpy.mockRestore();
     logSpy.mockRestore();
   });

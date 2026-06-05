@@ -1,5 +1,5 @@
 // @ts-nocheck
-import Weapp from './program';
+import Weapp from './program.ts';
 
 import type { IPluginContext } from '@spcsn/taro-service';
 

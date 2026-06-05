@@ -1,9 +1,11 @@
-export enum MessageKind {
-  Error = 'error',
-  Warning = 'warning',
-  Success = 'success',
-  Manual = 'manual',
-}
+export const MessageKind = {
+  Error: 'error',
+  Warning: 'warning',
+  Success: 'success',
+  Manual: 'manual',
+} as const;
+
+export type MessageKind = (typeof MessageKind)[keyof typeof MessageKind];
 
 export interface ValidateMessage {
   kind: MessageKind;

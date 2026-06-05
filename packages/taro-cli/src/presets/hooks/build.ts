@@ -1,4 +1,4 @@
-import * as hooks from '../constant';
+import * as hooks from '../constant/hooks.js';
 
 import type { IPluginContext } from '@spcsn/taro-service';
 

@@ -155,10 +155,10 @@ export default class CLI {
 
           // 传递 inspect 参数即可
           if (command === 'inspect') {
-            customCommand(command, kernel, args);
+            await customCommand(command, kernel, args);
             break;
           }
-          customCommand(command, kernel, {
+          await customCommand(command, kernel, {
             args,
             _,
             platform,
@@ -189,7 +189,7 @@ export default class CLI {
           break;
         }
         case 'init': {
-          customCommand(command, kernel, {
+          await customCommand(command, kernel, {
             _,
             appPath,
             projectName: _[1] || args.name,
@@ -209,7 +209,7 @@ export default class CLI {
           break;
         }
         default:
-          customCommand(command, kernel, args);
+          await customCommand(command, kernel, args);
           break;
       }
     } else {

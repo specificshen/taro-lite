@@ -1,4 +1,6 @@
+import * as fs from 'node:fs';
 import * as path from 'node:path';
+import { exec } from 'node:child_process';
 
 import * as inquirer from 'inquirer';
 import getLatestVersion from 'latest-version';
@@ -27,7 +29,8 @@ const packagesManagement = {
 } as const;
 
 function getPkgItemByKey(key: string) {
-  const packageMap = require(path.join(process.cwd(), 'package.json'));
+  const packagePath = path.join(process.cwd(), 'package.json');
+  const packageMap = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
   if (Object.keys(packageMap).indexOf(key) === -1) {
     return {};
   }
@@ -40,7 +43,8 @@ function execCommand(params: {
   failCallback?: (data: string) => void;
 }) {
   const { command, successCallback, failCallback } = params;
-  const child = require('child_process').exec(command);
+  const testExec = (globalThis as typeof globalThis & { __TARO_CLI_TEST_EXEC__?: typeof exec }).__TARO_CLI_TEST_EXEC__;
+  const child = (testExec || exec)(command);
   child.stdout!.on('data', function (data) {
     successCallback?.(data);
   });
@@ -72,9 +76,13 @@ export default (ctx: IPluginContext) => {
 
       async function getTargetVersion() {
         let targetTaroVersion;
+        const testLatestVersion = (globalThis as typeof globalThis & { __TARO_CLI_TEST_LATEST_VERSION__?: string })
+          .__TARO_CLI_TEST_LATEST_VERSION__;
 
         if (version) {
           targetTaroVersion = semver.clean(version);
+        } else if (testLatestVersion) {
+          targetTaroVersion = testLatestVersion;
         } else {
           try {
             targetTaroVersion = await getLatestVersion(pkgName, {
@@ -128,7 +136,7 @@ export default (ctx: IPluginContext) => {
           console.log(chalk.red(`找不到项目配置文件 ${PROJECT_CONFIG}，请确定当前目录是 Taro 项目根目录!`));
           process.exit(1);
         }
-        const packageMap = require(pkgPath);
+        const packageMap = fs.readJSONSync(pkgPath);
 
         const spinner = ora('正在获取最新版本信息...').start();
 
@@ -151,7 +159,10 @@ export default (ctx: IPluginContext) => {
 
         // 写入package.json
         try {
-          await fs.writeJson(pkgPath, packageMap, { spaces: '\t' });
+          const testWriteJson = (
+            globalThis as typeof globalThis & { __TARO_CLI_TEST_WRITE_JSON__?: typeof fs.writeJson }
+          ).__TARO_CLI_TEST_WRITE_JSON__;
+          await (testWriteJson || fs.writeJson)(pkgPath, packageMap, { spaces: '\t' });
           console.log(
             chalk.green(`项目当前 Taro 版本：${oldVersion}，Taro 最新版本：${version}，更新项目 package.json 成功！`),
           );

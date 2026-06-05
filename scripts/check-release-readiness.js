@@ -28,6 +28,7 @@ const README_PATH = 'README.md';
 const INTERNAL_GUIDANCE_DOC_PATHS = ['docs/package-consolidation.md', 'docs/taro-react-only-modernization.md'];
 const BUSINESS_FIXTURE_PACKAGE_JSON_PATH = 'fixtures/weapp-react19-vite-skyline/package.json';
 const BUSINESS_FIXTURE_CONFIG_PATH = 'fixtures/weapp-react19-vite-skyline/config/index.ts';
+const CLI_DEFAULT_FIXTURE_PACKAGE_JSON_PATH = 'packages/taro-cli/tests/fixtures/default/package.json';
 const BUSINESS_TEMPLATE_PACKAGE_JSON_PATH = 'packages/taro-cli/templates/default/package.json.tmpl';
 const BUSINESS_VISIBLE_TYPE_DIRS = ['packages/taro/types', 'packages/taro-components/types'];
 
@@ -92,6 +93,7 @@ checkReadmeBusinessDependencyContract();
 checkReadmeInternalPackageContract();
 checkInternalGuidanceDocContract();
 checkBusinessFixtureDependencyContract();
+checkCliDefaultFixtureDependencyContract();
 checkBusinessFixtureConfigContract();
 checkBusinessFixtureScriptContract();
 checkBusinessTemplateScriptContract();
@@ -229,6 +231,23 @@ function checkBusinessFixtureDependencyContract() {
   hasBusinessFixtureContractErrors = true;
   errors.push(
     `${BUSINESS_FIXTURE_PACKAGE_JSON_PATH}: fixture must not depend on internal @spcsn packages: ${invalidDependencyNames.join(', ')}`,
+  );
+}
+
+function checkCliDefaultFixtureDependencyContract() {
+  const packageJson = readJson(path.join(rootDir, CLI_DEFAULT_FIXTURE_PACKAGE_JSON_PATH));
+  const spcsnDependencyNames = collectDependencyNames(packageJson).filter((dependencyName) =>
+    dependencyName.startsWith('@spcsn/'),
+  );
+  const invalidDependencyNames = spcsnDependencyNames.filter(
+    (dependencyName) => !BUSINESS_ENTRY_PACKAGES.includes(dependencyName),
+  );
+
+  if (invalidDependencyNames.length === 0) return;
+
+  hasBusinessFixtureContractErrors = true;
+  errors.push(
+    `${CLI_DEFAULT_FIXTURE_PACKAGE_JSON_PATH}: CLI default fixture must not depend on internal @spcsn packages: ${invalidDependencyNames.join(', ')}`,
   );
 }
 

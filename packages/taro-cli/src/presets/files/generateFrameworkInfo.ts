@@ -1,6 +1,12 @@
-import { getPkgVersion } from '../../util';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 
 import type { IPluginContext } from '@spcsn/taro-service';
+
+function getPkgVersion(): string {
+  const packageJsonPath = path.resolve(__dirname, '../../../package.json');
+  return JSON.parse(fs.readFileSync(packageJsonPath, 'utf8')).version;
+}
 
 export default (ctx: IPluginContext) => {
   ctx.registerMethod('generateFrameworkInfo', () => {

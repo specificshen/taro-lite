@@ -3,18 +3,18 @@ import path from 'node:path';
 
 import { TaroPlatformBase } from '@spcsn/taro-service';
 
-import { components } from './components';
-import { Template } from './template';
+import { components } from './components.ts';
+import { Template } from './template.ts';
 
-import type { IOptions } from './index';
+import type { IOptions } from './index.ts';
 
 export default class Weapp extends TaroPlatformBase {
   template: Template;
   platform = 'weapp';
   globalObject = 'wx';
   projectConfigJson: string = this.config.projectConfigName || 'project.config.json';
-  runtimePath = path.join(__dirname, 'runtime');
-  taroComponentsPath = path.join(__dirname, 'components-react');
+  runtimePath: string;
+  taroComponentsPath: string;
   fileType = {
     templ: '.wxml',
     style: '.wxss',
@@ -33,6 +33,9 @@ export default class Weapp extends TaroPlatformBase {
    */
   constructor(ctx, config, pluginOptions?: IOptions) {
     super(ctx, config);
+    const platformDirectory = path.dirname(ctx.path);
+    this.runtimePath = path.join(platformDirectory, 'runtime');
+    this.taroComponentsPath = path.join(platformDirectory, 'components-react');
     this.template = new Template(pluginOptions);
     // Skyline / glass-easel 默认配置（用户可在 project config 中覆盖）
     this.config = {

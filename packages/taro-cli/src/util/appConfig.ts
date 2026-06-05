@@ -1,6 +1,6 @@
-import { IPluginContext } from '@spcsn/taro-service';
+import type { IPluginContext } from '@spcsn/taro-service';
 import { isString } from '@spcsn/taro-shared';
-import { AppConfig } from '@spcsn/taro';
+import type { AppConfig } from '@spcsn/taro';
 
 /**
  * 按需编译功能，只编译指定的页面或组件
@@ -14,10 +14,11 @@ export function extractCompileEntry(
 ): void {
   const { chalk } = ctx.helper;
 
-  const extractType = isString(args.pages) ? 'pages' : isString(args.components) ? 'components' : '';
+  const extractArgs = args || {};
+  const extractType = isString(extractArgs.pages) ? 'pages' : isString(extractArgs.components) ? 'components' : '';
   if (!extractType) return;
 
-  const entries = args[extractType]
+  const entries = extractArgs[extractType]
     .split(',')
     .map((item) => item.trim())
     .filter(Boolean);

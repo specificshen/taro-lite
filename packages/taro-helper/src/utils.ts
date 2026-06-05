@@ -395,7 +395,13 @@ export function emptyDirectory(
           }
         } while (!removed);
       } else {
-        fs.unlinkSync(curPath);
+        const excludes = Array.isArray(opts.excludes) ? opts.excludes : [opts.excludes];
+        const canRemove =
+          !excludes.length ||
+          !excludes.some((item) => (typeof item === 'string' ? curPath.indexOf(item) >= 0 : item.test(curPath)));
+        if (canRemove) {
+          fs.unlinkSync(curPath);
+        }
       }
     });
   }

@@ -2,15 +2,10 @@
   "name": "test",
   "dependencies": {
     "@babel/runtime": "^7.7.7",
-    "@spcsn/taro-shared": "1.0.0",
-    "@spcsn/taro": "1.0.0",
-    "@spcsn/taro-cli": "1.0.0",
-    "@spcsn/taro-components": "1.0.0",
-    "@spcsn/taro-helper": "1.0.0",
-    "@spcsn/taro-runtime": "1.0.0",
-    "@spcsn/taro-service": "1.0.0",
-    "@spcsn/taro-vite-runner": "1.0.0",
-    "@spcsn/taro-binding": "1.0.0"
+    "@spcsn/taro": "0.1.6",
+    "@spcsn/taro-components": "0.1.6"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@spcsn/taro-cli": "0.1.6"
+  }
 }
