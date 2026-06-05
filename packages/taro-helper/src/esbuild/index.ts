@@ -3,7 +3,6 @@ import path from 'node:path';
 
 import { Config, transformSync } from '@swc/core';
 import { defaults } from 'lodash';
-import requireFromString from 'require-from-string';
 
 import { fs } from '../utils';
 
@@ -30,11 +29,13 @@ const SCRIPT_EXTENSIONS = ['.js', '.jsx', '.ts', '.tsx'];
 
 type ModuleWithInternals = typeof Module & {
   _extensions: NodeJS.RequireExtensions;
+  _nodeModulePaths(from: string): string[];
   _resolveFilename: (...args: any[]) => string;
 };
 
 type ConfigModule = NodeJS.Module & {
   _compile(code: string, filename: string): void;
+  paths: string[];
 };
 
 function escapeRegExp(value: string) {
@@ -82,6 +83,22 @@ function transformConfigModule(
   return transformSync(definedSource, createSwcConfig(filename, customSwcConfig)).code || '';
 }
 
+function requireFromCode(code: string, filename: string) {
+  const nodeModule = Module as ModuleWithInternals;
+  const configModule = new Module(filename) as ConfigModule;
+  configModule.filename = filename;
+  configModule.paths = nodeModule._nodeModulePaths(path.dirname(filename));
+  require.cache[filename] = configModule;
+
+  try {
+    configModule._compile(code, filename);
+    return configModule.exports;
+  } catch (error) {
+    delete require.cache[filename];
+    throw error;
+  }
+}
+
 /** 兼容旧 API 名称的 SWC require 实现 */
 export function requireWithEsbuild(
   id: string,
@@ -123,7 +140,7 @@ export function requireWithEsbuild(
   try {
     const resolvedId = path.isAbsolute(id) ? id : path.resolve(cwd, id);
     delete require.cache[resolvedId];
-    return requireFromString(transformConfigModule(resolvedId, customConfig, customSwcConfig), resolvedId);
+    return requireFromCode(transformConfigModule(resolvedId, customConfig, customSwcConfig), resolvedId);
   } finally {
     nodeModule._resolveFilename = originalResolveFilename;
     originalHandlers.forEach((handler, extension) => {

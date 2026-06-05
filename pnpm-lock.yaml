@@ -390,9 +390,6 @@ importers:
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
-      require-from-string:
-        specifier: ^2.0.2
-        version: 2.0.2
       resolve:
         specifier: ^1.22.8
         version: 1.22.12
@@ -5294,10 +5291,6 @@ packages:
 
   require-directory@2.1.1:
     resolution: {integrity: sha512-fGxEI7+wsG9xrvdjsrlmL22OMTTiHRwAMroiEeMgq8gzoLC/PQr7RsRDSTLUg/bZAZtF+TVIkHc6/4RIKrui+Q==}
-    engines: {node: '>=0.10.0'}
-
-  require-from-string@2.0.2:
-    resolution: {integrity: sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==}
     engines: {node: '>=0.10.0'}
 
   requires-port@1.0.0:
@@ -12046,8 +12039,6 @@ snapshots:
   relateurl@0.2.7: {}
 
   require-directory@2.1.1: {}
-
-  require-from-string@2.0.2: {}
 
   requires-port@1.0.0: {}
 
