@@ -27,23 +27,16 @@ declare module '../../index' {
     }
     /** 可选的字体描述符 */
     interface DescOption {
-      /** @supported h5 */
       ascentOverride?: string
-      /** @supported h5 */
       descentOverride?: string
-      /** @supported h5 */
       featureSettings?: string
-      /** @supported h5 */
       lineGapOverride?: string
-      /** @supported h5 */
       stretch?: string
       /** 字体样式，可选值为 normal / italic / oblique */
       style?: string
-      /** @supported h5 */
       unicodeRange?: string
       /** 设置小型大写字母的字体显示文本，可选值为 normal / small-caps / inherit */
       variant?: string
-      /** @supported h5 */
       variationSettings?: string
       /** 字体粗细，可选值为 normal / bold / 100 / 200../ 900 */
       weight?: string
@@ -59,9 +52,7 @@ declare module '../../index' {
      * 3. 字体链接必须是同源下的，或开启了cors支持，小程序的域名是`servicewechat.com`
      * 4. canvas等原生组件不支持使用接口添加的字体
      * 5. 工具里提示 Failed to load font 可以忽略
-     * @supported weapp, alipay, h5, harmony_hybrid
-     * @h5 不支持 global (默认全局加载)
-     * @alipay source 地址格式为 `url('https://...')`，而不是单纯 URL 地址
+     * @supported weapp
      * @example
      * ```tsx
      * Taro.loadFontFace({

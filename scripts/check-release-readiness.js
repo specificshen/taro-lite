@@ -489,6 +489,51 @@ function checkBusinessVisibleTypeContract() {
       pattern: /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|Vue3|\bVue\b/g,
       message: 'business-visible extension comments must not advertise unsupported platforms or frameworks.',
     },
+    {
+      path: 'packages/taro/types/api/ui/custom-component.d.ts',
+      pattern: /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|rn|h5)\b/g,
+      message: 'business-visible UI comments must not advertise unsupported platforms.',
+    },
+    {
+      path: 'packages/taro/types/api/ui/background.d.ts',
+      pattern: /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|rn|h5)\b/g,
+      message: 'business-visible UI comments must not advertise unsupported platforms.',
+    },
+    {
+      path: 'packages/taro/types/api/ui/menu.d.ts',
+      pattern: /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|rn|h5)\b/g,
+      message: 'business-visible UI comments must not advertise unsupported platforms.',
+    },
+    {
+      path: 'packages/taro/types/api/ui/window.d.ts',
+      pattern: /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|rn|h5)\b/g,
+      message: 'business-visible UI comments must not advertise unsupported platforms.',
+    },
+    {
+      path: 'packages/taro/types/api/ui/pull-down-refresh.d.ts',
+      pattern: /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|rn|h5)\b/g,
+      message: 'business-visible UI comments must not advertise unsupported platforms.',
+    },
+    {
+      path: 'packages/taro/types/api/ui/scroll.d.ts',
+      pattern: /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|rn|h5)\b/g,
+      message: 'business-visible UI comments must not advertise unsupported platforms.',
+    },
+    {
+      path: 'packages/taro/types/api/ui/navigation-bar.d.ts',
+      pattern: /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|rn|h5)\b/g,
+      message: 'business-visible UI comments must not advertise unsupported platforms.',
+    },
+    {
+      path: 'packages/taro/types/api/ui/tab-bar.d.ts',
+      pattern: /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|rn|h5)\b/g,
+      message: 'business-visible UI comments must not advertise unsupported platforms.',
+    },
+    {
+      path: 'packages/taro/types/api/ui/fonts.d.ts',
+      pattern: /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|rn|h5)\b/g,
+      message: 'business-visible UI comments must not advertise unsupported platforms.',
+    },
   ];
 
   if (exposesUnsupportedConfig) {
