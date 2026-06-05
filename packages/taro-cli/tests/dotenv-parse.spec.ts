@@ -12,8 +12,7 @@ const MockedKernel = Kernel as unknown as MockedClass<typeof Kernel>;
 const APP_PATH = path.join(__dirname, 'fixtures/default');
 
 function setProcessArgv(cmd: string) {
-  // @ts-ignore
-  process.argv = [null, ...cmd.split(' ')];
+  process.argv = ['node', ...cmd.split(' ')];
 }
 
 describe('inspect', () => {

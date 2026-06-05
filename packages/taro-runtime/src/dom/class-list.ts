@@ -81,9 +81,12 @@ export class ClassList {
     const result = this.contains(token);
     const method = result ? force !== true && 'remove' : force !== false && 'add';
 
-    if (method) {
-      // @ts-ignore
-      this[method](token);
+    if (method === 'add') {
+      this.add(token);
+    }
+
+    if (method === 'remove') {
+      this.remove(token);
     }
 
     if (force === true || force === false) {
