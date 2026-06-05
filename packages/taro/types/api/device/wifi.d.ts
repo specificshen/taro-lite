@@ -154,7 +154,7 @@ declare module '../../index' {
 
   interface TaroStatic {
     /** 关闭 Wi-Fi 模块。
-     * @supported weapp, alipay, swan, jd
+     * @supported weapp
      * @example
      * ```tsx
      * Taro.stopWifi({
@@ -168,7 +168,7 @@ declare module '../../index' {
     stopWifi(option?: stopWifi.Option): Promise<TaroGeneral.WifiError>
 
     /** 初始化 Wi-Fi 模块。
-     * @supported weapp, alipay, swan, jd
+     * @supported weapp
      * @example
      * ```tsx
      * Taro.startWifi({
@@ -187,7 +187,7 @@ declare module '../../index' {
      * - 该接口只能在 `onGetWifiList` 回调之后才能调用。
      * - 此时客户端会挂起，等待小程序设置 Wi-Fi 信息，请务必尽快调用该接口，若无数据请传入一个空数组。
      * - 有可能随着周边 Wi-Fi 列表的刷新，单个流程内收到多次带有存在重复的 Wi-Fi 列表的回调。
-     * @supported weapp, swan, jd
+     * @supported weapp
      * @example
      * ```tsx
      * Taro.onGetWifiList(function (res) {
@@ -221,7 +221,7 @@ declare module '../../index' {
     ): void
 
     /** 监听连接上 Wi-Fi 的事件。
-     * @supported weapp, alipay, swan, jd
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/wifi/wx.onWifiConnected.html
      */
     onWifiConnected(
@@ -230,7 +230,7 @@ declare module '../../index' {
     ): void
 
     /** 监听获取到 Wi-Fi 列表数据事件
-     * @supported weapp, alipay, swan, jd, tt
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/wifi/wx.onGetWifiList.html
      */
     onGetWifiList(
@@ -249,7 +249,7 @@ declare module '../../index' {
 
     /**
      * 取消监听连接上 Wi-Fi 的事件。
-     * @supported weapp, alipay, swan, jd
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/wifi/wx.offWifiConnected.html
      */
     offWifiConnected(
@@ -259,7 +259,7 @@ declare module '../../index' {
 
     /**
      * 取消监听获取到 Wi-Fi 列表数据事件。
-     * @supported weapp, alipay, swan, jd, tt
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/wifi/wx.offGetWifiList.html
      */
     offGetWifiList(
@@ -270,13 +270,13 @@ declare module '../../index' {
     /** 请求获取 Wi-Fi 列表。在 `onGetWifiList` 注册的回调中返回 `wifiList` 数据。 **Android 调用前需要 [用户授权](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/authorize.html) scope.userLocation。**
      *
      * iOS 将跳转到系统的 Wi-Fi 界面，Android 不会跳转。 iOS 11.0 及 iOS 11.1 两个版本因系统问题，该方法失效。但在 iOS 11.2 中已修复。
-     * @supported weapp, alipay, swan, jd, tt
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/wifi/wx.getWifiList.html
      */
     getWifiList(option?: getWifiList.Option): Promise<TaroGeneral.WifiError>
 
     /** 获取已连接中的 Wi-Fi 信息。
-     * @supported weapp, alipay, swan, tt
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/wifi/wx.getConnectedWifi.html
      */
     getConnectedWifi(option?: getConnectedWifi.Option): Promise<TaroGeneral.WifiError>
@@ -293,7 +293,7 @@ declare module '../../index' {
      *   }
      * })
      * ```
-     * @supported weapp,  alipay, swan,  jd
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/wifi/wx.connectWifi.html
      */
     connectWifi(option: connectWifi.Option): Promise<TaroGeneral.WifiError>

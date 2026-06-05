@@ -311,7 +311,7 @@ declare module '../../index' {
      * - 小程序不会对写入数据包大小做限制，但系统与蓝牙设备会限制蓝牙4.0单次传输的数据大小，超过最大字节数后会发生写入错误，建议每次写入不超过20字节。
      * - 若单次写入数据过长，iOS 上存在系统不会有任何回调的情况（包括错误回调）。
      * - 安卓平台上，在调用 `notifyBLECharacteristicValueChange` 成功后立即调用 `writeBLECharacteristicValue` 接口，在部分机型上会发生 10008 系统错误
-     * @supported weapp, alipay, jd
+     * @supported weapp
      * @example
      * ```tsx
      * // 向蓝牙设备发送一个0x00的16进制数据
@@ -342,7 +342,7 @@ declare module '../../index' {
      *
      * - 需在 Taro.createBLEConnection 调用成功后调用
      * - 仅安卓系统 5.1 以上版本有效，iOS 因系统限制不支持。
-     * @supported weapp, alipay, jd
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.setBLEMTU.html
      */
     setBLEMTU(
@@ -354,7 +354,7 @@ declare module '../../index' {
      * **注意**
      * - 并行调用多次会存在读失败的可能性。
      * - 接口读取到的信息需要在 `onBLECharacteristicValueChange` 方法注册的回调中获取。
-     * @supported weapp, alipay, jd
+     * @supported weapp
      * @example
      * ```tsx
      * // 必须在这里的回调才能获取
@@ -395,7 +395,7 @@ declare module '../../index' {
     ): void
 
     /** 监听低功耗蓝牙连接状态的改变事件。包括开发者主动连接或断开连接，设备丢失，连接异常断开等等
-     * @supported weapp, alipay, jd
+     * @supported weapp
      * @example
      * ```tsx
      * Taro.onBLEConnectionStateChange(function (res) {
@@ -411,7 +411,7 @@ declare module '../../index' {
     ): void
 
     /** 监听低功耗蓝牙设备的特征值变化事件。必须先启用 `notifyBLECharacteristicValueChange` 接口才能接收到设备推送的 notification。
-     * @supported weapp, alipay, jd
+     * @supported weapp
      * @example
      * ```tsx
      * // ArrayBuffer转16进制字符串示例
@@ -446,7 +446,7 @@ declare module '../../index' {
     ): void
 
     /** 取消监听蓝牙低功耗连接状态的改变事件
-     * @supported weapp, alipay
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.offBLEConnectionStateChange.html
      */
     offBLEConnectionStateChange(
@@ -455,7 +455,7 @@ declare module '../../index' {
     ): void
 
     /** 取消监听蓝牙低功耗设备的特征值变化事件
-     * @supported weapp, alipay
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.offBLECharacteristicValueChange.html
      */
     offBLECharacteristicValueChange(
@@ -470,7 +470,7 @@ declare module '../../index' {
      * **注意**
      * - 订阅操作成功后需要设备主动更新特征值的 value，才会触发 Taro.onBLECharacteristicValueChange 回调。
      * - 安卓平台上，在调用 `notifyBLECharacteristicValueChange` 成功后立即调用 `writeBLECharacteristicValue` 接口，在部分机型上会发生 10008 系统错误
-     * @supported weapp, alipay, jd
+     * @supported weapp
      * @example
      * ```tsx
      * Taro.notifyBLECharacteristicValueChange({
@@ -497,7 +497,7 @@ declare module '../../index' {
      * 注意:
      *  - 小程序中 MTU 为 ATT_MTU，包含 Op-Code 和 Attribute Handle 的长度，实际可以传输的数据长度为 ATT_MTU - 3
      *  - iOS 系统中 MTU 为固定值；安卓系统中，MTU 会在系统协商成功之后发生改变，建议使用 [Taro.onBLEMTUChange](/docs/apis/device/bluetooth-ble/onBLEMTUChange) 监听。
-     * @supported weapp, alipay, jd
+     * @supported weapp
      * @example
      * ```tsx
      * Taro.getBLEMTU({
@@ -515,7 +515,7 @@ declare module '../../index' {
     ): Promise<getBLEMTU.SuccessCallbackResult>
 
     /** 获取蓝牙设备所有服务(service)。
-     * @supported weapp, alipay, jd
+     * @supported weapp
      * @example
      * ```tsx
      * Taro.getBLEDeviceServices({
@@ -533,7 +533,7 @@ declare module '../../index' {
     ): Promise<getBLEDeviceServices.SuccessCallbackResult>
 
     /** 获取蓝牙低功耗设备的信号强度 (Received Signal Strength Indication, RSSI)。
-     * @supported weapp, alipay, jd
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.getBLEDeviceRSSI.html
      */
     getBLEDeviceRSSI(
@@ -541,7 +541,7 @@ declare module '../../index' {
     ): Promise<getBLEDeviceRSSI.SuccessCallbackResult>
 
     /** 获取蓝牙设备某个服务中所有特征值(characteristic)。
-     * @supported weapp, alipay, jd
+     * @supported weapp
      * @example
      * ```tsx
      * Taro.getBLEDeviceCharacteristics({
@@ -568,7 +568,7 @@ declare module '../../index' {
      * - 请保证尽量成对的调用 `createBLEConnection` 和 `closeBLEConnection` 接口。安卓如果多次调用 `createBLEConnection` 创建连接，有可能导致系统持有同一设备多个连接的实例，导致调用 `closeBLEConnection` 的时候并不能真正的断开与设备的连接。
      * - 蓝牙连接随时可能断开，建议监听 Taro.onBLEConnectionStateChange 回调事件，当蓝牙设备断开时按需执行重连操作
      * - 若对未连接的设备或已断开连接的设备调用数据读写操作的接口，会返回 10006 错误，建议进行重连操作。
-     * @supported weapp, alipay, jd
+     * @supported weapp
      * @example
      * ```tsx
      * Taro.createBLEConnection({
@@ -584,7 +584,7 @@ declare module '../../index' {
     createBLEConnection(option: createBLEConnection.Option): Promise<createBLEConnection.Promised>
 
     /** 断开与低功耗蓝牙设备的连接。
-     * @supported weapp, alipay, jd
+     * @supported weapp
      * @example
      * ```tsx
      * Taro.closeBLEConnection({

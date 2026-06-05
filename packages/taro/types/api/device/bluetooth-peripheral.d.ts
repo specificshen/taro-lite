@@ -38,7 +38,7 @@ declare module '../../index' {
    */
   interface BLEPeripheralServer {
     /** 添加服务
-     * @supported weapp, jd
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-peripheral/BLEPeripheralServer.addService.html
      */
     addService(option: BLEPeripheralServer.addService.Option): Promise<TaroGeneral.BluetoothError>
@@ -48,7 +48,7 @@ declare module '../../index' {
      */
     close(option: BLEPeripheralServer.close.Option): Promise<TaroGeneral.BluetoothError>
     /** 取消监听已连接的设备请求读当前外围设备的特征值事件
-     * @supported weapp, jd
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-peripheral/BLEPeripheralServer.offCharacteristicReadRequest.html
      */
     offCharacteristicReadRequest(
@@ -56,7 +56,7 @@ declare module '../../index' {
       callback?: BLEPeripheralServer.onCharacteristicReadRequest.Callback,
     ): void
     /** 取消监听特征订阅事件
-     * @supported weapp, jd
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-peripheral/BLEPeripheralServer.offCharacteristicSubscribed.html
      */
     offCharacteristicSubscribed(
@@ -72,7 +72,7 @@ declare module '../../index' {
       callback?: BLEPeripheralServer.onCharacteristicUnsubscribed.Callback,
     ): void
     /** 取消监听已连接的设备请求写当前外围设备的特征值事件
-     * @supported weapp, jd
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-peripheral/BLEPeripheralServer.offCharacteristicWriteRequest.html
      */
     offCharacteristicWriteRequest(
@@ -82,7 +82,7 @@ declare module '../../index' {
     /** 监听已连接的设备请求读当前外围设备的特征值事件
      *
      * 收到该消息后需要立刻调用 [writeCharacteristicValue](/docs/apis/device/bluetooth-peripheral/BLEPeripheralServer#writecharacteristicvalue) 写回数据，否则主机不会收到响应。
-     * @supported weapp, jd
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-peripheral/BLEPeripheralServer.onCharacteristicReadRequest.html
      */
     onCharacteristicReadRequest(
@@ -90,7 +90,7 @@ declare module '../../index' {
       callback: BLEPeripheralServer.onCharacteristicReadRequest.Callback,
     ): void
     /** 监听特征订阅事件，仅 iOS 支持
-     * @supported weapp, jd
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-peripheral/BLEPeripheralServer.onCharacteristicSubscribed.html
      */
     onCharacteristicSubscribed(
@@ -98,7 +98,7 @@ declare module '../../index' {
       callback: BLEPeripheralServer.onCharacteristicSubscribed.Callback,
     ): void
     /** 监听取消特征订阅事件，仅 iOS 支持
-     * @supported weapp, jd
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-peripheral/BLEPeripheralServer.onCharacteristicUnsubscribed.html
      */
     onCharacteristicUnsubscribed(
@@ -106,7 +106,7 @@ declare module '../../index' {
       callback: BLEPeripheralServer.onCharacteristicUnsubscribed.Callback,
     ): void
     /** 监听已连接的设备请求写当前外围设备的特征值事件
-     * @supported weapp, jd
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-peripheral/BLEPeripheralServer.onCharacteristicWriteRequest.html
      */
     onCharacteristicWriteRequest(
@@ -114,22 +114,22 @@ declare module '../../index' {
       callback: BLEPeripheralServer.onCharacteristicWriteRequest.Callback,
     ): void
     /** 移除服务
-     * @supported weapp, jd
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-peripheral/BLEPeripheralServer.removeService.html
      */
     removeService(option: BLEPeripheralServer.removeService.Option): Promise<TaroGeneral.BluetoothError>
     /** 开始广播本地创建的外围设备
-     * @supported weapp, jd
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-peripheral/BLEPeripheralServer.startAdvertising.html
      */
     startAdvertising(option: BLEPeripheralServer.startAdvertising.Option): Promise<TaroGeneral.BluetoothError>
     /** 停止广播
-     * @supported weapp, jd
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-peripheral/BLEPeripheralServer.stopAdvertising.html
      */
     stopAdvertising(option: BLEPeripheralServer.stopAdvertising.Option): Promise<TaroGeneral.BluetoothError>
     /** 往指定特征写入二进制数据值，并通知已连接的主机，从机的特征值已发生变化，该接口会处理是走回包还是走订阅
-     * @supported weapp, jd
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-peripheral/BLEPeripheralServer.writeCharacteristicValue.html
      */
     writeCharacteristicValue(option: BLEPeripheralServer.writeCharacteristicValue.Option): Promise<TaroGeneral.BluetoothError>
@@ -402,7 +402,7 @@ declare module '../../index' {
 
   interface TaroStatic {
     /** 监听当前外围设备被连接或断开连接事件
-     * @supported weapp, jd
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-peripheral/wx.onBLEPeripheralConnectionStateChanged.html
      */
     onBLEPeripheralConnectionStateChanged(
@@ -411,7 +411,7 @@ declare module '../../index' {
     ): void
 
     /** 取消监听当前外围设备被连接或断开连接事件
-     * @supported weapp, jd
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-peripheral/wx.offBLEPeripheralConnectionStateChanged.html
      */
      offBLEPeripheralConnectionStateChanged(
@@ -420,7 +420,7 @@ declare module '../../index' {
     ): void
 
     /** 建立本地作为蓝牙低功耗外围设备的服务端，可创建多个
-     * @supported weapp, jd
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-peripheral/wx.createBLEPeripheralServer.html
      */
      createBLEPeripheralServer(
