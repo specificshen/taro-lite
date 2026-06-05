@@ -24,6 +24,8 @@ const README_BUSINESS_DEPENDENCIES = {
   devDependencies: ['@spcsn/taro-cli'],
 };
 
+const BUSINESS_FIXTURE_PACKAGE_JSON_PATH = 'fixtures/weapp-react19-vite-skyline/package.json';
+
 const BINDINGS = [
   {
     name: '@spcsn/taro-binding-darwin-x64',
@@ -70,6 +72,7 @@ let hasBindingErrors = false;
 let hasDependencyBoundaryErrors = false;
 let hasReadmeContractErrors = false;
 let hasPublishSurfaceErrors = false;
+let hasBusinessFixtureContractErrors = false;
 
 const bindingPackageNames = ['@spcsn/taro-binding', ...BINDINGS.map((binding) => binding.name)];
 const expectedPublicPackageNames = [...BUSINESS_ENTRY_PACKAGES, ...PLANNED_INTERNAL_PACKAGES, ...bindingPackageNames];
@@ -81,6 +84,7 @@ checkPackageVersions();
 checkPublishSurfaceContract();
 checkPublicDependencyBoundaries();
 checkReadmeBusinessDependencyContract();
+checkBusinessFixtureDependencyContract();
 if (!skipBindings) checkBindingPackages();
 
 if (warnings.length > 0) {
@@ -100,6 +104,8 @@ if (errors.length > 0) {
     console.log('- Keep README minimal business dependencies aligned with the supported public contract.');
   if (hasPublishSurfaceErrors)
     console.log('- Keep package publish surface aligned with docs/package-consolidation.md.');
+  if (hasBusinessFixtureContractErrors)
+    console.log('- Keep the business fixture limited to public business-facing @spcsn packages.');
   if (hasBindingErrors) console.log('- Run pnpm run artifacts before checking binding platform packages.');
   if (!skipBindings) console.log('- Use --skip-bindings only for a version-only local check.');
   process.exit(1);
@@ -172,6 +178,24 @@ function checkReadmeBusinessDependencyContract() {
       errors.push(`README.md: minimal ${dependencySection} must include ${packageName} at version ${expectedVersion}`);
     }
   }
+}
+
+function checkBusinessFixtureDependencyContract() {
+  const packageJsonPath = path.join(rootDir, BUSINESS_FIXTURE_PACKAGE_JSON_PATH);
+  const packageJson = readJson(packageJsonPath);
+  const spcsnDependencyNames = collectDependencyNames(packageJson).filter((dependencyName) =>
+    dependencyName.startsWith('@spcsn/'),
+  );
+  const invalidDependencyNames = spcsnDependencyNames.filter(
+    (dependencyName) => !BUSINESS_ENTRY_PACKAGES.includes(dependencyName),
+  );
+
+  if (invalidDependencyNames.length === 0) return;
+
+  hasBusinessFixtureContractErrors = true;
+  errors.push(
+    `${BUSINESS_FIXTURE_PACKAGE_JSON_PATH}: fixture must not depend on internal @spcsn packages: ${invalidDependencyNames.join(', ')}`,
+  );
 }
 
 function checkBindingPackages() {
