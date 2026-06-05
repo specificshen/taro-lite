@@ -10,14 +10,12 @@
   "dependencies": {
     "@spcsn/taro": "link:../../packages/taro",
     "@spcsn/taro-components": "link:../../packages/taro-components",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react": "^19.2.0"
   },
   "devDependencies": {
     "@spcsn/taro-cli": "link:../../packages/taro-cli",
     "@types/node": "^22.19.19",
     "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.3",
     "typescript": "~6.0.3"
   }
 }
