@@ -1,10 +1,26 @@
-// @ts-nocheck
 import { Shortcuts, UnRecursiveTemplate } from '@spcsn/taro-shared/dist/template.js';
 
-import type { IOptions } from './index';
+type WeappTemplateOptions = {
+  enablekeyboardAccessory?: boolean;
+};
+
+type MiniComponents = Record<string, Record<string, string>>;
+
+type ComponentAlias = {
+  _num?: string;
+  mapkey?: string;
+};
+
+type PageTemplateConfig = {
+  enablePageMeta?: boolean;
+};
+
+type PageTemplateData = {
+  content?: PageTemplateConfig;
+};
 
 export class Template extends UnRecursiveTemplate {
-  pluginOptions: IOptions;
+  pluginOptions: WeappTemplateOptions;
   supportXS = true;
   Adapter = {
     if: 'wx:if',
@@ -20,7 +36,7 @@ export class Template extends UnRecursiveTemplate {
 
   transferComponents: Record<string, Record<string, string>> = {};
 
-  constructor(pluginOptions?: IOptions) {
+  constructor(pluginOptions?: WeappTemplateOptions) {
     super();
     this.pluginOptions = pluginOptions || {};
     this.nestElements.set('root-portal', 3);
@@ -30,7 +46,7 @@ export class Template extends UnRecursiveTemplate {
     return `<wxs module="xs" src="${filePath}.wxs" />`;
   }
 
-  createMiniComponents(components): any {
+  createMiniComponents(components: MiniComponents): MiniComponents {
     const result = super.createMiniComponents(components);
 
     // PageMeta & NavigationBar
@@ -42,7 +58,7 @@ export class Template extends UnRecursiveTemplate {
     return result;
   }
 
-  replacePropName(name: string, value: string, componentName: string, componentAlias) {
+  replacePropName(name: string, value: string, componentName: string, componentAlias: ComponentAlias) {
     if (value === 'eh') {
       const nameLowerCase = name.toLowerCase();
       if (nameLowerCase === 'bindlongtap' && componentName !== 'canvas') return 'bindlongpress';
@@ -73,7 +89,7 @@ export class Template extends UnRecursiveTemplate {
     }
   }
 
-  modifyTemplateResult = (res: string, nodeName: string, _, children) => {
+  modifyTemplateResult = (res: string, nodeName: string, _level: number, children: string) => {
     if (nodeName === 'keyboard-accessory') return '';
 
     if ((nodeName === 'textarea' || nodeName === 'input') && this.pluginOptions.enablekeyboardAccessory) {
@@ -105,7 +121,7 @@ export class Template extends UnRecursiveTemplate {
     return res;
   };
 
-  buildPageTemplate = (baseTempPath: string, page) => {
+  buildPageTemplate = (baseTempPath: string, page?: PageTemplateData) => {
     let pageMetaTemplate = '';
     const pageConfig = page?.content;
 
