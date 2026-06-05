@@ -586,6 +586,30 @@ function checkBusinessVisibleTypeContract() {
         /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|swan|tt|rn|h5)\b/g,
       message: 'business-visible location comments must not advertise unsupported platforms.',
     },
+    {
+      path: 'packages/taro/types/api/network/request.d.ts',
+      pattern:
+        /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|swan|tt|rn|h5)\b/g,
+      message: 'business-visible request comments must not advertise unsupported platforms.',
+    },
+    {
+      path: 'packages/taro/types/api/network/upload.d.ts',
+      pattern:
+        /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|swan|tt|rn|h5)\b/g,
+      message: 'business-visible upload comments must not advertise unsupported platforms.',
+    },
+    {
+      path: 'packages/taro/types/api/network/download.d.ts',
+      pattern:
+        /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|swan|tt|rn|h5)\b/g,
+      message: 'business-visible download comments must not advertise unsupported platforms.',
+    },
+    {
+      path: 'packages/taro/types/api/network/websocket.d.ts',
+      pattern:
+        /@supported .*\b(alipay|swan|qq|tt|rn|h5|harmony|harmony_hybrid|quickapp|jd)\b|@(alipay|swan|tt|rn|h5)\b/g,
+      message: 'business-visible websocket comments must not advertise unsupported platforms.',
+    },
   ];
 
   if (exposesUnsupportedConfig) {
