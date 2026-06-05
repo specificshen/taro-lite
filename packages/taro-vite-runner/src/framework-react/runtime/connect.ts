@@ -42,7 +42,6 @@ export function setReconciler(ReactDOM?) {
   });
 
   hooks.tap('modifyMpEvent', function (event) {
-    // Note: ohos 上事件没有设置 type 类型 setter 方法导致报错
     Object.defineProperty(event, 'type', {
       value: event.type.replace(/-/g, ''),
     });

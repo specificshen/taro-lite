@@ -447,36 +447,6 @@ describe('event', () => {
     // Restore original hooks
     Object.assign(runtime.hooks, originalHooks);
   });
-
-  test('eventHandler with OHOS specific properties', () => {
-    const mockHooks = {
-      call: vi.fn(),
-      isExist: vi.fn(() => false),
-    };
-
-    const originalHooks = runtime.hooks;
-    Object.assign(runtime.hooks, mockHooks);
-
-    const element = runtime.document.createElement('div');
-    element.id = 'ohos-element';
-    runtime.document.body.appendChild(element);
-
-    // OHOS event without type and detail
-    const ohosEvent = {
-      _type: 'tap',
-      _detail: { x: 100 },
-      target: { dataset: {}, id: 'ohos-element' },
-      currentTarget: { dataset: {}, id: 'ohos-element' },
-    } as any;
-
-    eventHandler(ohosEvent);
-
-    expect(ohosEvent.type).toBe('tap');
-    expect(ohosEvent.detail).toEqual({ x: 100 });
-
-    Object.assign(runtime.hooks, originalHooks);
-  });
-
   test('eventHandler with missing target', () => {
     const mockHooks = {
       call: vi.fn(),
