@@ -197,18 +197,29 @@ function checkBusinessEntryPeerDependencyContract() {
   for (const packageJsonPath of businessEntryPackageJsonPaths) {
     const packageJson = readJson(packageJsonPath);
     const peerDependencyNames = Object.keys(packageJson.peerDependencies || {});
+    const peerDependencyMetaNames = Object.keys(packageJson.peerDependenciesMeta || {});
     const allowedPeerDependencyNames = BUSINESS_ENTRY_ALLOWED_PEER_DEPENDENCIES[packageJson.name] || [];
     const invalidPeerDependencyNames = peerDependencyNames.filter(
       (dependencyName) =>
         hiddenPackageNames.includes(dependencyName) || !allowedPeerDependencyNames.includes(dependencyName),
     );
+    const invalidPeerDependencyMetaNames = peerDependencyMetaNames.filter(
+      (dependencyName) => !peerDependencyNames.includes(dependencyName),
+    );
 
-    if (invalidPeerDependencyNames.length === 0) continue;
+    if (invalidPeerDependencyNames.length === 0 && invalidPeerDependencyMetaNames.length === 0) continue;
 
     hasDependencyBoundaryErrors = true;
-    errors.push(
-      `${relative(packageJsonPath)}: ${packageJson.name} peerDependencies must not expose internal packages: ${invalidPeerDependencyNames.join(', ')}`,
-    );
+    if (invalidPeerDependencyNames.length > 0) {
+      errors.push(
+        `${relative(packageJsonPath)}: ${packageJson.name} peerDependencies must not expose disallowed packages: ${invalidPeerDependencyNames.join(', ')}`,
+      );
+    }
+    if (invalidPeerDependencyMetaNames.length > 0) {
+      errors.push(
+        `${relative(packageJsonPath)}: ${packageJson.name} peerDependenciesMeta must only describe declared peerDependencies: ${invalidPeerDependencyMetaNames.join(', ')}`,
+      );
+    }
   }
 }
 
