@@ -47,35 +47,10 @@
   },
   "peerDependencies": {
     "@spcsn/taro-components": "workspace:*",
-    "@types/react": "^19",
-    "html-webpack-plugin": "^5",
-    "rollup": "^3",
-    "postcss": "^8",
-    "vue": "^3",
-    "webpack": "^5",
-    "webpack-chain": "^6",
-    "webpack-dev-server": "^4"
+    "@types/react": "^19"
   },
   "peerDependenciesMeta": {
     "@types/react": {
-      "optional": true
-    },
-    "html-webpack-plugin": {
-      "optional": true
-    },
-    "rollup": {
-      "optional": true
-    },
-    "vue": {
-      "optional": true
-    },
-    "webpack": {
-      "optional": true
-    },
-    "webpack-chain": {
-      "optional": true
-    },
-    "webpack-dev-server": {
       "optional": true
     }
   }

@@ -24,6 +24,12 @@ const README_BUSINESS_DEPENDENCIES = {
   devDependencies: ['@spcsn/taro-cli'],
 };
 
+const BUSINESS_ENTRY_ALLOWED_PEER_DEPENDENCIES = {
+  '@spcsn/taro': ['@spcsn/taro-components', '@types/react'],
+  '@spcsn/taro-components': [],
+  '@spcsn/taro-cli': [],
+};
+
 const README_PATH = 'README.md';
 const INTERNAL_GUIDANCE_DOC_PATHS = ['docs/package-consolidation.md', 'docs/taro-react-only-modernization.md'];
 const BUSINESS_FIXTURE_PACKAGE_JSON_PATH = 'fixtures/weapp-react19-vite-skyline/package.json';
@@ -190,8 +196,11 @@ function checkBusinessEntryPeerDependencyContract() {
 
   for (const packageJsonPath of businessEntryPackageJsonPaths) {
     const packageJson = readJson(packageJsonPath);
-    const invalidPeerDependencyNames = Object.keys(packageJson.peerDependencies || {}).filter((dependencyName) =>
-      hiddenPackageNames.includes(dependencyName),
+    const peerDependencyNames = Object.keys(packageJson.peerDependencies || {});
+    const allowedPeerDependencyNames = BUSINESS_ENTRY_ALLOWED_PEER_DEPENDENCIES[packageJson.name] || [];
+    const invalidPeerDependencyNames = peerDependencyNames.filter(
+      (dependencyName) =>
+        hiddenPackageNames.includes(dependencyName) || !allowedPeerDependencyNames.includes(dependencyName),
     );
 
     if (invalidPeerDependencyNames.length === 0) continue;
