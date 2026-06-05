@@ -117,14 +117,5 @@
 
 /// <reference path="api/cloud/index.d.ts" />
 
-/// <reference path="api/alipay/index.d.ts" />
-/// <reference path="api/qq/index.d.ts" />
-
-/// <reference path="api/swan/bookshelf.d.ts" />
-/// <reference path="api/swan/download-package.d.ts" />
-/// <reference path="api/swan/index.d.ts" />
-/// <reference path="api/swan/pay.d.ts" />
-
-
 /// <reference path="api/taro.extend.d.ts" />
 /// <reference path="api/taro.hooks.d.ts" />

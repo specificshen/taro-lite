@@ -9,8 +9,6 @@
  * │   │   ├── face.d.ts                    人脸检测 API
  * │   │   ├── inference.d.ts               AI 推理 API
  * │   │   └── visionkit.d.ts               视觉算法 API
- * │   ├── alipay
- * │   │   └── index.d.ts                   支付宝小程序 API
  * │   ├── base
  * │   │   ├── index.d.ts                   基础 API
  * │   │   ├── crypto.d.ts                  基础 -> 加密 API
@@ -109,8 +107,6 @@
  * │   │   └── werun.d.ts                   开放接口 -> 微信运动 API
  * │   ├── payment
  * │   │   └── index.d.ts                   支付 API
- * │   ├── qq
- * │   │   └── index.d.ts                   QQ 小程序 API
  * │   ├── route
  * │   │   └── index.d.ts                   路由 API
  * │   ├── share
@@ -121,11 +117,6 @@
  * │   │   ├── background-fetch.d.ts        数据缓存 -> 后台获取 API
  * │   │   ├── cache-manager.d.ts           数据缓存 -> 缓存管理 API
  * │   │   └── index.d.ts                   数据缓存 API
- * │   ├── swan
- * │   │   ├── bookshelf.d.ts               百度小程序 -> 书架 API
- * │   │   ├── download-package.d.ts        百度小程序 -> 下载包 API
- * │   │   └── index.d.ts                   百度小程序 API
- * │   │   └── pay.d.ts                     百度小程序 -> 支付 API
  * │   ├── taro.extend.d.ts                 Taro 扩展 API 类型定义
  * │   ├── taro.hooks.d.ts                  Taro Hooks 类型定义
  * │   ├── ui

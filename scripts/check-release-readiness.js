@@ -390,6 +390,16 @@ function checkBusinessVisibleTypeContract() {
     'packages/taro/types/compile/config/harmony.d.ts',
     'packages/taro/types/compile/config/rn.d.ts',
   ];
+  const unsupportedApiTypePaths = [
+    'packages/taro/types/api/alipay',
+    'packages/taro/types/api/qq',
+    'packages/taro/types/api/swan',
+  ];
+  const unsupportedApiReferencePatterns = [
+    /<reference path="api\/alipay\//,
+    /<reference path="api\/qq\//,
+    /<reference path="api\/swan\//,
+  ];
   const supportedConfigTypePaths = [
     'packages/taro/types/compile/compiler.d.ts',
     'packages/taro/types/compile/config/mini.d.ts',
@@ -413,6 +423,23 @@ function checkBusinessVisibleTypeContract() {
 
     hasBusinessFixtureContractErrors = true;
     errors.push(`${typePath}: unsupported H5/RN/Harmony config type files must not be published.`);
+  }
+
+  for (const typePath of unsupportedApiTypePaths) {
+    if (!fs.existsSync(path.join(rootDir, typePath))) continue;
+
+    hasBusinessFixtureContractErrors = true;
+    errors.push(`${typePath}: unsupported Alipay/QQ/Swan API type files must not be published.`);
+  }
+
+  const apiEntryPath = path.join(rootDir, 'packages/taro/types/taro.api.d.ts');
+  const apiEntrySource = fs.readFileSync(apiEntryPath, 'utf8');
+  const exposesUnsupportedApiTypes = unsupportedApiReferencePatterns.some((pattern) => pattern.test(apiEntrySource));
+  if (exposesUnsupportedApiTypes) {
+    hasBusinessFixtureContractErrors = true;
+    errors.push(
+      `${relative(apiEntryPath)}: business-visible API types must only expose WeApp supported API references.`,
+    );
   }
 
   for (const typePath of supportedConfigTypePaths) {
