@@ -37,6 +37,10 @@ export function toString(value): string {
   return '' + value;
 }
 
+function areNumericValuesDifferent(oldValue: RestoreType, value: unknown): boolean {
+  return Number(oldValue) !== Number(value);
+}
+
 export function updateWrapper(element: TaroElement, oldValue: RestoreType, props: Props) {
   const node = element as FormElement;
   const value = getToStringValue(props.value);
@@ -51,12 +55,7 @@ export function updateWrapper(element: TaroElement, oldValue: RestoreType, props
 export function setNodeValue(node: FormElement, oldValue: RestoreType, value, type = 'string') {
   if (value != null) {
     if (type === 'number') {
-      if (
-        (value === 0 && node.value === '') ||
-        // We explicitly want to coerce to number here if possible.
-        // eslint-disable-next-line
-        oldValue != value
-      ) {
+      if ((value === 0 && node.value === '') || areNumericValuesDifferent(oldValue, value)) {
         node.value = toString(value);
       }
     } else if (oldValue !== toString(value)) {
