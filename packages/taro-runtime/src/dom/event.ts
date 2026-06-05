@@ -5,7 +5,6 @@ import {
   CURRENT_TARGET,
   EVENT_CALLBACK_RESULT,
   INPUT,
-  KEY_CODE,
   TARGET,
   TIME_STAMP,
   TOUCHMOVE,
@@ -36,6 +35,8 @@ export class TaroEvent {
 
   // Mouse Event botton property, it's used in 3rd lib, like react-router. default 0 in general
   public button = 0;
+
+  public keyCode?: number;
 
   // timestamp can either be hi-res ( relative to page load) or low-res (relative to UNIX epoch)
   // here use hi-res timestamp
@@ -138,8 +139,7 @@ export function createEvent(event: MpEvent | string, node?: TaroElement) {
   }
 
   if (domEv.type === CONFIRM && node?.nodeName === INPUT) {
-    // eslint-disable-next-line dot-notation
-    domEv[KEY_CODE] = 13;
+    domEv.keyCode = 13;
   }
 
   return domEv;
