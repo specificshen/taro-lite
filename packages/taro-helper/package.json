@@ -10,7 +10,7 @@
     "prod": "pnpm run build",
     "clean": "rimraf dist",
     "prebuild": "pnpm run clean",
-    "build": "tsc || true",
+    "build": "tsc",
     "postbuild": "pnpm run swc:backup",
     "dev": "tsc -w",
     "prepack": "pnpm run build",
