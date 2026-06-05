@@ -55,16 +55,23 @@ export abstract class TaroPlatformBase<T extends TConfig = TConfig> extends Taro
     const { chalk } = this.helper;
     const isProduction = process.env.NODE_ENV === 'production';
     const modeLabel = isProduction ? '生产模式' : '开发模式';
+    const modeHint = isProduction ? '准备见用户，保持体面' : '正在热身，改完就看';
     const watchLabel = this.ctx.runOpts?.isWatch ? '监听变更' : '单次构建';
+    const watchHint = this.ctx.runOpts?.isWatch ? '我盯着文件，你放心写' : '一锤定音，构建完就收工';
     const minifyLabel = process.env.TARO_MINIFY === 'true' || isProduction ? '开启' : '关闭';
+    const humorLine = isProduction ? '✨ 今天的产物会比较克制，适合上线见人。' : '☕ 别慌，代码正在穿微信小程序外套。';
 
     const lines = [
-      chalk.cyanBright('╭────────────────────────────────────────────╮'),
-      chalk.cyanBright('│') + chalk.magentaBright('   🚀 SPCSN Taro 小程序构建已启动          ') + chalk.cyanBright('│'),
-      chalk.cyanBright('│') + chalk.greenBright(`   模式：${modeLabel}  ·  ${watchLabel}                 `) + chalk.cyanBright('│'),
-      chalk.cyanBright('│') + chalk.blueBright(`   目标：${this.platform}  ·  React 19 × Vite × Skyline `) + chalk.cyanBright('│'),
-      chalk.cyanBright('│') + chalk.yellowBright(`   压缩：${minifyLabel}  ·  输出微信小程序产物          `) + chalk.cyanBright('│'),
-      chalk.cyanBright('╰────────────────────────────────────────────╯'),
+      chalk.cyanBright('╭────────────────────────────────────────────────────╮'),
+      chalk.cyanBright('│') + chalk.magentaBright('  🚀 SPCSN Taro 小程序构建站已开张                 ') + chalk.cyanBright('│'),
+      chalk.cyanBright('│') + chalk.gray('                                                    ') + chalk.cyanBright('│'),
+      chalk.cyanBright('│') + chalk.greenBright(`  模式  ${modeLabel}  ·  ${modeHint}              `) + chalk.cyanBright('│'),
+      chalk.cyanBright('│') + chalk.blueBright(`  目标  ${this.platform}  ·  React 19 × Vite × Skyline     `) + chalk.cyanBright('│'),
+      chalk.cyanBright('│') + chalk.yellowBright(`  压缩  ${minifyLabel}  ·  输出微信小程序产物              `) + chalk.cyanBright('│'),
+      chalk.cyanBright('│') + chalk.cyanBright(`  节奏  ${watchLabel}  ·  ${watchHint}          `) + chalk.cyanBright('│'),
+      chalk.cyanBright('│') + chalk.gray('                                                    ') + chalk.cyanBright('│'),
+      chalk.cyanBright('│') + chalk.whiteBright(`  ${humorLine}       `) + chalk.cyanBright('│'),
+      chalk.cyanBright('╰────────────────────────────────────────────────────╯'),
     ];
 
     console.log(lines.join('\n'));
