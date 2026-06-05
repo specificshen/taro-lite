@@ -9,9 +9,9 @@ declare module '../../index' {
     env: {
       [key: string]: string | undefined
       /** 框架 */
-      FRAMEWORK: 'react' | 'preact' | 'solid' | 'vue3'
+      FRAMEWORK: 'react'
       /** Taro 环境变量 */
-      TARO_ENV: 'weapp' | 'h5' | 'rn' | 'swan' | 'alipay' | 'tt' | 'qq' | 'jd' | 'quickapp'
+      TARO_ENV: 'weapp'
       /** 文件系统中的用户目录路径 (本地路径) */
       USER_DATA_PATH?: string
     }

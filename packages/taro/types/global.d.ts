@@ -410,18 +410,7 @@ declare namespace TaroGeneral {
 
   // ENV_TYPE
   enum ENV_TYPE {
-    ASCF = 'ASCF',
-    WEAPP = 'WEAPP',
-    SWAN = 'SWAN',
-    ALIPAY = 'ALIPAY',
-    TT = 'TT',
-    QQ = 'QQ',
-    JD = 'JD',
-    WEB = 'WEB',
-    RN = 'RN',
-    HARMONY = 'HARMONY',
-    QUICKAPP = 'QUICKAPP',
-    HARMONYHYBRID = 'HARMONYHYBRID'
+    WEAPP = 'WEAPP'
   }
 
   type TDeviceRatio = Record<string, number>

@@ -1,5 +1,3 @@
-import React from 'react'
-
 import Taro from '../index'
 
 declare module '../index' {
@@ -21,10 +19,6 @@ declare module '../index' {
       onHide: string
       onShow: string
       preloadData?: Record<any, any>
-      /**
-       * RN 私有对象 navigationRef，用于使用底层接口控制路由
-       */
-      rnNavigationRef?: React.RefObject<any>
     }
   }
 
@@ -38,17 +32,6 @@ declare module '../index' {
   /** @ignore */
   interface TARO_ENV_TYPE {
     [TaroGeneral.ENV_TYPE.WEAPP]: TaroGeneral.ENV_TYPE.WEAPP
-    [TaroGeneral.ENV_TYPE.SWAN]: TaroGeneral.ENV_TYPE.SWAN
-    [TaroGeneral.ENV_TYPE.ALIPAY]: TaroGeneral.ENV_TYPE.ALIPAY
-    [TaroGeneral.ENV_TYPE.TT]: TaroGeneral.ENV_TYPE.TT
-    [TaroGeneral.ENV_TYPE.QQ]: TaroGeneral.ENV_TYPE.QQ
-    [TaroGeneral.ENV_TYPE.JD]: TaroGeneral.ENV_TYPE.JD
-    [TaroGeneral.ENV_TYPE.WEB]: TaroGeneral.ENV_TYPE.WEB
-    [TaroGeneral.ENV_TYPE.RN]: TaroGeneral.ENV_TYPE.RN
-    [TaroGeneral.ENV_TYPE.HARMONY]: TaroGeneral.ENV_TYPE.HARMONY
-    [TaroGeneral.ENV_TYPE.QUICKAPP]: TaroGeneral.ENV_TYPE.QUICKAPP
-    [TaroGeneral.ENV_TYPE.HARMONYHYBRID]: TaroGeneral.ENV_TYPE.HARMONYHYBRID
-    [TaroGeneral.ENV_TYPE.ASCF]: TaroGeneral.ENV_TYPE.ASCF
   }
 
   namespace interceptorify {

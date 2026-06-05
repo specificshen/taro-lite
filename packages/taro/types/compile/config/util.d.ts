@@ -51,32 +51,14 @@ export interface IPxTransformOption {
   mediaQuery?: boolean
   /** 设置一个可被转换的最小 px 值 */
   minPixelValue?: number
-  /**
-   * 转换后的单位，可选值为 rpx、vw、rem，当前仅支持小程序 (默认 rpx) 和 Web 端 (默认 rem)
-   * @description Web 端使用 rem 单位时会注入脚本用于设置 body 上的 font-size 属性，其他单位无该操作
-   */
-  targetUnit?: 'rpx' | 'vw' | 'rem'
-  /**
-   * H5 字体尺寸大小基准值，开发者可以自行调整单位换算的基准值(默认20)
-   * @supported h5
-   */
-  baseFontSize?: number
-  /**
-   * H5 根节点 font-size 的最大值 (默认 40)
-   * @supported h5
-   */
-  maxRootSize?: number
-  /**
-   * H5 根节点 font-size 的最小值(默认 20)
-   * @supported h5
-   */
-  minRootSize?: number
+  /** 转换后的单位，当前仅支持小程序 rpx */
+  targetUnit?: 'rpx'
   /** 设计稿尺寸 */
   designWidth?: number | ((size?: PostcssInput) => number)
   /** 设计稿尺寸换算规则 */
   deviceRatio?: TaroGeneral.TDeviceRatio
   /** 平台 */
-  platform?: 'weapp' | 'h5' | string
+  platform?: 'weapp'
   /** 启用的能力 Scope 默认为 ['platform', 'size'] */
   methods?: string[]
   /** filter 回调函数，可 exclude 不处理的文件 */
@@ -92,9 +74,7 @@ interface IBasePostcssOption {
   [key: string]: any
 }
 
-export type IPostcssOption<T = 'h5' | 'harmony' | 'mini'> = T extends 'h5'
-  ? IBasePostcssOption & { url?: PostcssOption.url }
-  : IBasePostcssOption
+export type IPostcssOption<T extends 'mini' = 'mini'> = T extends 'mini' ? IBasePostcssOption : never
 
 export type Config = ViteConfig | WebpackConfig
 
@@ -132,39 +112,19 @@ export interface ICompileOption {
 }
 
 export const enum TEMPLATE_TYPES {
-  WEAPP = '.wxml',
-  SWAN = '.swan',
-  ALIPAY = '.axml',
-  TT = '.ttml',
-  QUICKAPP = '.ux',
-  QQ = '.qml'
+  WEAPP = '.wxml'
 }
 
 export const enum STYLE_TYPES {
-  WEAPP = '.wxss',
-  SWAN = '.css',
-  ALIPAY = '.acss',
-  TT = '.ttss',
-  QUICKAPP = '.css',
-  QQ = '.qss'
+  WEAPP = '.wxss'
 }
 
 export const enum SCRIPT_TYPES {
-  WEAPP = '.js',
-  SWAN = '.js',
-  ALIPAY = '.js',
-  TT = '.js',
-  QUICKAPP = '.js',
-  QQ = '.js'
+  WEAPP = '.js'
 }
 
 export const enum CONFIG_TYPES {
-  WEAPP = '.json',
-  SWAN = '.json',
-  ALIPAY = '.json',
-  TT = '.json',
-  QUICKAPP = '.json',
-  QQ = '.json'
+  WEAPP = '.json'
 }
 
 export type IMINI_APP_FILE_TYPE = {

@@ -432,6 +432,27 @@ function checkBusinessVisibleTypeContract() {
       pattern: /useTitleClick|useOptionMenuClick|useKeyboardHeight|usePullIntercept/g,
       message: 'business-visible hooks must not expose unsupported Alipay/H5 lifecycle hooks.',
     },
+    {
+      path: 'packages/taro/types/api/base/env.d.ts',
+      pattern: /FRAMEWORK: 'react' \||TARO_ENV: 'weapp' \|/g,
+      message: 'business-visible env types must only expose React + WeApp values.',
+    },
+    {
+      path: 'packages/taro/types/api/taro.extend.d.ts',
+      pattern: /rnNavigationRef|ENV_TYPE\.(SWAN|ALIPAY|TT|QQ|JD|WEB|RN|HARMONY|QUICKAPP|HARMONYHYBRID|ASCF)/g,
+      message: 'business-visible Taro extension types must not expose unsupported platform env values.',
+    },
+    {
+      path: 'packages/taro/types/global.d.ts',
+      pattern: /\b(ASCF|SWAN|ALIPAY|TT|QQ|JD|WEB|RN|HARMONY|QUICKAPP|HARMONYHYBRID) = /g,
+      message: 'business-visible global ENV_TYPE must only expose WeApp.',
+    },
+    {
+      path: 'packages/taro/types/compile/config/util.d.ts',
+      pattern:
+        /targetUnit\?: 'rpx' \||baseFontSize|maxRootSize|minRootSize|platform\?: 'weapp' \||IPostcssOption<T extends 'h5'|'h5' \| 'harmony'|\b(SWAN|ALIPAY|TT|QQ|QUICKAPP) = /g,
+      message: 'business-visible compile utility types must not expose H5/Harmony px/postcss config branches.',
+    },
   ];
 
   if (exposesUnsupportedConfig) {
