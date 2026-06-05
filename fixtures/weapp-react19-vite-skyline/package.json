@@ -4,8 +4,8 @@
   "private": true,
   "description": "Minimal business-like fixture for React 19 + Vite + WeApp + Skyline / glass-easel validation.",
   "scripts": {
-    "build": "taro build --type weapp",
-    "dev": "NODE_ENV=development TARO_MINIFY=true taro build --type weapp --watch"
+    "build": "taro build",
+    "dev": "NODE_ENV=development TARO_MINIFY=true taro build --watch"
   },
   "dependencies": {
     "@spcsn/taro": "link:../../packages/taro",

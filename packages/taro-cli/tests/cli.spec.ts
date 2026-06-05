@@ -60,9 +60,9 @@ describe('inspect', () => {
       isHelp: false,
     };
 
-    it('should make configs', async () => {
+    it('should make configs with default weapp platform', async () => {
       const platform = 'weapp';
-      setProcessArgv('taro build --type weapp --watch --port 8080');
+      setProcessArgv('taro build --watch --port 8080');
       await cli.run();
       const ins = MockedKernel.mock.instances[0];
 

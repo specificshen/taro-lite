@@ -89,6 +89,7 @@ checkReadmeBusinessDependencyContract();
 checkReadmeInternalPackageContract();
 checkBusinessFixtureDependencyContract();
 checkBusinessFixtureConfigContract();
+checkBusinessFixtureScriptContract();
 if (!skipBindings) checkBindingPackages();
 
 if (warnings.length > 0) {
@@ -210,6 +211,19 @@ function checkBusinessFixtureDependencyContract() {
   hasBusinessFixtureContractErrors = true;
   errors.push(
     `${BUSINESS_FIXTURE_PACKAGE_JSON_PATH}: fixture must not depend on internal @spcsn packages: ${invalidDependencyNames.join(', ')}`,
+  );
+}
+
+function checkBusinessFixtureScriptContract() {
+  const packageJson = readJson(path.join(rootDir, BUSINESS_FIXTURE_PACKAGE_JSON_PATH));
+  const buildScript = packageJson.scripts?.build;
+  const devScript = packageJson.scripts?.dev;
+
+  if (buildScript === 'taro build' && devScript === 'NODE_ENV=development TARO_MINIFY=true taro build --watch') return;
+
+  hasBusinessFixtureContractErrors = true;
+  errors.push(
+    `${BUSINESS_FIXTURE_PACKAGE_JSON_PATH}: fixture scripts should use default weapp commands: "taro build" and "taro build --watch"`,
   );
 }
 
