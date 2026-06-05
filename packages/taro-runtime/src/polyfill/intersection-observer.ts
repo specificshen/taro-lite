@@ -1,4 +1,3 @@
-/* eslint-disable eqeqeq */
 import { isFunction, isNumber } from '@spcsn/taro-shared'
 
 import { throttle } from '../utils'
@@ -81,7 +80,7 @@ function handleIntersectionObserverObjectPolyfill () {
       throw new Error('callback must be a function')
     }
 
-    if (options.root && options.root.nodeType != 1) {
+    if (options.root && options.root.nodeType !== 1) {
       throw new Error('root must be an Element')
     }
 
@@ -129,12 +128,12 @@ function handleIntersectionObserverObjectPolyfill () {
    */
   IntersectionObserver.prototype.observe = function (target) {
     const isTargetAlreadyObserved = this._observationTargets.some(function (item) {
-      return item.element == target
+      return item.element === target
     })
 
     if (isTargetAlreadyObserved) return
 
-    if (!(target && target.nodeType == 1)) {
+    if (!(target && target.nodeType === 1)) {
       throw new Error('target must be an Element')
     }
 
@@ -151,7 +150,7 @@ function handleIntersectionObserverObjectPolyfill () {
   IntersectionObserver.prototype.unobserve = function (target) {
     this._observationTargets =
     this._observationTargets.filter(function (item) {
-      return item.element != target
+      return item.element !== target
     })
     if (!this._observationTargets.length) {
       this._unmonitorIntersections()
@@ -335,7 +334,7 @@ function handleIntersectionObserverObjectPolyfill () {
   /**
    * Accepts a target and root rect computes the intersection between then
    * following the algorithm in the spec.
-   * TODO(philipwalton): at this time clip-path is not considered.
+   * At this time clip-path is not considered.
    * https://w3c.github.io/IntersectionObserver/#calculate-intersection-rect-algo
    * @param {Element} target The target DOM element
    * @param {Object} rootRect The bounding rect of the root after being
@@ -355,13 +354,13 @@ function handleIntersectionObserverObjectPolyfill () {
 
     while (!atRoot) {
       let parentRect = null
-      const parentComputedStyle: Partial<CSSStyleDeclaration> = parent.nodeType == 1 ?
+      const parentComputedStyle: Partial<CSSStyleDeclaration> = parent.nodeType === 1 ?
         window.getComputedStyle(parent) : {}
 
       // If the parent isn't displayed, an intersection can't happen.
       if (parentComputedStyle.display === 'none') return
 
-      if (parent == this.root || parent == document) {
+      if (parent === this.root || parent === document) {
         atRoot = true
         parentRect = rootRect
       } else {
@@ -369,9 +368,9 @@ function handleIntersectionObserverObjectPolyfill () {
         // or <html> element, update the intersection rect.
         // Note: <body> and <html> cannot be clipped to a rect that's not also
         // the document rect, so no need to compute a new intersection.
-        if (parent != document.body &&
-          parent != document.documentElement &&
-          parentComputedStyle.overflow != 'visible') {
+        if (parent !== document.body &&
+          parent !== document.documentElement &&
+          parentComputedStyle.overflow !== 'visible') {
           parentRect = getBoundingClientRect(parent)
         }
       }
@@ -462,7 +461,7 @@ function handleIntersectionObserverObjectPolyfill () {
 
       // Return true if an entry matches a threshold or if the new ratio
       // and the old ratio are on the opposite sides of a threshold.
-      if (threshold == oldRatio || threshold == newRatio ||
+      if (threshold === oldRatio || threshold === newRatio ||
         threshold < oldRatio !== threshold < newRatio) {
         return true
       }
@@ -505,7 +504,7 @@ function handleIntersectionObserverObjectPolyfill () {
  */
   IntersectionObserver.prototype._unregisterInstance = function () {
     const index = registry.indexOf(this)
-    if (index != -1) registry.splice(index, 1)
+    if (index !== -1) registry.splice(index, 1)
   }
 
   /**
@@ -632,7 +631,7 @@ function handleIntersectionObserverObjectPolyfill () {
   function containsDeep (parent, child) {
     let node = child
     while (node) {
-      if (node == parent) return true
+      if (node === parent) return true
 
       node = getParentNode(node)
     }
@@ -648,7 +647,7 @@ function handleIntersectionObserverObjectPolyfill () {
   function getParentNode (node) {
     const parent = node.parentNode
 
-    if (parent && parent.nodeType == 11 && parent.host) {
+    if (parent && parent.nodeType === 11 && parent.host) {
     // If the parent is a shadow root, return the host element.
       return parent.host
     }
