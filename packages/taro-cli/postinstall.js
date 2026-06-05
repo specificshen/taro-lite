@@ -1,3 +1,1 @@
-/* eslint-disable no-console */
-
-console.log('@spcsn/taro-cli installed.');
+process.stdout.write('@spcsn/taro-cli installed.\n');
