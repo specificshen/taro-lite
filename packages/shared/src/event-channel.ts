@@ -15,6 +15,8 @@ interface PageEvt extends Events {
   emit?: (events: any, data: any) => void;
 }
 
+let routeChannel: RouteEvt;
+
 class PageEvts extends Events {
   exeList = [];
 
@@ -32,7 +34,6 @@ class PageEvts extends Events {
   }
 
   emit(events, data) {
-    // eslint-disable-next-line
     routeChannel.trigger(events, data);
   }
 }
@@ -57,6 +58,6 @@ class RouteEvts extends Events {
   }
 }
 
-const routeChannel: RouteEvt = new RouteEvts();
+routeChannel = new RouteEvts();
 
 export const EventChannel = { pageChannel, routeChannel };
