@@ -50,8 +50,7 @@
     "dotenv": "^16.4.5",
     "dotenv-expand": "^11.0.6",
     "lodash": "^4.17.21",
-    "resolve": "^1.22.8",
-    "supports-hyperlinks": "^3.0.0"
+    "resolve": "^1.22.8"
   },
   "devDependencies": {
     "@spcsn/taro": "workspace:*",
