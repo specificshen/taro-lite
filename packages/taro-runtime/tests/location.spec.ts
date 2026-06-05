@@ -113,37 +113,14 @@ describe('location', () => {
     const URL = runtime.URL;
 
     // constructor
-    try {
-      // eslint-disable-next-line
-      new URL('');
-    } catch (error) {
-      expect(error instanceof TypeError).toBe(true);
-      expect((error as Error).message).toMatch('Invalid URL');
-    }
-
-    try {
-      // eslint-disable-next-line
-      new URL('//taro.com');
-    } catch (error) {
-      expect(error instanceof TypeError).toBe(true);
-      expect((error as Error).message).toMatch('Invalid URL');
-    }
-
-    try {
-      // eslint-disable-next-line
-      new URL('/a/b', '/c/d');
-    } catch (error) {
-      expect(error instanceof TypeError).toBe(true);
-      expect((error as Error).message).toMatch('Invalid base URL');
-    }
-
-    try {
-      // eslint-disable-next-line
-      new URL('http://taro.com', '');
-    } catch (error) {
-      expect(error instanceof TypeError).toBe(true);
-      expect((error as Error).message).toMatch('Invalid base URL');
-    }
+    expect(() => new URL('')).toThrow(TypeError);
+    expect(() => new URL('')).toThrow('Invalid URL');
+    expect(() => new URL('//taro.com')).toThrow(TypeError);
+    expect(() => new URL('//taro.com')).toThrow('Invalid URL');
+    expect(() => new URL('/a/b', '/c/d')).toThrow(TypeError);
+    expect(() => new URL('/a/b', '/c/d')).toThrow('Invalid base URL');
+    expect(() => new URL('http://taro.com', '')).toThrow(TypeError);
+    expect(() => new URL('http://taro.com', '')).toThrow('Invalid base URL');
 
     {
       const url = new URL('http://taro.com');

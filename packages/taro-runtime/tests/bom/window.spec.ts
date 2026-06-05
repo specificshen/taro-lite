@@ -118,12 +118,9 @@ describe('TaroWindow', () => {
   test('addEventListener 应该忽略非字符串事件名', () => {
     const callback = vi.fn();
 
-    // @ts-ignore 故意传入非字符串类型进行测试
-    window.addEventListener(123, callback);
-    // @ts-ignore 故意传入非字符串类型进行测试
-    window.addEventListener(null, callback);
-    // @ts-ignore 故意传入非字符串类型进行测试
-    window.addEventListener(undefined, callback);
+    window.addEventListener(123 as unknown as string, callback);
+    window.addEventListener(null as unknown as string, callback);
+    window.addEventListener(undefined as unknown as string, callback);
 
     expect(callback).not.toHaveBeenCalled();
   });
@@ -131,12 +128,9 @@ describe('TaroWindow', () => {
   test('removeEventListener 应该忽略非字符串事件名', () => {
     const callback = vi.fn();
 
-    // @ts-ignore 故意传入非字符串类型进行测试
-    window.removeEventListener(123, callback);
-    // @ts-ignore 故意传入非字符串类型进行测试
-    window.removeEventListener(null, callback);
-    // @ts-ignore 故意传入非字符串类型进行测试
-    window.removeEventListener(undefined, callback);
+    window.removeEventListener(123 as unknown as string, callback);
+    window.removeEventListener(null as unknown as string, callback);
+    window.removeEventListener(undefined as unknown as string, callback);
 
     expect(callback).not.toHaveBeenCalled();
   });
@@ -243,14 +237,12 @@ describe('TaroWindow', () => {
     if (originalAtob !== undefined) {
       globalThis.atob = originalAtob;
     } else {
-      // @ts-ignore 删除属性
-      delete globalThis.atob;
+      Reflect.deleteProperty(globalThis, 'atob');
     }
     if (originalDocument !== undefined) {
       globalThis.document = originalDocument;
     } else {
-      // @ts-ignore 删除属性
-      delete globalThis.document;
+      Reflect.deleteProperty(globalThis, 'document');
     }
   });
 
@@ -259,8 +251,7 @@ describe('TaroWindow', () => {
 
     // 测试当 Date 不存在时的情况
     const newWindow = new TaroWindow();
-    // @ts-ignore 删除属性进行测试
-    delete newWindow.Date;
+    Reflect.deleteProperty(newWindow, 'Date');
     // 重新执行构造函数中的 Date 设置逻辑
     newWindow.Date ||= Date;
     expect(newWindow.Date).toBe(Date);
