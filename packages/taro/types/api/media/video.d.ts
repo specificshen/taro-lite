@@ -89,7 +89,7 @@ declare module '../../index' {
   /** VideoContext 实例，可通过 [Taro.createVideoContext](./createVideoContext) 获取。
    *
    * VideoContext 通过 id 跟一个 video 组件绑定，操作对应的 video 组件。
-   * @supported weapp, h5, rn, harmony_hybrid
+   * @supported weapp
    * @see https://developers.weixin.qq.com/miniprogram/dev/api/media/video/VideoContext.html
    */
   interface VideoContext {
@@ -99,7 +99,7 @@ declare module '../../index' {
      */
     exitBackgroundPlayback(): void
     /** 退出全屏
-     * @supported weapp, h5, rn, harmony_hybrid
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/media/video/VideoContext.exitFullScreen.html
      */
     exitFullScreen(): void
@@ -114,17 +114,17 @@ declare module '../../index' {
      */
     hideStatusBar(): void
     /** 暂停视频
-     * @supported weapp, h5, rn, harmony_hybrid
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/media/video/VideoContext.pause.html
      */
     pause(): void
     /** 播放视频
-     * @supported weapp, h5, rn, harmony_hybrid
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/media/video/VideoContext.play.html
      */
     play(): void
     /** 设置倍速播放
-     * @supported weapp, h5, rn, harmony_hybrid
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/media/video/VideoContext.playbackRate.html
      */
     playbackRate(
@@ -137,12 +137,12 @@ declare module '../../index' {
      */
     requestBackgroundPlayback(): void
     /** 进入全屏
-     * @supported weapp, h5, rn, harmony_hybrid
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/media/video/VideoContext.requestFullScreen.html
      */
     requestFullScreen(option: VideoContext.RequestFullScreenOption): void
     /** 跳转到指定位置
-     * @supported weapp, h5, rn, harmony_hybrid
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/media/video/VideoContext.seek.html
      */
     seek(
@@ -163,7 +163,7 @@ declare module '../../index' {
      */
     showStatusBar(): void
     /** 停止视频
-     * @supported weapp, h5, rn, harmony_hybrid
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/media/video/VideoContext.stop.html
      */
     stop(): void
@@ -235,7 +235,7 @@ declare module '../../index' {
     interface Option {
       /** 默认拉起的是前置或者后置摄像头。部分 Android 手机下由于系统 ROM 不支持无法生效
        * @default "back"
-       * @supported weapp, h5
+       * @supported weapp
        */
       camera?: keyof Camera
       /** 是否压缩所选择的视频文件
@@ -250,7 +250,7 @@ declare module '../../index' {
       maxDuration?: number
       /** 视频选择的来源
        * @default ['album', 'camera']
-       * @supported weapp, h5
+       * @supported weapp
        */
       sourceType?: Array<keyof sourceType>
       /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -292,17 +292,17 @@ declare module '../../index' {
     interface Option {
       /** 最多可以选择的文件个数
        * @default 9
-       * @supported weapp, h5
+       * @supported weapp
        */
       count?: number
       /** 文件类型
        * @default ['image', 'video']
-       * @supported weapp, h5
+       * @supported weapp
        */
       mediaType?: Array<keyof mediaType>
       /** 图片和视频选择的来源
        * @default ['album', 'camera']
-       * @supported weapp, h5
+       * @supported weapp
        */
       sourceType?: Array<keyof sourceType>
       /** 拍摄视频最长拍摄时间，单位秒。时间范围为 3s 至 60s 之间
@@ -317,7 +317,7 @@ declare module '../../index' {
       sizeType?: Array<'original' | 'compressed'>
       /** 仅在 sourceType 为 camera 时生效，使用前置或后置摄像头
        * @default "back"
-       * @supported weapp, h5
+       * @supported weapp
        */
       camera?: string
       /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -327,7 +327,6 @@ declare module '../../index' {
       /** 接口调用成功的回调函数 */
       success?: (result: SuccessCallbackResult) => void
       /** 用来上传的input元素ID
-       * @supported h5
        */
       mediaId?: string
     }
@@ -354,7 +353,6 @@ declare module '../../index' {
       /** 选择的文件的类型 */
       fileType: string
       /** 原始的浏览器 File 对象
-       * @supported h5
        */
       originalFileObj?: File
     }
@@ -387,7 +385,7 @@ declare module '../../index' {
      * **Bug & Tip：**
      *
      * 1.  `tip`: camera 参数在部分 Android 手机下由于系统 ROM 不支持无法生效
-     * @supported weapp, h5, rn
+     * @supported weapp
      * @example
      ```tsx
      * Taro.saveVideoToPhotosAlbum({
@@ -414,7 +412,7 @@ declare module '../../index' {
     openVideoEditor(option: openVideoEditor.Option): Promise<openVideoEditor.SuccessCallbackResult>
 
     /** 获取视频详细信息
-     * @supported weapp, harmony_hybrid
+     * @supported weapp
      * @example
      * ```tsx
      * Taro.downloadFile({
@@ -442,7 +440,7 @@ declare module '../../index' {
     getVideoInfo(option: getVideoInfo.Option): Promise<getVideoInfo.SuccessCallbackResult>
 
     /** 创建 video 上下文 VideoContext 对象。
-     * @supported weapp, h5, rn, harmony_hybrid, harmony
+     * @supported weapp
      * @example
      * ```tsx
      * videoContext = Taro.createVideoContext('myVideo')
@@ -488,7 +486,7 @@ declare module '../../index' {
     compressVideo(option: compressVideo.Option): Promise<compressVideo.SuccessCallbackResult>
 
     /** 拍摄视频或从手机相册中选视频。
-     * @supported weapp, h5, rn
+     * @supported weapp
      * @example
      * ```tsx
      * Taro.chooseVideo({
@@ -505,7 +503,7 @@ declare module '../../index' {
     chooseVideo(option: chooseVideo.Option): Promise<chooseVideo.SuccessCallbackResult>
 
     /** 拍摄或从手机相册中选择图片或视频。
-     * @supported weapp, h5, harmony_hybrid, harmony
+     * @supported weapp
      * @example
      * ```tsx
      * Taro.chooseMedia({
