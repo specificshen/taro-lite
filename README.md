@@ -95,10 +95,6 @@ node packages/taro-cli/bin/taro --version
 export default {
   framework: 'react',
   compiler: 'vite',
-  mini: {
-    compile: { prerender: true },
-    output: { renderer: 'skyline', componentFramework: 'glass-easel' },
-  },
 }
 ```
 
@@ -130,7 +126,8 @@ SPCSN Taro v1.0.0
 
 ```bash
 pnpm run release:check
-rg '@spcsn/taro-runtime|@spcsn/taro-vite-runner|@spcsn/taro-plugin-framework-react|@spcsn/taro-plugin-platform-weapp' /path/to/business/package.json
+rg '@spcsn/(taro-runtime|taro-vite-runner|taro-service|taro-binding)' /path/to/business/package.json
+rg 'plugins\s*:' /path/to/business/config
 ```
 
 `release:check` 会检查 `packages/*`、`npm/*` 和 `crates/native_binding` 的版本是否与根 `package.json` 一致，并校验每个 native binding 平台包是否包含预期 `.node` 文件。只想在本地快速检查版本时，可以执行：

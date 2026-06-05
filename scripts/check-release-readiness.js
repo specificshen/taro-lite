@@ -24,6 +24,7 @@ const README_BUSINESS_DEPENDENCIES = {
   devDependencies: ['@spcsn/taro-cli'],
 };
 
+const README_PATH = 'README.md';
 const BUSINESS_FIXTURE_PACKAGE_JSON_PATH = 'fixtures/weapp-react19-vite-skyline/package.json';
 const BUSINESS_FIXTURE_CONFIG_PATH = 'fixtures/weapp-react19-vite-skyline/config/index.ts';
 
@@ -85,6 +86,7 @@ checkPackageVersions();
 checkPublishSurfaceContract();
 checkPublicDependencyBoundaries();
 checkReadmeBusinessDependencyContract();
+checkReadmeInternalPackageContract();
 checkBusinessFixtureDependencyContract();
 checkBusinessFixtureConfigContract();
 if (!skipBindings) checkBindingPackages();
@@ -180,6 +182,17 @@ function checkReadmeBusinessDependencyContract() {
       errors.push(`README.md: minimal ${dependencySection} must include ${packageName} at version ${expectedVersion}`);
     }
   }
+}
+
+function checkReadmeInternalPackageContract() {
+  const readme = fs.readFileSync(path.join(rootDir, README_PATH), 'utf8');
+  const internalPluginPattern = /@spcsn\/taro-plugin-[\w-]+/g;
+  const internalPluginNames = [...new Set(readme.match(internalPluginPattern) || [])];
+
+  if (internalPluginNames.length === 0) return;
+
+  hasReadmeContractErrors = true;
+  errors.push(`README.md: business-facing docs must not mention internal plugins: ${internalPluginNames.join(', ')}`);
 }
 
 function checkBusinessFixtureDependencyContract() {
