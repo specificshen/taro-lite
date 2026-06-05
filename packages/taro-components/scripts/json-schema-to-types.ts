@@ -225,8 +225,7 @@ class GenerateTypes {
                   }
                 }
 
-                // @ts-ignore
-                node.leadingComments[0] ||= { type: 'CommentBlock' };
+                node.leadingComments[0] ||= { type: 'CommentBlock', value: '' };
                 node.leadingComments[0].value = commentValue;
               }
               list.push(node);
