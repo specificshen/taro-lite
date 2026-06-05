@@ -40,20 +40,14 @@ describe('cli', () => {
       options: {
         args: expect.any(Object),
         platform: undefined,
-        publicPath: undefined,
         isWatch: false,
         withoutBuild: false,
         env: undefined,
         blended: false,
-        assetsDest: undefined,
-        bundleOutput: undefined,
         isBuildNativeComp: false,
         newBlended: false,
         noInjectGlobalStyle: false,
         noCheck: false,
-        sourceMapUrl: undefined,
-        sourcemapOutput: undefined,
-        sourcemapSourcesRoot: undefined,
       },
       isHelp: false,
     };
@@ -70,7 +64,6 @@ describe('cli', () => {
         isWatch: true,
         port: 8080,
         deviceType: undefined,
-        resetCache: false,
         qr: false,
       });
 

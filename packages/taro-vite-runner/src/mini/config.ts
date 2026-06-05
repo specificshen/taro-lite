@@ -18,7 +18,7 @@ import {
   stripMultiPlatformExt,
 } from '../utils';
 import { DEFAULT_TERSER_OPTIONS, MINI_EXCLUDE_POSTCSS_PLUGIN_NAME } from '../utils/constants';
-import { logger } from '../utils/logger';
+import { createDevBuildSummaryLogger, logger } from '../utils/logger';
 
 import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
 import type { GetManualChunk } from 'rollup';
@@ -235,6 +235,7 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
 
       return {
         mode: getMode(taroConfig),
+        customLogger: taroConfig.isWatch ? createDevBuildSummaryLogger() : undefined,
         build: {
           outDir: outputRoot,
           target: 'es6',

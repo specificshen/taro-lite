@@ -26,6 +26,21 @@ export function printPkgVersion() {
   console.log();
 }
 
+export function printNativeMiniDevBanner() {
+  if (process.env.NODE_ENV === 'test') return;
+
+  const lines = [
+    chalk.cyanBright('╭────────────────────────────────────────────╮'),
+    chalk.cyanBright('│') + chalk.magentaBright('   🚀 SPCSN Taro 原生小程序开发引擎启动中   ') + chalk.cyanBright('│'),
+    chalk.cyanBright('│') + chalk.greenBright('   React 19  ×  Vite  ×  WeApp  ×  Skyline   ') + chalk.cyanBright('│'),
+    chalk.cyanBright('│') + chalk.yellowBright('   正在编译真实微信小程序产物，请保持热爱 ✨   ') + chalk.cyanBright('│'),
+    chalk.cyanBright('╰────────────────────────────────────────────╯'),
+  ];
+
+  console.log(lines.join('\n'));
+  console.log();
+}
+
 export const getAllFilesInFolder = async (folder: string, filter: string[] = []): Promise<string[]> => {
   let files: string[] = [];
   const list = readDirWithFileTypes(folder);
