@@ -3,7 +3,6 @@ import { isNumber, isString, warn } from '@spcsn/taro-shared';
 import { CONTEXT_ACTIONS } from '../constants';
 import { getCurrentInstance } from '../current';
 import { Events } from '../emitter/emitter';
-import env from '../env';
 import { RuntimeCache } from '../utils/cache';
 import { TaroURLProvider } from './URL';
 
@@ -312,7 +311,7 @@ class TaroLocation extends Events {
 }
 
 export type { TaroLocation };
-export const Location: typeof TaroLocation = process.env.TARO_PLATFORM === 'web' ? env.window.Location : TaroLocation;
+export const Location: typeof TaroLocation = TaroLocation;
 
 function generateFullUrl(val = '') {
   const origin = INIT_URL;

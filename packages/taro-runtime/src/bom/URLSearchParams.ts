@@ -1,7 +1,5 @@
 import { isArray } from '@spcsn/taro-shared';
 
-import env from '../env';
-
 const findReg = /[!'()~]|%20|%00/g;
 const plusReg = /\+/g;
 const replaceCharMap = {
@@ -24,10 +22,6 @@ function appendTo(dict: Record<string, string[]>, name: string, value: string) {
   else dict[name] = [res];
 }
 
-function addEach(value: string, key: string) {
-  appendTo(this, key, value);
-}
-
 function decode(str: string) {
   return decodeURIComponent(str.replace(plusReg, ' '));
 }
@@ -36,13 +30,10 @@ function encode(str: string) {
   return encodeURIComponent(str).replace(findReg, replacer);
 }
 
-export const URLSearchParams =
-  process.env.TARO_PLATFORM === 'web'
-    ? env.window.URLSearchParams
-    : class {
-        #dict = Object.create(null);
+export class URLSearchParams {
+  #dict = Object.create(null);
 
-        constructor(query) {
+  constructor(query) {
           query ??= '';
 
           const dict = this.#dict;
@@ -75,7 +66,7 @@ export const URLSearchParams =
                 appendTo(dict, value[0], value[1]);
               }
             } else if (query.forEach) {
-              query.forEach(addEach, dict);
+              query.forEach((value: string, key: string) => appendTo(dict, key, value));
             } else {
               for (const key in query) {
                 appendTo(dict, key, query[key]);
@@ -116,11 +107,12 @@ export const URLSearchParams =
 
         forEach(callback, thisArg) {
           const dict = this.#dict;
-          Object.getOwnPropertyNames(dict).forEach(function (name) {
-            dict[name].forEach(function (value: string) {
-              callback.call(thisArg, value, name, this);
-            }, this);
-          }, this);
+          const searchParams = this;
+          Object.getOwnPropertyNames(dict).forEach((name) => {
+            dict[name].forEach((value: string) => {
+              callback.call(thisArg, value, name, searchParams);
+            });
+          });
         }
 
         toJSON() {
@@ -138,4 +130,4 @@ export const URLSearchParams =
           }
           return query.join('&');
         }
-      };
+      }

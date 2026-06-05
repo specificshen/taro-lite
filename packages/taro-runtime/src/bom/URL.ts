@@ -1,6 +1,5 @@
 import { isString, isUndefined } from '@spcsn/taro-shared';
 
-import env from '../env';
 import { URLSearchParams } from './URLSearchParams';
 
 class TaroURL {
@@ -176,7 +175,7 @@ class TaroURL {
 export type { TaroURL };
 
 // Note: 小程序端 vite 打包成 commonjs，const URL = xxx 会报错，所以把 URL 改为 TaroURLProvider
-export const TaroURLProvider: typeof TaroURL = process.env.TARO_PLATFORM === 'web' ? env.window.URL : TaroURL;
+export const TaroURLProvider: typeof TaroURL = TaroURL;
 
 export function parseUrl(url = '') {
   const result = {

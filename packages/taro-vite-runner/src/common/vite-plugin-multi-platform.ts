@@ -30,10 +30,8 @@ export default function (compiler: ViteMiniCompilerContext): PluginOption {
       const allowedExts = Array.from(new Set(SCRIPT_EXT.concat(taroConfig.frameworkExts || [])))
         .map((item: string) => item.replace(/^\./, ''))
         .join('|');
-      const multiPlatformReg = new RegExp(
-        `\\.(${process.env.TARO_ENV}|${process.env.TARO_PLATFORM})\\.(${allowedExts})`,
-      );
-      if (multiPlatformReg.test(source)) return null;
+      const miniPlatformReg = new RegExp(`\\.(weapp|mini)\\.(${allowedExts})`);
+      if (miniPlatformReg.test(source)) return null;
       if (!importer) return null;
 
       const ext = path.extname(source);
@@ -48,14 +46,9 @@ export default function (compiler: ViteMiniCompilerContext): PluginOption {
       if (isViteDepsPath(rawResolvedPath)) return null;
 
       let resolution: ResolvedId | null = null;
-      const multiExtList = [
-        `.${process.env.TARO_ENV}${ext}`,
-        `/index.${process.env.TARO_ENV}${ext}`,
-        `.${process.env.TARO_PLATFORM}${ext}`,
-        `/index.${process.env.TARO_PLATFORM}${ext}`,
-      ];
+      const miniExtList = [`.weapp${ext}`, `/index.weapp${ext}`, `.mini${ext}`, `/index.mini${ext}`];
 
-      for (const multiExt of multiExtList) {
+      for (const multiExt of miniExtList) {
         resolution = await this.resolve(
           path.resolve(path.dirname(importer), `${path.join(dir, basename)}${multiExt}`),
           importer,
@@ -77,7 +70,7 @@ export default function (compiler: ViteMiniCompilerContext): PluginOption {
       if (!resolution?.id || resolution.external) return resolution;
       if (isVirtualModule(resolution.id)) return resolution;
       if (REG_NODE_MODULES.test(resolution.id)) return resolution;
-      if (multiPlatformReg.test(resolution.id)) return resolution;
+      if (miniPlatformReg.test(resolution.id)) return resolution;
     },
   };
 }

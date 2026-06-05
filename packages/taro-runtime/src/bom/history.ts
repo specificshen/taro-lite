@@ -2,7 +2,6 @@ import { isNumber, isString } from '@spcsn/taro-shared';
 
 import { CONTEXT_ACTIONS } from '../constants';
 import { Events } from '../emitter/emitter';
-import env from '../env';
 import { RuntimeCache } from '../utils/cache';
 
 import type { TaroLocation } from './location';
@@ -177,4 +176,4 @@ class TaroHistory extends Events {
 }
 
 export type { TaroHistory };
-export const History: typeof TaroHistory = process.env.TARO_PLATFORM === 'web' ? env.window.History : TaroHistory;
+export const History: typeof TaroHistory = TaroHistory;
