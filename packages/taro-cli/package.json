@@ -54,7 +54,6 @@
     "@spcsn/taro-vite-runner": "workspace:*",
     "@spcsn/taro-binding": "workspace:*",
     "adm-zip": "^0.5.12",
-    "axios": "^1.6.8",
     "download-git-repo": "^3.0.2",
     "inquirer": "^8.2.6",
     "minimist": "^1.2.8",

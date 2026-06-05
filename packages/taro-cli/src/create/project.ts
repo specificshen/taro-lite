@@ -12,7 +12,6 @@ import {
   TARO_CONFIG_FOLDER,
 } from '@spcsn/taro-helper';
 import { isArray } from '@spcsn/taro-shared';
-import axios from 'axios';
 import * as inquirer from 'inquirer';
 import ora from 'ora';
 
@@ -484,24 +483,29 @@ export default class Project extends Creator {
   }
 }
 
-function getOpenSourceTemplates(platform: string) {
-  return new Promise((resolve, reject) => {
-    const spinner = ora({ text: '正在拉取开源模板列表...', discardStdin: false }).start();
-    axios
-      .get('https://gitee.com/NervJS/awesome-taro/raw/next/index.json')
-      .then((response) => {
-        spinner.succeed(`${chalk.grey('拉取开源模板列表成功！')}`);
-        const collection = response.data;
-        switch (platform.toLowerCase()) {
-          case 'react':
-            return resolve(collection.react);
-          default:
-            return resolve([NONE_AVAILABLE_TEMPLATE]);
-        }
-      })
-      .catch((_error) => {
-        spinner.fail(chalk.red('拉取开源模板列表失败！'));
-        return reject(new Error());
-      });
-  });
+interface OpenSourceTemplateCollection {
+  react?: unknown;
+}
+
+async function getOpenSourceTemplates(platform: string) {
+  const spinner = ora({ text: '正在拉取开源模板列表...', discardStdin: false }).start();
+
+  try {
+    const response = await fetch('https://gitee.com/NervJS/awesome-taro/raw/next/index.json');
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status} ${response.statusText}`);
+    }
+
+    spinner.succeed(`${chalk.grey('拉取开源模板列表成功！')}`);
+    const collection = (await response.json()) as OpenSourceTemplateCollection;
+    switch (platform.toLowerCase()) {
+      case 'react':
+        return collection.react;
+      default:
+        return [NONE_AVAILABLE_TEMPLATE];
+    }
+  } catch {
+    spinner.fail(chalk.red('拉取开源模板列表失败！'));
+    throw new Error();
+  }
 }

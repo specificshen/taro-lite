@@ -1,9 +1,7 @@
-import * as nativeFs from 'node:fs';
 import * as path from 'node:path';
 
 import { chalk, fs } from '@spcsn/taro-helper';
 import * as AdmZip from 'adm-zip';
-import axios from 'axios';
 import * as download from 'download-git-repo';
 import ora from 'ora';
 
@@ -56,33 +54,29 @@ export default async function fetchTemplate(
       name = 'from-remote-url';
       const zipPath = path.join(tempPath, name + '.zip');
       const unZipPath = path.join(tempPath, name);
-      axios
-        .get<nativeFs.ReadStream>(templateSource, { responseType: 'stream' })
-        .then((response) => {
-          const ws = nativeFs.createWriteStream(zipPath);
-          response.data.pipe(ws);
-          ws.on('finish', () => {
-            // unzip
-            const zip = new AdmZip(zipPath);
-            zip.extractAllTo(unZipPath, true);
-            const files = readDirWithFileTypes(unZipPath).filter(
-              (file) => !file.name.startsWith('.') && file.isDirectory && file.name !== '__MACOSX',
-            );
+      fetch(templateSource)
+        .then(async (response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status} ${response.statusText}`);
+          }
 
-            if (files.length !== 1) {
-              spinner.color = 'red';
-              spinner.fail(chalk.red(`拉取远程模板仓库失败！\n${new Error('远程模板源组织格式错误')}`));
-              return resolve();
-            }
-            name = path.join(name, files[0].name);
+          await fs.writeFile(zipPath, Buffer.from(await response.arrayBuffer()));
+          const zip = new AdmZip(zipPath);
+          zip.extractAllTo(unZipPath, true);
+          const files = readDirWithFileTypes(unZipPath).filter(
+            (file) => !file.name.startsWith('.') && file.isDirectory && file.name !== '__MACOSX',
+          );
 
-            spinner.color = 'green';
-            spinner.succeed(`${chalk.grey('拉取远程模板仓库成功！')}`);
-            resolve();
-          });
-          ws.on('error', (error) => {
-            throw error;
-          });
+          if (files.length !== 1) {
+            spinner.color = 'red';
+            spinner.fail(chalk.red(`拉取远程模板仓库失败！\n${new Error('远程模板源组织格式错误')}`));
+            return resolve();
+          }
+          name = path.join(name, files[0].name);
+
+          spinner.color = 'green';
+          spinner.succeed(`${chalk.grey('拉取远程模板仓库成功！')}`);
+          resolve();
         })
         .catch(async (error) => {
           spinner.color = 'red';
