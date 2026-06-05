@@ -86,6 +86,7 @@ function runDevConcurrently() {
 
   return result.catch((error) => {
     globalThis.console.error(chalk.red('自动编译出错:'), error);
+    throw error;
   });
 }
 
@@ -107,6 +108,7 @@ async function main() {
     }
   } catch (error) {
     globalThis.console.error(chalk.red('工作流执行出错:'), error);
+    process.exitCode = 1;
   }
 }
 
