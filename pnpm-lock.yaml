@@ -457,9 +457,6 @@ importers:
       '@types/react-reconciler':
         specifier: ^0.33.0
         version: 0.33.0(@types/react@19.2.15)
-      '@types/sax':
-        specifier: ^1.2.4
-        version: 1.2.7
       less:
         specifier: ^4.2.0
         version: 4.6.4
@@ -1413,9 +1410,6 @@ packages:
 
   '@types/sass@1.43.1':
     resolution: {integrity: sha512-BPdoIt1lfJ6B7rw35ncdwBZrAssjcwzI5LByIrYs+tpXlj/CAkuVdRsgZDdP4lq5EjyWzwxZCqAoFyHKFwp32g==}
-
-  '@types/sax@1.2.7':
-    resolution: {integrity: sha512-rO73L89PJxeYM3s3pPPjiPgVVcymqU490g0YO5n5By0k2Erzj6tay/4lr1CHAAU4JyOWd1rpQ8bCf6cZfHU96A==}
 
   '@types/through@0.0.33':
     resolution: {integrity: sha512-HsJ+z3QuETzP3cswwtzt2vEIiHBk/dCcHGhbmG5X3ecnwFD/lPrMpliGXxSCg03L9AhrdwA4Oz/qfspkDW+xGQ==}
@@ -5023,10 +5017,6 @@ snapshots:
       '@types/node': 22.19.19
 
   '@types/sass@1.43.1':
-    dependencies:
-      '@types/node': 22.19.19
-
-  '@types/sax@1.2.7':
     dependencies:
       '@types/node': 22.19.19
 

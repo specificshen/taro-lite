@@ -61,7 +61,6 @@
     "@types/react-dom": "^19.2.3",
     "@types/node": "^22.19.19",
     "@types/react-reconciler": "^0.33.0",
-    "@types/sax": "^1.2.4",
     "less": "^4.2.0",
     "rollup": "^3.29.5",
     "sass": "1.44.0",
