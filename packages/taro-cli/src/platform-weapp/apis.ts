@@ -1,20 +1,31 @@
-// @ts-nocheck
 import { processApis } from '@spcsn/taro-shared';
 
 import { needPromiseApis } from './apis-list';
 
-declare const wx: any;
+interface WeappNativeApi {
+  cloud?: unknown;
+}
 
-export function initNativeApi(taro) {
+interface TaroApiTarget {
+  cloud?: unknown;
+  getTabBar?: (pageCtx?: { getTabBar?: () => { $taroInstances?: unknown } }) => unknown;
+  getRenderer?: () => string;
+  getCurrentInstance?: () => { page?: { renderer?: string } };
+}
+
+declare const wx: WeappNativeApi;
+
+export function initNativeApi(taro: TaroApiTarget) {
   processApis(taro, wx, {
     needPromiseApis,
     modifyApis(apis) {
       // fix https://github.com/NervJS/taro/issues/9899
       apis.delete('lanDebug');
     },
-    transformMeta(api: string, options: Record<string, any>) {
+    transformMeta(api: string, options: Record<string, unknown>) {
       if (api === 'showShareMenu') {
-        options.menus = options.showShareItems?.map((item) =>
+        const showShareItems = Array.isArray(options.showShareItems) ? options.showShareItems : [];
+        options.menus = showShareItems.map((item) =>
           item === 'wechatFriends' ? 'shareAppMessage' : item === 'wechatMoment' ? 'shareTimeline' : item,
         );
       }
@@ -32,6 +43,6 @@ export function initNativeApi(taro) {
     }
   };
   taro.getRenderer = function () {
-    return taro.getCurrentInstance()?.page?.renderer ?? 'webview';
+    return taro.getCurrentInstance?.()?.page?.renderer ?? 'webview';
   };
 }
