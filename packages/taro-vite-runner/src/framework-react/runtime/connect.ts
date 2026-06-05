@@ -69,7 +69,6 @@ export function setReconciler(ReactDOM?) {
 
 export function connectReactPage(R: typeof React, id: string) {
   return (Page: ReactPageComponent): React.ComponentClass<PageProps> => {
-    // eslint-disable-next-line dot-notation
     const isReactComponent = isClassComponent(R, Page);
     const inject = (node?: Instance) => node && injectPageInstance(node, id);
     const refs = isReactComponent
