@@ -9,8 +9,6 @@ import {
   REG_TARO_SCOPED_PACKAGE,
 } from '@spcsn/taro-helper';
 import { getSassLoaderOption } from '../runner-utils';
-import { PLATFORM_TYPE } from '@spcsn/taro-shared';
-
 import { getDefaultPostcssConfig } from './postcss';
 import {
   getCSSModulesOptions,
@@ -74,7 +72,7 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
 
     env.FRAMEWORK = JSON.stringify(framework);
     env.TARO_ENV = JSON.stringify(buildAdapter);
-    env.TARO_PLATFORM = JSON.stringify(process.env.TARO_PLATFORM || PLATFORM_TYPE.MINI);
+    env.TARO_PLATFORM = JSON.stringify('mini');
     env.NODE_ENV = JSON.stringify(process.env.NODE_ENV || getMode(taroConfig));
     env.SUPPORT_TARO_POLYFILL = env.SUPPORT_TARO_POLYFILL || '"disabled"';
     const envConstants = Object.keys(env).reduce((target, key) => {

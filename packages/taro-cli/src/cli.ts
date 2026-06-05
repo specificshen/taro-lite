@@ -30,13 +30,6 @@ export default class CLI {
         version: ['v'],
         help: ['h'],
         port: ['p'],
-        resetCache: ['reset-cache'], // specially for rn, Removes cached files.
-        publicPath: ['public-path'], // specially for rn, assets public path.
-        bundleOutput: ['bundle-output'], // specially for rn, File name where to store the resulting bundle.
-        sourcemapOutput: ['sourcemap-output'], // specially for rn, File name where to store the sourcemap file for resulting bundle.
-        sourceMapUrl: ['sourcemap-use-absolute-path'], // specially for rn, Report SourceMapURL using its full path.
-        sourcemapSourcesRoot: ['sourcemap-sources-root'], // specially for rn, Path to make sourcemaps sources entries relative to.
-        assetsDest: ['assets-dest'], // specially for rn, Directory name where to store assets referenced in the bundle.
         envPrefix: ['env-prefix'],
       },
       boolean: ['version', 'help', 'disable-global-config'],
@@ -107,7 +100,6 @@ export default class CLI {
       switch (command) {
         case 'build': {
           let platform = args.type;
-          const { publicPath, bundleOutput, sourcemapOutput, sourceMapUrl, sourcemapSourcesRoot, assetsDest } = args;
 
           // 针对不同的内置平台注册对应的端平台插件
           switch (platform) {
@@ -146,13 +138,6 @@ export default class CLI {
             port: args.port,
             env: args.env,
             deviceType: args.platform,
-            resetCache: !!args.resetCache,
-            publicPath,
-            bundleOutput,
-            sourcemapOutput,
-            sourceMapUrl,
-            sourcemapSourcesRoot,
-            assetsDest,
             qr: !!args.qr,
             blended: Boolean(args.blended),
             h: args.h,

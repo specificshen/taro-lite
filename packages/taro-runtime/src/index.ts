@@ -21,7 +21,7 @@ export {
 } from './bom/window';
 // dom
 export { TaroElement } from './dom/element';
-export { createEvent, eventHandler, eventHandlerTTDom, TaroEvent } from './dom/event';
+export { createEvent, eventHandler, TaroEvent } from './dom/event';
 export { FormElement } from './dom/form';
 export { TaroNode } from './dom/node';
 export { TaroRootElement } from './dom/root';

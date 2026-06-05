@@ -212,12 +212,3 @@ export function eventHandler(event: MpEvent) {
     }
   }
 }
-
-export function eventHandlerTTDom(ele: any, listener: (event: MpEvent, element: any) => void, event: MpEvent) {
-  Object.assign(event, {
-    mpEvent: event,
-    bubbles: true,
-    cancelable: true,
-  });
-  listener(event, ele);
-}
