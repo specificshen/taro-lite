@@ -26,8 +26,7 @@ import { setReconciler } from './connect';
 import { reactMeta } from './react-meta';
 import { isClassComponent } from './utils';
 
-import type { Instance, TaroRootElement } from '@spcsn/taro-runtime'; // eslint-disable-line import/no-duplicates
-import type { MpInstance } from '@spcsn/taro-runtime/dist/runtime.esm'; // eslint-disable-line import/no-duplicates
+import type { Instance, MpInstance, TaroRootElement } from '@spcsn/taro-runtime';
 import type { AppInstance, PageInstance } from '@spcsn/taro';
 import type { Func } from '@spcsn/taro/types/compile';
 import type React from 'react';
@@ -169,7 +168,6 @@ function initNativeComponentEntry(params: InitNativeComponentEntryParams) {
     app?.parentNode?.appendChild(nativeApp);
     app = nativeApp;
   }
-  // eslint-disable-next-line react/no-deprecated
   ReactDOM.render(h(Entry, {}), app);
 }
 
