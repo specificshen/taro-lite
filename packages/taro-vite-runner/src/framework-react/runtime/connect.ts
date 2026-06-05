@@ -1,4 +1,3 @@
-// @ts-nocheck
 import {
   CONTAINER,
   Current,
@@ -29,9 +28,12 @@ import type TReactDOM from 'react-dom';
 import type TReactDOMClient from 'react-dom/client';
 
 type PageComponent = React.CElement<PageProps, React.Component<PageProps, any, any>>;
+type ReactDOMRenderer = typeof TReactDOM & typeof TReactDOMClient & {
+  render?: (element: React.ReactElement, container: unknown) => void;
+};
 
 let h: typeof React.createElement;
-let ReactDOM: typeof TReactDOM & typeof TReactDOMClient;
+let ReactDOM: ReactDOMRenderer;
 
 const pageKeyId = incrementId();
 
