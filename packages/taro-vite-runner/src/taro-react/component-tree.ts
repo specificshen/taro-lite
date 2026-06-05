@@ -3,7 +3,7 @@
  * 提供 fiber -> element、element -> fiber、element -> props 的方法
  */
 import { internalContainerInstanceKey, internalInstanceKey, internalPropsKey } from './constant';
-import { HostComponent, HostRoot, HostText, SuspenseComponent } from './workTags';
+import { HostComponent, HostRoot, HostText, SuspenseComponent } from './work-tags';
 
 import type { TaroElement, TaroText } from '@spcsn/taro-runtime';
 import type { Fiber } from 'react-reconciler';

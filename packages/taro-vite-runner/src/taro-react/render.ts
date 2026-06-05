@@ -1,6 +1,6 @@
 import { hooks } from '@spcsn/taro-shared';
 
-import { markContainerAsRoot } from './componentTree';
+import { markContainerAsRoot } from './component-tree';
 import { getEventPriority } from './constant';
 import { enqueueStateRestore, getTargetInstForInputOrChangeEvent, RestoreType } from './event';
 import { runWithPriority, TaroReconciler } from './reconciler';

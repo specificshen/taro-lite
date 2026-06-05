@@ -1,11 +1,11 @@
-import { getFiberCurrentPropsFromNode, getInstanceFromNode, getNodeFromInstance } from './componentTree';
+import { getFiberCurrentPropsFromNode, getInstanceFromNode, getNodeFromInstance } from './component-tree';
 import {
   isTextInputElement,
   ReactDOMInputRestoreControlledState,
   ReactDOMTextareaRestoreControlledState,
   toString,
-} from './domInput';
-import { updateValueIfChanged } from './inputValueTracking';
+} from './dom-input';
+import { updateValueIfChanged } from './input-value-tracking';
 import { TaroReconciler } from './reconciler';
 
 import type { TaroElement, TaroEvent } from '@spcsn/taro-runtime';
