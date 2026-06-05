@@ -360,7 +360,6 @@ export function cssImports(content: string): string[] {
   return results;
 }
 
-/*eslint-disable*/
 const retries = process.platform === 'win32' ? 100 : 1;
 export function emptyDirectory(
   dirPath: string,
@@ -383,7 +382,8 @@ export function emptyDirectory(
               fs.rmdirSync(curPath);
             }
             removed = true;
-          } catch (e) {
+          } catch {
+            // Retry because Windows can hold directory handles briefly.
           } finally {
             if (++i < retries) {
               continue;
@@ -402,7 +402,6 @@ export function emptyDirectory(
     });
   }
 }
-/* eslint-enable */
 
 export const pascalCase: (str: string) => string = (str: string): string =>
   str.charAt(0).toUpperCase() + camelCase(str.substr(1));
