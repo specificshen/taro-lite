@@ -1,14 +1,14 @@
 import * as path from 'node:path';
 
-import { dotenvParse, fs, patchEnv } from '@spcsn/taro-helper';
+import { dotenvParse, patchEnv } from '@spcsn/taro-helper';
 import { Config, Kernel } from '@spcsn/taro-service';
 import minimist from 'minimist';
 
 import customCommand from './commands/customCommand';
 import { getPkgVersion } from './util';
 
-const DISABLE_GLOBAL_CONFIG_COMMANDS = ['global-config', 'doctor', 'update', 'config'];
 const DEFAULT_FRAMEWORK = 'react';
+const SUPPORTED_COMMANDS = new Set(['build', 'init']);
 
 export default class CLI {
   appPath: string;
@@ -52,31 +52,30 @@ export default class CLI {
       const appPath = this.appPath;
       const presetsPath = path.resolve(__dirname, 'presets');
       const commandsPath = path.resolve(presetsPath, 'commands');
-      const platformsPath = path.resolve(presetsPath, 'platforms');
-      const commandPlugins = fs.readdirSync(commandsPath);
       const targetPlugin = `${command}.js`;
+
+      if (!SUPPORTED_COMMANDS.has(command)) {
+        console.log('当前 CLI 仅支持 build 和 init 命令。');
+        return;
+      }
 
       // 设置环境变量
       process.env.NODE_ENV ||= args.env;
-      if (process.env.NODE_ENV === 'undefined' && (command === 'build' || command === 'inspect')) {
+      if (process.env.NODE_ENV === 'undefined' && command === 'build') {
         process.env.NODE_ENV = args.watch ? 'development' : 'production';
       }
       args.type ||= args.t;
-      // React-only / weapp-first fork：build/inspect 命令未显式指定 --type 时默认 weapp
-      if (!args.type && (command === 'build' || command === 'inspect') && typeof args.plugin !== 'string') {
+      if (!args.type && command === 'build') {
         args.type = 'weapp';
       }
       if (args.type) {
         process.env.TARO_ENV = args.type;
       }
-      if (typeof args.plugin === 'string') {
-        process.env.TARO_ENV = 'plugin';
-      }
       const mode = args.mode || process.env.NODE_ENV;
       // 这里解析 dotenv 以便于 config 解析时能获取 dotenv 配置信息
       const expandEnv = dotenvParse(appPath, args.envPrefix, mode);
 
-      const disableGlobalConfig = !!(args['disable-global-config'] || DISABLE_GLOBAL_CONFIG_COMMANDS.includes(command));
+      const disableGlobalConfig = !!args['disable-global-config'];
 
       const configEnv = {
         mode,
@@ -101,21 +100,12 @@ export default class CLI {
       if (initialConfig) {
         initialConfig.env = patchEnv(initialConfig, expandEnv);
       }
-      if (commandPlugins.includes(targetPlugin)) {
-        // 针对不同的内置命令注册对应的命令插件
-        kernel.optsPlugins.push(path.resolve(commandsPath, targetPlugin));
-      }
-
-      // 把内置命令插件传递给 kernel，可以暴露给其他插件使用
+      kernel.optsPlugins.push(path.resolve(commandsPath, targetPlugin));
       kernel.cliCommandsPath = commandsPath;
-      kernel.cliCommands = commandPlugins
-        .filter((commandFileName) => /^[\w-]+(\.[\w-]+)*\.js$/.test(commandFileName))
-        .map((fileName) => fileName.replace(/\.js$/, ''));
+      kernel.cliCommands = Array.from(SUPPORTED_COMMANDS);
 
       switch (command) {
-        case 'inspect':
         case 'build': {
-          let plugin;
           let platform = args.type;
           const { publicPath, bundleOutput, sourcemapOutput, sourceMapUrl, sourcemapSourcesRoot, assetsDest } = args;
 
@@ -140,29 +130,10 @@ export default class CLI {
             return;
           }
           kernel.optsPlugins.push(require.resolve('@spcsn/taro-vite-runner/framework-react'));
-
-          // 编译小程序插件
-          if (typeof args.plugin === 'string') {
-            plugin = args.plugin;
-            if (plugin !== 'weapp') {
-              console.log('当前 Fork 仅支持 weapp 小程序插件编译。');
-              return;
-            }
-            platform = 'plugin';
-            kernel.optsPlugins.push(path.resolve(platformsPath, 'plugin.js'));
-            kernel.optsPlugins.push(path.resolve(__dirname, 'platform-weapp'));
-          }
-
-          // 传递 inspect 参数即可
-          if (command === 'inspect') {
-            await customCommand(command, kernel, args);
-            break;
-          }
           await customCommand(command, kernel, {
             args,
             _,
             platform,
-            plugin,
             isWatch: Boolean(args.watch),
             // Note: 是否把 Taro 组件编译为原生自定义组件
             isBuildNativeComp: _[1] === 'native-components',
@@ -195,7 +166,6 @@ export default class CLI {
             projectName: _[1] || args.name,
             description: args.description,
             typescript: args.typescript,
-            buildEs5: args['build-es5'],
             framework: args.framework,
             compiler: args.compiler,
             npm: args.npm,
@@ -208,9 +178,6 @@ export default class CLI {
           });
           break;
         }
-        default:
-          await customCommand(command, kernel, args);
-          break;
       }
     } else {
       if (args.h) {
@@ -221,15 +188,8 @@ export default class CLI {
         console.log('  -h, --help          output usage information');
         console.log();
         console.log('Commands:');
-        console.log('  init [projectName]  Init a project with default templete');
-        console.log('  config <cmd>        Taro config');
-        console.log('  create              Create page for project');
-        console.log('  build               Build a project with options');
-        console.log('  update              Update packages of taro');
-        console.log('  info                Diagnostics Taro env info');
-        console.log('  doctor              Diagnose taro project');
-        console.log('  inspect             Inspect the webpack config');
-        console.log('  help [cmd]          display help for [cmd]');
+        console.log('  init [projectName]  Init a project with default template');
+        console.log('  build               Build a WeApp project');
       } else if (args.v) {
         console.log(getPkgVersion());
       }

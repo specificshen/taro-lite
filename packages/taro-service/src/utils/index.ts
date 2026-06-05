@@ -11,8 +11,9 @@ import type { IPlugin, IPluginsObject } from './types';
 
 export const isNpmPkg: (name: string) => boolean = (name) => !/^(\.|\/)/.test(name);
 
+const removedLegacyPlugins = new Set(['@spcsn/taro-plugin-generator']);
+
 const cliBuiltinPlugins: Record<string, string> = {
-  '@spcsn/taro-plugin-generator': 'dist/presets/plugins/generator/index.js',
   '@spcsn/taro-plugin-platform-weapp': 'dist/platform-weapp/index.js',
 };
 
@@ -69,6 +70,10 @@ export function resolvePresetsOrPlugins(
   const presetsOrPluginsNames = Object.keys(args) || [];
   for (let i = 0; i < presetsOrPluginsNames.length; i++) {
     const item = presetsOrPluginsNames[i];
+    if (removedLegacyPlugins.has(item)) {
+      continue;
+    }
+
     let fPath;
     try {
       fPath = resolve.sync(item, {

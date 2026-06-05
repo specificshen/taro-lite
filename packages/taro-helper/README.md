@@ -11,7 +11,6 @@ tips:
 ``` plaintext
 .
 ├── __tests__           # 单测
-├── babelRegister.ts    # babel register，已过时
 ├── constants.ts        # 编译时常量
 ├── esbuild             # esbuild 相关工具
 │   ├── index.ts

@@ -24,7 +24,6 @@ export default (ctx: IPluginContext) => {
       '--blended': 'Blended Taro project in an original MiniApp project',
       '--new-blended':
         'Blended Taro project in an original MiniApp project while supporting building components independently',
-      '--plugin [typeName]': 'Build Taro plugin project, weapp',
       '--env-prefix [envPrefix]': "Provide the dotEnv varables's prefix",
       '--no-check': 'Do not check config is valid or not',
     },
@@ -37,8 +36,6 @@ export default (ctx: IPluginContext) => {
       'taro build --no-build',
       'taro build native-components',
       'taro build --new-blended',
-      'taro build --plugin weapp --watch',
-      'taro build --plugin weapp',
       'taro build --mode prepare --env-prefix TARO_APP_',
     ],
     async fn(opts) {

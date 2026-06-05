@@ -10,28 +10,13 @@
     "framework": "{{ framework }}"
   },
   "scripts": {
-    "new": "taro new",
     "build": "taro build",
     "dev": "taro build --watch"
   },
-  {{#if buildEs5 }}
-  "browserslist": {
-    "development": [
-      "defaults and fully supports es6-module",
-      "maintained node versions"
-    ],
-    "production": [
-      "last 3 versions",
-      "Android >= 4.1",
-      "ios >= 8"
-    ]
-  },
-  {{else}}
   "browserslist": [
     "defaults and fully supports es6-module",
     "maintained node versions"
   ],
-  {{/if}}
   "author": "",
   "dependencies": {
     "@spcsn/taro-components": "{{ version }}",

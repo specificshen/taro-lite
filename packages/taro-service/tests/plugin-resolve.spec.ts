@@ -23,7 +23,7 @@ describe('插件解析', () => {
     fs.rmSync(appRoot, { recursive: true, force: true });
   });
 
-  it('从 CLI 内置产物解析历史插件包名', () => {
+  it('从 CLI 内置产物解析仍保留的历史插件包名，并忽略已移除插件', () => {
     const plugins = resolvePresetsOrPlugins(
       appRoot,
       {
@@ -33,10 +33,7 @@ describe('插件解析', () => {
       PluginType.Plugin,
     );
 
-    expect(plugins.map((plugin) => path.relative(cliPackagePath, plugin.path))).toEqual([
-      'dist/presets/plugins/generator/index.js',
-      'dist/platform-weapp/index.js',
-    ]);
+    expect(plugins.map((plugin) => path.relative(cliPackagePath, plugin.path))).toEqual(['dist/platform-weapp/index.js']);
   });
 
   it('按最终路径去重并合并重复插件配置', () => {

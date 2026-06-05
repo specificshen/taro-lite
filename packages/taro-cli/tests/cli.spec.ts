@@ -10,11 +10,10 @@ const MockedKernel = Kernel as unknown as MockedClass<typeof Kernel>;
 const APP_PATH = '/a/b/c';
 
 function setProcessArgv(cmd: string) {
-  // @ts-ignore
-  process.argv = [null, ...cmd.split(' ')];
+  process.argv = ['node', ...cmd.split(' ')];
 }
 
-describe('inspect', () => {
+describe('cli', () => {
   let cli: CLI;
 
   beforeAll(() => {
@@ -48,7 +47,6 @@ describe('inspect', () => {
         blended: false,
         assetsDest: undefined,
         bundleOutput: undefined,
-        plugin: undefined,
         isBuildNativeComp: false,
         newBlended: false,
         noInjectGlobalStyle: false,
@@ -87,21 +85,6 @@ describe('inspect', () => {
       setProcessArgv('taro build --type weapp');
       await cli.run();
       expect(process.env.NODE_ENV).toEqual('development');
-    });
-
-    it.skip('should make plugin config', async () => {
-      setProcessArgv('taro build --plugin');
-      await cli.run();
-      const ins = MockedKernel.mock.instances[0];
-      expect(ins.run).toHaveBeenCalledWith({
-        name: 'build',
-        opts: Object.assign({}, baseOpts, {
-          platform: 'plugin',
-          plugin: 'weapp',
-        }),
-      });
-      expect(process.env.NODE_ENV).toEqual('production');
-      expect(process.env.TARO_ENV).toEqual('plugin');
     });
   });
 
@@ -158,47 +141,18 @@ describe('inspect', () => {
     });
   });
 
-  describe('convert', () => {
-    it('should make configs', async () => {
-      setProcessArgv('taro convert');
-      await cli.run();
-      const ins = MockedKernel.mock.instances[0];
-      expect(ins.run).toHaveBeenCalledWith({
-        name: 'convert',
-        opts: {
-          _: ['convert'],
-          options: {
-            build: true,
-            check: true,
-            'inject-global-style': true,
-          },
-          isHelp: false,
-        },
-      });
-    });
-  });
+  describe('unsupported commands', () => {
+    it('should skip commands other than build and init', async () => {
+      const spy = vi.spyOn(console, 'log');
+      spy.mockImplementation(() => {});
 
-  describe('customCommand', () => {
-    it('should make configs', async () => {
-      const cmd = 'inspect';
-      const _ = [cmd, 'entry'];
-      const type = 'weapp';
-      setProcessArgv('taro inspect entry --type weapp -h --version');
+      setProcessArgv('taro inspect entry --type weapp');
       await cli.run();
-      const ins = MockedKernel.mock.instances[0];
-      expect(ins.run).toHaveBeenCalledWith({
-        name: cmd,
-        opts: {
-          _,
-          options: {
-            build: true,
-            check: true,
-            'inject-global-style': true,
-            type,
-          },
-          isHelp: true,
-        },
-      });
+
+      expect(MockedKernel).not.toHaveBeenCalled();
+      expect(spy).toHaveBeenCalledWith('当前 CLI 仅支持 build 和 init 命令。');
+
+      spy.mockRestore();
     });
   });
 
@@ -209,7 +163,7 @@ describe('inspect', () => {
 
       setProcessArgv('taro -h');
       await cli.run();
-      expect(spy).toBeCalledTimes(16);
+      expect(spy).toBeCalledTimes(9);
 
       spy.mockRestore();
     });

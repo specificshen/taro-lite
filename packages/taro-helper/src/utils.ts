@@ -4,10 +4,6 @@ import * as os from 'node:os';
 import * as path from 'node:path';
 
 import * as babel from '@babel/core';
-import babelGenerator from '@babel/generator';
-import * as babelParser from '@babel/parser';
-import babelTraverse from '@babel/traverse';
-import * as t from '@babel/types';
 import * as fs from 'fs-extra';
 import { camelCase, defaults, flatMap, isPlainObject, mergeWith } from 'lodash';
 
@@ -698,11 +694,3 @@ export function removePathPrefix(filePath = '') {
 }
 
 export { fs };
-
-// 集中引入 babel 工具箱，供编译时使用
-export const babelKit = {
-  types: t,
-  parse: babelParser.parse,
-  generate: babelGenerator,
-  traverse: babelTraverse,
-};

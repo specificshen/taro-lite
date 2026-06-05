@@ -33,7 +33,6 @@ export interface IProjectConf {
   template: string;
   description?: string;
   typescript?: boolean;
-  buildEs5?: boolean;
   css: CSSType;
   date?: string;
   src?: string;
@@ -111,7 +110,6 @@ export default class Project extends Creator {
     this.askProjectName(conf, prompts);
     this.askDescription(conf, prompts);
     this.askTypescript(conf, prompts);
-    this.askBuildEs5(conf, prompts);
     this.askCSS(conf, prompts);
     this.askNpm(conf, prompts);
     const answers = await inquirer.prompt<IProjectConf>(prompts);
@@ -205,18 +203,6 @@ export default class Project extends Creator {
       });
     }
   };
-
-  askBuildEs5: AskMethods = function (conf, prompts) {
-    if (typeof conf.buildEs5 !== 'boolean') {
-      prompts.push({
-        type: 'confirm',
-        name: 'buildEs5',
-        message: '是否需要编译为 ES5 ？',
-        default: false,
-      });
-    }
-  };
-
   askCSS: AskMethods = function (conf, prompts) {
     const cssChoices = [
       {
@@ -491,7 +477,6 @@ export default class Project extends Creator {
         templateRoot: getRootPath(),
         version: getPkgVersion(),
         typescript: this.conf.typescript,
-        buildEs5: this.conf.buildEs5,
         date: this.conf.date,
         description: this.conf.description,
         compiler: this.conf.compiler,

@@ -3,7 +3,6 @@ export * as chokidar from 'chokidar';
 
 export const createDebug = (id: string) => require('debug')(id);
 
-export { injectDefineConfigHeader } from './babelRegister';
 export * from './constants';
 export * from './dotenv';
 export * from './esbuild';
