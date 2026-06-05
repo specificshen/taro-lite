@@ -38,8 +38,7 @@ export abstract class TaroPlatformBase<T extends TConfig = TConfig> extends Taro
   private setupImpl() {
     const { output } = this.config;
     // 仅 output.clean 为 false 时不清空输出目录
-    // eslint-disable-next-line eqeqeq
-    if (output == undefined || output.clean == undefined || output.clean === true) {
+    if (output === undefined || output === null || output.clean === undefined || output.clean === null || output.clean === true) {
       this.emptyOutputDir();
     } else if (isObject(output.clean)) {
       this.emptyOutputDir(output.clean.keep || []);
