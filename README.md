@@ -112,7 +112,7 @@ npm run build
 构建输出应显示当前 `@spcsn/taro-cli` 版本，例如：
 
 ```text
-Taro v1.0.0
+SPCSN Taro v1.0.0
 ```
 
 ## 发版前检查

@@ -22,7 +22,7 @@ export function getPkgItemByKey(key: string) {
 
 export function printPkgVersion() {
   const taroVersion = getPkgVersion();
-  console.log(`👽 Taro v${taroVersion}`);
+  console.log(`👽 SPCSN Taro v${taroVersion}`);
   console.log();
 }
 

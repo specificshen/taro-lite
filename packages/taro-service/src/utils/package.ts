@@ -10,6 +10,6 @@ export function getPkgVersion(): string {
 }
 
 export function printPkgVersion() {
-  console.log(`👽 Taro v${getPkgVersion()}`);
+  console.log(`👽 SPCSN Taro v${getPkgVersion()}`);
   console.log();
 }

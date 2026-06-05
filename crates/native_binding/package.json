@@ -1,7 +1,7 @@
 {
   "name": "@spcsn/taro-binding",
   "version": "1.0.0",
-  "description": "Node binding for taro",
+  "description": "Native binding for SPCSN Taro Lite",
   "main": "binding.js",
   "typings": "binding.d.ts",
   "napi": {
@@ -50,9 +50,9 @@
     "@napi-rs/triples": "1.2.0"
   },
   "bugs": {
-    "url": "https://github.com/NervJS/taro/issues"
+    "url": "https://github.com/specificshen/taro/issues"
   },
-  "homepage": "https://github.com/NervJS/taro#readme",
+  "homepage": "https://github.com/specificshen/taro#readme",
   "optionalDependencies": {
     "@spcsn/taro-binding-darwin-arm64": "workspace:*",
     "@spcsn/taro-binding-darwin-x64": "workspace:*",

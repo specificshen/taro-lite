@@ -244,10 +244,17 @@ switch (platform) {
 }
 
 if (!nativeBinding) {
+  const installHint = [
+    `Failed to load @spcsn/taro-binding for ${platform}/${arch}.`,
+    'Make sure @spcsn/taro-binding and the matching optional platform package are installed together.',
+    'If you are developing locally, run `pnpm run artifacts` before release checks or set BUILD_TARO_FROM_SOURCE=1 to build from source.',
+  ].join('\n')
+
   if (loadError) {
+    loadError.message = `${installHint}\n\nOriginal error: ${loadError.message}`
     throw loadError
   }
-  throw new Error(`Failed to load native binding`)
+  throw new Error(installHint)
 }
 
 module.exports.default = module.exports = nativeBinding
