@@ -25,6 +25,7 @@ const README_BUSINESS_DEPENDENCIES = {
 };
 
 const BUSINESS_FIXTURE_PACKAGE_JSON_PATH = 'fixtures/weapp-react19-vite-skyline/package.json';
+const BUSINESS_FIXTURE_CONFIG_PATH = 'fixtures/weapp-react19-vite-skyline/config/index.ts';
 
 const BINDINGS = [
   {
@@ -85,6 +86,7 @@ checkPublishSurfaceContract();
 checkPublicDependencyBoundaries();
 checkReadmeBusinessDependencyContract();
 checkBusinessFixtureDependencyContract();
+checkBusinessFixtureConfigContract();
 if (!skipBindings) checkBindingPackages();
 
 if (warnings.length > 0) {
@@ -195,6 +197,19 @@ function checkBusinessFixtureDependencyContract() {
   hasBusinessFixtureContractErrors = true;
   errors.push(
     `${BUSINESS_FIXTURE_PACKAGE_JSON_PATH}: fixture must not depend on internal @spcsn packages: ${invalidDependencyNames.join(', ')}`,
+  );
+}
+
+function checkBusinessFixtureConfigContract() {
+  const config = fs.readFileSync(path.join(rootDir, BUSINESS_FIXTURE_CONFIG_PATH), 'utf8');
+  const internalPluginPattern = /@spcsn\/taro-plugin-[\w-]+/g;
+  const internalPluginNames = [...new Set(config.match(internalPluginPattern) || [])];
+
+  if (internalPluginNames.length === 0) return;
+
+  hasBusinessFixtureContractErrors = true;
+  errors.push(
+    `${BUSINESS_FIXTURE_CONFIG_PATH}: fixture config must not expose internal plugins: ${internalPluginNames.join(', ')}`,
   );
 }
 
