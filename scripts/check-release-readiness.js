@@ -388,6 +388,7 @@ function checkBusinessVisibleTypeContract() {
   const supportedConfigTypePaths = [
     'packages/taro/types/compile/compiler.d.ts',
     'packages/taro/types/compile/config/mini.d.ts',
+    'packages/taro/types/compile/config/plugin.d.ts',
     'packages/taro/types/compile/config/project.d.ts',
     'packages/taro/types/compile/config/util.d.ts',
     'packages/taro/types/compile/viteCompilerContext.d.ts',
