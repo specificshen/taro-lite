@@ -21,15 +21,6 @@ importers:
       '@types/node':
         specifier: ^22.19.19
         version: 22.19.19
-      '@types/react':
-        specifier: ^19.2.14
-        version: 19.2.15
-      '@types/react-dom':
-        specifier: ^19.2.3
-        version: 19.2.3(@types/react@19.2.15)
-      '@types/react-reconciler':
-        specifier: ^0.33.0
-        version: 0.33.0(@types/react@19.2.15)
       '@vitest/coverage-istanbul':
         specifier: ^3.2.4
         version: 3.2.4(vitest@3.2.4(@types/debug@4.1.13)(@types/node@22.19.19)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(stylus@0.63.0)(terser@5.47.1))
@@ -45,12 +36,6 @@ importers:
       npm-run-all:
         specifier: ^4.1.2
         version: 4.1.5
-      react:
-        specifier: ^19.2.0
-        version: 19.2.6
-      react-dom:
-        specifier: ^19.2.0
-        version: 19.2.6(react@19.2.6)
       rolldown:
         specifier: ^1.0.1
         version: 1.0.1
@@ -225,6 +210,9 @@ importers:
       '@spcsn/taro-helper':
         specifier: workspace:*
         version: link:../taro-helper
+      '@types/react':
+        specifier: ^19.2.14
+        version: 19.2.15
       csstype:
         specifier: ^3.1.1
         version: 3.2.3
@@ -305,6 +293,9 @@ importers:
       '@types/node':
         specifier: ^22.19.19
         version: 22.19.19
+      '@types/react':
+        specifier: ^19.2.14
+        version: 19.2.15
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -381,6 +372,12 @@ importers:
       postcss-modules:
         specifier: ^6.0.0
         version: 6.0.1(postcss@8.5.15)
+      react:
+        specifier: ^19.2.0
+        version: 19.2.6
+      react-dom:
+        specifier: ^19.2.0
+        version: 19.2.6(react@19.2.6)
       react-reconciler:
         specifier: 0.33.0
         version: 0.33.0(react@19.2.6)
@@ -403,6 +400,15 @@ importers:
       '@spcsn/taro':
         specifier: workspace:*
         version: link:../taro
+      '@types/react':
+        specifier: ^19.2.14
+        version: 19.2.15
+      '@types/react-dom':
+        specifier: ^19.2.3
+        version: 19.2.3(@types/react@19.2.15)
+      '@types/react-reconciler':
+        specifier: ^0.33.0
+        version: 0.33.0(@types/react@19.2.15)
       '@types/sax':
         specifier: ^1.2.4
         version: 1.2.7
