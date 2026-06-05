@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import * as path from 'node:path';
 
 export function getRootPath(): string {
@@ -10,6 +9,5 @@ export function getPkgVersion(): string {
 }
 
 export function printPkgVersion() {
-  console.log(`👽 SPCSN Taro v${getPkgVersion()}`);
-  console.log();
+  process.stdout.write(`👽 SPCSN Taro v${getPkgVersion()}\n\n`);
 }
