@@ -9,6 +9,10 @@ import type { TaroElement, TaroText } from '@spcsn/taro-runtime';
 import type { Fiber } from 'react-reconciler';
 import type { Props } from './props';
 
+type TextNodeUpdater = {
+  updateTextNode?: () => void;
+};
+
 export function precacheFiberNode(hostInst: Fiber, node: TaroElement | TaroText): void {
   node[internalInstanceKey] = hostInst;
 }
@@ -67,7 +71,7 @@ export function updateFiberProps(node: TaroElement | TaroText, props: Props): vo
   node[internalPropsKey] = props;
 
   if (process.env.TARO_PLATFORM === 'harmony') {
-    // @ts-ignore
-    node.updateTextNode();
+    const textNodeUpdater = node as TextNodeUpdater;
+    textNodeUpdater.updateTextNode?.();
   }
 }
