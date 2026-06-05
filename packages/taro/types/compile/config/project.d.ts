@@ -5,10 +5,7 @@ import type { AppConfig } from '../../index'
 import type { Compiler, CompilerTypes, CompilerWebpackTypes } from '../compiler'
 import type { IModifyChainData } from '../hooks'
 import type { ICopyOptions, IOption, ISassOptions, TogglableOptions } from './util'
-import type { IH5Config } from './h5'
-import type { IHarmonyConfig } from './harmony'
 import type { IMiniAppConfig, IMiniFilesConfig } from './mini'
-import type { IRNConfig } from './rn'
 
 export type PluginItem<T = object> = string | [string, T] | [string, () => T | Promise<T>]
 
@@ -308,16 +305,8 @@ export interface IProjectConfig<T extends CompilerTypes = CompilerWebpackTypes> 
   /** 使用的编译工具。可选值：webpack5、vite */
   compiler?: Compiler<T>
 
-  /** 专属于 H5 的配置 */
-  h5?: IH5Config<T>
-
   /** 专属于小程序的配置 */
   mini?: IMiniAppConfig<T>
-
-  /** 专属于 RN 的配置 */
-  rn?: IRNConfig
-
-  harmony?: IHarmonyConfig<T>
 
   [key: string]: any
 }

@@ -377,6 +377,21 @@ function checkBusinessFixtureConfigContract() {
 function checkBusinessVisibleTypeContract() {
   const internalPackagePattern =
     /@spcsn\/(taro-runtime|taro-service|taro-vite-runner|taro-helper|taro-shared|taro-binding|taro-plugin-[\w-]+)/g;
+  const unsupportedConfigExports = [
+    /export \* from '\.\/h5'/,
+    /export \* from '\.\/harmony'/,
+    /export \* from '\.\/rn'/,
+  ];
+  const configIndexPath = path.join(rootDir, 'packages/taro/types/compile/config/index.d.ts');
+  const configIndexSource = fs.readFileSync(configIndexPath, 'utf8');
+  const exposesUnsupportedConfig = unsupportedConfigExports.some((pattern) => pattern.test(configIndexSource));
+
+  if (exposesUnsupportedConfig) {
+    hasBusinessFixtureContractErrors = true;
+    errors.push(
+      `${relative(configIndexPath)}: business-visible config types must only export WeApp/Vite supported config.`,
+    );
+  }
 
   for (const typeDir of BUSINESS_VISIBLE_TYPE_DIRS) {
     const typeFilePaths = collectFiles(path.join(rootDir, typeDir), '.d.ts');
