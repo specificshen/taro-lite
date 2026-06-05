@@ -120,29 +120,5 @@ declare module '../index' {
      * @supported global
      */
     useRouter<TParams extends Partial<Record<string, string>> = Partial<Record<string, string>>>(dynamic?: boolean): RouterInfo<TParams>
-
-    /**
-     * 导航栏的标题被点击时的回调。
-     * @supported alipay
-     */
-    useTitleClick(callback: () => void): void
-
-    /**
-     * 导航栏的额外图标被点击时的回调。
-     * @supported alipay
-     */
-    useOptionMenuClick(callback: () => void): void
-
-    /**
-     * 键盘高度变化时的回调。
-     * @supported alipay
-     */
-    useKeyboardHeight(callback: (payload: { height: number }) => void): void
-
-    /**
-     * 下拉中断时的回调。
-     * @supported alipay, h5, harmony_hybrid
-     */
-    usePullIntercept(callback: () => void): void
   }
 }

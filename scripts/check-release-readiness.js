@@ -427,6 +427,11 @@ function checkBusinessVisibleTypeContract() {
       pattern: /keyof openTypeKeys\['(alipay|qq|tt|ascf)'\]|\b(alipay|qq|tt|ascf): \{/g,
       message: 'business-visible Button open-type types must only expose WeApp supported values.',
     },
+    {
+      path: 'packages/taro/types/api/taro.hooks.d.ts',
+      pattern: /useTitleClick|useOptionMenuClick|useKeyboardHeight|usePullIntercept/g,
+      message: 'business-visible hooks must not expose unsupported Alipay/H5 lifecycle hooks.',
+    },
   ];
 
   if (exposesUnsupportedConfig) {
