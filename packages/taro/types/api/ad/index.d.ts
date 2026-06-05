@@ -4,7 +4,7 @@ declare module '../../index' {
   namespace createRewardedVideoAd {
     interface Option {
       /** 小程序广告位 ID
-       * @supported weapp, tt, swan
+       * @supported weapp
        */
       adUnitId: string
       /** 是否启用多例模式
@@ -12,10 +12,7 @@ declare module '../../index' {
        * @supported weapp
        */
       multiton?: boolean
-      /** 小程序应用 ID
-       * @supported swan
-       * @swan 必填
-       */
+      /** 小程序应用 ID */
       appSid?: string
     }
   }
@@ -182,7 +179,7 @@ declare module '../../index' {
 
   interface TaroStatic {
     /** 创建激励视频广告组件。
-     * @supported weapp, tt, swan
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/ad/wx.createRewardedVideoAd.html
      */
     createRewardedVideoAd (option: createRewardedVideoAd.Option): RewardedVideoAd

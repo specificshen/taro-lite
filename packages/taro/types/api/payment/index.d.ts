@@ -67,7 +67,7 @@ declare module '../../index' {
 
   interface TaroStatic {
     /** 发起微信支付。了解更多信息，请查看[微信支付接口文档](https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=7_3&index=1)
-     * @supported weapp, h5
+     * @supported weapp
      * @example
      * ```tsx
      * Taro.requestPayment({
