@@ -27,6 +27,7 @@ const README_BUSINESS_DEPENDENCIES = {
 const README_PATH = 'README.md';
 const BUSINESS_FIXTURE_PACKAGE_JSON_PATH = 'fixtures/weapp-react19-vite-skyline/package.json';
 const BUSINESS_FIXTURE_CONFIG_PATH = 'fixtures/weapp-react19-vite-skyline/config/index.ts';
+const BUSINESS_VISIBLE_TYPE_DIRS = ['packages/taro-components/types'];
 
 const BINDINGS = [
   {
@@ -90,6 +91,7 @@ checkReadmeInternalPackageContract();
 checkBusinessFixtureDependencyContract();
 checkBusinessFixtureConfigContract();
 checkBusinessFixtureScriptContract();
+checkBusinessVisibleTypeContract();
 if (!skipBindings) checkBindingPackages();
 
 if (warnings.length > 0) {
@@ -240,6 +242,25 @@ function checkBusinessFixtureConfigContract() {
   );
 }
 
+function checkBusinessVisibleTypeContract() {
+  const internalPackagePattern =
+    /@spcsn\/(taro-runtime|taro-service|taro-vite-runner|taro-helper|taro-shared|taro-binding|taro-plugin-[\w-]+)/g;
+
+  for (const typeDir of BUSINESS_VISIBLE_TYPE_DIRS) {
+    const typeFilePaths = collectFiles(path.join(rootDir, typeDir), '.d.ts');
+    for (const typeFilePath of typeFilePaths) {
+      const source = fs.readFileSync(typeFilePath, 'utf8');
+      const internalPackageNames = [...new Set(source.match(internalPackagePattern) || [])];
+      if (internalPackageNames.length === 0) continue;
+
+      hasBusinessFixtureContractErrors = true;
+      errors.push(
+        `${relative(typeFilePath)}: business-visible types must not reference internal packages: ${internalPackageNames.join(', ')}`,
+      );
+    }
+  }
+}
+
 function checkBindingPackages() {
   for (const binding of BINDINGS) {
     const bindingDir = path.join(rootDir, binding.path);
@@ -346,6 +367,17 @@ function collectChildPackageJsons(parentDir) {
     .filter((entry) => entry.isDirectory() && !entry.name.startsWith('_'))
     .map((entry) => path.join(parentDir, entry.name, 'package.json'))
     .filter((packageJsonPath) => fs.existsSync(packageJsonPath));
+}
+
+function collectFiles(parentDir, extension) {
+  if (!fs.existsSync(parentDir)) return [];
+
+  return fs.readdirSync(parentDir, { withFileTypes: true }).flatMap((entry) => {
+    const filePath = path.join(parentDir, entry.name);
+    if (entry.isDirectory()) return collectFiles(filePath, extension);
+    if (entry.isFile() && filePath.endsWith(extension)) return [filePath];
+    return [];
+  });
 }
 
 function readJson(filePath) {
