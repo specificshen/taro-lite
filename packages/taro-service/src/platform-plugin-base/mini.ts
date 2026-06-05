@@ -43,37 +43,17 @@ export abstract class TaroPlatformBase<T extends TConfig = TConfig> extends Taro
     } else if (isObject(output.clean)) {
       this.emptyOutputDir(output.clean.keep || []);
     }
-    this.printDevelopmentTip(this.platform);
+    this.printDevelopmentTip();
     if (this.projectConfigJson) {
       this.generateProjectConfig(this.projectConfigJson);
     }
-    if (this.ctx.initialConfig.logger?.quiet === false) {
-      const { printLog, processTypeEnum } = this.ctx.helper;
-      printLog(processTypeEnum.START, '开发者工具-项目目录', `${this.ctx.paths.outputPath}`);
-    }
   }
 
-  protected printDevelopmentTip(platform: string) {
-    const tips: string[] = [];
+  protected printDevelopmentTip() {
+    if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test') return;
+
     const { chalk } = this.helper;
-
-    if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test') {
-      const { isWindows } = this.helper;
-      const exampleCommand = isWindows
-        ? `$ set NODE_ENV=production && taro build --type ${platform} --watch`
-        : `$ NODE_ENV=production taro build --type ${platform} --watch`;
-
-      tips.push(
-        chalk.yellowBright(`预览模式生成的文件较大，设置 NODE_ENV 为 production 可以开启压缩。
-Example:
-${exampleCommand}`),
-      );
-    }
-    if (tips.length) {
-      console.log(chalk.yellowBright('Tips:'));
-      tips.forEach((item, index) => console.log(`${chalk.yellowBright(index + 1)}. ${item}`));
-      console.log('\n');
-    }
+    console.log(chalk.yellowBright('当前为开发模式，非生产模式。'));
   }
 
   /**
