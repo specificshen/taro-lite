@@ -1,0 +1,1 @@
+- [项目专属 skill 位置](project_skill_location.md) — taro-lite 专属 skills 放仓库内 `.agents/skills/`，不要放全局。
