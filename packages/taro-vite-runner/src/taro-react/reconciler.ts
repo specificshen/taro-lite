@@ -206,8 +206,7 @@ const hostConfig: HostConfig<
     const styleProp = props.style as { display?: any };
     let display = styleProp?.hasOwnProperty('display') ? styleProp.display : null;
     display = display == null || isBoolean(display) || display === '' ? '' : ('' + display).trim();
-    // eslint-disable-next-line dot-notation
-    instance.style['display'] = display;
+    instance.style.setProperty('display', display);
   },
   unhideTextInstance(textInstance, text) {
     textInstance.nodeValue = text;
