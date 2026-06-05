@@ -3,10 +3,10 @@ import path from 'node:path';
 
 import { TaroPlatformBase } from '@spcsn/taro-service';
 
-import { components } from './components.ts';
-import { Template } from './template.ts';
+import { components } from './components';
+import { Template } from './template';
 
-import type { IOptions } from './index.ts';
+import type { IOptions } from './index';
 
 export default class Weapp extends TaroPlatformBase {
   template: Template;

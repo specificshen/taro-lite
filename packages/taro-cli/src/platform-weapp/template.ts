@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { Shortcuts, UnRecursiveTemplate } from '@spcsn/taro-shared/dist/template.js';
 
-import type { IOptions } from './index.ts';
+import type { IOptions } from './index';
 
 export class Template extends UnRecursiveTemplate {
   pluginOptions: IOptions;
