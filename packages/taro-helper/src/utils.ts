@@ -219,8 +219,41 @@ export function printLog(type: processTypeEnum, tag: string, filePath?: string) 
   }
 }
 
+interface WorkspacePackageJson {
+  workspaces?: string[] | { packages?: string[] };
+}
+
+function hasWorkspaces(packageJson: WorkspacePackageJson): boolean {
+  if (Array.isArray(packageJson.workspaces)) {
+    return packageJson.workspaces.length > 0;
+  }
+  return Array.isArray(packageJson.workspaces?.packages) && packageJson.workspaces.packages.length > 0;
+}
+
+function findWorkspaceRoot(startPath: string): string | null {
+  let currentPath = startPath;
+
+  while (true) {
+    const packageJsonPath = path.join(currentPath, 'package.json');
+    if (fs.existsSync(packageJsonPath)) {
+      try {
+        if (hasWorkspaces(fs.readJSONSync<WorkspacePackageJson>(packageJsonPath))) {
+          return currentPath;
+        }
+      } catch {
+        // Ignore invalid package.json files while walking upward.
+      }
+    }
+
+    const parentPath = path.dirname(currentPath);
+    if (parentPath === currentPath) {
+      return null;
+    }
+    currentPath = parentPath;
+  }
+}
+
 export function recursiveFindNodeModules(filePath: string, lastFindPath?: string): string {
-  const findWorkspaceRoot = require('find-yarn-workspace-root');
   if (lastFindPath && normalizePath(filePath) === normalizePath(lastFindPath)) {
     return filePath;
   }
