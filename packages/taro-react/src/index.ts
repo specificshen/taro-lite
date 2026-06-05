@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { ensure, isFunction } from '@spcsn/taro-shared';
 
 import { internalInstanceKey } from './constant';
