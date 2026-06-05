@@ -13,8 +13,7 @@ export class FormElement extends TaroElement {
   }
 
   public get value() {
-    // eslint-disable-next-line dot-notation
-    const val = this.props[VALUE];
+    const val = this.props.value;
     return val == null ? '' : val;
   }
 
