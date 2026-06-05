@@ -160,17 +160,17 @@ declare module '../../index' {
   /** `AudioContext` 实例，可通过 `Taro.createAudioContext` 获取。
    *
    * `AudioContext` 通过 `id` 跟一个 `audio` 组件绑定，操作对应的 audio 组件。
-   * @supported weapp, harmony_hybrid
+   * @supported weapp
    * @see https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/AudioContext.html
    */
   interface AudioContext {
     /** 暂停音频。
-     * @supported weapp, harmony_hybrid
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/AudioContext.pause.html
      */
     pause(): void
     /** 播放音频。
-     * @supported weapp, harmony_hybrid
+     * @supported weapp
      * @see https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/AudioContext.play.html
      */
     play(): void
@@ -270,103 +270,103 @@ declare module '../../index' {
     /** origin: 发送完整的 referrer; no-referrer: 不发送 */
     referrerPolicy?: 'origin' | 'no-referrer' | string
     /** 播放
-     * @supported weapp, h5, rn, harmony_hybrid
+     * @supported weapp
      */
     play(): void
     /** 暂停
-     * @supported weapp, h5, rn
+     * @supported weapp
      */
     pause(): void
     /** 停止
-     * @supported weapp, h5, rn, harmony_hybrid
+     * @supported weapp
      */
     stop(): void
     /** 跳转到指定位置，单位 s
-     * @supported weapp, h5, rn
+     * @supported weapp
      */
     seek(position: number): void
     /** 销毁当前实例
-     * @supported weapp, h5
+     * @supported weapp
      */
     destroy(): void
     /** 音频进入可以播放状态，但不保证后面可以流畅播放
-     * @supported weapp, h5, rn
+     * @supported weapp
      */
     onCanplay(callback?: InnerAudioContext.OnCanplayCallback): void
     /** 音频播放事件
-     * @supported weapp, h5, rn, harmony_hybrid
+     * @supported weapp
      */
     onPlay(callback?: InnerAudioContext.OnPlayCallback): void
     /** 音频暂停事件
-     * @supported weapp, h5, rn
+     * @supported weapp
      */
     onPause(callback?: InnerAudioContext.OnPauseCallback): void
     /** 音频停止事件
-     * @supported weapp, h5, rn, harmony_hybrid
+     * @supported weapp
      */
     onStop(callback?: InnerAudioContext.OnStopCallback): void
     /** 音频自然播放结束事件
-     * @supported weapp, h5, rn, harmony_hybrid
+     * @supported weapp
      */
     onEnded(callback?: InnerAudioContext.OnEndedCallback): void
     /** 音频播放进度更新事件
-     * @supported weapp, h5, rn
+     * @supported weapp
      */
     onTimeUpdate(callback?: InnerAudioContext.OnTimeUpdateCallback): void
     /** 音频播放错误事件
-     * @supported weapp, h5, rn, harmony_hybrid
+     * @supported weapp
      */
     onError(callback?: InnerAudioContext.OnErrorCallback): void
     /** 音频加载中事件，当音频因为数据不足，需要停下来加载时会触发
-     * @supported weapp, h5, rn
+     * @supported weapp
      */
     onWaiting(callback?: InnerAudioContext.OnWaitingCallback): void
     /** 音频进行 seek 操作事件
-     * @supported weapp, h5, rn
+     * @supported weapp
      */
     onSeeking(callback?: InnerAudioContext.OnSeekingCallback): void
     /** 音频完成 seek 操作事件
-     * @supported weapp, h5, rn
+     * @supported weapp
      */
     onSeeked(callback?: InnerAudioContext.OnSeekedCallback): void
     /** 取消监听 canplay 事件
-     * @supported weapp, h5, rn
+     * @supported weapp
      */
     offCanplay(callback?: InnerAudioContext.OnCanplayCallback): void
     /** 取消监听 play 事件
-     * @supported weapp, h5, rn
+     * @supported weapp
      */
     offPlay(callback?: InnerAudioContext.OnPlayCallback): void
     /** 取消监听 pause 事件
-     * @supported weapp, h5, rn
+     * @supported weapp
      */
     offPause(callback?: InnerAudioContext.OnPauseCallback): void
     /** 取消监听 stop 事件
-     * @supported weapp, h5, rn
+     * @supported weapp
      */
     offStop(callback?: InnerAudioContext.OnStopCallback): void
     /** 取消监听 ended 事件
-     * @supported weapp, h5, rn
+     * @supported weapp
      */
     offEnded(callback?: InnerAudioContext.OnEndedCallback): void
     /** 取消监听 timeUpdate 事件
-     * @supported weapp, h5, rn
+     * @supported weapp
      */
     offTimeUpdate(callback?: InnerAudioContext.OnTimeUpdateCallback): void
     /** 取消监听 error 事件
-     * @supported weapp, h5, rn
+     * @supported weapp
      */
     offError(callback?: InnerAudioContext.OnErrorCallback): void
     /** 取消监听 waiting 事件
-     * @supported weapp, h5, rn
+     * @supported weapp
      */
     offWaiting(callback?: InnerAudioContext.OnWaitingCallback): void
     /** 取消监听 seeking 事件
-     * @supported weapp, h5, rn
+     * @supported weapp
      */
     offSeeking(callback?: InnerAudioContext.OnSeekingCallback): void
     /** 取消监听 seeked 事件
-     * @supported weapp, h5, rn
+     * @supported weapp
      */
     offSeeked(callback?: InnerAudioContext.OnSeekedCallback): void
   }
@@ -976,7 +976,7 @@ declare module '../../index' {
     createMediaAudioPlayer(): MediaAudioPlayer
 
     /** 创建内部 audio 上下文 InnerAudioContext 对象。
-     * @supported weapp, h5, rn, tt, harmony_hybrid
+     * @supported weapp
      * @example
      * ```tsx
      * const innerAudioContext = Taro.createInnerAudioContext()
@@ -996,7 +996,7 @@ declare module '../../index' {
 
     /** 创建 audio 上下文 AudioContext 对象。
      * **注意：1.6.0 版本开始，本接口不再维护。建议使用能力更强的 [Taro.createInnerAudioContext](./createInnerAudioContext) 接口**
-     * @supported weapp, harmony_hybrid
+     * @supported weapp
      * @example
      * ```tsx
      * const audioCtx = Taro.createAudioContext('myAudio')
