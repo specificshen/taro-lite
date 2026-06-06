@@ -192,7 +192,9 @@ export abstract class TaroPlatformBase<T extends TConfig = TConfig> extends Taro
     try {
       await this.buildTransaction.perform(this.buildImpl, this, extraOptions);
       progress.finish();
-      this.printBuildResult(Date.now() - buildStartMs);
+      if (!this.config.isWatch) {
+        this.printBuildResult(Date.now() - buildStartMs);
+      }
     } catch (error) {
       progress.fail();
       throw error;
