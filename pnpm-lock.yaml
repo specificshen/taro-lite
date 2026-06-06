@@ -195,9 +195,6 @@ importers:
       '@spcsn/taro-helper':
         specifier: workspace:*
         version: link:../taro-helper
-      '@types/node':
-        specifier: ^22.19.19
-        version: 22.19.19
       '@types/react':
         specifier: ^19.2.14
         version: 19.2.15
