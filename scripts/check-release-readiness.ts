@@ -1,11 +1,25 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 
-const fs = require('fs');
-const path = require('path');
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const rootDir = path.resolve(__dirname, '..');
+type PackageJson = {
+  name?: string;
+  version?: string;
+  private?: boolean;
+  main?: string;
+  dependencies?: Record<string, string>;
+  optionalDependencies?: Record<string, string>;
+  peerDependencies?: Record<string, string>;
+  peerDependenciesMeta?: Record<string, unknown>;
+  scripts?: Record<string, string>;
+};
+
+const rootDir = path.resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const rootPackage = readJson(path.join(rootDir, 'package.json'));
-const expectedVersion = rootPackage.version;
+const expectedVersion = rootPackage.version ?? '';
 const skipBindings = process.argv.includes('--skip-bindings');
 
 const BUSINESS_ENTRY_PACKAGES = ['@spcsn/taro', '@spcsn/taro-components', '@spcsn/taro-cli'];
@@ -23,7 +37,7 @@ const README_BUSINESS_DEPENDENCIES = {
   devDependencies: ['@spcsn/taro-cli'],
 };
 
-const BUSINESS_ENTRY_ALLOWED_PEER_DEPENDENCIES = {
+const BUSINESS_ENTRY_ALLOWED_PEER_DEPENDENCIES: Record<string, string[]> = {
   '@spcsn/taro': ['@spcsn/taro-components', '@types/react'],
   '@spcsn/taro-components': [],
   '@spcsn/taro-cli': [],
@@ -41,45 +55,15 @@ const BUSINESS_VISIBLE_TYPE_DIRS = ['packages/taro/types', 'packages/taro-compon
 
 const BINDINGS = [
   {
-    name: '@spcsn/taro-binding-darwin-x64',
-    path: 'npm/darwin-x64',
-    nodeFile: 'taro.darwin-x64.node',
-    minSize: 1024 * 1024,
-  },
-  {
     name: '@spcsn/taro-binding-darwin-arm64',
     path: 'npm/darwin-arm64',
     nodeFile: 'taro.darwin-arm64.node',
     minSize: 1024 * 1024,
   },
-  {
-    name: '@spcsn/taro-binding-linux-x64-gnu',
-    path: 'npm/linux-x64-gnu',
-    nodeFile: 'taro.linux-x64-gnu.node',
-    minSize: 1024 * 1024,
-  },
-  {
-    name: '@spcsn/taro-binding-linux-x64-musl',
-    path: 'npm/linux-x64-musl',
-    nodeFile: 'taro.linux-x64-musl.node',
-    minSize: 1024 * 1024,
-  },
-  {
-    name: '@spcsn/taro-binding-linux-arm64-gnu',
-    path: 'npm/linux-arm64-gnu',
-    nodeFile: 'taro.linux-arm64-gnu.node',
-    minSize: 1024 * 1024,
-  },
-  {
-    name: '@spcsn/taro-binding-win32-x64-msvc',
-    path: 'npm/win32-x64-msvc',
-    nodeFile: 'taro.win32-x64-msvc.node',
-    minSize: 1024 * 1024,
-  },
 ];
 
-const errors = [];
-const warnings = [];
+const errors: string[] = [];
+const warnings: string[] = [];
 let hasVersionErrors = false;
 let hasBindingErrors = false;
 let hasDependencyBoundaryErrors = false;
@@ -90,7 +74,9 @@ let hasBusinessFixtureContractErrors = false;
 const bindingPackageNames = ['@spcsn/taro-binding', ...BINDINGS.map((binding) => binding.name)];
 const expectedPublicPackageNames = [...BUSINESS_ENTRY_PACKAGES, ...PLANNED_INTERNAL_PACKAGES, ...bindingPackageNames];
 const publicPackageJsonPaths = collectPublicPackageJsonPaths();
-const publicPackageNames = publicPackageJsonPaths.map((packageJsonPath) => readJson(packageJsonPath).name);
+const publicPackageNames = publicPackageJsonPaths
+  .map((packageJsonPath) => readJson(packageJsonPath).name)
+  .filter(isString);
 const privateWorkspacePackageNames = collectPrivateWorkspacePackageNames();
 
 checkPackageVersions();
@@ -190,7 +176,7 @@ function checkPublicDependencyBoundaries() {
 
 function checkBusinessEntryRuntimeDependencyContract() {
   const businessEntryPackageJsonPaths = publicPackageJsonPaths.filter((packageJsonPath) =>
-    BUSINESS_ENTRY_PACKAGES.includes(readJson(packageJsonPath).name),
+    BUSINESS_ENTRY_PACKAGES.includes(readJson(packageJsonPath).name ?? ''),
   );
 
   for (const packageJsonPath of businessEntryPackageJsonPaths) {
@@ -211,14 +197,14 @@ function checkBusinessEntryRuntimeDependencyContract() {
 function checkBusinessEntryPeerDependencyContract() {
   const hiddenPackageNames = [...PLANNED_INTERNAL_PACKAGES, ...bindingPackageNames];
   const businessEntryPackageJsonPaths = publicPackageJsonPaths.filter((packageJsonPath) =>
-    BUSINESS_ENTRY_PACKAGES.includes(readJson(packageJsonPath).name),
+    BUSINESS_ENTRY_PACKAGES.includes(readJson(packageJsonPath).name ?? ''),
   );
 
   for (const packageJsonPath of businessEntryPackageJsonPaths) {
     const packageJson = readJson(packageJsonPath);
     const peerDependencyNames = Object.keys(packageJson.peerDependencies || {});
     const peerDependencyMetaNames = Object.keys(packageJson.peerDependenciesMeta || {});
-    const allowedPeerDependencyNames = BUSINESS_ENTRY_ALLOWED_PEER_DEPENDENCIES[packageJson.name] || [];
+    const allowedPeerDependencyNames = BUSINESS_ENTRY_ALLOWED_PEER_DEPENDENCIES[packageJson.name ?? ''] || [];
     const invalidPeerDependencyNames = peerDependencyNames.filter(
       (dependencyName) =>
         hiddenPackageNames.includes(dependencyName) || !allowedPeerDependencyNames.includes(dependencyName),
@@ -1037,11 +1023,11 @@ function printPublishSurface() {
   }
 }
 
-function printPackageGroup(packageNames) {
+function printPackageGroup(packageNames: string[]): void {
   packageNames.forEach((packageName) => globalThis.console.log(`- ${packageName}`));
 }
 
-function collectPackageJsonPaths() {
+function collectPackageJsonPaths(): string[] {
   return [
     ...collectChildPackageJsons(path.join(rootDir, 'packages')),
     ...collectChildPackageJsons(path.join(rootDir, 'npm')),
@@ -1049,11 +1035,11 @@ function collectPackageJsonPaths() {
   ];
 }
 
-function collectPublicPackageJsonPaths() {
+function collectPublicPackageJsonPaths(): string[] {
   return collectPackageJsonPaths().filter((packageJsonPath) => readJson(packageJsonPath).private !== true);
 }
 
-function collectPrivateWorkspacePackageNames() {
+function collectPrivateWorkspacePackageNames(): string[] {
   const workspacePackageJsonPaths = [
     ...collectChildPackageJsons(path.join(rootDir, 'packages')),
     ...collectChildPackageJsons(path.join(rootDir, 'crates')),
@@ -1063,10 +1049,10 @@ function collectPrivateWorkspacePackageNames() {
     .map((packageJsonPath) => readJson(packageJsonPath))
     .filter((packageJson) => packageJson.private === true)
     .map((packageJson) => packageJson.name)
-    .filter(Boolean);
+    .filter(isString);
 }
 
-function collectDependencyNames(packageJson) {
+function collectDependencyNames(packageJson: PackageJson): string[] {
   return [
     ...Object.keys(packageJson.dependencies || {}),
     ...Object.keys(packageJson.optionalDependencies || {}),
@@ -1074,11 +1060,11 @@ function collectDependencyNames(packageJson) {
   ];
 }
 
-function escapeRegExp(value) {
+function escapeRegExp(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-function collectChildPackageJsons(parentDir) {
+function collectChildPackageJsons(parentDir: string): string[] {
   if (!fs.existsSync(parentDir)) return [];
 
   return fs
@@ -1088,7 +1074,7 @@ function collectChildPackageJsons(parentDir) {
     .filter((packageJsonPath) => fs.existsSync(packageJsonPath));
 }
 
-function collectFiles(parentDir, extension) {
+function collectFiles(parentDir: string, extension: string): string[] {
   if (!fs.existsSync(parentDir)) return [];
 
   return fs.readdirSync(parentDir, { withFileTypes: true }).flatMap((entry) => {
@@ -1099,10 +1085,14 @@ function collectFiles(parentDir, extension) {
   });
 }
 
-function readJson(filePath) {
-  return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+function readJson(filePath: string): PackageJson {
+  return JSON.parse(fs.readFileSync(filePath, 'utf8')) as PackageJson;
 }
 
-function relative(filePath) {
+function relative(filePath: string): string {
   return path.relative(rootDir, filePath);
+}
+
+function isString(value: unknown): value is string {
+  return typeof value === 'string';
 }

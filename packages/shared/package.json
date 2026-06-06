@@ -20,7 +20,7 @@
   "scripts": {
     "prod": "pnpm run build",
     "prebuild": "pnpm run clean",
-    "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
+    "clean": "bun ../../scripts/clean.ts dist",
     "build": "pnpm run build:types && pnpm run rolldown --environment NODE_ENV:production",
     "build:types": "tsc --emitDeclarationOnly --declaration",
     "dev": "concurrently \"pnpm run build:types -- --watch\" \"pnpm run rolldown --environment NODE_ENV:development -w\"",

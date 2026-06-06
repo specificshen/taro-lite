@@ -16,9 +16,21 @@ importers:
       '@biomejs/biome':
         specifier: ^2.4.15
         version: 2.4.15
+      '@types/node':
+        specifier: ^22.19.19
+        version: 22.19.19
+      chalk:
+        specifier: ^5.6.2
+        version: 5.6.2
+      concurrently:
+        specifier: ^8.2.2
+        version: 8.2.2
       conventional-changelog-cli:
         specifier: ^2.0.1
         version: 2.2.2
+      typescript:
+        specifier: ~6.0.3
+        version: 6.0.3
 
   crates/native_binding:
     dependencies:
@@ -39,21 +51,6 @@ importers:
       '@spcsn/taro-binding-darwin-arm64':
         specifier: workspace:*
         version: link:../../npm/darwin-arm64
-      '@spcsn/taro-binding-darwin-x64':
-        specifier: workspace:*
-        version: link:../../npm/darwin-x64
-      '@spcsn/taro-binding-linux-arm64-gnu':
-        specifier: workspace:*
-        version: link:../../npm/linux-arm64-gnu
-      '@spcsn/taro-binding-linux-x64-gnu':
-        specifier: workspace:*
-        version: link:../../npm/linux-x64-gnu
-      '@spcsn/taro-binding-linux-x64-musl':
-        specifier: workspace:*
-        version: link:../../npm/linux-x64-musl
-      '@spcsn/taro-binding-win32-x64-msvc':
-        specifier: workspace:*
-        version: link:../../npm/win32-x64-msvc
 
   fixtures/weapp-react19-vite-skyline:
     dependencies:
@@ -72,16 +69,6 @@ importers:
         version: link:../../packages/taro-cli
 
   npm/darwin-arm64: {}
-
-  npm/darwin-x64: {}
-
-  npm/linux-arm64-gnu: {}
-
-  npm/linux-x64-gnu: {}
-
-  npm/linux-x64-musl: {}
-
-  npm/win32-x64-msvc: {}
 
   packages/shared:
     devDependencies:

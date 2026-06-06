@@ -17,7 +17,7 @@
     "prebuild": "pnpm run clean",
     "build": "tsc",
     "dev": "tsc -w",
-    "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\""
+    "clean": "bun ../../scripts/clean.ts dist"
   },
   "files": [
     "bin",

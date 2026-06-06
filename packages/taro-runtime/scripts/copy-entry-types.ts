@@ -1,7 +1,8 @@
 import { copyFile } from 'node:fs/promises';
-import { resolve } from 'node:path';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const distDir = resolve(import.meta.dirname, '../dist');
+const distDir = resolve(dirname(fileURLToPath(import.meta.url)), '../dist');
 const indexTypes = resolve(distDir, 'index.d.ts');
 
 await Promise.all([

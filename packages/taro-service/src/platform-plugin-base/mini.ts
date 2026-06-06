@@ -1,3 +1,6 @@
+import { existsSync, readdirSync, statSync } from 'node:fs';
+import { join } from 'node:path';
+
 import { recursiveMerge, taroJsMiniComponentsPath } from '@spcsn/taro-helper';
 import { isObject, PLATFORM_TYPE } from '@spcsn/taro-shared';
 
@@ -183,11 +186,13 @@ export abstract class TaroPlatformBase<T extends TConfig = TConfig> extends Taro
     if (this.config.withoutBuild) return;
 
     this.ctx.onBuildInit?.(this);
+    const buildStartMs = Date.now();
     const progress = this.createBuildProgressController();
     progress.start();
     try {
       await this.buildTransaction.perform(this.buildImpl, this, extraOptions);
       progress.finish();
+      this.printBuildResult(Date.now() - buildStartMs);
     } catch (error) {
       progress.fail();
       throw error;
@@ -245,6 +250,55 @@ export abstract class TaroPlatformBase<T extends TConfig = TConfig> extends Taro
         clearLine();
       },
     };
+  }
+
+  private printBuildResult(durationMs: number): void {
+    if (process.env.NODE_ENV === 'test') return;
+
+    const { chalk } = this.helper;
+    const outputSize = this.calculateDirectorySize(this.ctx.paths.outputPath);
+    const durationLabel = this.formatDuration(durationMs);
+    const outputSizeLabel = this.formatFileSize(outputSize);
+
+    console.log(chalk.greenBright(`✨ 小程序构建完成：耗时 ${durationLabel} · 产物总体积 ${outputSizeLabel}`));
+    console.log();
+  }
+
+  private calculateDirectorySize(directoryPath: string): number {
+    if (!existsSync(directoryPath)) return 0;
+
+    return readdirSync(directoryPath, { withFileTypes: true }).reduce((totalSize, entry) => {
+      const entryPath = join(directoryPath, entry.name);
+      if (entry.isDirectory()) return totalSize + this.calculateDirectorySize(entryPath);
+      if (entry.isFile()) return totalSize + statSync(entryPath).size;
+      return totalSize;
+    }, 0);
+  }
+
+  private formatDuration(durationMs: number): string {
+    if (durationMs < 1000) return `${durationMs}ms`;
+
+    const durationSeconds = durationMs / 1000;
+    if (durationSeconds < 60) return `${durationSeconds.toFixed(2)}s`;
+
+    const minutes = Math.floor(durationSeconds / 60);
+    const seconds = durationSeconds % 60;
+    return `${minutes}m ${seconds.toFixed(2)}s`;
+  }
+
+  private formatFileSize(sizeInBytes: number): string {
+    if (sizeInBytes < 1024) return `${sizeInBytes} B`;
+
+    const units = ['KB', 'MB', 'GB'];
+    let size = sizeInBytes / 1024;
+    let unitIndex = 0;
+
+    while (size >= 1024 && unitIndex < units.length - 1) {
+      size /= 1024;
+      unitIndex += 1;
+    }
+
+    return `${size.toFixed(2)} ${units[unitIndex]}`;
   }
 
   private async buildImpl(extraOptions = {}) {

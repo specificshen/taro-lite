@@ -9,9 +9,7 @@
     "triples": {
       "default": true,
       "additional": [
-        "aarch64-apple-darwin",
-        "x86_64-unknown-linux-musl",
-        "aarch64-unknown-linux-gnu"
+        "aarch64-apple-darwin"
       ]
     }
   },
@@ -55,11 +53,6 @@
   },
   "homepage": "https://github.com/specificshen/taro-lite#readme",
   "optionalDependencies": {
-    "@spcsn/taro-binding-darwin-arm64": "workspace:*",
-    "@spcsn/taro-binding-darwin-x64": "workspace:*",
-    "@spcsn/taro-binding-linux-arm64-gnu": "workspace:*",
-    "@spcsn/taro-binding-linux-x64-gnu": "workspace:*",
-    "@spcsn/taro-binding-linux-x64-musl": "workspace:*",
-    "@spcsn/taro-binding-win32-x64-msvc": "workspace:*"
+    "@spcsn/taro-binding-darwin-arm64": "workspace:*"
   }
 }

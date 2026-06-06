@@ -2,6 +2,7 @@
   "name": "@spcsn/taro-binding-win32-x64-msvc",
   "description": "Native binding for taro",
   "version": "1.0.0",
+  "private": true,
   "os": [
     "win32"
   ],

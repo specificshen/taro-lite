@@ -9,7 +9,7 @@
   "scripts": {
     "prod": "pnpm run build",
     "prebuild": "pnpm run clean",
-    "clean": "node -e \"const fs = require('node:fs'); ['dist', 'types'].forEach((dir) => fs.rmSync(dir, { recursive: true, force: true }))\"",
+    "clean": "bun ../../scripts/clean.ts dist types",
     "dev": "tsc -w",
     "build": "tsc"
   },

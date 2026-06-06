@@ -2,6 +2,7 @@
   "name": "@spcsn/taro-binding-linux-arm64-gnu",
   "description": "Native binding for taro",
   "version": "1.0.0",
+  "private": true,
   "os": [
     "linux"
   ],

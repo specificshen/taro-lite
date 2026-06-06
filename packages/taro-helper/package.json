@@ -8,7 +8,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "prod": "pnpm run build",
-    "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
+    "clean": "bun ../../scripts/clean.ts dist",
     "prebuild": "pnpm run clean",
     "build": "tsc",
     "postbuild": "pnpm run swc:backup",
@@ -16,8 +16,8 @@
     "prepack": "pnpm run build",
     "test": "vitest run",
     "test:ci": "vitest run --coverage",
-    "artifacts": "node scripts/artifacts.js",
-    "swc:backup": "node scripts/backup.js"
+    "artifacts": "bun scripts/artifacts.ts",
+    "swc:backup": "bun scripts/backup.ts"
   },
   "repository": {
     "type": "git",
