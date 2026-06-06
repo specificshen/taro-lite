@@ -15,10 +15,10 @@ import {
   getMode,
   getPostcssPlugins,
   stripMultiPlatformExt,
-} from '../utils';
-import { DEFAULT_TERSER_OPTIONS, MINI_EXCLUDE_POSTCSS_PLUGIN_NAME } from '../utils/constants';
-import { createDevBuildSummaryLogger } from '../utils/logger';
-import { buildProfiler } from '../utils/profile.js';
+} from '../shared';
+import { DEFAULT_TERSER_OPTIONS, MINI_EXCLUDE_POSTCSS_PLUGIN_NAME } from '../shared/constants';
+import { createDevBuildSummaryLogger } from '../shared/logger';
+import { buildProfiler } from '../shared/profile.js';
 
 import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
 import type { PluginOption, UserConfig } from 'vite';

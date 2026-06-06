@@ -61,7 +61,7 @@ function resolvePackageFile(packageDir: string, candidates: string[]): string {
 
 function aliasPlugin(ctx: FrameworkPluginContext): PluginOption {
   let jsxDevRuntimeShim = '';
-  const taroReactFile = path.resolve(__dirname, '../taro-react/index.js');
+  const taroReactFile = path.resolve(__dirname, '../react-runtime/index.js');
 
   return {
     name: 'taro-react:alias',

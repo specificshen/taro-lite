@@ -1,8 +1,8 @@
 import path from 'node:path';
 
 import { fs, isEmptyObject, removePathPrefix } from '@spcsn/taro-helper';
-import { appendVirtualModulePrefix, escapePath, prettyPrintJson, stripVirtualModulePrefix } from '../utils';
-import { baseCompName, customWrapperName } from '../utils/constants';
+import { appendVirtualModulePrefix, escapePath, prettyPrintJson, stripVirtualModulePrefix } from '../shared';
+import { baseCompName, customWrapperName } from '../shared/constants';
 import { miniTemplateLoader, QUERY_IS_NATIVE_PAGE } from './native-support';
 
 import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
@@ -80,7 +80,7 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
         if (!viteCompilerContext.taroConfig.template.isSupportRecursive) {
           this.emitFile({
             type: 'chunk',
-            id: path.resolve(__dirname, '../template/comp'),
+            id: path.resolve(__dirname, '../templates/comp'),
             fileName: viteCompilerContext.getScriptPath(baseCompName),
           });
         }
@@ -88,7 +88,7 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
         // custom-wrapper' script
         this.emitFile({
           type: 'chunk',
-          id: path.resolve(__dirname, '../template/custom-wrapper'),
+          id: path.resolve(__dirname, '../templates/custom-wrapper'),
           fileName: viteCompilerContext.getScriptPath(customWrapperName),
         });
 

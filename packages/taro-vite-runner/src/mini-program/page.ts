@@ -2,9 +2,9 @@ import path from 'node:path';
 
 import { resolveMainFilePath, swc } from '@spcsn/taro-helper';
 
-import { appendVirtualModulePrefix, escapePath, prettyPrintJson, stripVirtualModulePrefix } from '../utils';
-import { createFilterWithCompileOptions } from '../utils/create-filter';
-import { UniqueKeyMap } from '../utils/map';
+import { appendVirtualModulePrefix, escapePath, prettyPrintJson, stripVirtualModulePrefix } from '../shared';
+import { createFilterWithCompileOptions } from '../shared/create-filter';
+import { UniqueKeyMap } from '../shared/map';
 
 import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
 import type { PluginOption, ResolvedConfig } from 'vite';

@@ -1,8 +1,8 @@
 import autoprefixerPlugin from 'autoprefixer';
 
 import type { Func, IPostcssOption } from '@spcsn/taro/types/compile';
-import postcssHtmlTransform from '../postcss/html-transform';
-import postcssPxTransform from '../postcss/px-transform';
+import postcssHtmlTransform from '../style-transforms/html-transform';
+import postcssPxTransform from '../style-transforms/px-transform';
 
 export const getDefaultPostcssConfig = function ({
   designWidth,

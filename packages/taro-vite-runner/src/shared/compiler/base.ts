@@ -1,10 +1,9 @@
 import path from 'node:path';
 
 import { fs, isEmptyObject, readConfig, resolveMainFilePath, SCRIPT_EXT } from '@spcsn/taro-helper';
-import { VITE_COMPILER_LABEL } from '../../runner-utils';
-
-import { stripMultiPlatformExt } from '../../utils';
+import { stripMultiPlatformExt } from '..';
 import { logger } from '../logger';
+import { VITE_COMPILER_LABEL } from '../runner';
 
 import type { AppConfig } from '@spcsn/taro';
 import type { IMiniFilesConfig } from '@spcsn/taro/types/compile';
@@ -42,7 +41,7 @@ class App extends React.Component {
 `,
     frameworkArgs: 'React, ReactDOM, config',
     creator: 'createReactApp',
-    creatorLocation: path.resolve(__dirname, '../../framework-react/runtime'),
+    creatorLocation: path.resolve(__dirname, '../../react-framework/runtime'),
     importFrameworkName: 'React',
     extraImportForWeb: '',
     execBeforeCreateWebApp: '',

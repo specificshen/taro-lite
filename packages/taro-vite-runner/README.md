@@ -11,27 +11,30 @@
 ## 入口
 
 - `src/index.ts`: 包默认入口，当前转发到小程序构建入口。
-- `src/index-mini.ts`: 小程序构建入口，创建编译上下文、注入 mini preset、处理 copy 配置和用户自定义 Vite 插件。
+- `src/entrypoints/mini-runner.ts`: 小程序构建入口，创建编译上下文、注入 mini preset、处理 copy 配置和用户自定义 Vite 插件。
 
 当前包只维护 mini 构建路径。若未来恢复 H5 或 Harmony Runner，请新增独立入口和对应目录，不要混入现有 mini 流水线。
 
 ## 目录职责
 
-- `src/common/`: 跨构建阶段复用的 Vite/Babel/Rollup 插件，例如静态资源处理、多端文件过滤、原生组件 import 转换。
-- `src/mini/`: 小程序构建主流程，包括默认配置、Vite 配置、页面/入口/模板/样式/原生组件产物生成。
-- `src/template/`: 小程序运行时模板片段，例如 `comp` 和 `custom-wrapper`。
-- `src/utils/`: 构建工具函数、编译上下文、日志、chunk 与路径辅助逻辑。
+- `src/entrypoints/`: runner 入口，保持 `src/index.ts` 只做包入口转发。
+- `src/mini-program/`: 小程序构建主流程，包括默认配置、Vite 配置、页面/入口/模板/样式/原生组件产物生成。
+- `src/plugins/`: 跨构建阶段复用的 Vite/Rolldown 插件，例如静态资源处理、多端文件过滤。
+- `src/react-framework/`: React framework 插件入口和运行时 hook 注入。
+- `src/react-runtime/`: React DOM 替换实现和 reconciler。
+- `src/templates/`: 小程序运行时模板片段，例如 `comp` 和 `custom-wrapper`。
+- `src/shared/`: 构建工具函数、编译上下文、日志、chunk 与路径辅助逻辑。
 
 ## 命名约定
 
-- 源码文件使用短横线命名法，例如 `index-mini.ts`、`native-support.ts`、`create-filter.ts`。
+- 源码文件使用短横线命名法，例如 `mini-runner.ts`、`native-support.ts`、`create-filter.ts`。
 - 目录也使用短横线命名法。
-- 平台差异优先通过目录边界表达，例如 mini 专属逻辑放在 `src/mini/`。
+- 平台差异优先通过目录边界表达，例如 mini 专属逻辑放在 `src/mini-program/`。
 - `index.ts` 只作为导出入口，不承载复杂构建逻辑。
 
 ## 构建流程
 
-mini preset 的插件执行顺序在 `src/mini/index.ts` 中维护：
+mini preset 的插件执行顺序在 `src/mini-program/index.ts` 中维护：
 
 1. `pipeline`: 初始化构建流水线相关状态。
 2. `config`: 生成 Vite/Rolldown 配置、alias、manual chunks、PostCSS、Babel transform 和运行时注入。
@@ -45,7 +48,7 @@ mini preset 的插件执行顺序在 `src/mini/index.ts` 中维护：
 
 ## 资源策略
 
-图片、字体和媒体资源由 `src/common/vite-plugin-assets.ts` 处理。mini 默认配置位于 `src/mini/default-config.ts`：
+图片、字体和媒体资源由 `src/plugins/vite-plugin-assets.ts` 处理。mini 默认配置位于 `src/mini-program/default-config.ts`：
 
 - 图片使用 `IMAGE_LIMIT` 阈值，小于阈值时内联为 `data:`，否则输出为独立文件。
 - 字体和媒体分别使用 `FONT_LIMIT`、`MEDIA_LIMIT`。

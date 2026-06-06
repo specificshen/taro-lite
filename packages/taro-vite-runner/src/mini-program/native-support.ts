@@ -3,8 +3,8 @@ import path from 'node:path';
 import { fs } from '@spcsn/taro-helper';
 import { normalizePath } from 'vite';
 
-import { isRelativePath, isVirtualModule } from '../utils';
-import { componentConfig } from '../utils/component';
+import { isRelativePath, isVirtualModule } from '../shared';
+import { componentConfig } from '../shared/component';
 
 import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
 import type { PluginOption, Rolldown } from 'vite';

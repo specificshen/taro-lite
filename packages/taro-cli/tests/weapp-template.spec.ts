@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { recursiveMerge } from '@spcsn/taro-helper';
 
-import { componentConfig } from '../../taro-vite-runner/src/utils/component';
+import { componentConfig } from '../../taro-vite-runner/src/shared/component';
 import { components } from '../src/platform-weapp/components';
 import { Template } from '../src/platform-weapp/template';
 

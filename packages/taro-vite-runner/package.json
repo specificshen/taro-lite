@@ -10,9 +10,9 @@
       "default": "./dist/index.js"
     },
     "./framework-react": {
-      "types": "./dist/framework-react/index.d.ts",
-      "require": "./dist/framework-react/index.js",
-      "default": "./dist/framework-react/index.js"
+      "types": "./dist/react-framework/index.d.ts",
+      "require": "./dist/react-framework/index.js",
+      "default": "./dist/react-framework/index.js"
     }
   },
   "license": "MIT",

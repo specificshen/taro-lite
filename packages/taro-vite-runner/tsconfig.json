@@ -11,5 +11,5 @@
     "preserveConstEnums": true
   },
   "include": ["./src"],
-  "exclude": ["./src/__tests__", "./src/template/comp.ts", "./src/template/custom-wrapper.ts"]
+  "exclude": ["./src/__tests__", "./src/templates/comp.ts", "./src/templates/custom-wrapper.ts"]
 }
