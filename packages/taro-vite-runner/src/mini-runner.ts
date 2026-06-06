@@ -1,5 +1,5 @@
 import { isFunction } from '@spcsn/taro-shared';
-import { build } from 'vite';
+import { build, createLogger } from 'vite';
 
 import miniPreset from './mini';
 import { convertCopyOptions } from './utils';
@@ -8,7 +8,23 @@ import { buildProfiler } from './utils/profile.js';
 import { componentConfig } from './utils/component';
 
 import type { ViteMiniBuildConfig } from '@spcsn/taro/types/compile/viteCompilerContext';
-import type { UserConfig } from 'vite';
+import type { Logger, UserConfig } from 'vite';
+
+const VITE_BUILDING_ENVIRONMENT_MESSAGE = /^vite v\S+ building \S+ environment for \S+\.\.\.$/;
+
+type LoggerInfoOptions = Parameters<Logger['info']>[1];
+
+function createTaroBuildLogger(): Logger {
+  const logger = createLogger('warn', {
+    allowClearScreen: false,
+  });
+
+  logger.info = (message: string, _options?: LoggerInfoOptions) => {
+    if (VITE_BUILDING_ENVIRONMENT_MESSAGE.test(message.trim())) return;
+  };
+
+  return logger;
+}
 
 export default async function (appPath: string, rawTaroConfig: ViteMiniBuildConfig) {
   const totalStartMs = buildProfiler.start();
@@ -37,6 +53,7 @@ export default async function (appPath: string, rawTaroConfig: ViteMiniBuildConf
   buildProfiler.end('prepare plugins', pluginsStartMs);
 
   const commonConfig: UserConfig = {
+    customLogger: createTaroBuildLogger(),
     logLevel: 'silent',
     plugins,
   };

@@ -16,6 +16,12 @@ interface IFileType {
   xs?: string;
 }
 
+interface BuildProgressController {
+  start(): void;
+  finish(): void;
+  fail(): void;
+}
+
 export abstract class TaroPlatformBase<T extends TConfig = TConfig> extends TaroPlatform<T> {
   platformType = PLATFORM_TYPE.MINI;
 
@@ -39,7 +45,13 @@ export abstract class TaroPlatformBase<T extends TConfig = TConfig> extends Taro
   private setupImpl() {
     const { output } = this.config;
     // 仅 output.clean 为 false 时不清空输出目录
-    if (output === undefined || output === null || output.clean === undefined || output.clean === null || output.clean === true) {
+    if (
+      output === undefined ||
+      output === null ||
+      output.clean === undefined ||
+      output.clean === null ||
+      output.clean === true
+    ) {
       this.emptyOutputDir();
     } else if (isObject(output.clean)) {
       this.emptyOutputDir(output.clean.keep || []);
@@ -57,8 +69,8 @@ export abstract class TaroPlatformBase<T extends TConfig = TConfig> extends Taro
     const isProduction = process.env.NODE_ENV === 'production';
     const modeLabel = isProduction ? '生产模式' : '开发模式';
     const modeHint = isProduction ? '准备见用户，保持体面' : '正在热身，改完就看';
-    const watchLabel = this.ctx.runOpts?.isWatch ? '监听变更' : '单次构建';
-    const watchHint = this.ctx.runOpts?.isWatch ? '我盯着文件，你放心写' : '一锤定音，构建完就收工';
+    const watchLabel = this.config.isWatch ? '监听变更' : '单次构建';
+    const watchHint = this.config.isWatch ? '我盯着文件，你放心写' : '一锤定音，构建完就收工';
     const minifyLabel = process.env.TARO_MINIFY === 'true' || isProduction ? '开启' : '关闭';
     const humorLine = isProduction ? '✨ 今天的产物会比较克制，适合上线见人。' : '☕ 别慌，代码正在穿微信小程序外套。';
     const contentWidth = 54;
@@ -171,7 +183,68 @@ export abstract class TaroPlatformBase<T extends TConfig = TConfig> extends Taro
     if (this.config.withoutBuild) return;
 
     this.ctx.onBuildInit?.(this);
-    await this.buildTransaction.perform(this.buildImpl, this, extraOptions);
+    const progress = this.createBuildProgressController();
+    progress.start();
+    try {
+      await this.buildTransaction.perform(this.buildImpl, this, extraOptions);
+      progress.finish();
+    } catch (error) {
+      progress.fail();
+      throw error;
+    }
+  }
+
+  private createBuildProgressController(): BuildProgressController {
+    const noop = () => {};
+    if (process.env.NODE_ENV === 'test' || process.env.CI || this.config.isWatch || !process.stdout.isTTY) {
+      return {
+        start: noop,
+        finish: noop,
+        fail: noop,
+      };
+    }
+
+    const { chalk } = this.helper;
+    const barLength = 20;
+    const frames = [18, 42, 66, 88];
+    let currentFrameIndex = 0;
+    let timer: NodeJS.Timeout | undefined;
+
+    const render = (percent: number, label: string) => {
+      const colors = ['#00e5ff', '#00ff85', '#fff700', '#ff9f1c', '#ff4ecd', '#8b5cf6'];
+      const filledLength = Math.round((percent / 100) * barLength);
+      const bar = Array.from({ length: barLength }, (_, index) => {
+        const color = colors[index % colors.length];
+        const symbol = index < filledLength ? '█' : '▒';
+        return chalk.hex(color)(symbol);
+      }).join('');
+      process.stdout.write(`\r${chalk.cyan('构建进度')} ${chalk.green(`${percent}%`)} ${bar} ${label}`);
+    };
+
+    const clearLine = () => {
+      process.stdout.write('\n');
+    };
+
+    return {
+      start() {
+        render(8, '启动业务构建');
+        timer = setInterval(() => {
+          const percent = frames[Math.min(currentFrameIndex, frames.length - 1)];
+          currentFrameIndex += 1;
+          render(percent, '代码正在穿微信小程序外套');
+        }, 180);
+      },
+      finish() {
+        if (timer) clearInterval(timer);
+        render(100, '构建完成，收工');
+        clearLine();
+      },
+      fail() {
+        if (timer) clearInterval(timer);
+        render(100, chalk.red('构建失败'));
+        clearLine();
+      },
+    };
   }
 
   private async buildImpl(extraOptions = {}) {
