@@ -1,16 +1,432 @@
-.container {
-  min-height: 100vh;
-  padding: 48px 32px;
+.appContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #f6f8fa;
+  overflow: hidden;
+}
+
+/* Custom Navigation Bar */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: #ffffff;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #e1e3e6;
   box-sizing: border-box;
 }
 
-.title {
-  font-size: 36px;
+.navbarTitleArea {
+  padding-left: 32px;
+  display: flex;
+  align-items: center;
+}
+
+.navbarTitle {
+  font-size: 34px;
+  font-weight: 700;
+  color: #1f2329;
+  letter-spacing: 0.5px;
+}
+
+/* Scrollable body */
+.scrollBody {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Banner */
+.banner {
+  background: linear-gradient(135deg, #165dff 0%, #00b2ff 100%);
+  padding: 48px 32px;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+}
+
+.bannerTitle {
+  font-size: 44px;
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.bannerSub {
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.85);
+  margin-top: 12px;
+  line-height: 1.4;
+}
+
+/* Tab Bar */
+.tabBar {
+  display: flex;
+  background-color: #ffffff;
+  border-bottom: 2px solid #eaebec;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.tabItem {
+  flex: 1;
+  text-align: center;
+  padding: 24px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.tabText {
+  font-size: 28px;
+  color: #646a73;
+  font-weight: 500;
+}
+
+.tabActive {
+  border-bottom: 5px solid #165dff;
+}
+
+.tabActive .tabText {
+  color: #165dff;
   font-weight: 600;
 }
 
-.description {
-  margin-top: 16px;
-  color: #646a73;
+/* Panels */
+.panel {
+  padding: 32px;
+  background-color: #ffffff;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.panelHeader {
+  border-left: 8px solid #165dff;
+  padding-left: 16px;
+  margin-bottom: 32px;
+}
+
+.panelTitle {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1f2329;
+}
+
+.sectionSubTitle {
   font-size: 28px;
+  font-weight: 600;
+  color: #1f2329;
+  margin-top: 24px;
+  margin-bottom: 16px;
+}
+
+/* Forms */
+.formGroup {
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.formLabel {
+  font-size: 26px;
+  color: #646a73;
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+.textInput {
+  background-color: #f2f3f5;
+  border-radius: 8px;
+  padding: 20px 24px;
+  font-size: 28px;
+  color: #1f2329;
+  border: 1px solid transparent;
+}
+
+.slider {
+  margin: 16px 0;
+}
+
+/* Buttons */
+.actionButton,
+.apiButton {
+  background-color: #165dff;
+  color: #ffffff;
+  border-radius: 8px;
+  font-size: 30px;
+  font-weight: 600;
+  padding: 24px 0;
+  text-align: center;
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+}
+
+.actionButton[disabled] {
+  background-color: #94bfff;
+  color: #ffffff;
+}
+
+.secondaryButton {
+  background-color: #f2f3f5;
+  color: #1f2329;
+  border-radius: 8px;
+  font-size: 28px;
+  font-weight: 500;
+  padding: 20px 0;
+  text-align: center;
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+}
+
+/* Results */
+.resultBox {
+  background-color: #e8f3ff;
+  border: 1px solid #94bfff;
+  border-radius: 8px;
+  padding: 24px;
+  margin-top: 24px;
+}
+
+.resultText {
+  color: #165dff;
+  font-size: 26px;
+  line-height: 1.4;
+}
+
+.tipsArea {
+  margin-top: 32px;
+  padding: 20px;
+  background-color: #fef0ef;
+  border-radius: 8px;
+}
+
+.tipsText {
+  color: #f53f3f;
+  font-size: 24px;
+  line-height: 1.5;
+}
+
+/* Skyline Gestures */
+.gestureCard {
+  background: linear-gradient(135deg, #f9f9f9 0%, #f0f0f0 100%);
+  border: 2px dashed #c9cdd4;
+  border-radius: 12px;
+  padding: 40px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 180px;
+}
+
+.gestureCardTitle {
+  font-size: 30px;
+  font-weight: 700;
+  color: #1f2329;
+}
+
+.gestureCardDoc {
+  font-size: 24px;
+  color: #86909c;
+  margin-top: 8px;
+  text-align: center;
+}
+
+.gestureCardStatus {
+  margin-top: 24px;
+  background-color: #1f2329;
+  border-radius: 6px;
+  padding: 8px 16px;
+}
+
+.gestureStatusText {
+  color: #00e676;
+  font-family: monospace;
+  font-size: 24px;
+}
+
+/* Skyline list cards */
+.listViewContainer {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  background-color: #f7f8fa;
+  padding: 8px;
+}
+
+.listItem {
+  margin-bottom: 16px;
+}
+
+.listCard {
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.listCardBadge {
+  background-color: #e8f3ff;
+  border-radius: 4px;
+  padding: 6px 12px;
+}
+
+.listCardBadgeText {
+  color: #165dff;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.listCardText {
+  font-size: 26px;
+  color: #1f2329;
+}
+
+/* Request Panel */
+.requestResultBox {
+  margin-top: 24px;
+  background-color: #1a1a1a;
+  border-radius: 8px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.responseLabel {
+  color: #a9a9a9;
+  font-size: 24px;
+  margin-bottom: 12px;
+}
+
+.jsonScroll {
+  max-height: 250px;
+}
+
+.jsonText {
+  color: #eff2f5;
+  font-family: monospace;
+  font-size: 22px;
+  line-height: 1.5;
+}
+
+.requestPlaceholder {
+  margin-top: 24px;
+  background-color: #f2f3f5;
+  border-radius: 8px;
+  padding: 32px;
+  text-align: center;
+}
+
+.placeholderText {
+  color: #86909c;
+  font-size: 24px;
+  line-height: 1.4;
+}
+
+/* Logs Section */
+.logSection {
+  background-color: #ffffff;
+  padding: 32px;
+  margin-top: 16px;
+  margin-bottom: 48px;
+  box-sizing: border-box;
+}
+
+.logHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #f2f3f5;
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+}
+
+.logModuleTitle {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.clearLogButton {
+  color: #165dff;
+  font-size: 26px;
+  font-weight: 600;
+}
+
+.logConsole {
+  background-color: #0f172a;
+  border-radius: 8px;
+  padding: 20px;
+  min-height: 300px;
+  box-sizing: border-box;
+}
+
+.logLine {
+  display: flex;
+  margin-bottom: 12px;
+  align-items: flex-start;
+  line-height: 1.4;
+}
+
+.logLineEmpty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 0;
+}
+
+.logMessageEmpty {
+  color: #64748b;
+  font-size: 24px;
+  text-align: center;
+}
+
+.logTime {
+  color: #38bdf8;
+  font-family: monospace;
+  font-size: 20px;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.logMessage {
+  font-family: monospace;
+  font-size: 22px;
+}
+
+.logType_info {
+  color: #f8fafc;
+}
+
+.logType_success {
+  color: #4ade80;
+}
+
+.logType_warn {
+  color: #facc15;
+}
+
+.logType_error {
+  color: #f87171;
 }

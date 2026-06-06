@@ -2,7 +2,7 @@
   "miniprogramRoot": "dist/",
   "projectname": "weapp-react19-vite-skyline-fixture",
   "description": "SPCSN Taro Lite validation fixture",
-  "appid": "touristappid",
+  "appid": "wx486d3d83011e15a8",
   "setting": {
     "urlCheck": true,
     "es6": true,
