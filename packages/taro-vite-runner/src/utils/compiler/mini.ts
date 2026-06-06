@@ -18,7 +18,7 @@ import type {
   ViteNativeCompMeta,
   VitePageMeta,
 } from '@spcsn/taro/types/compile/viteCompilerContext';
-import type { PluginContext } from 'rollup';
+import type { Rolldown } from 'vite';
 
 export class TaroCompilerContext extends CompilerContext<ViteMiniBuildConfig> implements ViteMiniCompilerContext {
   fileType: ViteFileType;
@@ -136,18 +136,13 @@ export class TaroCompilerContext extends CompilerContext<ViteMiniBuildConfig> im
     return list;
   }
 
-  generateNativeComponent(
-    rollupCtx: PluginContext,
-    meta: ViteNativeCompMeta,
-    implicitlyLoadedAfterOneOf: string[] = [],
-  ) {
+  generateNativeComponent(rollupCtx: Rolldown.PluginContext, meta: ViteNativeCompMeta) {
     if (meta.isGenerated) return;
 
     rollupCtx.emitFile({
       type: 'chunk',
       id: meta.scriptPath + QUERY_IS_NATIVE_COMP,
       fileName: this.getScriptPath(meta.name),
-      implicitlyLoadedAfterOneOf,
     });
     const source = miniTemplateLoader(rollupCtx, meta.templatePath, this.sourceDir);
     rollupCtx.emitFile({

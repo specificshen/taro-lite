@@ -11,7 +11,7 @@ export default (ctx: IPluginContext) => {
       '--template-source [templateSource]': '项目模板源',
       '--clone [clone]': '拉取远程模板时使用git clone',
       '--template [template]': '项目模板',
-      '--css [css]': 'CSS预处理器(sass/less/stylus/none)',
+      '--css [css]': 'CSS 预处理器选项已收敛，仅支持 none',
       '--autoInstall': '自动安装依赖',
       '-h, --help': 'output usage information',
     },

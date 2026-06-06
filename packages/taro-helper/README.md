@@ -11,9 +11,6 @@
 ## SWC 说明
 
 执行 `build` 命令时，会把 `swc-backup` 里的 `.wasm` 文件移动到 `swc` 目录。这样不关注 SWC 插件开发的维护者无需配置 Rust 环境。
-
-如果需要修改 SWC 插件，请参考仓库根目录 `CONTRIBUTING.md` 中的 Rust 相关说明。
-
 ## 维护约束
 
 - 不新增业务可感知 API。

@@ -14,7 +14,7 @@ import type {
   ViteMiniBuildConfig,
   VitePageMeta,
 } from '@spcsn/taro/types/compile/viteCompilerContext';
-import type { PluginContext } from 'rollup';
+import type { Rolldown } from 'vite';
 
 export class CompilerContext<T extends ViteMiniBuildConfig>
   implements ViteCompilerContext<T>
@@ -67,7 +67,7 @@ class App extends React.Component {
 
   protected processConfig() {}
 
-  async collectedDeps(rollupCtx: PluginContext, id: string, filter, cache = new Set<string>()): Promise<Set<string>> {
+  async collectedDeps(rollupCtx: Rolldown.PluginContext, id: string, filter, cache = new Set<string>()): Promise<Set<string>> {
     if (!/\.m?[jt]sx?$/.test(id) || !filter(id) || cache.has(id)) return cache;
 
     cache.add(id);
@@ -85,7 +85,7 @@ class App extends React.Component {
     return cache;
   }
 
-  watchConfigFile(rollupCtx: PluginContext) {
+  watchConfigFile(rollupCtx: Rolldown.PluginContext) {
     this.configFileList.forEach((configFile) => rollupCtx.addWatchFile(configFile));
   }
 

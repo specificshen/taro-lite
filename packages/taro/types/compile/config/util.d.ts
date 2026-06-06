@@ -91,22 +91,6 @@ export interface ICopyOptions {
     ignore?: string[]
   }
 }
-
-export interface ISassOptions {
-  /**
-   * 引入的全局 sass 文件，如果要引入多个文件，支持数组形式传入
-   */
-  resource?: string | string[]
-  /**
-   * 项目根目录的绝对地址(若为小程序云开发模板，则应该是client目录)
-   */
-  projectDirectory?: string
-  /**
-   * 全局 scss 变量，若 data 与 resource 中设置了同样的变量，则 data 的优先级高于 resource
-   */
-  data?: string
-}
-
 export interface ICompileOption {
   exclude?: string[]
   include?: string[]

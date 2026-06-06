@@ -5,8 +5,7 @@ import { REG_NODE_MODULES, SCRIPT_EXT } from '@spcsn/taro-helper';
 import { isVirtualModule } from '../utils';
 
 import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
-import type { ResolvedId } from 'rollup';
-import type { PluginOption } from 'vite';
+import type { PluginOption, Rolldown } from 'vite';
 
 function isViteDepsPath(filePath: string) {
   const normalizedPath = path.normalize(filePath);
@@ -45,7 +44,7 @@ export default function (compiler: ViteMiniCompilerContext): PluginOption {
       const rawResolvedPath = path.resolve(path.dirname(importer), `${path.join(dir, basename)}${ext}`);
       if (isViteDepsPath(rawResolvedPath)) return null;
 
-      let resolution: ResolvedId | null = null;
+      let resolution: Rolldown.ResolvedId | null = null;
       const miniExtList = [`.weapp${ext}`, `/index.weapp${ext}`, `.mini${ext}`, `/index.mini${ext}`];
 
       for (const multiExt of miniExtList) {

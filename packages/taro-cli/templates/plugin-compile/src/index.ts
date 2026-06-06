@@ -69,7 +69,7 @@ const unzip = require("unzip")
  */
 
 interface ITemplateInfo {
-  css: 'none' | 'sass' | 'stylus' | 'less'
+  css: 'none'
   typescript?: boolean
   compiler?: 'vite'
   template?: string

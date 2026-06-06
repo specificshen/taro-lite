@@ -85,8 +85,7 @@ export const processTypeMap: IProcessTypeMap = {
   },
 };
 
-export const CSS_EXT: string[] = ['.css', '.scss', '.sass', '.less', '.styl', '.stylus', '.wxss', '.acss'];
-export const SCSS_EXT: string[] = ['.scss'];
+export const CSS_EXT: string[] = ['.css', '.wxss', '.acss'];
 export const JS_EXT: string[] = ['.js', '.jsx'];
 export const TS_EXT: string[] = ['.ts', '.tsx'];
 export const UX_EXT: string[] = ['.ux'];
@@ -98,12 +97,7 @@ export const REG_SCRIPT = /\.m?(js|jsx)(\?.*)?$/;
 export const REG_TYPESCRIPT = /\.(tsx|ts)(\?.*)?$/;
 export const REG_SCRIPTS = /\.m?[tj]sx?$/i;
 export const REG_VUE = /\.vue$/i;
-export const REG_SASS = /\.(s[ac]ss)$/;
-export const REG_SASS_SASS = /\.sass$/;
-export const REG_SASS_SCSS = /\.scss$/;
-export const REG_LESS = /\.less$/;
-export const REG_STYLUS = /\.styl(us)?$/;
-export const REG_STYLE = /\.(css|scss|sass|less|styl|stylus|wxss|acss|ttss|jxss|qss)(\?.*)?$/;
+export const REG_STYLE = /\.(css|wxss|acss|ttss|jxss|qss)(\?.*)?$/;
 export const REG_CSS = /\.(css|qss|jxss|wxss|acss|ttss)(\?.*)?$/;
 export const REG_MEDIA = /\.(mp4|webm|ogg|mp3|m4a|wav|flac|aac)(\?.*)?$/;
 export const REG_IMAGE = /\.(png|jpe?g|gif|bpm|svg|webp)(\?.*)?$/;
@@ -129,15 +123,6 @@ export const DEVICE_RATIO = {
   750: 1,
   828: 1.81 / 2,
 };
-
-export const FILE_PROCESSOR_MAP = {
-  '.js': 'babel',
-  '.scss': 'sass',
-  '.sass': 'sass',
-  '.less': 'less',
-  '.styl': 'stylus',
-};
-
 export const UPDATE_PACKAGE_LIST = [
   '@spcsn/taro-shared',
   '@spcsn/taro',

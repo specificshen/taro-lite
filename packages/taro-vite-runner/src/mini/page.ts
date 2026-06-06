@@ -247,7 +247,7 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
           }
           const nativeComps = viteCompilerContext.collectNativeComponents(page);
           nativeComps.forEach((comp) => {
-            viteCompilerContext.generateNativeComponent(this, comp, [rawId]);
+            viteCompilerContext.generateNativeComponent(this, comp);
           });
         });
 

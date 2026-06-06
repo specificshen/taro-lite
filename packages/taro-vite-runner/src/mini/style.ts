@@ -1,8 +1,7 @@
 import path from 'node:path';
 
 import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
-import type { OutputAsset } from 'rollup';
-import type { PluginOption } from 'vite';
+import type { PluginOption, Rolldown } from 'vite';
 
 export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOption {
   return {
@@ -13,7 +12,7 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
         const appStyleFileName = `app${nativeStyleExt}`;
         const commonStyleChunks = viteCompilerContext.commonChunks.map((item) => `${item}${nativeStyleExt}`);
         const commonStyleFileNames: string[] = [];
-        let appStyleChunk: OutputAsset | null = null;
+        let appStyleChunk: Rolldown.OutputAsset | null = null;
 
         for (const name in bundle) {
           const chunk = bundle[name];
@@ -25,7 +24,10 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
                 const fileName = chunkFileName.replace(path.extname(chunkFileName), nativeStyleExt);
                 bundle[item].fileName = fileName;
                 if (fileName === appStyleFileName) {
-                  appStyleChunk = bundle[item] as OutputAsset;
+                  const styleAsset = bundle[item];
+                  if (styleAsset?.type === 'asset') {
+                    appStyleChunk = styleAsset;
+                  }
                 } else if (commonStyleChunks.includes(path.basename(fileName))) {
                   commonStyleFileNames.push(fileName);
                 }

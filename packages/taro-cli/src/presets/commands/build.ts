@@ -1,7 +1,6 @@
 import * as validatorsModule from '../../doctor/validators.js';
 import * as appConfigModule from '../../util/app-config.js';
 import * as hooks from '../constant/hooks.js';
-import { cliProfiler } from '../../util/profile';
 
 import type { IPluginContext } from '@spcsn/taro-service';
 
@@ -58,12 +57,10 @@ export default (ctx: IPluginContext) => {
 
       // 校验 Taro 项目配置
       if (!noCheck) {
-        const checkResult = await cliProfiler.measure('validate config', () =>
-          checkConfig({
-            projectConfig: ctx.initialConfig,
-            helper: ctx.helper,
-          }),
-        );
+        const checkResult = await checkConfig({
+          projectConfig: ctx.initialConfig,
+          helper: ctx.helper,
+        });
         if (!checkResult.isValid) {
           const ERROR = chalk.red('[✗] ');
           const WARNING = chalk.yellow('[!] ');
@@ -103,20 +100,19 @@ export default (ctx: IPluginContext) => {
       // is build native components mode?
       const isBuildNativeComp = _[1] === 'native-components';
 
-      await cliProfiler.measure('onBuildStart hooks', () => ctx.applyPlugins(hooks.ON_BUILD_START));
-      await cliProfiler.measure('platform build hook', () =>
-        ctx.applyPlugins({
-          name: platform,
-          opts: {
-            config: {
-              ...config,
-              isWatch,
-              mode: isProduction ? 'production' : 'development',
-              blended,
-              isBuildNativeComp,
-              withoutBuild,
-              newBlended,
-              noInjectGlobalStyle,
+      await ctx.applyPlugins(hooks.ON_BUILD_START);
+      await ctx.applyPlugins({
+        name: platform,
+        opts: {
+          config: {
+            ...config,
+            isWatch,
+            mode: isProduction ? 'production' : 'development',
+            blended,
+            isBuildNativeComp,
+            withoutBuild,
+            newBlended,
+            noInjectGlobalStyle,
               async modifyAppConfig(appConfig) {
                 extractCompileEntry(appConfig, args, ctx);
 
@@ -187,9 +183,8 @@ export default (ctx: IPluginContext) => {
               },
             },
           },
-        }),
-      );
-      await cliProfiler.measure('onBuildComplete hooks', () => ctx.applyPlugins(hooks.ON_BUILD_COMPLETE));
+        });
+      await ctx.applyPlugins(hooks.ON_BUILD_COMPLETE);
     },
   });
 };

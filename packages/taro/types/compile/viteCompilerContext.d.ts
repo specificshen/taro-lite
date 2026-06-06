@@ -125,7 +125,7 @@ export interface ViteMiniCompilerContext extends ViteCompilerContext<ViteMiniBui
   getCommonChunks: () => string[]
   resolvePageImportPath: (scriptPath: string, pageName: string) => string
   collectNativeComponents: (meta: ViteAppMeta | VitePageMeta | ViteNativeCompMeta) => ViteNativeCompMeta[]
-  generateNativeComponent: (rollupCtx: RollupPluginContext, meta: ViteNativeCompMeta, implicitlyLoadedAfterOneOf: string[] = []) => void
+  generateNativeComponent: (rollupCtx: RollupPluginContext, meta: ViteNativeCompMeta) => void
   getScriptPath: (filePath: string) => string
   getTemplatePath: (filePath: string) => string
   getStylePath: (filePath: string) => string

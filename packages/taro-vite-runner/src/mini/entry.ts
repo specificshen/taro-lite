@@ -68,13 +68,12 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
             type: 'chunk',
             id: `${page.scriptPath}${page.isNative ? QUERY_IS_NATIVE_PAGE : ''}`,
             fileName: viteCompilerContext.getScriptPath(page.name),
-            implicitlyLoadedAfterOneOf: [rawId],
           });
         });
 
         // native components
         for (const comp of viteCompilerContext.nativeComponents.values()) {
-          viteCompilerContext.generateNativeComponent(this, comp, [rawId]);
+          viteCompilerContext.generateNativeComponent(this, comp);
         }
 
         // comp' script
@@ -83,7 +82,6 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
             type: 'chunk',
             id: path.resolve(__dirname, '../template/comp'),
             fileName: viteCompilerContext.getScriptPath(baseCompName),
-            implicitlyLoadedAfterOneOf: [rawId],
           });
         }
 
@@ -92,7 +90,6 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
           type: 'chunk',
           id: path.resolve(__dirname, '../template/custom-wrapper'),
           fileName: viteCompilerContext.getScriptPath(customWrapperName),
-          implicitlyLoadedAfterOneOf: [rawId],
         });
 
         // tabbar

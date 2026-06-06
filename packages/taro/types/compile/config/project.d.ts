@@ -2,7 +2,7 @@ import type { AppConfig } from '../../index'
 import type { Compiler, CompilerTypes, CompilerViteTypes } from '../compiler'
 import type { IModifyChainData } from '../hooks'
 import type { IMiniAppConfig, IMiniFilesConfig } from './mini'
-import type { ICopyOptions, IOption, ISassOptions, TogglableOptions } from './util'
+import type { ICopyOptions, IOption, TogglableOptions } from './util'
 
 type PostcssInput = string | number
 
@@ -117,10 +117,6 @@ export interface IProjectBaseConfig {
   esbuild?: Record<'minify', TogglableOptions>
 
   uglify?: TogglableOptions
-
-  /** 用于控制对 scss 代码的编译行为，默认使用 dart-sass，具体配置可以参考 https://www.npmjs.com/package/sass */
-  sass?: ISassOptions
-
   /** 配置 Taro 插件 */
   plugins?: PluginItem[]
 
@@ -264,10 +260,6 @@ export interface IProjectConfig<T extends CompilerTypes = CompilerViteTypes> {
   terser?: TogglableOptions
 
   esbuild?: Record<'minify', TogglableOptions>
-
-  /** 用于控制对 scss 代码的编译行为，默认使用 dart-sass，具体配置可以参考 https://www.npmjs.com/package/sass */
-  sass?: ISassOptions
-
   /** 配置 Taro 插件 */
   plugins?: PluginItem[]
 

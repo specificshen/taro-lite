@@ -4,7 +4,7 @@ import { build } from 'vite';
 import miniPreset from './mini';
 import { convertCopyOptions } from './utils';
 import { TaroCompilerContext } from './utils/compiler/mini';
-import { buildProfiler } from './utils/profile';
+import { buildProfiler } from './utils/profile.js';
 import { componentConfig } from './utils/component';
 
 import type { ViteMiniBuildConfig } from '@spcsn/taro/types/compile/viteCompilerContext';

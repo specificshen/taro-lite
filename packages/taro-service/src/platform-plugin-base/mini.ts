@@ -2,7 +2,7 @@ import { recursiveMerge, taroJsMiniComponentsPath } from '@spcsn/taro-helper';
 import { isObject, PLATFORM_TYPE } from '@spcsn/taro-shared';
 
 import { getPkgVersion } from '../utils/package';
-import { serviceProfiler } from '../utils/profile';
+import { serviceProfiler } from '../utils/profile.js';
 import TaroPlatform from './platform';
 
 import type { RecursiveTemplate, UnRecursiveTemplate } from '@spcsn/taro-shared/dist/template';

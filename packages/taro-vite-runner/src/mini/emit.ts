@@ -9,8 +9,7 @@ import { baseCompName, baseTemplateName, customWrapperName } from '../utils/cons
 
 import type { Config } from '@spcsn/taro';
 import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
-import type { PluginContext } from 'rollup';
-import type { PluginOption } from 'vite';
+import type { PluginOption, Rolldown } from 'vite';
 
 export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOption {
   return [
@@ -231,7 +230,7 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
 }
 
 function generateConfigFile(
-  ctx: PluginContext,
+  ctx: Rolldown.PluginContext,
   viteCompilerContext: ViteMiniCompilerContext,
   options: { filePath: string; config: Config & { component?: boolean } },
 ) {
@@ -250,7 +249,7 @@ function generateConfigFile(
 }
 
 function generateTemplateFile(
-  ctx: PluginContext,
+  ctx: Rolldown.PluginContext,
   viteCompilerContext: ViteMiniCompilerContext,
   options: { filePath: string; content: string },
 ) {
@@ -273,7 +272,7 @@ function generateTemplateFile(
 }
 
 function generateXSFile(
-  ctx: PluginContext,
+  ctx: Rolldown.PluginContext,
   viteCompilerContext: ViteMiniCompilerContext,
   options: { filePath: string; content: string },
 ) {

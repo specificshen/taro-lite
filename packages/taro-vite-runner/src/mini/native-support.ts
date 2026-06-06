@@ -7,8 +7,7 @@ import { isRelativePath, isVirtualModule } from '../utils';
 import { componentConfig } from '../utils/component';
 
 import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
-import type { PluginContext } from 'rollup';
-import type { PluginOption } from 'vite';
+import type { PluginOption, Rolldown } from 'vite';
 
 const QUERY_IS_NATIVE_SCRIPT = '?isNativeScript=';
 export const QUERY_IS_NATIVE_PAGE = QUERY_IS_NATIVE_SCRIPT + 'page';
@@ -47,14 +46,14 @@ export default function (viteCompilerContext: ViteMiniCompilerContext | undefine
         if (type === 'page') {
           for (const page of viteCompilerContext.pages) {
             if (page.isNative && page.scriptPath === target && page.cssPath && fs.existsSync(page.cssPath)) {
-              stylePath = viteCompilerContext.getTargetFilePath(page.cssPath, '.scss');
+              stylePath = viteCompilerContext.getTargetFilePath(page.cssPath, '.css');
               break;
             }
           }
         } else {
           for (const comp of viteCompilerContext.nativeComponents.values()) {
             if (comp.scriptPath === target && comp.cssPath && fs.existsSync(comp.cssPath)) {
-              stylePath = viteCompilerContext.getTargetFilePath(comp.cssPath, '.scss');
+              stylePath = viteCompilerContext.getTargetFilePath(comp.cssPath, '.css');
               break;
             }
           }
@@ -135,7 +134,7 @@ export default function (viteCompilerContext: ViteMiniCompilerContext | undefine
   };
 }
 
-export function miniTemplateLoader(ctx: PluginContext, templatePath: string, sourceDir: string): string {
+export function miniTemplateLoader(ctx: Rolldown.PluginContext, templatePath: string, sourceDir: string): string {
   const source = fs.readFileSync(templatePath).toString();
   /**
    * 两种fix方案：

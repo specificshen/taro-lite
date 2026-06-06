@@ -1,6 +1,6 @@
 import { escapeId } from '.';
 
-import type { InternalModuleFormat } from 'rollup';
+type InternalModuleFormat = 'amd' | 'cjs' | 'es' | 'iife' | 'system' | 'umd';
 
 /*
   The following functions are copied from rollup

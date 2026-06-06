@@ -41,16 +41,6 @@ export interface IMiniAppConfig<T extends CompilerTypes = CompilerViteTypes> {
 
   /** CSS 处理的附加配置 */
   cssLoaderOption?: IOption
-
-  /** Sass 处理的附加配置 */
-  sassLoaderOption?: IOption
-
-  /** Less 处理的附加配置 */
-  lessLoaderOption?: IOption
-
-  /** Stylus 处理的附加配置 */
-  stylusLoaderOption?: IOption
-
   /** 针对 mp4 | webm | ogg | mp3 | wav | flac | aac 文件的资源处理配置 */
   mediaUrlLoaderOption?: IUrlLoaderOption
 

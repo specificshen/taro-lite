@@ -1,24 +1,18 @@
 comment:
-  layout: "reach, diff, flags, files" # the layout of the comment on PRs
-  require_changes: true  # only comment if coverage changes
+  layout: "reach, diff, flags, files"
+  require_changes: true
 
 coverage:
   status:
     project:
       default:
-        target: 75%    # the required coverage value
-        threshold: 5%  # the leniency in hitting the target
         informational: true
     patch:
       default:
         informational: true
 
-flags:
-  nightly:
-    joined: false
-
 flag_management:
-  default_rules: # the rules that will be followed for any flag added, generally
+  default_rules:
     carryforward: true
     statuses:
       - name_prefix: proj-
@@ -27,19 +21,17 @@ flag_management:
         threshold: 5%
       - name_prefix: patch-
         type: patch
-        target: 75%
-  individual_flags: # exceptions to the default rules above, stated flag by flag
+        target: auto
+        threshold: 5%
+  individual_flags:
     - name: taro-cli
       paths:
-      - packages/taro-cli/
-    - name: taro-runner
+        - packages/taro-cli/
+    - name: taro-components
       paths:
-      - packages/taro-webpack5-runner/
-    - name: taro-runtime
+        - packages/taro-components/
+    - name: rest
       paths:
-      - packages/taro-runtime/
-    - name: taro-web
-      paths:
-      - packages/taro-components/
-      - packages/taro-h5/
-      - packages/taro-router/
+        - packages/
+        - crates/
+        - npm/

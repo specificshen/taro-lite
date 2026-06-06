@@ -17,7 +17,7 @@ import ora from 'ora';
 
 import { filterGlobalConfig } from './utils';
 import { CONFIG_DIR_NAME, DEFAULT_CONFIG_FILE } from './utils/constants';
-import { serviceProfiler } from './utils/profile';
+import { serviceProfiler } from './utils/profile.js';
 
 import type { IProjectConfig } from '@spcsn/taro/types/compile';
 
@@ -123,7 +123,6 @@ export default class Config {
       logger: initialConfig.logger,
       baseLevel: initialConfig.baseLevel,
       csso: initialConfig.csso,
-      sass: initialConfig.sass,
       uglify: initialConfig.uglify,
       plugins: initialConfig.plugins,
       projectName: initialConfig.projectName,

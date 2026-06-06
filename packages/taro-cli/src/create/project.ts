@@ -108,7 +108,6 @@ export default class Project extends Creator {
     this.askProjectName(conf, prompts);
     this.askDescription(conf, prompts);
     this.askTypescript(conf, prompts);
-    this.askCSS(conf, prompts);
     this.askNpm(conf, prompts);
     const answers = await inquirer.prompt<IProjectConf>(prompts);
 
@@ -201,36 +200,6 @@ export default class Project extends Creator {
       });
     }
   };
-  askCSS: AskMethods = function (conf, prompts) {
-    const cssChoices = [
-      {
-        name: 'Sass',
-        value: CSSType.Sass,
-      },
-      {
-        name: 'Less',
-        value: CSSType.Less,
-      },
-      {
-        name: 'Stylus',
-        value: CSSType.Stylus,
-      },
-      {
-        name: '无',
-        value: CSSType.None,
-      },
-    ];
-
-    if (typeof conf.css !== 'string') {
-      prompts.push({
-        type: 'list',
-        name: 'css',
-        message: '请选择 CSS 预处理器（Sass/Less/Stylus）',
-        choices: cssChoices,
-      });
-    }
-  };
-
   askCompiler: AskMethods = function (conf, prompts) {
     const compilerChoices = [
       {
@@ -466,7 +435,7 @@ export default class Project extends Creator {
         template,
         npm,
         framework,
-        css: this.conf.css || CSSType.None,
+        css: CSSType.None,
         autoInstall: autoInstall,
         templateRoot: getRootPath(),
         version: getPkgVersion(),

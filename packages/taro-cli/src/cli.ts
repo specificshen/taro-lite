@@ -4,8 +4,7 @@ import { dotenvParse, patchEnv } from '@spcsn/taro-helper';
 import { Config, Kernel } from '@spcsn/taro-service';
 
 import customCommand from './commands/custom-command';
-import { getPkgVersion } from './util';
-import { cliProfiler } from './util/profile';
+import { cliProfiler, getPkgVersion } from './util/index.js';
 
 const DEFAULT_FRAMEWORK = 'react';
 const SUPPORTED_COMMANDS = new Set(['build', 'init']);

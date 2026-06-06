@@ -8,7 +8,6 @@ import {
   REG_NODE_MODULES_DIR,
   REG_TARO_SCOPED_PACKAGE,
 } from '@spcsn/taro-helper';
-import { getSassLoaderOption } from '../runner-utils';
 import { getDefaultPostcssConfig } from './postcss';
 import {
   getCSSModulesOptions,
@@ -18,12 +17,11 @@ import {
   stripMultiPlatformExt,
 } from '../utils';
 import { DEFAULT_TERSER_OPTIONS, MINI_EXCLUDE_POSTCSS_PLUGIN_NAME } from '../utils/constants';
-import { createDevBuildSummaryLogger, logger } from '../utils/logger';
-import { buildProfiler } from '../utils/profile';
+import { createDevBuildSummaryLogger } from '../utils/logger';
+import { buildProfiler } from '../utils/profile.js';
 
 import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
-import type { GetManualChunk } from 'rollup';
-import type { PluginOption } from 'vite';
+import type { PluginOption, UserConfig } from 'vite';
 
 type RolldownInjectOptions = Record<string, string | [string, string]>;
 
@@ -135,58 +133,17 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
 
     return options;
   }
-
-  async function getSassOption() {
-    const sassLoaderOption = taroConfig.sassLoaderOption;
-    const nativeStyleImporter = function importer(url, prev, done) {
-      // 让 sass 文件里的 @import 能解析小程序原生样式文体，如 @import "a.wxss";
-      const extname = path.extname(url);
-      // fix: @import 文件可以不带scss/sass缀，如: @import "define";
-      if (extname === '.scss' || extname === '.sass' || extname === '.css' || !extname) {
-        return null;
-      } else {
-        const filePath = path.resolve(path.dirname(prev), url);
-        fs.access(filePath, fs.constants.F_OK, (err) => {
-          if (err) {
-            logger.error(err.message);
-            return null;
-          } else {
-            fs.readFile(filePath)
-              .then((res) => {
-                done({ contents: res.toString() });
-              })
-              .catch((err) => {
-                logger.error(err);
-                return null;
-              });
-          }
-        });
-      }
-    };
-    const importer = [nativeStyleImporter];
-    if (sassLoaderOption?.importer) {
-      Array.isArray(sassLoaderOption.importer)
-        ? importer.unshift(...sassLoaderOption.importer)
-        : importer.unshift(sassLoaderOption.importer);
-    }
-    const option = {
-      ...(await getSassLoaderOption(taroConfig)),
-      ...sassLoaderOption,
-      importer,
-    };
-    return {
-      scss: option,
-      sass: option,
-    };
-  }
-
   const __postcssOption = getDefaultPostcssConfig({
     designWidth: taroConfig.designWidth || 750,
     deviceRatio: taroConfig.deviceRatio,
     postcssOption: taroConfig.postcss,
   });
 
-  function getManualChunks(): GetManualChunk {
+  function getManualChunks(): NonNullable<NonNullable<UserConfig['build']>['rollupOptions']>['output'] extends infer Output
+    ? Output extends { manualChunks?: infer ManualChunks }
+      ? ManualChunks
+      : never
+    : never {
     const { framework } = taroConfig;
     const reactRelatedDeps: RegExp[] = [
       /node_modules[\\/]react-reconciler[\\/]/,
@@ -237,7 +194,6 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
       const taroRuntimePath = resolveModulePath('@spcsn/taro-runtime', appPath);
       buildProfiler.end('resolve runtime modules', moduleResolveStartMs);
 
-      const sassOption = await buildProfiler.measure('sass options', () => getSassOption());
       buildProfiler.end('vite config', configStartMs);
 
       return {
@@ -305,11 +261,6 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
         css: {
           postcss: {
             plugins: getPostcssPlugins(appPath, __postcssOption, MINI_EXCLUDE_POSTCSS_PLUGIN_NAME),
-          },
-          preprocessorOptions: {
-            ...sassOption,
-            less: taroConfig.lessLoaderOption || {},
-            stylus: taroConfig.stylusLoaderOption || {},
           },
           modules: getCSSModulesOptions(taroConfig),
         },
