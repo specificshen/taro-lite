@@ -15,40 +15,47 @@ import type { Style, TaroElement } from '@spcsn/taro-runtime';
 
 export type Props = Record<string, unknown>;
 
+type UpdatePayload = unknown[];
+type TaroEventHandler = (...args: unknown[]) => unknown;
+
 const IS_NON_DIMENSIONAL = /aspect|acit|ex(?:s|g|n|p|$)|rph|grid|ows|mnc|ntw|ine[ch]|zoo|^ord|itera/i;
-function isEventName(s: string) {
-  return s[0] === 'o' && s[1] === 'n';
+function isEventName(name: string): boolean {
+  return name[0] === 'o' && name[1] === 'n';
 }
 
-function isEqual(obj1, obj2) {
-  // 首先检查引用是否相同
-  if (obj1 === obj2) {
+function isEventHandler(value: unknown): value is TaroEventHandler {
+  return isFunction(value);
+}
+
+function isEqual(firstValue: unknown, secondValue: unknown): boolean {
+  if (firstValue === secondValue) {
     return true;
   }
 
-  // 如果两者中有一个不是对象，或者为 null，直接返回 false
-  if (typeof obj1 !== 'object' || obj1 === null || typeof obj2 !== 'object' || obj2 === null) {
+  if (
+    typeof firstValue !== 'object' ||
+    firstValue === null ||
+    typeof secondValue !== 'object' ||
+    secondValue === null
+  ) {
     return false;
   }
 
-  // 获取两个对象键的数组
-  const keys1 = Object.keys(obj1);
-  const keys2 = Object.keys(obj2);
+  const firstObject = firstValue as Record<string, unknown>;
+  const secondObject = secondValue as Record<string, unknown>;
+  const firstKeys = Object.keys(firstObject);
+  const secondKeys = Object.keys(secondObject);
 
-  // 如果键的数量不相同，对象显然不相等
-  if (keys1.length !== keys2.length) {
+  if (firstKeys.length !== secondKeys.length) {
     return false;
   }
 
-  // 遍历对象的每个键，比较两个对象同一键的值
-  for (let i = 0; i < keys1.length; i++) {
-    const key = keys1[i];
-    if (obj1[key] !== obj2[key]) {
+  for (const key of firstKeys) {
+    if (firstObject[key] !== secondObject[key]) {
       return false;
     }
   }
 
-  // 如果所有键的值都相等，返回 true
   return true;
 }
 
@@ -59,19 +66,18 @@ export function updateProps(dom: TaroElement, oldProps: Props, newProps: Props) 
   }
 }
 
-export function updatePropsByPayload(dom: TaroElement, oldProps: Props, updatePayload: any[]) {
+export function updatePropsByPayload(dom: TaroElement, oldProps: Props, updatePayload: UpdatePayload) {
   for (let i = 0; i < updatePayload.length; i += 2) {
-    // key, value 成对出现
-    const key = updatePayload[i];
+    const key = updatePayload[i] as string;
     const newProp = updatePayload[i + 1];
     const oldProp = oldProps[key];
     setProperty(dom, key, newProp, oldProp);
   }
 }
 
-export function getUpdatePayload(dom: TaroElement, oldProps: Props, newProps: Props) {
+export function getUpdatePayload(dom: TaroElement, oldProps: Props, newProps: Props): UpdatePayload | null {
   let i: string;
-  let updatePayload: any[] | null = null;
+  let updatePayload: UpdatePayload | null = null;
 
   for (i in oldProps) {
     if (!(i in newProps)) {
@@ -111,15 +117,18 @@ function setEvent(dom: TaroElement, name: string, value: unknown, oldValue?: unk
     eventName = 'tap';
   }
 
-  if (isFunction(value)) {
-    if (oldValue) {
-      dom.removeEventListener(eventName, oldValue as any, false);
+  if (isEventHandler(value)) {
+    if (isEventHandler(oldValue)) {
+      dom.removeEventListener(eventName, oldValue, false);
       dom.addEventListener(eventName, value, { isCapture, sideEffect: false });
     } else {
       dom.addEventListener(eventName, value, isCapture);
     }
-  } else {
-    dom.removeEventListener(eventName, oldValue as any);
+    return;
+  }
+
+  if (isEventHandler(oldValue)) {
+    dom.removeEventListener(eventName, oldValue);
   }
 }
 

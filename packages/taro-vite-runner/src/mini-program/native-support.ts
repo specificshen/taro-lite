@@ -17,7 +17,6 @@ const QUERY_IS_NATIVE_STYLE = '?isNativeStyle=true';
 const IS_NATIVE_STYLE_REG = new RegExp(`\\${QUERY_IS_NATIVE_STYLE}`);
 
 export default function (viteCompilerContext: ViteMiniCompilerContext | undefined): PluginOption {
-  // todo 这个插件逻辑不是很清晰 待验证
   const { taroConfig } = viteCompilerContext as ViteMiniCompilerContext;
   return {
     name: 'taro:vite-native-support',

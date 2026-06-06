@@ -210,7 +210,7 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
           },
           watch: taroConfig.isWatch ? {} : null,
           chunkSizeWarningLimit: Number.MAX_SAFE_INTEGER,
-          // @TODO doc needed: sourcemapType not supported
+          // Rolldown 当前只接收 Vite 的 sourcemap 开关，不再透传旧 sourcemapType。
           sourcemap: enableSourceMap,
           rolldownOptions: {
             checks: {
