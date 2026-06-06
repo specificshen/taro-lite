@@ -17,10 +17,10 @@ const VITE_BUILDING_ENVIRONMENT_MESSAGE = /^vite v\S+ building \S+ environment f
 const VITE_BUILD_STARTED_MESSAGE = /^build started\.\.\.$/;
 const VITE_BUILT_IN_MESSAGE = /^built in (\S+)\.$/;
 const ANSI_ESCAPE_CODE = /\u001b\[[0-?]*[ -/]*[@-~]/g;
-const ANSI_RESET = '\u001B[0m';
-const ANSI_CYAN = '\u001B[96m';
-const ANSI_GREEN = '\u001B[92m';
-const RAINBOW_BAR_COLORS = ['\u001B[96m', '\u001B[92m', '\u001B[93m', '\u001B[95m', '\u001B[91m', '\u001B[94m'];
+const BUILD_LOG_RESET = '\u001B[0m';
+const BUILD_LOG_ACCENT = '\u001B[38;2;255;78;205m';
+const BUILD_LOG_DIM_ACCENT = '\u001B[38;2;74;22;63m';
+const BUILD_LOG_GLOW = '\u001B[38;2;255;154;240m';
 
 function formatBytes(byteSize: number): string {
   if (byteSize < 1024) return `${byteSize.toFixed(0)} B`;
@@ -45,12 +45,16 @@ function normalizeViteLogLine(message: string): string {
 
 function createBuildProgressRenderer() {
   const frames = [18, 42, 66, 88];
-  const barLength = 20;
+  const barLength = 18;
   let currentFrameIndex = 0;
+  let isBuildActive = false;
   let isProgressLineActive = false;
 
   return {
     start() {
+      if (isBuildActive) return;
+
+      isBuildActive = true;
       const percent = frames[Math.min(currentFrameIndex, frames.length - 1)];
       currentFrameIndex += 1;
       renderBuildProgress(percent, '代码正在穿微信小程序外套');
@@ -59,6 +63,7 @@ function createBuildProgressRenderer() {
       renderBuildProgress(100, '构建完成，继续监听变更');
       process.stdout.write('\n');
       currentFrameIndex = 0;
+      isBuildActive = false;
       isProgressLineActive = false;
     },
     breakLineBeforeLog() {
@@ -72,11 +77,14 @@ function createBuildProgressRenderer() {
   function renderBuildProgress(percent: number, label: string) {
     const filledLength = Math.round((percent / 100) * barLength);
     const bar = Array.from({ length: barLength }, (_, index) => {
-      const color = RAINBOW_BAR_COLORS[index % RAINBOW_BAR_COLORS.length];
-      const symbol = index < filledLength ? '█' : '▒';
-      return `${color}${symbol}${ANSI_RESET}`;
+      if (index === filledLength - 1 && percent < 100) return `${BUILD_LOG_GLOW}◆${BUILD_LOG_RESET}`;
+      const color = index < filledLength ? BUILD_LOG_ACCENT : BUILD_LOG_DIM_ACCENT;
+      const symbol = index < filledLength ? '━' : '·';
+      return `${color}${symbol}${BUILD_LOG_RESET}`;
     }).join('');
-    process.stdout.write(`${ANSI_CYAN}构建进度${ANSI_RESET} ${ANSI_GREEN}${percent}%${ANSI_RESET} ${bar} ${label}\n`);
+    process.stdout.write(
+      `${BUILD_LOG_ACCENT}构建进度${BUILD_LOG_RESET} ${BUILD_LOG_GLOW}${percent}%${BUILD_LOG_RESET} ${BUILD_LOG_ACCENT}⟦${BUILD_LOG_RESET}${bar}${BUILD_LOG_ACCENT}⟧${BUILD_LOG_RESET} ${label}\n`,
+    );
     isProgressLineActive = false;
   }
 }

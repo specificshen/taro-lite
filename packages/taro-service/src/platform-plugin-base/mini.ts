@@ -75,23 +75,26 @@ export abstract class TaroPlatformBase<T extends TConfig = TConfig> extends Taro
     const watchLabel = this.config.isWatch ? '监听变更' : '单次构建';
     const watchHint = this.config.isWatch ? '我盯着文件，你放心写' : '一锤定音，构建完就收工';
     const minifyLabel = process.env.TARO_MINIFY === 'true' || isProduction ? '开启' : '关闭';
-    const humorLine = isProduction ? '✨ 今天的产物会比较克制，适合上线见人。' : '☕ 别慌，代码正在穿微信小程序外套。';
-    const contentWidth = 54;
+    const humorLine = isProduction ? '产物已打磨好，适合上线见人。' : '正在监听变更，改完马上看。';
+    const accent = chalk.hex('#ff4ecd');
+    const dimAccent = chalk.hex('#ff9af0');
+    const highlight = chalk.hex('#ff6fdd');
+    const contentWidth = 48;
     const line = (content: string, color: (value: string) => string) => {
-      return chalk.cyanBright('│') + color(this.padEndByDisplayWidth(content, contentWidth)) + chalk.cyanBright('│');
+      return accent('│') + color(this.padEndByDisplayWidth(content, contentWidth)) + accent('│');
     };
 
     const lines = [
-      chalk.cyanBright(`╭${'─'.repeat(contentWidth)}╮`),
-      line('  🚀 SPCSN Taro 小程序构建站已开张', chalk.magentaBright),
+      accent(`╭${'─'.repeat(contentWidth)}╮`),
+      line('  SPCSN Taro 小程序构建站已开张', highlight.bold),
       line('', chalk.gray),
-      line(`  模式  ${modeLabel}  ·  ${modeHint}`, chalk.greenBright),
-      line(`  目标  ${this.platform}  ·  React 19 × Vite × Skyline`, chalk.blueBright),
-      line(`  压缩  ${minifyLabel}  ·  输出微信小程序产物`, chalk.yellowBright),
-      line(`  节奏  ${watchLabel}  ·  ${watchHint}`, chalk.cyanBright),
+      line(`  模式  ${modeLabel}  ·  ${modeHint}`, dimAccent),
+      line(`  目标  ${this.platform}  ·  React 19 小程序 × Skyline`, highlight),
+      line(`  压缩  ${minifyLabel}  ·  输出微信小程序产物`, dimAccent),
+      line(`  节奏  ${watchLabel}  ·  ${watchHint}`, highlight),
       line('', chalk.gray),
       line(`  ${humorLine}`, chalk.whiteBright),
-      chalk.cyanBright(`╰${'─'.repeat(contentWidth)}╯`),
+      accent(`╰${'─'.repeat(contentWidth)}╯`),
     ];
 
     console.log(lines.join('\n'));
@@ -212,20 +215,23 @@ export abstract class TaroPlatformBase<T extends TConfig = TConfig> extends Taro
     }
 
     const { chalk } = this.helper;
-    const barLength = 20;
+    const barLength = 18;
     const frames = [18, 42, 66, 88];
+    const accent = chalk.hex('#ff4ecd');
+    const dimAccent = chalk.hex('#4a163f');
+    const glow = chalk.hex('#ff9af0');
     let currentFrameIndex = 0;
     let timer: NodeJS.Timeout | undefined;
 
     const render = (percent: number, label: string) => {
-      const colors = ['#00e5ff', '#00ff85', '#fff700', '#ff9f1c', '#ff4ecd', '#8b5cf6'];
       const filledLength = Math.round((percent / 100) * barLength);
       const bar = Array.from({ length: barLength }, (_, index) => {
-        const color = colors[index % colors.length];
-        const symbol = index < filledLength ? '█' : '▒';
-        return chalk.hex(color)(symbol);
+        if (index === filledLength - 1 && percent < 100) return glow('◆');
+        return index < filledLength ? accent('━') : dimAccent('·');
       }).join('');
-      process.stdout.write(`\r${chalk.cyan('构建进度')} ${chalk.green(`${percent}%`)} ${bar} ${label}`);
+      process.stdout.write(
+        `\r${accent('构建进度')} ${glow(`${percent}%`)} ${accent('⟦')}${bar}${accent('⟧')} ${label}`,
+      );
     };
 
     const clearLine = () => {
