@@ -2,11 +2,11 @@
 
 > 本文是底座内部历史改造方案和当前状态记录，不是业务接入指导。业务接入请以仓库根目录 `README.md` 的最小依赖和配置示例为准。
 > 目标读者：负责改造 fork 后 Taro monorepo 的 AI / 工程师。
-> 核心目标：把 Taro 从“多框架、多平台、多历史编译器兼容”的通用框架，收敛为“React 19 + Vite + 微信小程序/Skyline 优先”的现代小程序构建与运行框架。
+> 核心目标：把 Taro 从“多框架、多平台、多历史编译器兼容”的通用框架，收敛为“React 19 开发微信小程序/Skyline 优先”的现代小程序构建与运行框架。
 
 ## 0. 当前同步状态（2026-06-05）
 
-当前仓库已经不再只是早期方案阶段，`1.0.0` 稳定线已按 React 19 + Vite + WeApp + Skyline / glass-easel 主链路推进。
+当前仓库已经不再只是早期方案阶段，`1.0.0` 稳定线已按 React 19 开发 WeApp + Skyline / glass-easel 主链路推进。
 
 已落地：
 
@@ -18,7 +18,7 @@
 - `@spcsn/taro-runner-utils` 已并入 `@spcsn/taro-service` 与 `@spcsn/taro-mini-runner`。
 - `babel-preset-taro` 已改为 `@spcsn/taro-cli/babel-preset-taro` 子路径能力。
 - PostCSS / Babel 历史插件包已从公开接入面移除，相关历史包已从 `pnpm-workspace.yaml` 排除。
-- 已建立 `fixtures/weapp-react19-vite-skyline`，用于验证 React 19 + Vite + WeApp + Skyline / glass-easel 构建链路。
+- 已建立 `fixtures/weapp-react19-vite-skyline`，用于验证 React 19 开发 WeApp + Skyline / glass-easel 构建链路。
 - `scripts/check-release-readiness.ts` 已作为发布前防回退检查，覆盖公开包版本、发布面和业务可见类型注释边界。
 
 仍处于过渡态：
@@ -543,7 +543,7 @@ Skyline 不等于 WebView。不要引入：
 
 ## 11. 如何接入真实业务工程验证
 
-当前验证目标是证明业务工程只显式安装三个 `@spcsn` 入口包也能完成 React 19 + Vite + WeApp + Skyline / glass-easel 构建。不要再按早期方案手动替换十几个历史内部包。
+当前验证目标是证明业务工程只显式安装三个 `@spcsn` 入口包也能完成 React 19 开发 WeApp + Skyline / glass-easel 构建。不要再按早期方案手动替换十几个历史内部包。
 
 ### 11.1 验证原则
 

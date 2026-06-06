@@ -1,7 +1,7 @@
 {
   "name": "taro",
   "version": "1.0.0",
-  "description": "React + Vite + 微信小程序（Skyline / glass-easel）现代化 fork",
+  "description": "React 微信小程序（Skyline / glass-easel）现代化底座",
   "homepage": "https://github.com/specificshen/taro-lite#readme",
   "author": "Samuel Ouyang",
   "private": true,
@@ -9,7 +9,6 @@
   "keywords": [
     "taro",
     "react",
-    "vite",
     "weapp",
     "skyline",
     "glass-easel"

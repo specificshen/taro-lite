@@ -19,7 +19,7 @@
 
 ## 支持范围
 
-当前只维护 React + Vite + WeApp 小程序运行时。H5、React Native、Vue 和 Webpack 相关描述均不再作为维护目标。
+当前只维护 React 开发 WeApp 小程序运行时。H5、React Native、Vue 和 Webpack 相关描述均不再作为维护目标。
 
 ## 收敛说明
 

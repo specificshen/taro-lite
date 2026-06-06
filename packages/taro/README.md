@@ -1,6 +1,6 @@
 # `@spcsn/taro`
 
-`@spcsn/taro` 是业务代码使用的核心运行时 API 入口，面向 React 19 + Vite + 微信小程序（Skyline / glass-easel）链路。
+`@spcsn/taro` 是业务代码使用的核心运行时 API 入口，面向 React 19 开发微信小程序（Skyline / glass-easel）链路。
 
 ## 包定位
 
@@ -16,4 +16,4 @@
 
 ## 支持范围
 
-当前只维护 React + Vite + WeApp 小程序路径。H5、React Native、Harmony、Vue、Solid、Nerv 和 Webpack 不属于本包的维护目标。
+当前只维护 React 开发 WeApp 小程序路径。H5、React Native、Harmony、Vue、Solid、Nerv 和 Webpack 不属于本包的维护目标。

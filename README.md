@@ -2,15 +2,15 @@
 
 `@spcsn` 独立小程序底座，来源于 Taro 代码基线，但不再沿用上游 Taro 的多端、多框架、`4.x` 版本语义。
 
-本仓库只维护一条主链路：**React 19 + Vite + 微信小程序 WeApp + Skyline / glass-easel**。
+本仓库只维护一条主链路：**React 19 开发微信小程序 WeApp，输出 Skyline / glass-easel 产物**。
 
 ## 定位
 
 这是 `@spcsn` 自己的底座产品线，不是官方 Taro 的 patch 包。
 
 - 当前稳定线从 `1.0.0` 起步，不映射上游 Taro `4.x`。
-- 只保证 React 19 + WeApp 小程序链路。
-- 默认使用 Vite，Webpack runner 不在维护范围内。
+- 只保证 React 19 开发 WeApp 小程序链路。
+- 底层构建器由底座内部管理，Webpack runner 不在维护范围内。
 - H5、React Native、Harmony、支付宝、字节、百度、QQ 等平台不在当前承诺范围内。
 - Vue、Solid、Nerv 等非 React 框架不在当前承诺范围内。
 
@@ -35,7 +35,7 @@
 }
 ```
 
-业务工程只应显式安装上面的三个 `@spcsn` 入口包。构建器、运行时、平台适配、原生绑定、Babel/PostCSS/Vite 插件等都属于底座内部实现，由 CLI 和入口包闭包管理。
+业务工程只应显式安装上面的三个 `@spcsn` 入口包。构建器、运行时、平台适配、原生绑定、Babel/PostCSS 插件等都属于底座内部实现，由 CLI 和入口包闭包管理。
 
 业务侧如果需要显式安装额外包，必须能回答“业务源码是否直接 import 它，或它是否是明确的命令行工具”。
 
@@ -43,7 +43,7 @@
 
 当前独立稳定版本线从 `1.0.0` 开始。
 
-- `1.0.x`：React 19 + Vite + WeApp / Skyline 主链路的 bugfix、发版修正和依赖边界收敛。
+- `1.0.x`：React 19 开发 WeApp / Skyline 小程序主链路的 bugfix、发版修正和依赖边界收敛。
 - `1.x` minor：底座能力边界或业务接入约定向前兼容扩展。
 - `2.0.0`：业务接入契约发生不兼容变化时再考虑。
 
@@ -54,7 +54,6 @@
 - Node.js 22+
 - pnpm 10+
 - React 19
-- Vite 8
 
 安装依赖：
 

@@ -34,4 +34,4 @@ taro <command> [options]
 
 ## 支持范围
 
-当前只维护 React 19 + Vite + 微信小程序（Skyline / glass-easel）链路，不支持 H5、React Native、Harmony、Vue、Webpack 等上游历史路径。
+当前只维护 React 19 开发微信小程序（Skyline / glass-easel）链路，不支持 H5、React Native、Harmony、Vue、Webpack 等上游历史路径。
