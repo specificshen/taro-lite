@@ -19,6 +19,7 @@ import {
 } from '../utils';
 import { DEFAULT_TERSER_OPTIONS, MINI_EXCLUDE_POSTCSS_PLUGIN_NAME } from '../utils/constants';
 import { createDevBuildSummaryLogger, logger } from '../utils/logger';
+import { buildProfiler } from '../utils/profile';
 
 import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
 import type { GetManualChunk } from 'rollup';
@@ -226,12 +227,18 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
   return {
     name: 'taro:vite-mini-config',
     config: async () => {
+      const configStartMs = buildProfiler.start();
       if (!enableSourceMap) {
-        await removeSourceMapFiles(outputRoot);
+        await buildProfiler.measure('source map cleanup', () => removeSourceMapFiles(outputRoot));
       }
 
+      const moduleResolveStartMs = buildProfiler.start();
       const taroComponentsPath = resolveModulePath(taroConfig.taroComponentsPath, appPath);
       const taroRuntimePath = resolveModulePath('@spcsn/taro-runtime', appPath);
+      buildProfiler.end('resolve runtime modules', moduleResolveStartMs);
+
+      const sassOption = await buildProfiler.measure('sass options', () => getSassOption());
+      buildProfiler.end('vite config', configStartMs);
 
       return {
         mode: getMode(taroConfig),
@@ -300,7 +307,7 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
             plugins: getPostcssPlugins(appPath, __postcssOption, MINI_EXCLUDE_POSTCSS_PLUGIN_NAME),
           },
           preprocessorOptions: {
-            ...(await getSassOption()),
+            ...sassOption,
             less: taroConfig.lessLoaderOption || {},
             stylus: taroConfig.stylusLoaderOption || {},
           },

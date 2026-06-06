@@ -5,14 +5,20 @@ import { viteStaticCopy } from 'vite-plugin-static-copy';
 import miniPreset from './mini';
 import { convertCopyOptions } from './utils';
 import { TaroCompilerContext } from './utils/compiler/mini';
+import { buildProfiler } from './utils/profile';
 import { componentConfig } from './utils/component';
 
 import type { ViteMiniBuildConfig } from '@spcsn/taro/types/compile/viteCompilerContext';
 import type { UserConfig } from 'vite';
 
 export default async function (appPath: string, rawTaroConfig: ViteMiniBuildConfig) {
+  const totalStartMs = buildProfiler.start();
+  const contextStartMs = buildProfiler.start();
   const viteCompilerContext = new TaroCompilerContext(appPath, rawTaroConfig);
+  buildProfiler.end('runner context', contextStartMs);
+
   const { taroConfig } = viteCompilerContext;
+  const pluginsStartMs = buildProfiler.start();
   const plugins: UserConfig['plugins'] = [miniPreset(viteCompilerContext)];
 
   // copy-plugin
@@ -28,6 +34,7 @@ export default async function (appPath: string, rawTaroConfig: ViteMiniBuildConf
   if (typeof taroConfig.compiler === 'object' && taroConfig.compiler?.vitePlugins?.length) {
     plugins.push(...taroConfig.compiler.vitePlugins);
   }
+  buildProfiler.end('prepare plugins', pluginsStartMs);
 
   const commonConfig: UserConfig = {
     logLevel: 'silent',
@@ -39,6 +46,7 @@ export default async function (appPath: string, rawTaroConfig: ViteMiniBuildConf
     modifyComponentConfig(componentConfig, taroConfig);
   }
 
+  const modifyViteConfigStartMs = buildProfiler.start();
   taroConfig.modifyViteConfig?.(
     commonConfig,
     {
@@ -46,6 +54,9 @@ export default async function (appPath: string, rawTaroConfig: ViteMiniBuildConf
     },
     viteCompilerContext,
   );
+  buildProfiler.end('modify vite config', modifyViteConfigStartMs);
 
-  await build(commonConfig);
+  await buildProfiler.measure('vite build', () => build(commonConfig));
+  buildProfiler.end('total', totalStartMs);
+  buildProfiler.print();
 }
