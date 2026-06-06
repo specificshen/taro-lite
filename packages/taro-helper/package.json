@@ -16,7 +16,6 @@
     "prepack": "pnpm run build",
     "test": "vitest run",
     "test:ci": "vitest run --coverage",
-    "artifacts": "bun scripts/artifacts.ts",
     "swc:backup": "bun scripts/backup.ts"
   },
   "repository": {

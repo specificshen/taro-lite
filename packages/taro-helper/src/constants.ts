@@ -132,7 +132,6 @@ export const UPDATE_PACKAGE_LIST = [
   '@spcsn/taro-runtime',
   '@spcsn/taro-service',
   '@spcsn/taro-mini-runner',
-  '@spcsn/taro-binding',
 ];
 
 export enum META_TYPE {

@@ -54,7 +54,6 @@
     "@spcsn/taro-service": "workspace:*",
     "@spcsn/taro-shared": "workspace:*",
     "@spcsn/taro-mini-runner": "workspace:*",
-    "@spcsn/taro-binding": "workspace:*",
     "adm-zip": "^0.5.12",
     "download-git-repo": "^3.0.2",
     "inquirer": "^8.2.6",

@@ -111,7 +111,6 @@ SPCSN Taro v1.0.0
 - 所有发布包版本一致。
 - README 的最小依赖集与业务工程实际依赖一致。
 - 业务工程没有显式安装底座内部实现依赖。
-- native binding 平台包都已准备好对应 `.node` 产物。
 - `node packages/taro-cli/bin/taro --version` 输出正确版本。
 - 真实业务工程 `npm run build` 通过。
 
@@ -122,11 +121,7 @@ pnpm run release:check
 pnpm run verify:fixture:weapp
 ```
 
-`release:check` 会检查 `packages/*`、`npm/*` 和 `crates/native_binding` 的版本是否与根 `package.json` 一致，并校验每个 native binding 平台包是否包含预期 `.node` 文件。只想在本地快速检查版本时，可以执行：
-
-```bash
-pnpm run release:check -- --skip-bindings
-```
+`release:check` 会检查 `packages/*` 的版本、发布面和业务工程依赖契约是否与当前 `@spcsn` 底座边界一致。
 
 ## 发布流程
 
@@ -143,25 +138,22 @@ npm whoami
 pnpm run build
 ```
 
-准备 native binding 产物，并确认每个待发布平台包都包含 `.node` 文件：
+运行发布前检查：
 
 ```bash
-pnpm run artifacts
 pnpm run release:check
 ```
-
-如果 `release:check` 提示某个平台包缺少 `.node` 文件，不要发布对应平台包。
 
 先 dry-run，确认 tarball 内容和依赖版本：
 
 ```bash
-pnpm -r --filter './packages/*' --filter './npm/*' --filter './crates/native_binding' publish --access public --tag latest --dry-run
+pnpm -r --filter './packages/*' publish --access public --tag latest --dry-run
 ```
 
 确认无误后正式发布：
 
 ```bash
-pnpm -r --filter './packages/*' --filter './npm/*' --filter './crates/native_binding' publish --access public --tag latest
+pnpm -r --filter './packages/*' publish --access public --tag latest
 ```
 
 发布完成后，在业务工程把本地 `link:` 依赖切成 npm 版本并验证：
@@ -182,9 +174,6 @@ pnpm -r --filter './packages/*' --filter './npm/*' --filter './crates/native_bin
 pnpm install
 npm run build
 ```
-
-注意：native binding 属于安装期实现细节，发布时必须和 CLI 同批次准备、检查和发布。
-
 ## 与上游 Taro 的关系
 
 本仓库继承 Taro 的部分源码基础与 MIT License。上游文档、社区案例和迁移指南只能作为历史背景参考，不能作为本仓库的能力承诺。

@@ -19,7 +19,7 @@
 - `babel-preset-taro` 已改为 `@spcsn/taro-cli/babel-preset-taro` 子路径能力。
 - PostCSS / Babel 历史插件包已从公开接入面移除，相关历史包已从 `pnpm-workspace.yaml` 排除。
 - 已建立 `fixtures/weapp-react19-vite-skyline`，用于验证 React 19 + Vite + WeApp + Skyline / glass-easel 构建链路。
-- `scripts/check-release-readiness.js` 已作为发布前防回退检查，覆盖公开包版本、native binding 产物和业务可见类型注释边界。
+- `scripts/check-release-readiness.ts` 已作为发布前防回退检查，覆盖公开包版本、发布面和业务可见类型注释边界。
 
 仍处于过渡态：
 
@@ -89,11 +89,9 @@ packages/
 @spcsn/taro-helper
 @spcsn/taro-shared
 @spcsn/taro-runtime
-@spcsn/taro-binding
-@spcsn/taro-binding-* 平台包
 ```
 
-这些内部包是安装兼容和运行闭包的一部分，不应让业务工程显式认知。后续继续把它们打进公开入口包，直到业务安装面真正只剩三个 `@spcsn` 入口包和 native binding 安装细节。
+这些内部包是安装兼容和运行闭包的一部分，不应让业务工程显式认知。原 Rust crate、二进制扩展和平台 npm 包链路已移除，`createProject` 改由 `@spcsn/taro-cli` 内部 TypeScript 实现。
 
 ## 4. 包级改造策略
 

@@ -6,5 +6,3 @@ packages:
   - '!**/__tests__/**'
   - '!**/dist/**'
   - '!**/harmony_project/**'
-  - 'npm/darwin-arm64'
-  - 'crates/native_binding'

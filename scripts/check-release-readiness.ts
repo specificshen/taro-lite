@@ -20,7 +20,6 @@ type PackageJson = {
 const rootDir = path.resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const rootPackage = readJson(path.join(rootDir, 'package.json'));
 const expectedVersion = rootPackage.version ?? '';
-const skipBindings = process.argv.includes('--skip-bindings');
 
 const BUSINESS_ENTRY_PACKAGES = ['@spcsn/taro', '@spcsn/taro-components', '@spcsn/taro-cli'];
 
@@ -53,26 +52,15 @@ const PLUGIN_TEMPLATE_PACKAGE_JSON_PATH = 'packages/taro-cli/templates/plugin-co
 const PLUGIN_TEMPLATE_SOURCE_PATH = 'packages/taro-cli/templates/plugin-compile/src/index.ts';
 const BUSINESS_VISIBLE_TYPE_DIRS = ['packages/taro/types', 'packages/taro-components/types'];
 
-const BINDINGS = [
-  {
-    name: '@spcsn/taro-binding-darwin-arm64',
-    path: 'npm/darwin-arm64',
-    nodeFile: 'taro.darwin-arm64.node',
-    minSize: 1024 * 1024,
-  },
-];
-
 const errors: string[] = [];
 const warnings: string[] = [];
 let hasVersionErrors = false;
-let hasBindingErrors = false;
 let hasDependencyBoundaryErrors = false;
 let hasReadmeContractErrors = false;
 let hasPublishSurfaceErrors = false;
 let hasBusinessFixtureContractErrors = false;
 
-const bindingPackageNames = ['@spcsn/taro-binding', ...BINDINGS.map((binding) => binding.name)];
-const expectedPublicPackageNames = [...BUSINESS_ENTRY_PACKAGES, ...PLANNED_INTERNAL_PACKAGES, ...bindingPackageNames];
+const expectedPublicPackageNames = [...BUSINESS_ENTRY_PACKAGES, ...PLANNED_INTERNAL_PACKAGES];
 const publicPackageJsonPaths = collectPublicPackageJsonPaths();
 const publicPackageNames = publicPackageJsonPaths
   .map((packageJsonPath) => readJson(packageJsonPath).name)
@@ -94,7 +82,6 @@ checkBusinessFixtureScriptContract();
 checkBusinessTemplateScriptContract();
 checkPluginTemplateDependencyContract();
 checkBusinessVisibleTypeContract();
-if (!skipBindings) checkBindingPackages();
 
 if (warnings.length > 0) {
   globalThis.console.log('Warnings:\n');
@@ -115,8 +102,6 @@ if (errors.length > 0) {
     globalThis.console.log('- Keep package publish surface aligned with docs/package-consolidation.md.');
   if (hasBusinessFixtureContractErrors)
     globalThis.console.log('- Keep the business fixture limited to public business-facing @spcsn packages.');
-  if (hasBindingErrors) globalThis.console.log('- Run pnpm run artifacts before checking binding platform packages.');
-  if (!skipBindings) globalThis.console.log('- Use --skip-bindings only for a version-only local check.');
   process.exit(1);
 }
 
@@ -195,7 +180,7 @@ function checkBusinessEntryRuntimeDependencyContract() {
 }
 
 function checkBusinessEntryPeerDependencyContract() {
-  const hiddenPackageNames = [...PLANNED_INTERNAL_PACKAGES, ...bindingPackageNames];
+  const hiddenPackageNames = PLANNED_INTERNAL_PACKAGES;
   const businessEntryPackageJsonPaths = publicPackageJsonPaths.filter((packageJsonPath) =>
     BUSINESS_ENTRY_PACKAGES.includes(readJson(packageJsonPath).name ?? ''),
   );
@@ -361,7 +346,7 @@ function checkBusinessFixtureConfigContract() {
 
 function checkBusinessVisibleTypeContract() {
   const internalPackagePattern =
-    /@spcsn\/(taro-runtime|taro-service|taro-mini-runner|taro-helper|taro-shared|taro-binding|taro-plugin-[\w-]+)/g;
+    /@spcsn\/(taro-runtime|taro-service|taro-mini-runner|taro-helper|taro-shared|taro-plugin-[\w-]+)/g;
   const unsupportedConfigExports = [
     /export \* from '\.\/h5'/,
     /export \* from '\.\/harmony'/,
@@ -966,53 +951,12 @@ function checkBusinessVisibleTypeContract() {
   }
 }
 
-function checkBindingPackages() {
-  for (const binding of BINDINGS) {
-    const bindingDir = path.join(rootDir, binding.path);
-    const packageJsonPath = path.join(bindingDir, 'package.json');
-    const nodeFilePath = path.join(bindingDir, binding.nodeFile);
-
-    if (!fs.existsSync(bindingDir)) {
-      hasBindingErrors = true;
-      errors.push(`${binding.name}: missing directory ${binding.path}`);
-      continue;
-    }
-
-    if (!fs.existsSync(packageJsonPath)) {
-      hasBindingErrors = true;
-      errors.push(`${binding.name}: missing package.json`);
-      continue;
-    }
-
-    const packageJson = readJson(packageJsonPath);
-    if (packageJson.main !== binding.nodeFile) {
-      warnings.push(`${binding.name}: package.json main is ${packageJson.main}, expected ${binding.nodeFile}`);
-    }
-
-    if (!fs.existsSync(nodeFilePath)) {
-      hasBindingErrors = true;
-      errors.push(`${binding.name}: missing ${binding.nodeFile}`);
-      continue;
-    }
-
-    const stats = fs.statSync(nodeFilePath);
-    if (stats.size < binding.minSize) {
-      hasBindingErrors = true;
-      const fileSizeMB = (stats.size / (1024 * 1024)).toFixed(2);
-      errors.push(`${binding.name}: ${binding.nodeFile} is too small (${fileSizeMB}MB)`);
-    }
-  }
-}
-
 function printPublishSurface() {
   globalThis.console.log('Business entry packages:\n');
   printPackageGroup(BUSINESS_ENTRY_PACKAGES);
 
   globalThis.console.log('\nPlanned internal packages still published for install compatibility:\n');
   printPackageGroup(PLANNED_INTERNAL_PACKAGES);
-
-  globalThis.console.log('\nNative binding packages:\n');
-  printPackageGroup(bindingPackageNames);
 
   const otherPackageNames = publicPackageNames.filter(
     (packageName) => !expectedPublicPackageNames.includes(packageName),
@@ -1028,11 +972,7 @@ function printPackageGroup(packageNames: string[]): void {
 }
 
 function collectPackageJsonPaths(): string[] {
-  return [
-    ...collectChildPackageJsons(path.join(rootDir, 'packages')),
-    ...collectChildPackageJsons(path.join(rootDir, 'npm')),
-    path.join(rootDir, 'crates/native_binding/package.json'),
-  ];
+  return collectChildPackageJsons(path.join(rootDir, 'packages'));
 }
 
 function collectPublicPackageJsonPaths(): string[] {
@@ -1040,10 +980,7 @@ function collectPublicPackageJsonPaths(): string[] {
 }
 
 function collectPrivateWorkspacePackageNames(): string[] {
-  const workspacePackageJsonPaths = [
-    ...collectChildPackageJsons(path.join(rootDir, 'packages')),
-    ...collectChildPackageJsons(path.join(rootDir, 'crates')),
-  ];
+  const workspacePackageJsonPaths = collectChildPackageJsons(path.join(rootDir, 'packages'));
 
   return workspacePackageJsonPaths
     .map((packageJsonPath) => readJson(packageJsonPath))
