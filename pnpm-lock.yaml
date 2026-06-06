@@ -72,15 +72,6 @@ importers:
       '@spcsn/taro-cli':
         specifier: link:../../packages/taro-cli
         version: link:../../packages/taro-cli
-      '@types/node':
-        specifier: ^22.19.19
-        version: 22.19.19
-      '@types/react':
-        specifier: ^19.2.14
-        version: 19.2.15
-      typescript:
-        specifier: ~6.0.3
-        version: 6.0.3
 
   npm/darwin-arm64: {}
 
