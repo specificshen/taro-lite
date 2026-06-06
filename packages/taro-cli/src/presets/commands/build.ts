@@ -1,6 +1,7 @@
 import * as validatorsModule from '../../doctor/validators.js';
 import * as appConfigModule from '../../util/app-config.js';
 import * as hooks from '../constant/hooks.js';
+import { cliProfiler } from '../../util/profile';
 
 import type { IPluginContext } from '@spcsn/taro-service';
 
@@ -57,10 +58,12 @@ export default (ctx: IPluginContext) => {
 
       // 校验 Taro 项目配置
       if (!noCheck) {
-        const checkResult = await checkConfig({
-          projectConfig: ctx.initialConfig,
-          helper: ctx.helper,
-        });
+        const checkResult = await cliProfiler.measure('validate config', () =>
+          checkConfig({
+            projectConfig: ctx.initialConfig,
+            helper: ctx.helper,
+          }),
+        );
         if (!checkResult.isValid) {
           const ERROR = chalk.red('[✗] ');
           const WARNING = chalk.yellow('[!] ');
@@ -100,91 +103,93 @@ export default (ctx: IPluginContext) => {
       // is build native components mode?
       const isBuildNativeComp = _[1] === 'native-components';
 
-      await ctx.applyPlugins(hooks.ON_BUILD_START);
-      await ctx.applyPlugins({
-        name: platform,
-        opts: {
-          config: {
-            ...config,
-            isWatch,
-            mode: isProduction ? 'production' : 'development',
-            blended,
-            isBuildNativeComp,
-            withoutBuild,
-            newBlended,
-            noInjectGlobalStyle,
-            async modifyAppConfig(appConfig) {
-              extractCompileEntry(appConfig, args, ctx);
+      await cliProfiler.measure('onBuildStart hooks', () => ctx.applyPlugins(hooks.ON_BUILD_START));
+      await cliProfiler.measure('platform build hook', () =>
+        ctx.applyPlugins({
+          name: platform,
+          opts: {
+            config: {
+              ...config,
+              isWatch,
+              mode: isProduction ? 'production' : 'development',
+              blended,
+              isBuildNativeComp,
+              withoutBuild,
+              newBlended,
+              noInjectGlobalStyle,
+              async modifyAppConfig(appConfig) {
+                extractCompileEntry(appConfig, args, ctx);
 
-              await ctx.applyPlugins({
-                name: hooks.MODIFY_APP_CONFIG,
-                opts: {
-                  appConfig,
-                },
-              });
-            },
-            async modifyViteConfig(viteConfig, data, viteCompilerContext) {
-              await ctx.applyPlugins({
-                name: hooks.MODIFY_VITE_CONFIG,
-                initialVal: viteConfig,
-                opts: {
-                  viteConfig,
-                  data,
-                  viteCompilerContext,
-                },
-              });
-            },
-            async modifyBuildAssets(assets, miniPlugin) {
-              await ctx.applyPlugins({
-                name: hooks.MODIFY_BUILD_ASSETS,
-                initialVal: assets,
-                opts: {
-                  assets,
-                  miniPlugin,
-                },
-              });
-            },
-            async modifyMiniConfigs(configMap) {
-              await ctx.applyPlugins({
-                name: hooks.MODIFY_MINI_CONFIGS,
-                initialVal: configMap,
-                opts: {
-                  configMap,
-                },
-              });
-            },
-            async modifyComponentConfig(componentConfig, config) {
-              await ctx.applyPlugins({
-                name: hooks.MODIFY_COMPONENT_CONFIG,
-                opts: {
-                  componentConfig,
-                  config,
-                },
-              });
-            },
-            async onParseCreateElement(nodeName, componentConfig) {
-              await ctx.applyPlugins({
-                name: hooks.ON_PARSE_CREATE_ELEMENT,
-                opts: {
-                  nodeName,
-                  componentConfig,
-                },
-              });
-            },
-            async onBuildFinish({ error, stats, isWatch }) {
-              await ctx.applyPlugins({
-                name: hooks.ON_BUILD_FINISH,
-                opts: {
-                  error,
-                  stats,
-                  isWatch,
-                },
-              });
+                await ctx.applyPlugins({
+                  name: hooks.MODIFY_APP_CONFIG,
+                  opts: {
+                    appConfig,
+                  },
+                });
+              },
+              async modifyViteConfig(viteConfig, data, viteCompilerContext) {
+                await ctx.applyPlugins({
+                  name: hooks.MODIFY_VITE_CONFIG,
+                  initialVal: viteConfig,
+                  opts: {
+                    viteConfig,
+                    data,
+                    viteCompilerContext,
+                  },
+                });
+              },
+              async modifyBuildAssets(assets, miniPlugin) {
+                await ctx.applyPlugins({
+                  name: hooks.MODIFY_BUILD_ASSETS,
+                  initialVal: assets,
+                  opts: {
+                    assets,
+                    miniPlugin,
+                  },
+                });
+              },
+              async modifyMiniConfigs(configMap) {
+                await ctx.applyPlugins({
+                  name: hooks.MODIFY_MINI_CONFIGS,
+                  initialVal: configMap,
+                  opts: {
+                    configMap,
+                  },
+                });
+              },
+              async modifyComponentConfig(componentConfig, config) {
+                await ctx.applyPlugins({
+                  name: hooks.MODIFY_COMPONENT_CONFIG,
+                  opts: {
+                    componentConfig,
+                    config,
+                  },
+                });
+              },
+              async onParseCreateElement(nodeName, componentConfig) {
+                await ctx.applyPlugins({
+                  name: hooks.ON_PARSE_CREATE_ELEMENT,
+                  opts: {
+                    nodeName,
+                    componentConfig,
+                  },
+                });
+              },
+              async onBuildFinish({ error, stats, isWatch }) {
+                await ctx.applyPlugins({
+                  name: hooks.ON_BUILD_FINISH,
+                  opts: {
+                    error,
+                    stats,
+                    isWatch,
+                  },
+                });
+              },
             },
           },
-        },
-      });
-      await ctx.applyPlugins(hooks.ON_BUILD_COMPLETE);
+        }),
+      );
+      await cliProfiler.measure('onBuildComplete hooks', () => ctx.applyPlugins(hooks.ON_BUILD_COMPLETE));
     },
   });
 };

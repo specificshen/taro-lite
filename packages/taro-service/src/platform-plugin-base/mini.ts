@@ -2,6 +2,7 @@ import { recursiveMerge, taroJsMiniComponentsPath } from '@spcsn/taro-helper';
 import { isObject, PLATFORM_TYPE } from '@spcsn/taro-shared';
 
 import { getPkgVersion } from '../utils/package';
+import { serviceProfiler } from '../utils/profile';
 import TaroPlatform from './platform';
 
 import type { RecursiveTemplate, UnRecursiveTemplate } from '@spcsn/taro-shared/dist/template';
@@ -31,7 +32,7 @@ export abstract class TaroPlatformBase<T extends TConfig = TConfig> extends Taro
    * 3. 生成 project.config.json
    */
   private async setup() {
-    await this.setupTransaction.perform(this.setupImpl, this);
+    await serviceProfiler.measure('platform setup', () => this.setupTransaction.perform(this.setupImpl, this));
     this.ctx.onSetupClose?.(this);
   }
 
@@ -174,7 +175,8 @@ export abstract class TaroPlatformBase<T extends TConfig = TConfig> extends Taro
   }
 
   private async buildImpl(extraOptions = {}) {
-    const runner = await this.getRunner();
+    const runner = await serviceProfiler.measure('resolve runner', () => this.getRunner());
+    const getOptionsStartMs = serviceProfiler.start();
     const options = this.getOptions(
       Object.assign(
         {
@@ -185,7 +187,8 @@ export abstract class TaroPlatformBase<T extends TConfig = TConfig> extends Taro
         extraOptions,
       ),
     );
-    await runner(options);
+    serviceProfiler.end('prepare runner options', getOptionsStartMs);
+    await serviceProfiler.measure('run runner', () => runner(options));
   }
 
   /**
@@ -225,6 +228,6 @@ export abstract class TaroPlatformBase<T extends TConfig = TConfig> extends Taro
    */
   public async start() {
     await this.setup();
-    await this.build();
+    await serviceProfiler.measure('platform build', () => this.build());
   }
 }
