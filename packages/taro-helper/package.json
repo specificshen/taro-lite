@@ -1,8 +1,8 @@
 {
   "name": "@spcsn/taro-helper",
   "version": "1.0.0",
-  "description": "Taro Helper",
-  "author": "O2Team",
+  "description": "SPCSN Taro helper utilities",
+  "author": "Samuel Ouyang",
   "license": "MIT",
   "main": "index.js",
   "types": "dist/index.d.ts",

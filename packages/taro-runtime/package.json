@@ -1,11 +1,10 @@
 {
   "name": "@spcsn/taro-runtime",
   "version": "1.0.0",
-  "description": "taro runtime for mini apps.",
-  "author": "O2Team",
+  "description": "SPCSN Taro runtime for mini apps.",
+  "author": "Samuel Ouyang",
   "license": "MIT",
   "browser": "dist/index.js",
-  "main:h5": "dist/runtime.esm.js",
   "main": "dist/runtime.esm.js",
   "module": "dist/runtime.esm.js",
   "types": "./dist/index.d.ts",

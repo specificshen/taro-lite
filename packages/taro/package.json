@@ -1,12 +1,11 @@
 {
   "name": "@spcsn/taro",
   "version": "1.0.0",
-  "description": "Taro framework",
-  "author": "O2Team",
+  "description": "SPCSN Taro runtime API entry",
+  "author": "Samuel Ouyang",
   "license": "MIT",
   "main": "index.js",
   "types": "types/index.d.ts",
-  "typings": "types/index.d.ts",
   "files": [
     "index.js",
     "dist",

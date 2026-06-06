@@ -15,6 +15,7 @@
       "default": "./dist/react-framework/index.js"
     }
   },
+  "author": "Samuel Ouyang",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -62,6 +63,5 @@
     "@types/node": "^22.19.19",
     "@types/react-reconciler": "^0.33.0",
     "typescript": "~6.0.3"
-  },
-  "peerDependencies": {}
+  }
 }

@@ -2,7 +2,7 @@
   "name": "@spcsn/taro-cli",
   "version": "1.0.0",
   "description": "SPCSN Taro Lite CLI for React + Vite + WeApp",
-  "author": "specificshen",
+  "author": "Samuel Ouyang",
   "license": "MIT",
   "main": "index.js",
   "types": "dist/index.d.ts",

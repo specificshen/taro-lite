@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "description": "Minimal business-like fixture for React 19 + Vite + WeApp + Skyline / glass-easel validation.",
+  "author": "Samuel Ouyang",
   "scripts": {
     "build": "taro build",
     "dev": "NODE_ENV=development TARO_MINIFY=true taro build --watch"
