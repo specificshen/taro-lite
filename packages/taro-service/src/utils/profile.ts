@@ -35,6 +35,15 @@ class ServiceProfiler {
     });
   }
 
+  async measure<T>(name: string, task: () => Promise<T>): Promise<T> {
+    const startMs = this.start();
+    try {
+      return await task();
+    } finally {
+      this.end(name, startMs);
+    }
+  }
+
   print(title: string): void {
     if (!this.enabled || this.entries.length === 0) return;
 

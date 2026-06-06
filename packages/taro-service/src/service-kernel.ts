@@ -11,6 +11,7 @@ import Plugin from './service-plugin';
 import * as runnerUtils from './runner-utils';
 import { convertPluginsToObject, mergePlugins, printHelpLog, resolvePresetsOrPlugins } from './utils';
 import { IS_ADD_HOOK, IS_EVENT_HOOK, IS_MODIFY_HOOK, PluginType } from './utils/constants';
+import { serviceProfiler } from './utils/profile';
 
 import type { Func, IProjectConfig, PluginItem } from '@spcsn/taro/types/compile';
 import type Config from './service-config';
@@ -355,12 +356,14 @@ export default class Kernel extends EventEmitter {
     this.setRunOpts(opts);
 
     this.debugger('initPresetsAndPlugins');
+    const initPluginsStartMs = serviceProfiler.start();
     this.initPresetsAndPlugins();
+    serviceProfiler.end('init presets/plugins', initPluginsStartMs);
 
-    await this.applyPlugins('onReady');
+    await serviceProfiler.measure('onReady hooks', () => this.applyPlugins('onReady'));
 
     this.debugger('command:onStart');
-    await this.applyPlugins('onStart');
+    await serviceProfiler.measure('onStart hooks', () => this.applyPlugins('onStart'));
 
     if (!this.commands.has(name)) {
       throw new Error(`${name} 命令不存在`);
@@ -371,18 +374,26 @@ export default class Kernel extends EventEmitter {
     }
 
     if (opts?.options?.platform) {
+      const platformConfigStartMs = serviceProfiler.start();
       opts.config = this.runWithPlatform(opts.options.platform);
-      await this.applyPlugins({
-        name: 'modifyRunnerOpts',
-        opts: {
-          opts: opts?.config,
-        },
-      });
+      serviceProfiler.end('platform config', platformConfigStartMs);
+
+      await serviceProfiler.measure('modifyRunnerOpts hooks', () =>
+        this.applyPlugins({
+          name: 'modifyRunnerOpts',
+          opts: {
+            opts: opts?.config,
+          },
+        }),
+      );
     }
 
-    await this.applyPlugins({
-      name,
-      opts,
-    });
+    await serviceProfiler.measure(`${name} hooks`, () =>
+      this.applyPlugins({
+        name,
+        opts,
+      }),
+    );
+    serviceProfiler.print('kernel command timings');
   }
 }
