@@ -1,4 +1,4 @@
-import { defineConfig } from "@spcsn/taro-cli";
+import { defineConfig } from "@spcsn/taro-cli/define-config";
 import devConfig from "./dev";
 import prodConfig from "./prod";
 

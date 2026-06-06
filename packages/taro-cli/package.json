@@ -26,6 +26,8 @@
     "templates",
     "postinstall.js",
     "index.js",
+    "define-config.js",
+    "define-config.d.ts",
     "global.d.ts"
   ],
   "repository": {
