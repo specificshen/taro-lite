@@ -102,9 +102,6 @@ importers:
       concurrently:
         specifier: ^8.2.2
         version: 8.2.2
-      lodash:
-        specifier: ^4.17.21
-        version: 4.17.21
       rolldown:
         specifier: ^1.0.1
         version: 1.0.1
