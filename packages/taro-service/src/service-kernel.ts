@@ -105,7 +105,8 @@ export default class Kernel extends EventEmitter {
     const globalPresets = convertPluginsToObject(initialGlobalConfig.presets || [])();
     this.debugger('initPresetsAndPlugins', cliAndProjectConfigPresets, cliAndProjectPlugins);
     this.debugger('globalPresetsAndPlugins', globalPlugins, globalPresets);
-    process.env.NODE_ENV !== 'test' &&
+    if (process.env.NODE_ENV !== 'test') {
+      const swcRegisterStartMs = serviceProfiler.start();
       helper.createSwcRegister({
         only: [
           ...Object.keys(cliAndProjectConfigPresets),
@@ -114,11 +115,17 @@ export default class Kernel extends EventEmitter {
           ...Object.keys(globalPlugins),
         ],
       });
+      serviceProfiler.end('plugin swc register', swcRegisterStartMs);
+    }
     this.plugins = new Map();
     this.extraPlugins = {};
     this.globalExtraPlugins = {};
+    const resolvePresetsStartMs = serviceProfiler.start();
     this.resolvePresets(cliAndProjectConfigPresets, globalPresets);
+    serviceProfiler.end('resolve presets', resolvePresetsStartMs);
+    const resolvePluginsStartMs = serviceProfiler.start();
     this.resolvePlugins(cliAndProjectPlugins, globalPlugins);
+    serviceProfiler.end('resolve plugins', resolvePluginsStartMs);
   }
 
   resolvePresets(cliAndProjectPresets: IPluginsObject, globalPresets: IPluginsObject) {
@@ -193,10 +200,16 @@ export default class Kernel extends EventEmitter {
       if (this.cliCommands.includes(commandName)) existsCliCommand.push(commandFilePath);
     }
     const commandPlugins = convertPluginsToObject(existsCliCommand || [])();
+    const commandSwcRegisterStartMs = serviceProfiler.start();
     helper.createSwcRegister({ only: [...Object.keys(commandPlugins)] });
+    serviceProfiler.end('command swc register', commandSwcRegisterStartMs);
+    const resolveCommandPluginsStartMs = serviceProfiler.start();
     const resolvedCommandPlugins = resolvePresetsOrPlugins(this.appPath, commandPlugins, PluginType.Plugin);
+    serviceProfiler.end('resolve command plugins', resolveCommandPluginsStartMs);
     while (resolvedCommandPlugins.length) {
+      const initCommandPluginStartMs = serviceProfiler.start();
       this.initPlugin(resolvedCommandPlugins.shift()!);
+      serviceProfiler.end('init command plugin', initCommandPluginStartMs);
     }
   }
 
