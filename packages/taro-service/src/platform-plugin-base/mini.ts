@@ -130,7 +130,7 @@ export abstract class TaroPlatformBase<T extends TConfig = TConfig> extends Taro
 
     const runnerPkg = '@spcsn/taro-vite-runner';
 
-    const runner = await npm.getNpmPkg(runnerPkg, appPath);
+    const runner = await serviceProfiler.measure('load runner module', () => npm.getNpmPkg(runnerPkg, appPath));
 
     return runner.bind(null, appPath);
   }
@@ -175,7 +175,7 @@ export abstract class TaroPlatformBase<T extends TConfig = TConfig> extends Taro
   }
 
   private async buildImpl(extraOptions = {}) {
-    const runner = await serviceProfiler.measure('resolve runner', () => this.getRunner());
+    const runner = await serviceProfiler.measure('prepare runner', () => this.getRunner());
     const getOptionsStartMs = serviceProfiler.start();
     const options = this.getOptions(
       Object.assign(
