@@ -28,6 +28,13 @@ import type TReactDOM from 'react-dom';
 import type TReactDOMClient from 'react-dom/client';
 
 type PageComponent = React.CElement<PageProps, React.Component<PageProps, any, any>>;
+type InjectPageInstance = (node?: Instance | null) => void;
+type PageInjectedProps = PageProps & {
+  ref?: React.Ref<Instance>;
+  forwardedRef?: InjectPageInstance;
+  reactReduxForwardedRef?: InjectPageInstance;
+};
+type PageInjectedComponent = React.ComponentType<PageInjectedProps>;
 type ReactDOMRenderer = typeof TReactDOM & typeof TReactDOMClient & {
   render?: (element: React.ReactElement, container: unknown) => void;
 };
@@ -72,8 +79,13 @@ export function setReconciler(ReactDOM?) {
 export function connectReactPage(R: typeof React, id: string) {
   return (Page: ReactPageComponent): React.ComponentClass<PageProps> => {
     const isReactComponent = isClassComponent(R, Page);
-    const inject = (node?: Instance) => node && injectPageInstance(node, id);
-    const refs = isReactComponent
+    const pageComponent = Page as PageInjectedComponent;
+    const inject: InjectPageInstance = (node) => {
+      if (node) {
+        injectPageInstance(node, id);
+      }
+    };
+    const refs: PageInjectedProps = isReactComponent
       ? { ref: inject }
       : {
           forwardedRef: inject,
@@ -110,7 +122,7 @@ export function connectReactPage(R: typeof React, id: string) {
           : h(
               reactMeta.PageContext.Provider,
               { value: id },
-              h(Page, {
+              h(pageComponent, {
                 ...this.props,
                 ...refs,
               }),
