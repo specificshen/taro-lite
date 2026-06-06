@@ -33,5 +33,3 @@ flag_management:
     - name: rest
       paths:
         - packages/
-        - crates/
-        - npm/

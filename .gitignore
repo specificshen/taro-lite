@@ -75,17 +75,6 @@ common/autoinstallers/*/.npmrc
 # Heft
 .heft
 
-target/
-debug/
-!packages/taro-platform-harmony-hybrid/src/api/apis/base/debug
-
-# Binding artifacts
-artifacts
-
-# Node Addons
-*.node
-chrome
-
 # ai
 .claude
 .trae
