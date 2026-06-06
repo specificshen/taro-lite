@@ -5,6 +5,7 @@ import { Config, Kernel } from '@spcsn/taro-service';
 
 import customCommand from './commands/custom-command';
 import { getPkgVersion } from './util';
+import { cliProfiler } from './util/profile';
 
 const DEFAULT_FRAMEWORK = 'react';
 const SUPPORTED_COMMANDS = new Set(['build', 'init']);
@@ -128,7 +129,10 @@ export default class CLI {
   }
 
   async parseArgs() {
+    const totalStartMs = cliProfiler.start();
+    const parseArgsStartMs = cliProfiler.start();
     const args = parseCliArgs(process.argv.slice(2));
+    cliProfiler.end('parse args', parseArgsStartMs);
     const _ = args._;
     const command = _[0];
     if (command) {
@@ -159,7 +163,9 @@ export default class CLI {
       }
       const mode = getStringArg(args, 'mode') || process.env.NODE_ENV || 'production';
       // 这里解析 dotenv 以便于 config 解析时能获取 dotenv 配置信息
+      const dotenvStartMs = cliProfiler.start();
       const expandEnv = dotenvParse(appPath, envPrefix, mode);
+      cliProfiler.end('dotenv parse', dotenvStartMs);
 
       const disableGlobalConfig = !!args['disable-global-config'];
 
@@ -171,14 +177,16 @@ export default class CLI {
         appPath: this.appPath,
         disableGlobalConfig: disableGlobalConfig,
       });
-      await config.init(configEnv);
+      await cliProfiler.measure('config init', () => config.init(configEnv));
 
+      const kernelStartMs = cliProfiler.start();
       const kernel = new Kernel({
         appPath,
         presets: [path.resolve(__dirname, '.', 'presets', 'index.js')],
         config,
         plugins: [],
       });
+      cliProfiler.end('kernel init', kernelStartMs);
       kernel.optsPlugins ||= [];
 
       // 将自定义的 变量 添加到 config.env 中，实现 definePlugin 字段定义
@@ -215,7 +223,7 @@ export default class CLI {
             return;
           }
           kernel.optsPlugins.push(require.resolve('@spcsn/taro-vite-runner/framework-react'));
-          await customCommand(command, kernel, {
+          await cliProfiler.measure('build command', () => customCommand(command, kernel, {
             args,
             _,
             platform,
@@ -234,11 +242,13 @@ export default class CLI {
             qr: !!args.qr,
             blended: Boolean(args.blended),
             h: args.h,
-          });
+          }));
+          cliProfiler.end('total', totalStartMs);
+          cliProfiler.print();
           break;
         }
         case 'init': {
-          await customCommand(command, kernel, {
+          await cliProfiler.measure('init command', () => customCommand(command, kernel, {
             _,
             appPath,
             projectName: _[1] || getStringArg(args, 'name'),
@@ -253,7 +263,9 @@ export default class CLI {
             css: getStringArg(args, 'css'),
             autoInstall: args.autoInstall,
             h: args.h,
-          });
+          }));
+          cliProfiler.end('total', totalStartMs);
+          cliProfiler.print();
           break;
         }
       }
