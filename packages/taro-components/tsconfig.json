@@ -11,19 +11,5 @@
     "target": "ES2020",
     "typeRoots": ["./node_modules/@types"]
   },
-  "include": ["src/index.ts"],
-  "ts-node": {
-    "compilerOptions": {
-      "forceConsistentCasingInFileNames": true,
-      "lib": ["ES2023"],
-      "module": "Node16",
-      "moduleResolution": "Node16",
-      "noEmit": true,
-      "resolveJsonModule": false,
-      "strict": true,
-      "target": "ES2022"
-    },
-    "experimentalSpecifierResolution": "node",
-    "require": ["tsconfig-paths/register"]
-  }
+  "include": ["src/index.ts"]
 }

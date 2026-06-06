@@ -27,12 +27,11 @@
     "build:ci": "pnpm run build",
     "build": "pnpm run build:runtime && pnpm run sync:types",
     "build:runtime": "tsc -p tsconfig.json",
-    "sync:types": "pnpm run tsx --files scripts/json-schema-to-types.ts",
+    "sync:types": "bun scripts/json-schema-to-types.ts",
     "test": "vitest run",
     "test:ci": "vitest run --coverage",
     "test:coverage": "vitest run --coverage",
-    "test:watch": "vitest",
-    "tsx": "ts-node --skipIgnore"
+    "test:watch": "vitest"
   },
   "repository": {
     "type": "git",
@@ -61,8 +60,6 @@
     "miniapp-types": "1.6.0",
     "@types/react": "^19.2.14",
     "@vitest/coverage-istanbul": "^3.2.4",
-    "ts-node": "^10.9.1",
-    "tsconfig-paths": "^3.14.1",
     "typescript": "~6.0.3",
     "vitest": "^3.2.4"
   }
