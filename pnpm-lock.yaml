@@ -61,17 +61,17 @@ importers:
   packages/taro:
     dependencies:
       '@spcsn/taro-runtime':
-        specifier: workspace:*
+        specifier: 1.0.1
         version: link:../taro-runtime
       '@spcsn/taro-shared':
-        specifier: workspace:*
+        specifier: 1.0.1
         version: link:../shared
     devDependencies:
       '@spcsn/taro-components':
-        specifier: workspace:*
+        specifier: 1.0.1
         version: link:../taro-components
       '@spcsn/taro-helper':
-        specifier: workspace:*
+        specifier: 1.0.1
         version: link:../taro-helper
       rolldown:
         specifier: ^1.0.1
@@ -80,19 +80,19 @@ importers:
   packages/taro-cli:
     dependencies:
       '@spcsn/taro-components':
-        specifier: workspace:*
+        specifier: 1.0.1
         version: link:../taro-components
       '@spcsn/taro-helper':
-        specifier: workspace:*
+        specifier: 1.0.1
         version: link:../taro-helper
       '@spcsn/taro-mini-runner':
-        specifier: workspace:*
+        specifier: 1.0.1
         version: link:../taro-mini-runner
       '@spcsn/taro-service':
-        specifier: workspace:*
+        specifier: 1.0.1
         version: link:../taro-service
       '@spcsn/taro-shared':
-        specifier: workspace:*
+        specifier: 1.0.1
         version: link:../shared
       adm-zip:
         specifier: ^0.5.12
@@ -108,7 +108,7 @@ importers:
         version: 5.4.1
     devDependencies:
       '@spcsn/taro':
-        specifier: workspace:*
+        specifier: 1.0.1
         version: link:../taro
       '@types/inquirer':
         specifier: ^8.2.1
@@ -129,7 +129,7 @@ importers:
   packages/taro-components:
     dependencies:
       '@spcsn/taro-shared':
-        specifier: workspace:*
+        specifier: 1.0.1
         version: link:../shared
     devDependencies:
       '@babel/generator':
@@ -145,7 +145,7 @@ importers:
         specifier: ^7.29.0
         version: 7.29.0
       '@spcsn/taro-helper':
-        specifier: workspace:*
+        specifier: 1.0.1
         version: link:../taro-helper
       '@types/node':
         specifier: ^22.19.19
@@ -206,7 +206,7 @@ importers:
         version: 1.22.12
     devDependencies:
       '@spcsn/taro':
-        specifier: workspace:*
+        specifier: 1.0.1
         version: link:../taro
       '@types/babel__core':
         specifier: ^7.20.5
@@ -233,13 +233,13 @@ importers:
   packages/taro-mini-runner:
     dependencies:
       '@spcsn/taro-helper':
-        specifier: workspace:*
+        specifier: 1.0.1
         version: link:../taro-helper
       '@spcsn/taro-runtime':
-        specifier: workspace:*
+        specifier: 1.0.1
         version: link:../taro-runtime
       '@spcsn/taro-shared':
-        specifier: workspace:*
+        specifier: 1.0.1
         version: link:../shared
       '@vitejs/plugin-react':
         specifier: ^6.0.2
@@ -291,7 +291,7 @@ importers:
         version: 4.1.0(vite@8.0.13(@types/node@22.19.19)(esbuild@0.27.7)(terser@5.47.1))
     devDependencies:
       '@spcsn/taro':
-        specifier: workspace:*
+        specifier: 1.0.1
         version: link:../taro
       '@types/node':
         specifier: ^22.19.19
@@ -312,7 +312,7 @@ importers:
   packages/taro-runtime:
     dependencies:
       '@spcsn/taro-shared':
-        specifier: workspace:*
+        specifier: 1.0.1
         version: link:../shared
     devDependencies:
       '@types/node':
@@ -340,10 +340,10 @@ importers:
   packages/taro-service:
     dependencies:
       '@spcsn/taro-helper':
-        specifier: workspace:*
+        specifier: 1.0.1
         version: link:../taro-helper
       '@spcsn/taro-shared':
-        specifier: workspace:*
+        specifier: 1.0.1
         version: link:../shared
       joi:
         specifier: ^17.12.3
@@ -362,7 +362,7 @@ importers:
         version: 2.3.3
     devDependencies:
       '@spcsn/taro':
-        specifier: workspace:*
+        specifier: 1.0.1
         version: link:../taro
       '@types/node':
         specifier: ^22.19.19

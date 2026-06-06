@@ -1,6 +1,6 @@
 {
   "name": "@spcsn/taro-helper",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "SPCSN Taro helper utilities",
   "author": "Samuel Ouyang",
   "license": "MIT",
@@ -52,7 +52,7 @@
     "resolve": "^1.22.8"
   },
   "devDependencies": {
-    "@spcsn/taro": "workspace:*",
+    "@spcsn/taro": "1.0.1",
     "@types/babel__core": "^7.20.5",
     "@types/debug": "^4.1.5",
     "@types/node": "^22.19.19",

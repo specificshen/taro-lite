@@ -1,6 +1,6 @@
 {
   "name": "@spcsn/taro-components",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Taro 组件库",
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -47,10 +47,10 @@
     "node": ">= 22"
   },
   "dependencies": {
-    "@spcsn/taro-shared": "workspace:*"
+    "@spcsn/taro-shared": "1.0.1"
   },
   "devDependencies": {
-    "@spcsn/taro-helper": "workspace:*",
+    "@spcsn/taro-helper": "1.0.1",
     "@babel/generator": "^7.29.1",
     "@babel/parser": "^7.29.3",
     "@babel/traverse": "^7.29.0",

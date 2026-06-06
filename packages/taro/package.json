@@ -1,6 +1,6 @@
 {
   "name": "@spcsn/taro",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "SPCSN Taro runtime API entry",
   "author": "Samuel Ouyang",
   "license": "MIT",
@@ -34,17 +34,17 @@
     "node": ">= 22"
   },
   "dependencies": {
-    "@spcsn/taro-runtime": "workspace:*",
-    "@spcsn/taro-shared": "workspace:*"
+    "@spcsn/taro-runtime": "1.0.1",
+    "@spcsn/taro-shared": "1.0.1"
   },
   "devDependencies": {
-    "@spcsn/taro-components": "workspace:*",
-    "@spcsn/taro-helper": "workspace:*",
-    "@spcsn/taro-shared": "workspace:*",
+    "@spcsn/taro-components": "1.0.1",
+    "@spcsn/taro-helper": "1.0.1",
+    "@spcsn/taro-shared": "1.0.1",
     "rolldown": "^1.0.1"
   },
   "peerDependencies": {
-    "@spcsn/taro-components": "workspace:*",
+    "@spcsn/taro-components": "1.0.1",
     "@types/react": "^19"
   },
   "peerDependenciesMeta": {

@@ -1,6 +1,6 @@
 {
   "name": "@spcsn/taro-runtime",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "SPCSN Taro runtime for mini apps.",
   "author": "Samuel Ouyang",
   "license": "MIT",
@@ -37,7 +37,7 @@
     "node": ">= 22"
   },
   "dependencies": {
-    "@spcsn/taro-shared": "workspace:*"
+    "@spcsn/taro-shared": "1.0.1"
   },
   "devDependencies": {
     "@types/node": "^22.19.19",

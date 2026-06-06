@@ -1,6 +1,6 @@
 {
   "name": "@spcsn/taro-cli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "SPCSN Taro Lite CLI for React WeApp mini programs",
   "author": "Samuel Ouyang",
   "license": "MIT",
@@ -49,18 +49,18 @@
     "node": ">= 22"
   },
   "dependencies": {
-    "@spcsn/taro-components": "workspace:*",
-    "@spcsn/taro-helper": "workspace:*",
-    "@spcsn/taro-service": "workspace:*",
-    "@spcsn/taro-shared": "workspace:*",
-    "@spcsn/taro-mini-runner": "workspace:*",
+    "@spcsn/taro-components": "1.0.1",
+    "@spcsn/taro-helper": "1.0.1",
+    "@spcsn/taro-service": "1.0.1",
+    "@spcsn/taro-shared": "1.0.1",
+    "@spcsn/taro-mini-runner": "1.0.1",
     "adm-zip": "^0.5.12",
     "download-git-repo": "^3.0.2",
     "inquirer": "^8.2.6",
     "ora": "^5.4.1"
   },
   "devDependencies": {
-    "@spcsn/taro": "workspace:*",
+    "@spcsn/taro": "1.0.1",
     "@types/inquirer": "^8.2.1",
     "@types/node": "^22.19.19",
     "@vitest/coverage-istanbul": "^3.2.4",

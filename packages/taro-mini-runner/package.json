@@ -1,6 +1,6 @@
 {
   "name": "@spcsn/taro-mini-runner",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
@@ -36,9 +36,9 @@
     "copy:template": "bun ./scripts/copy-template.ts"
   },
   "dependencies": {
-    "@spcsn/taro-helper": "workspace:*",
-    "@spcsn/taro-runtime": "workspace:*",
-    "@spcsn/taro-shared": "workspace:*",
+    "@spcsn/taro-helper": "1.0.1",
+    "@spcsn/taro-runtime": "1.0.1",
+    "@spcsn/taro-shared": "1.0.1",
     "acorn": "^8.11.3",
     "acorn-walk": "^8.3.2",
     "autoprefixer": "^10.4.19",
@@ -57,7 +57,7 @@
     "vite-plugin-static-copy": "^4.1.0"
   },
   "devDependencies": {
-    "@spcsn/taro": "workspace:*",
+    "@spcsn/taro": "1.0.1",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@types/node": "^22.19.19",
