@@ -77,10 +77,12 @@ export default class Kernel extends EventEmitter {
       nodeModulesPath: helper.recursiveFindNodeModules(path.join(this.appPath, helper.NODE_MODULES)),
     } as IPaths;
     if (this.config.isInitSuccess) {
+      const sourceRoot = this.initialConfig.sourceRoot || helper.SOURCE_DIR;
+      const outputRoot = this.initialConfig.outputRoot || helper.OUTPUT_DIR;
       Object.assign(this.paths, {
         configPath: this.config.configPath,
-        sourcePath: path.join(this.appPath, this.initialConfig.sourceRoot as string),
-        outputPath: path.resolve(this.appPath, this.initialConfig.outputRoot as string),
+        sourcePath: path.join(this.appPath, sourceRoot),
+        outputPath: path.resolve(this.appPath, outputRoot),
       });
     }
     this.debugger(`initPaths:${JSON.stringify(this.paths, null, 2)}`);
