@@ -1,4 +1,2 @@
-page {
-  background: #f7f8fa;
-  color: #1f2329;
-}
+@import './styles/tokens.css';
+@import './styles/utilities.css';

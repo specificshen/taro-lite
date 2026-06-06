@@ -1,0 +1,88 @@
+.container {
+  padding: 16px;
+  padding-bottom: 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.label {
+  font-size: 26px;
+  font-weight: 500;
+  color: var(--foreground);
+}
+
+.error {
+  font-size: 22px;
+  color: var(--destructive);
+}
+
+.radioGroup {
+  display: flex;
+  gap: 16px;
+}
+
+.radioItem {
+  padding: 16px 28px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background-color: var(--secondary);
+}
+
+.radioItemActive {
+  border-color: var(--primary);
+  background-color: var(--accent);
+}
+
+.radioText {
+  font-size: 26px;
+  color: var(--secondary-foreground);
+}
+
+.radioTextActive {
+  font-size: 26px;
+  color: var(--accent-foreground);
+  font-weight: 600;
+}
+
+.switchRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.switchLabel {
+  font-size: 26px;
+  color: var(--foreground);
+}
+
+.actions {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.result {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: var(--accent);
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.resultText {
+  font-size: 22px;
+  color: var(--foreground);
+  font-family: var(--font-mono);
+  line-height: 1.5;
+  white-space: pre-wrap;
+}

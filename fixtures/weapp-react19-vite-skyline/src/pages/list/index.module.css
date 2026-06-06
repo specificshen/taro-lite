@@ -1,0 +1,139 @@
+.container {
+  padding: 16px;
+  padding-bottom: 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.controls {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.stats {
+  margin-top: 12px;
+  font-size: 24px;
+  color: var(--muted-foreground);
+}
+
+.listSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sectionTitle {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.scrollList {
+  max-height: 600px;
+  background-color: var(--card);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  padding: 0 20px;
+}
+
+.empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 0;
+}
+
+.emptyText {
+  font-size: 28px;
+  color: var(--muted-foreground);
+}
+
+.listRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px 0;
+}
+
+.listRowLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.listTitle {
+  font-size: 30px;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.listDesc {
+  font-size: 24px;
+  color: var(--muted-foreground);
+  line-height: 1.4;
+}
+
+.listDate {
+  font-size: 20px;
+  color: var(--muted-foreground);
+}
+
+.listRowRight {
+  margin-left: 16px;
+  flex-shrink: 0;
+}
+
+.loadMore {
+  padding: 24px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loadMoreText {
+  font-size: 24px;
+  color: var(--muted-foreground);
+}
+
+.skeletonRow {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.skeletonBar {
+  width: 40%;
+  height: 28px;
+}
+
+.skylineList {
+  background-color: var(--card);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.skylineItem {
+  padding: 16px;
+  background-color: var(--muted);
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.skylineTitle {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.skylineDesc {
+  font-size: 24px;
+  color: var(--muted-foreground);
+}

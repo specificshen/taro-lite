@@ -1,0 +1,70 @@
+/** ========================================
+ *  layout.module.css — shared layout primitives
+ * ======================================== */
+
+.pageWrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: var(--muted);
+  overflow: hidden;
+}
+
+.pageScroll {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- Navbar ---------- */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  box-sizing: border-box;
+}
+
+.navbarInner {
+  padding-left: 32px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px 8px 0;
+  margin-right: 8px;
+}
+
+.backIcon {
+  font-size: 32px;
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.backText {
+  font-size: 28px;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.navbarTitle {
+  font-size: 34px;
+  font-weight: 700;
+  color: var(--foreground);
+  letter-spacing: 0.5px;
+}

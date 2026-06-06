@@ -1,0 +1,125 @@
+.container {
+  padding: 16px;
+  padding-bottom: 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.gestureGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.gestureItem {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.gestureItemFull {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.gestureLabel {
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.gestureZone {
+  background: linear-gradient(135deg, var(--primary) 0%, #00b2ff 100%);
+  border-radius: var(--radius);
+  padding: 48px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gestureZoneSecondary {
+  background: linear-gradient(135deg, var(--secondary) 0%, var(--muted) 100%);
+  border-radius: var(--radius);
+  padding: 48px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+}
+
+.gestureZoneText {
+  font-size: 30px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.gestureZoneSecondary .gestureZoneText {
+  color: var(--foreground);
+}
+
+.panArea {
+  background-color: var(--muted);
+  border-radius: var(--radius);
+  border: 2px dashed var(--border);
+  height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.panBall {
+  width: 120px;
+  height: 120px;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, var(--primary) 0%, #00b2ff 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-md);
+  will-change: transform;
+}
+
+.panBallText {
+  font-size: 24px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.cardHeaderRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.gestureLog {
+  background-color: #0f172a;
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.gestureLogEmpty {
+  color: #64748b;
+  font-size: 24px;
+  text-align: center;
+  padding: 40px 0;
+}
+
+.gestureLogRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.gestureLogText {
+  color: #f8fafc;
+  font-family: var(--font-mono);
+  font-size: 22px;
+}

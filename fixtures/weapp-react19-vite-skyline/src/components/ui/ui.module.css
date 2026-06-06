@@ -1,0 +1,338 @@
+/** ========================================
+ *  ui.module.css — shadcn-inspired primitives
+ *  All UI primitives share one module to keep
+ *  the fixture lean and WXSS-selector-count low.
+ * ======================================== */
+
+/* ---------- Card ---------- */
+.card {
+  background-color: var(--card);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+}
+
+.cardHeader {
+  padding: 24px 24px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cardTitle {
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--card-foreground);
+}
+
+.cardDescription {
+  font-size: 24px;
+  color: var(--muted-foreground);
+  line-height: 1.4;
+}
+
+.cardContent {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.cardFooter {
+  padding: 0 24px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* ---------- Badge ---------- */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  padding: 4px 14px;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1;
+  border: 1px solid transparent;
+}
+
+.badge_default {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.badge_secondary {
+  background-color: var(--secondary);
+  color: var(--secondary-foreground);
+}
+
+.badge_destructive {
+  background-color: var(--destructive);
+  color: var(--destructive-foreground);
+}
+
+.badge_outline {
+  background-color: transparent;
+  color: var(--foreground);
+  border-color: var(--border);
+}
+
+.badge_success {
+  background-color: var(--success);
+  color: var(--success-foreground);
+}
+
+.badge_warning {
+  background-color: var(--warning);
+  color: var(--warning-foreground);
+}
+
+/* ---------- Button ---------- */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  border: none;
+  text-align: center;
+}
+
+.btn_default {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.btn_secondary {
+  background-color: var(--secondary);
+  color: var(--secondary-foreground);
+}
+
+.btn_destructive {
+  background-color: var(--destructive);
+  color: var(--destructive-foreground);
+}
+
+.btn_outline {
+  background-color: transparent;
+  color: var(--foreground);
+  border: 1px solid var(--border);
+}
+
+.btn_ghost {
+  background-color: transparent;
+  color: var(--foreground);
+}
+
+.btn_size_default {
+  padding: 20px 28px;
+  font-size: 28px;
+}
+
+.btn_size_sm {
+  padding: 12px 20px;
+  font-size: 24px;
+}
+
+.btn_size_lg {
+  padding: 28px 36px;
+  font-size: 32px;
+}
+
+.btn_size_icon {
+  padding: 16px;
+  font-size: 28px;
+}
+
+.btn_disabled {
+  opacity: 0.5;
+}
+
+/* ---------- Input ---------- */
+.input {
+  background-color: var(--input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 18px 22px;
+  font-size: 28px;
+  color: var(--foreground);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.input_disabled {
+  opacity: 0.5;
+}
+
+/* ---------- Avatar ---------- */
+.avatar {
+  position: relative;
+  display: flex;
+  width: 80px;
+  height: 80px;
+  border-radius: 9999px;
+  overflow: hidden;
+  background-color: var(--muted);
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+}
+
+.avatarImage {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+}
+
+.avatarFallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background-color: var(--secondary);
+}
+
+.avatarFallbackText {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--secondary-foreground);
+}
+
+/* ---------- Separator ---------- */
+.separator {
+  background-color: var(--border);
+  flex-shrink: 0;
+}
+
+.separator_horizontal {
+  height: 1px;
+  width: 100%;
+  margin: 16px 0;
+}
+
+.separator_vertical {
+  width: 1px;
+  height: 100%;
+  margin: 0 16px;
+}
+
+/* ---------- Skeleton ---------- */
+.skeleton {
+  background-color: var(--muted);
+  border-radius: var(--radius-sm);
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+/* ---------- Drawer ---------- */
+.drawerPortal {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+}
+
+.drawerOverlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.48);
+}
+
+.drawerContent {
+  position: absolute;
+  background-color: var(--background);
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-lg);
+}
+
+.drawerContent_bottom {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+  max-height: 85vh;
+}
+
+.drawerContent_right {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 80vw;
+  max-width: 480px;
+  border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+}
+
+.drawerContent_left {
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 80vw;
+  max-width: 480px;
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+}
+
+.drawerContent_top {
+  left: 0;
+  right: 0;
+  top: 0;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  max-height: 85vh;
+}
+
+.drawerHeader {
+  padding: 24px 24px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+}
+
+.drawerTitle {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.drawerDescription {
+  font-size: 24px;
+  color: var(--muted-foreground);
+  line-height: 1.4;
+}
+
+.drawerFooter {
+  padding: 0 24px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.drawerClose {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  background-color: var(--secondary);
+  z-index: 10;
+}
+
+.drawerCloseIcon {
+  font-size: 24px;
+  color: var(--muted-foreground);
+  font-weight: 700;
+}

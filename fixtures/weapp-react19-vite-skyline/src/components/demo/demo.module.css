@@ -1,0 +1,90 @@
+/** ========================================
+ *  demo.module.css — demo / debug components
+ * ======================================== */
+
+.logSection {
+  background-color: var(--card);
+  padding: 24px;
+  margin: 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+.logHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+}
+
+.logTitle {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.logClear {
+  color: var(--primary);
+  font-size: 26px;
+  font-weight: 600;
+}
+
+.logConsole {
+  background-color: #0f172a;
+  border-radius: var(--radius-sm);
+  padding: 20px;
+  min-height: 240px;
+  box-sizing: border-box;
+}
+
+.logLine {
+  display: flex;
+  margin-bottom: 12px;
+  align-items: flex-start;
+  line-height: 1.4;
+}
+
+.logLineEmpty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 0;
+}
+
+.logMessageEmpty {
+  color: #64748b;
+  font-size: 24px;
+  text-align: center;
+}
+
+.logTime {
+  color: #38bdf8;
+  font-family: var(--font-mono);
+  font-size: 20px;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.logMessage {
+  font-family: var(--font-mono);
+  font-size: 22px;
+}
+
+.logType_info {
+  color: #f8fafc;
+}
+
+.logType_success {
+  color: #4ade80;
+}
+
+.logType_warn {
+  color: #facc15;
+}
+
+.logType_error {
+  color: #f87171;
+}

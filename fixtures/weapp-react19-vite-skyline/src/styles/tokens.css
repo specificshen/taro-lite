@@ -1,0 +1,59 @@
+/**
+ * Design Tokens — shadcn-inspired CSS variables for Taro Mini Program
+ * Uses flat RGB values for maximum WeChat/WXSS compatibility.
+ */
+
+page {
+  --background: #ffffff;
+  --foreground: #1f2329;
+
+  --card: #ffffff;
+  --card-foreground: #1f2329;
+
+  --popover: #ffffff;
+  --popover-foreground: #1f2329;
+
+  --primary: #165dff;
+  --primary-foreground: #ffffff;
+
+  --secondary: #f2f3f5;
+  --secondary-foreground: #1f2329;
+
+  --muted: #f6f8fa;
+  --muted-foreground: #86909c;
+
+  --accent: #e8f3ff;
+  --accent-foreground: #165dff;
+
+  --destructive: #f53f3f;
+  --destructive-foreground: #ffffff;
+
+  --border: #e1e3e6;
+  --input: #f2f3f5;
+  --ring: #165dff;
+
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+
+  --success: #00b42a;
+  --success-foreground: #ffffff;
+  --warning: #ff7d00;
+  --warning-foreground: #ffffff;
+  --info: #165dff;
+  --info-foreground: #ffffff;
+
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 6px 24px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 12px 48px rgba(0, 0, 0, 0.12);
+
+  background: var(--muted);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}

@@ -1,0 +1,113 @@
+.container {
+  padding: 16px;
+  padding-bottom: 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sectionTitle {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--foreground);
+  margin-bottom: 4px;
+}
+
+.cardBodyText {
+  font-size: 28px;
+  color: var(--foreground);
+  margin-bottom: 8px;
+}
+
+.rowWrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.colGap {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.rowGap {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.rowCenter {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.inputValue {
+  font-size: 24px;
+  color: var(--muted-foreground);
+}
+
+.mutedText {
+  font-size: 24px;
+  color: var(--muted-foreground);
+}
+
+.skeletonArea {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background-color: var(--card);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+
+.skeletonTitle {
+  height: 36px;
+  width: 60%;
+  margin-bottom: 8px;
+}
+
+.skeletonLine {
+  height: 28px;
+  width: 100%;
+}
+
+.skeletonLineShort {
+  height: 28px;
+  width: 40%;
+}
+
+.skeletonRealTitle {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--foreground);
+  margin-bottom: 8px;
+}
+
+.skeletonRealLine {
+  font-size: 28px;
+  color: var(--foreground);
+  margin-bottom: 8px;
+}
+.drawerBody {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+}
+
+.drawerBodyText {
+  font-size: 28px;
+  color: var(--foreground);
+  line-height: 1.5;
+}

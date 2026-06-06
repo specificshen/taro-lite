@@ -1,0 +1,113 @@
+.container {
+  padding: 16px;
+  padding-bottom: 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.label {
+  font-size: 26px;
+  font-weight: 500;
+  color: var(--foreground);
+}
+
+.inputRow {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.textInput {
+  flex: 1;
+  background-color: var(--input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 18px 22px;
+  font-size: 28px;
+  color: var(--foreground);
+  box-sizing: border-box;
+}
+
+.listPreview {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.listCount {
+  font-size: 24px;
+  color: var(--muted-foreground);
+}
+
+.tagCloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Counter */
+.counterDisplay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 0;
+}
+
+.counterNumber {
+  font-size: 72px;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.historyRow {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.counterControls {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+/* Batch */
+.batchGrid {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.batchItem {
+  flex: 1;
+  background-color: var(--muted);
+  border-radius: var(--radius);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.batchLabel {
+  font-size: 24px;
+  color: var(--muted-foreground);
+  font-weight: 500;
+}
+
+.batchValue {
+  font-size: 40px;
+  font-weight: 700;
+  color: var(--foreground);
+}

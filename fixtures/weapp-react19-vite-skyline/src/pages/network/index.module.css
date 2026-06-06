@@ -1,0 +1,75 @@
+.container {
+  padding: 16px;
+  padding-bottom: 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.label {
+  font-size: 26px;
+  font-weight: 500;
+  color: var(--foreground);
+}
+
+.methodGroup {
+  display: flex;
+  gap: 16px;
+}
+
+.methodItem {
+  padding: 16px 32px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background-color: var(--secondary);
+}
+
+.methodItemActive {
+  border-color: var(--primary);
+  background-color: var(--accent);
+}
+
+.methodText {
+  font-size: 26px;
+  color: var(--secondary-foreground);
+}
+
+.methodTextActive {
+  font-size: 26px;
+  color: var(--accent-foreground);
+  font-weight: 600;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.resHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.jsonScroll {
+  max-height: 400px;
+  background-color: #1a1a1a;
+  border-radius: var(--radius-sm);
+  padding: 20px;
+}
+
+.jsonText {
+  color: #eff2f5;
+  font-family: var(--font-mono);
+  font-size: 22px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}

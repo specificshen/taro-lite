@@ -1,5 +1,13 @@
 export default defineAppConfig({
-  pages: ['pages/index/index'],
+  pages: [
+    'pages/index/index',
+    'pages/components/index',
+    'pages/form/index',
+    'pages/list/index',
+    'pages/network/index',
+    'pages/gesture/index',
+    'pages/state/index',
+  ],
   window: {
     navigationStyle: 'custom',
     navigationBarTextStyle: 'black',

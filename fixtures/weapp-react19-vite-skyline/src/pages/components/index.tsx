@@ -1,0 +1,212 @@
+import { useState } from 'react';
+import { View, Text } from '@spcsn/taro-components';
+import { PageWrapper } from '@/components/layout/page-wrapper';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Separator } from '@/components/ui/separator';
+import { Skeleton } from '@/components/ui/skeleton';
+import {
+  Drawer,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerClose,
+} from '@/components/ui/drawer';
+import { LogConsole } from '@/components/demo/log-console';
+import { useLogger } from '@/hooks/use-logger';
+import styles from './index.module.css';
+
+export default function ComponentsPage() {
+  const { logs, add, clear } = useLogger();
+  const [inputValue, setInputValue] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [drawerSide, setDrawerSide] = useState<'bottom' | 'right' | 'left' | 'top'>('bottom');
+
+  const handleDemoAction = (name: string) => {
+    add(`点击了 ${name}`, 'info');
+  };
+
+  const triggerSkeleton = () => {
+    setLoading(true);
+    add('Skeleton 加载演示开始', 'info');
+    setTimeout(() => {
+      setLoading(false);
+      add('Skeleton 加载演示结束', 'success');
+    }, 2000);
+  };
+
+  const openDrawer = (side: typeof drawerSide) => {
+    setDrawerSide(side);
+    setDrawerOpen(true);
+    add(`打开 ${side} 抽屉`, 'info');
+  };
+
+  return (
+    <PageWrapper title="组件库">
+      <View className={styles.container}>
+        {/* Card Demo */}
+        <View className={styles.section}>
+          <Text className={styles.sectionTitle}>Card 卡片</Text>
+          <Card>
+            <CardHeader>
+              <CardTitle>账户概览</CardTitle>
+              <CardDescription>查看您的账户状态和最近活动</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Text className={styles.cardBodyText}>余额: ¥12,580.00</Text>
+              <Text className={styles.cardBodyText}>本月支出: ¥3,240.00</Text>
+            </CardContent>
+            <CardFooter>
+              <Button size="sm" onClick={() => handleDemoAction('Card 主要操作')}>查看详情</Button>
+              <Button variant="secondary" size="sm" onClick={() => handleDemoAction('Card 次要操作')}>导出</Button>
+            </CardFooter>
+          </Card>
+        </View>
+
+        {/* Badge Demo */}
+        <View className={styles.section}>
+          <Text className={styles.sectionTitle}>Badge 徽标</Text>
+          <View className={styles.rowWrap}>
+            <Badge>默认</Badge>
+            <Badge variant="secondary">次要</Badge>
+            <Badge variant="success">成功</Badge>
+            <Badge variant="warning">警告</Badge>
+            <Badge variant="destructive">危险</Badge>
+            <Badge variant="outline">边框</Badge>
+          </View>
+        </View>
+
+        {/* Button Demo */}
+        <View className={styles.section}>
+          <Text className={styles.sectionTitle}>Button 按钮</Text>
+          <View className={styles.colGap}>
+            <Button onClick={() => handleDemoAction('默认按钮')}>默认按钮</Button>
+            <Button variant="secondary" onClick={() => handleDemoAction('次要按钮')}>次要按钮</Button>
+            <Button variant="destructive" onClick={() => handleDemoAction('危险按钮')}>危险按钮</Button>
+            <Button variant="outline" onClick={() => handleDemoAction('边框按钮')}>边框按钮</Button>
+            <Button variant="ghost" onClick={() => handleDemoAction('幽灵按钮')}>幽灵按钮</Button>
+            <View className={styles.rowGap}>
+              <Button size="sm" onClick={() => handleDemoAction('小按钮')}>小</Button>
+              <Button size="default" onClick={() => handleDemoAction('默认按钮')}>默认</Button>
+              <Button size="lg" onClick={() => handleDemoAction('大按钮')}>大</Button>
+            </View>
+          </View>
+        </View>
+
+        {/* Input Demo */}
+        <View className={styles.section}>
+          <Text className={styles.sectionTitle}>Input 输入框</Text>
+          <View className={styles.colGap}>
+            <Input
+              placeholder="请输入内容..."
+              value={inputValue}
+              onInput={setInputValue}
+            />
+            <Input
+              placeholder="禁用状态"
+              disabled
+            />
+            <Input
+              placeholder="密码输入"
+              password
+            />
+            <Text className={styles.inputValue}>当前值: {inputValue || '(空)'}</Text>
+          </View>
+        </View>
+
+        {/* Avatar Demo */}
+        <View className={styles.section}>
+          <Text className={styles.sectionTitle}>Avatar 头像</Text>
+          <View className={styles.rowGap}>
+            <Avatar>
+              <AvatarImage src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" />
+              <AvatarFallback>FX</AvatarFallback>
+            </Avatar>
+            <Avatar>
+              <AvatarFallback>AB</AvatarFallback>
+            </Avatar>
+            <Avatar>
+              <AvatarFallback>CD</AvatarFallback>
+            </Avatar>
+          </View>
+        </View>
+
+        {/* Separator Demo */}
+        <View className={styles.section}>
+          <Text className={styles.sectionTitle}>Separator 分割线</Text>
+          <Text className={styles.mutedText}>水平分割线</Text>
+          <Separator />
+          <Text className={styles.mutedText}>垂直分割线</Text>
+          <View className={styles.rowCenter}>
+            <Text>左侧</Text>
+            <Separator orientation="vertical" />
+            <Text>右侧</Text>
+          </View>
+        </View>
+
+        {/* Skeleton Demo */}
+        <View className={styles.section}>
+          <Text className={styles.sectionTitle}>Skeleton 骨架屏</Text>
+          <Button variant="outline" onClick={triggerSkeleton}>
+            {loading ? '加载中...' : '触发骨架屏'}
+          </Button>
+          <View className={styles.skeletonArea}>
+            {loading ? (
+              <>
+                <Skeleton className={styles.skeletonTitle} />
+                <Skeleton className={styles.skeletonLine} />
+                <Skeleton className={styles.skeletonLine} />
+                <Skeleton className={styles.skeletonLineShort} />
+              </>
+            ) : (
+              <>
+                <Text className={styles.skeletonRealTitle}>内容已加载</Text>
+                <Text className={styles.skeletonRealLine}>这是第一行真实内容</Text>
+                <Text className={styles.skeletonRealLine}>这是第二行真实内容</Text>
+                <Text className={styles.skeletonRealLine}>这是第三行真实内容</Text>
+              </>
+            )}
+          </View>
+        </View>
+
+        {/* Drawer Demo */}
+        <View className={styles.section}>
+          <Text className={styles.sectionTitle}>Drawer 抽屉</Text>
+          <View className={styles.rowGap}>
+            <Button variant="outline" onClick={() => openDrawer('bottom')}>底部抽屉</Button>
+            <Button variant="outline" onClick={() => openDrawer('right')}>右侧抽屉</Button>
+            <Button variant="outline" onClick={() => openDrawer('left')}>左侧抽屉</Button>
+            <Button variant="outline" onClick={() => openDrawer('top')}>顶部抽屉</Button>
+          </View>
+        </View>
+
+        <Drawer open={drawerOpen} onOpenChange={setDrawerOpen} side={drawerSide}>
+          <DrawerHeader>
+            <DrawerClose onClick={() => setDrawerOpen(false)} />
+            <DrawerTitle>抽屉标题</DrawerTitle>
+            <DrawerDescription>这是一个 {drawerSide} 方向的抽屉组件演示</DrawerDescription>
+          </DrawerHeader>
+          <View className={styles.drawerBody}>
+            <Text className={styles.drawerBodyText}>
+              抽屉内容区域。可以放置表单、列表、操作按钮等任意内容。
+            </Text>
+            <Text className={styles.drawerBodyText}>
+              点击遮罩层或右上角的关闭按钮可以关闭抽屉。
+            </Text>
+          </View>
+          <DrawerFooter>
+            <Button variant="secondary" onClick={() => setDrawerOpen(false)}>取消</Button>
+            <Button onClick={() => { setDrawerOpen(false); add('抽屉确认操作', 'success'); }}>确认</Button>
+          </DrawerFooter>
+        </Drawer>
+
+        <LogConsole logs={logs} onClear={clear} />
+      </View>
+    </PageWrapper>
+  );
+}
