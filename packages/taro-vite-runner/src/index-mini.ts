@@ -1,6 +1,5 @@
 import { isFunction } from '@spcsn/taro-shared';
 import { build } from 'vite';
-import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 import miniPreset from './mini';
 import { convertCopyOptions } from './utils';
@@ -23,6 +22,7 @@ export default async function (appPath: string, rawTaroConfig: ViteMiniBuildConf
 
   // copy-plugin
   if (taroConfig.copy?.patterns?.length) {
+    const { viteStaticCopy } = await import('vite-plugin-static-copy');
     plugins.push(
       viteStaticCopy({
         targets: convertCopyOptions(taroConfig),
