@@ -221,7 +221,7 @@ export default class CLI {
             console.log('当前 Fork 仅支持 React 框架。');
             return;
           }
-          kernel.optsPlugins.push(require.resolve('@spcsn/taro-vite-runner/framework-react'));
+          kernel.optsPlugins.push(require.resolve('@spcsn/taro-mini-runner/framework-react'));
           await cliProfiler.measure('build command', () => customCommand(command, kernel, {
             args,
             _,

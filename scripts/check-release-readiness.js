@@ -12,7 +12,7 @@ const BUSINESS_ENTRY_PACKAGES = ['@spcsn/taro', '@spcsn/taro-components', '@spcs
 
 const PLANNED_INTERNAL_PACKAGES = [
   '@spcsn/taro-service',
-  '@spcsn/taro-vite-runner',
+  '@spcsn/taro-mini-runner',
   '@spcsn/taro-helper',
   '@spcsn/taro-shared',
   '@spcsn/taro-runtime',
@@ -375,7 +375,7 @@ function checkBusinessFixtureConfigContract() {
 
 function checkBusinessVisibleTypeContract() {
   const internalPackagePattern =
-    /@spcsn\/(taro-runtime|taro-service|taro-vite-runner|taro-helper|taro-shared|taro-binding|taro-plugin-[\w-]+)/g;
+    /@spcsn\/(taro-runtime|taro-service|taro-mini-runner|taro-helper|taro-shared|taro-binding|taro-plugin-[\w-]+)/g;
   const unsupportedConfigExports = [
     /export \* from '\.\/h5'/,
     /export \* from '\.\/harmony'/,

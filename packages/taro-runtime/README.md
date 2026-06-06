@@ -5,7 +5,7 @@
 ## 包定位
 
 - 内部实现包，不是业务侧显式安装入口。
-- 被 `@spcsn/taro` 和 `@spcsn/taro-vite-runner` 直接依赖。
+- 被 `@spcsn/taro` 和 `@spcsn/taro-mini-runner` 直接依赖。
 - 当前仍需要独立发布，因为构建产物会生成对 `@spcsn/taro-runtime` 的运行时代码引用。
 
 ## 核心能力

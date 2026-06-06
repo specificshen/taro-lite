@@ -151,7 +151,7 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
       /node_modules[\\/]scheduler[\\/]/,
     ];
     const taroDeps: RegExp[] = [REG_TARO_SCOPED_PACKAGE];
-    const taroViteRunnerDeps: RegExp[] = [/node_modules[\\/]@spcsn[\\/]taro-vite-runner/];
+    const taroMiniRunnerDeps: RegExp[] = [/node_modules[\\/]@spcsn[\\/]taro-mini-runner/];
     const nodeModulesDeps: RegExp[] = [REG_NODE_MODULES_DIR];
     const babelDeps: RegExp[] = [/node_modules[\\/]@babel[\\/]/];
     const commonjsHelpersDeps: RegExp[] = [/commonjsHelpers\.js$/];
@@ -163,7 +163,7 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
         return (id, { getModuleInfo }) => {
           REG_NODE_MODULES_DIR.lastIndex = 0;
           const moduleInfo = getModuleInfo(id);
-          if (testByReg2DExpList([taroViteRunnerDeps])(id)) return null;
+          if (testByReg2DExpList([taroMiniRunnerDeps])(id)) return null;
           if (testByReg2DExpList([babelDeps, commonjsHelpersDeps])(id)) return 'babelHelpers';
           if (testByReg2DExpList([reactRelatedDeps])(id)) return 'common';
           if (testByReg2DExpList([taroDeps, tslibDeps])(id)) return 'taro';
@@ -174,7 +174,7 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
         return (id, { getModuleInfo }) => {
           REG_NODE_MODULES_DIR.lastIndex = 0;
           const moduleInfo = getModuleInfo(id);
-          if (testByReg2DExpList([taroViteRunnerDeps])(id)) return null;
+          if (testByReg2DExpList([taroMiniRunnerDeps])(id)) return null;
           if (testByReg2DExpList([nodeModulesDeps, commonjsHelpersDeps])(id)) return 'vendors';
           if (moduleInfo?.importers?.length && moduleInfo.importers.length > 1) return 'common';
         };

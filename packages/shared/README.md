@@ -5,7 +5,7 @@
 ## 包定位
 
 - 内部实现包，不是业务侧显式安装入口。
-- 被 `@spcsn/taro`、`@spcsn/taro-runtime`、`@spcsn/taro-service`、`@spcsn/taro-cli` 和 `@spcsn/taro-vite-runner` 复用。
+- 被 `@spcsn/taro`、`@spcsn/taro-runtime`、`@spcsn/taro-service`、`@spcsn/taro-cli` 和 `@spcsn/taro-mini-runner` 复用。
 - 当前仍需要作为独立包发布，直到公开入口包可以把内部依赖稳定打入自身产物。
 
 ## 维护约束

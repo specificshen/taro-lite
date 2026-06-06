@@ -5,7 +5,7 @@
 ## 包定位
 
 - 业务侧公开工具包，可全局安装，也可作为项目 devDependency 使用。
-- 内部编排 `@spcsn/taro-service`、`@spcsn/taro-vite-runner`、微信小程序平台能力和 native binding。
+- 内部编排 `@spcsn/taro-service`、`@spcsn/taro-mini-runner`、微信小程序平台能力和 native binding。
 - 业务项目不应直接依赖 CLI 背后的 service、runner、helper 等内部包。
 
 ## 安装

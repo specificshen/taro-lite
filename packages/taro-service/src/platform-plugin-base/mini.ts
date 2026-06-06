@@ -140,7 +140,7 @@ export abstract class TaroPlatformBase<T extends TConfig = TConfig> extends Taro
     const { appPath } = this.ctx.paths;
     const { npm } = this.helper;
 
-    const runnerPkg = '@spcsn/taro-vite-runner';
+    const runnerPkg = '@spcsn/taro-mini-runner';
 
     const runner = await serviceProfiler.measure('load runner module', () => npm.getNpmPkg(runnerPkg, appPath));
 

@@ -131,7 +131,7 @@ export const UPDATE_PACKAGE_LIST = [
   '@spcsn/taro-helper',
   '@spcsn/taro-runtime',
   '@spcsn/taro-service',
-  '@spcsn/taro-vite-runner',
+  '@spcsn/taro-mini-runner',
   '@spcsn/taro-binding',
 ];
 
