@@ -17,6 +17,7 @@ import ora from 'ora';
 
 import { filterGlobalConfig } from './utils';
 import { CONFIG_DIR_NAME, DEFAULT_CONFIG_FILE } from './utils/constants';
+import { serviceProfiler } from './utils/profile';
 
 import type { IProjectConfig } from '@spcsn/taro/types/compile';
 
@@ -42,21 +43,41 @@ export default class Config {
     this.initialConfig = {};
     this.initialGlobalConfig = {};
     this.isInitSuccess = false;
+    const resolveConfigPathStartMs = serviceProfiler.start();
     this.configPath = resolveScriptPath(path.join(this.appPath, CONFIG_DIR_NAME, DEFAULT_CONFIG_FILE));
-    if (!fs.existsSync(this.configPath)) {
+    serviceProfiler.end('resolve config path', resolveConfigPathStartMs);
+
+    const existsConfigStartMs = serviceProfiler.start();
+    const hasConfig = fs.existsSync(this.configPath);
+    serviceProfiler.end('check config exists', existsConfigStartMs);
+
+    if (!hasConfig) {
       if (this.disableGlobalConfig) return;
       this.initGlobalConfig();
     } else {
+      const globalConfigStartMs = serviceProfiler.start();
       this.initGlobalConfig(configEnv.command);
+      serviceProfiler.end('global config', globalConfigStartMs);
+
+      const swcRegisterStartMs = serviceProfiler.start();
       createSwcRegister({
         only: [(filePath) => filePath.indexOf(path.join(this.appPath, CONFIG_DIR_NAME)) >= 0],
       });
+      serviceProfiler.end('swc register', swcRegisterStartMs);
+
       try {
+        const requireConfigStartMs = serviceProfiler.start();
         const userExport = getModuleDefaultExport(require(this.configPath));
+        serviceProfiler.end('require config', requireConfigStartMs);
+
+        const evaluateConfigStartMs = serviceProfiler.start();
         this.initialConfig = typeof userExport === 'function' ? await userExport(merge, configEnv) : userExport;
+        serviceProfiler.end('evaluate config', evaluateConfigStartMs);
         this.isInitSuccess = true;
       } catch (err) {
         console.log(err);
+      } finally {
+        serviceProfiler.print('config timings');
       }
     }
   }
