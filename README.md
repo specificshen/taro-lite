@@ -174,32 +174,6 @@ pnpm -r --filter './packages/*' publish --access public --tag latest
 pnpm install
 npm run build
 ```
-## 与上游 Taro 的关系
-
-本仓库继承 Taro 的部分源码基础与 MIT License。上游文档、社区案例和迁移指南只能作为历史背景参考，不能作为本仓库的能力承诺。
-
-保留上游 MIT License 文本。新增改造和发布节奏由 `@spcsn` 私有底座线独立维护。
-
 ## License
 
-MIT License
-
-Copyright (c) O2Team
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+MIT，详见 [LICENSE](LICENSE)。
