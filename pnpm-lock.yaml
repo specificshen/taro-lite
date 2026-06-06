@@ -293,9 +293,6 @@ importers:
       '@types/node':
         specifier: ^22.19.19
         version: 22.19.19
-      '@types/react':
-        specifier: ^19.2.14
-        version: 19.2.15
       '@vitest/coverage-istanbul':
         specifier: ^3.2.4
         version: 3.2.4(vitest@3.2.4(@types/debug@4.1.13)(@types/node@22.19.19)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(stylus@0.63.0)(terser@5.47.1))
