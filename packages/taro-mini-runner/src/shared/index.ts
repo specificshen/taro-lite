@@ -42,10 +42,7 @@ export function prettyPrintJson(obj = {}) {
   return JSON.stringify(obj, null, 2);
 }
 
-export function getComponentName(
-  viteCompilerContext: ViteMiniCompilerContext,
-  componentPath: string,
-) {
+export function getComponentName(viteCompilerContext: ViteMiniCompilerContext, componentPath: string) {
   let componentName: string;
   if (REG_NODE_MODULES.test(componentPath)) {
     const nodeModulesRegx = new RegExp(REG_NODE_MODULES, 'gi');
@@ -165,29 +162,25 @@ export function getPostcssPlugins(
   return plugins;
 }
 
-export function getMinify(
-  taroConfig: ViteMiniBuildConfig,
-): 'oxc' | 'terser' | 'esbuild' | boolean {
+export function getMinify(taroConfig: ViteMiniBuildConfig): 'oxc' | 'terser' | 'esbuild' | boolean {
   const isProd = getMode(taroConfig) === 'production';
   const hasExplicitJsMinimizer = typeof taroConfig.jsMinimizer === 'string';
   if (!isProd && !hasExplicitJsMinimizer) return false;
 
   return taroConfig.jsMinimizer === 'terser'
-      ? taroConfig.terser?.enable === false
+    ? taroConfig.terser?.enable === false
+      ? false
+      : 'terser'
+    : taroConfig.jsMinimizer === 'esbuild'
+      ? taroConfig.esbuild?.minify?.enable === false
+        ? false // 只有在明确配置了 esbuild.minify.enable: false 时才不启用压缩
+        : 'esbuild'
+      : !hasExplicitJsMinimizer && taroConfig.terser?.enable === false
         ? false
-        : 'terser'
-      : taroConfig.jsMinimizer === 'esbuild'
-        ? taroConfig.esbuild?.minify?.enable === false
-          ? false // 只有在明确配置了 esbuild.minify.enable: false 时才不启用压缩
-          : 'esbuild'
-        : !hasExplicitJsMinimizer && taroConfig.terser?.enable === false
-          ? false
-          : 'oxc';
+        : 'oxc';
 }
 
-export function getCSSModulesOptions(
-  taroConfig: ViteMiniBuildConfig,
-): false | CSSModulesOptions {
+export function getCSSModulesOptions(taroConfig: ViteMiniBuildConfig): false | CSSModulesOptions {
   if (taroConfig.postcss?.cssModules?.enable !== true) return false;
   const config = recursiveMerge(
     {},

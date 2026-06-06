@@ -1,16 +1,15 @@
-import { defineConfig } from "rolldown";
+import { defineConfig } from 'rolldown';
 
-const externalPackages = ["@spcsn/taro-runtime", "@spcsn/taro-shared", "react"];
-const external = (id) =>
-  externalPackages.some((pkg) => id === pkg || id.startsWith(`${pkg}/`));
+const externalPackages = ['@spcsn/taro-runtime', '@spcsn/taro-shared', 'react'];
+const external = (id) => externalPackages.some((pkg) => id === pkg || id.startsWith(`${pkg}/`));
 
 export default defineConfig({
-  input: "src/index.js",
+  input: 'src/index.js',
   external,
   output: {
-    file: "dist/index.js",
-    format: "cjs",
+    file: 'dist/index.js',
+    format: 'cjs',
     sourcemap: true,
-    exports: "auto",
+    exports: 'auto',
   },
 });

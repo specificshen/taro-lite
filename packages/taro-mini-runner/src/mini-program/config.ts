@@ -9,13 +9,7 @@ import {
   REG_TARO_SCOPED_PACKAGE,
 } from '@spcsn/taro-helper';
 import { getDefaultPostcssConfig } from './postcss';
-import {
-  getCSSModulesOptions,
-  getMinify,
-  getMode,
-  getPostcssPlugins,
-  stripMultiPlatformExt,
-} from '../shared';
+import { getCSSModulesOptions, getMinify, getMode, getPostcssPlugins, stripMultiPlatformExt } from '../shared';
 import { DEFAULT_TERSER_OPTIONS, MINI_EXCLUDE_POSTCSS_PLUGIN_NAME } from '../shared/constants';
 import { createDevBuildSummaryLogger } from '../shared/logger';
 import { buildProfiler } from '../shared/profile.js';
@@ -139,7 +133,9 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
     postcssOption: taroConfig.postcss,
   });
 
-  function getManualChunks(): NonNullable<NonNullable<UserConfig['build']>['rollupOptions']>['output'] extends infer Output
+  function getManualChunks(): NonNullable<
+    NonNullable<UserConfig['build']>['rollupOptions']
+  >['output'] extends infer Output
     ? Output extends { manualChunks?: infer ManualChunks }
       ? ManualChunks
       : never

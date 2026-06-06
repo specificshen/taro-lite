@@ -1,11 +1,11 @@
-const { hooks } = require("@spcsn/taro-runtime");
-const taro = require("./api").default;
+const { hooks } = require('@spcsn/taro-runtime');
+const taro = require('./api').default;
 
-const { initReactHooksFallback } = require("./react-hooks-fallback");
-const { initWeappNativeApiFallback } = require("./native-api-fallback");
+const { initReactHooksFallback } = require('./react-hooks-fallback');
+const { initWeappNativeApiFallback } = require('./native-api-fallback');
 
-if (hooks.isExist("initNativeApi")) {
-  hooks.call("initNativeApi", taro);
+if (hooks.isExist('initNativeApi')) {
+  hooks.call('initNativeApi', taro);
 }
 
 initReactHooksFallback(taro);

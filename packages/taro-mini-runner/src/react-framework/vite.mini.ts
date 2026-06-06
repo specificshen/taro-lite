@@ -81,7 +81,10 @@ function aliasPlugin(ctx: FrameworkPluginContext): PluginOption {
         const reactDir = resolvePackageDir('react', resolveOptions);
         const reactDomDir = resolvePackageDir('react-dom', resolveOptions);
         const reconcilerDir = resolvePackageDir('react-reconciler', resolveOptions, [path.resolve(__dirname, '..')]);
-        const schedulerDir = resolvePackageDir('scheduler', resolveOptions, [path.resolve(__dirname, '..'), reactDomDir]);
+        const schedulerDir = resolvePackageDir('scheduler', resolveOptions, [
+          path.resolve(__dirname, '..'),
+          reactDomDir,
+        ]);
 
         // 开发模式下默认使用 production 版本的 react 减小体积。debugReact 时保留 dev 版本。
         alias.push({

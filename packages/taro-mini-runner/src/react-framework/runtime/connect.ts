@@ -35,9 +35,10 @@ type PageInjectedProps = PageProps & {
   reactReduxForwardedRef?: InjectPageInstance;
 };
 type PageInjectedComponent = React.ComponentType<PageInjectedProps>;
-type ReactDOMRenderer = typeof TReactDOM & typeof TReactDOMClient & {
-  render?: (element: React.ReactElement, container: unknown) => void;
-};
+type ReactDOMRenderer = typeof TReactDOM &
+  typeof TReactDOMClient & {
+    render?: (element: React.ReactElement, container: unknown) => void;
+  };
 
 let h: typeof React.createElement;
 let ReactDOM: ReactDOMRenderer;

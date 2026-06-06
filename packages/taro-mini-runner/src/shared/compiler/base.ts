@@ -15,9 +15,7 @@ import type {
 } from '@spcsn/taro/types/compile/viteCompilerContext';
 import type { Rolldown } from 'vite';
 
-export class CompilerContext<T extends ViteMiniBuildConfig>
-  implements ViteCompilerContext<T>
-{
+export class CompilerContext<T extends ViteMiniBuildConfig> implements ViteCompilerContext<T> {
   static label = VITE_COMPILER_LABEL;
   cwd: string;
   sourceDir!: string;
@@ -66,7 +64,12 @@ class App extends React.Component {
 
   protected processConfig() {}
 
-  async collectedDeps(rollupCtx: Rolldown.PluginContext, id: string, filter, cache = new Set<string>()): Promise<Set<string>> {
+  async collectedDeps(
+    rollupCtx: Rolldown.PluginContext,
+    id: string,
+    filter,
+    cache = new Set<string>(),
+  ): Promise<Set<string>> {
     if (!/\.m?[jt]sx?$/.test(id) || !filter(id) || cache.has(id)) return cache;
 
     cache.add(id);

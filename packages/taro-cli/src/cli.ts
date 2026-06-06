@@ -222,47 +222,51 @@ export default class CLI {
             return;
           }
           kernel.optsPlugins.push(require.resolve('@spcsn/taro-mini-runner/framework-react'));
-          await cliProfiler.measure('build command', () => customCommand(command, kernel, {
-            args,
-            _,
-            platform,
-            isWatch: Boolean(args.watch),
-            // Note: 是否把 Taro 组件编译为原生自定义组件
-            isBuildNativeComp: _[1] === 'native-components',
-            // Note: 新的混合编译模式，支持把组件单独编译为原生组件
-            newBlended: Boolean(args['new-blended']),
-            // Note: 是否禁用编译
-            withoutBuild: !args.build,
-            noInjectGlobalStyle: !args['inject-global-style'],
-            noCheck: !args.check,
-            port: getNumberArg(args, 'port'),
-            env,
-            deviceType: getStringArg(args, 'platform'),
-            qr: !!args.qr,
-            blended: Boolean(args.blended),
-            h: args.h,
-          }));
+          await cliProfiler.measure('build command', () =>
+            customCommand(command, kernel, {
+              args,
+              _,
+              platform,
+              isWatch: Boolean(args.watch),
+              // Note: 是否把 Taro 组件编译为原生自定义组件
+              isBuildNativeComp: _[1] === 'native-components',
+              // Note: 新的混合编译模式，支持把组件单独编译为原生组件
+              newBlended: Boolean(args['new-blended']),
+              // Note: 是否禁用编译
+              withoutBuild: !args.build,
+              noInjectGlobalStyle: !args['inject-global-style'],
+              noCheck: !args.check,
+              port: getNumberArg(args, 'port'),
+              env,
+              deviceType: getStringArg(args, 'platform'),
+              qr: !!args.qr,
+              blended: Boolean(args.blended),
+              h: args.h,
+            }),
+          );
           cliProfiler.end('total', totalStartMs);
           cliProfiler.print();
           break;
         }
         case 'init': {
-          await cliProfiler.measure('init command', () => customCommand(command, kernel, {
-            _,
-            appPath,
-            projectName: _[1] || getStringArg(args, 'name'),
-            description: getStringArg(args, 'description'),
-            typescript: args.typescript,
-            framework: getStringArg(args, 'framework'),
-            compiler: getStringArg(args, 'compiler'),
-            npm: getStringArg(args, 'npm'),
-            templateSource: getStringArg(args, 'template-source'),
-            clone: !!args.clone,
-            template: getStringArg(args, 'template'),
-            css: getStringArg(args, 'css'),
-            autoInstall: args.autoInstall,
-            h: args.h,
-          }));
+          await cliProfiler.measure('init command', () =>
+            customCommand(command, kernel, {
+              _,
+              appPath,
+              projectName: _[1] || getStringArg(args, 'name'),
+              description: getStringArg(args, 'description'),
+              typescript: args.typescript,
+              framework: getStringArg(args, 'framework'),
+              compiler: getStringArg(args, 'compiler'),
+              npm: getStringArg(args, 'npm'),
+              templateSource: getStringArg(args, 'template-source'),
+              clone: !!args.clone,
+              template: getStringArg(args, 'template'),
+              css: getStringArg(args, 'css'),
+              autoInstall: args.autoInstall,
+              h: args.h,
+            }),
+          );
           cliProfiler.end('total', totalStartMs);
           cliProfiler.print();
           break;

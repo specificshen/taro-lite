@@ -92,7 +92,9 @@ const postcssPxTransform = (options: PxTransformOptions = {}) => {
   const minRootSize = resolvedOptions.minRootSize ?? 0;
   const baseFontSize = resolvedOptions.baseFontSize || (minRootSize >= 1 ? minRootSize : 20);
   const designWidth = (input: string) =>
-    typeof resolvedOptions.designWidth === 'function' ? resolvedOptions.designWidth(input) : resolvedOptions.designWidth;
+    typeof resolvedOptions.designWidth === 'function'
+      ? resolvedOptions.designWidth(input)
+      : resolvedOptions.designWidth;
 
   targetUnit = resolvedOptions.targetUnit ?? 'rpx';
 

@@ -65,10 +65,7 @@ function hasDifferentNumericValue(oldValue: RestoreType, value: unknown): boolea
 export function setNodeValue(node: FormElement, oldValue: RestoreType, value, type = 'string') {
   if (value != null) {
     if (type === 'number') {
-      if (
-        (value === 0 && node.value === '') ||
-        hasDifferentNumericValue(oldValue, value)
-      ) {
+      if ((value === 0 && node.value === '') || hasDifferentNumericValue(oldValue, value)) {
         node.value = toString(value);
       }
     } else if (oldValue !== toString(value)) {

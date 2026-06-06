@@ -1,22 +1,22 @@
-import React, { Component } from 'react'
-import { View, Text } from '@spcsn/taro-components'
+import React, { Component } from 'react';
+import { View, Text } from '@spcsn/taro-components';
 
 export default class Index extends Component {
-  componentWillMount () { }
+  componentWillMount() {}
 
-  componentDidMount () { }
+  componentDidMount() {}
 
-  componentWillUnmount () { }
+  componentWillUnmount() {}
 
-  componentDidShow () { }
+  componentDidShow() {}
 
-  componentDidHide () { }
+  componentDidHide() {}
 
-  render () {
+  render() {
     return (
-      <View className='index'>
+      <View className="index">
         <Text>Hello world!</Text>
       </View>
-    )
+    );
   }
 }

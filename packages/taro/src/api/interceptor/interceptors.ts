@@ -27,14 +27,16 @@ export function timeoutInterceptor(chain: Chain) {
     );
 
     proceedPromise = chain.proceed(requestParams);
-    proceedPromise.then((res) => {
-      if (!timeout) return;
-      clearTimeout(timeout);
-      resolve(res);
-    }).catch((err) => {
-      timeout && clearTimeout(timeout);
-      reject(err);
-    });
+    proceedPromise
+      .then((res) => {
+        if (!timeout) return;
+        clearTimeout(timeout);
+        resolve(res);
+      })
+      .catch((err) => {
+        timeout && clearTimeout(timeout);
+        reject(err);
+      });
   });
   return attachAbort(proceedPromise, res);
 }

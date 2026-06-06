@@ -147,10 +147,7 @@ function transformNativeComponents(
     const pathArg = isRecord(callArguments[0]) ? callArguments[0].expression : undefined;
     const nameArg = isRecord(callArguments[1]) ? callArguments[1].expression : undefined;
     const exportNameArg = isRecord(callArguments[2]) ? callArguments[2].expression : undefined;
-    let nativeComponentPath = viteCompilerContext.resolvePageImportPath(
-      id,
-      getStringLiteralValue(pathArg) || '',
-    );
+    let nativeComponentPath = viteCompilerContext.resolvePageImportPath(id, getStringLiteralValue(pathArg) || '');
 
     if (nativeComponentPath.startsWith('.')) {
       nativeComponentPath = path.resolve(path.dirname(id), nativeComponentPath);
@@ -265,13 +262,7 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
       if (!/\.m?[jt]sx?$/.test(id) || typeof filter !== 'function' || !filter(id)) return;
 
       const scopeNativeComp = new Map<string, string>();
-      const result = transformNativeComponents(
-        code,
-        id,
-        viteCompilerContext,
-        nCompUniqueKeyMap,
-        scopeNativeComp,
-      );
+      const result = transformNativeComponents(code, id, viteCompilerContext, nCompUniqueKeyMap, scopeNativeComp);
 
       if (!result.enableImportComponent) return;
 

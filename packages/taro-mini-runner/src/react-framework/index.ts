@@ -21,10 +21,12 @@ export interface FrameworkPluginContext {
 }
 
 interface RunnerOptions {
-  compiler?: string | {
-    type: string;
-    vitePlugins?: PluginOption[];
-  };
+  compiler?:
+    | string
+    | {
+        type: string;
+        vitePlugins?: PluginOption[];
+      };
 }
 
 export function isReactLike(framework: unknown = 'react'): framework is Frameworks {

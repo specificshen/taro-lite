@@ -113,77 +113,77 @@ export default (ctx: IPluginContext) => {
             withoutBuild,
             newBlended,
             noInjectGlobalStyle,
-              async modifyAppConfig(appConfig) {
-                extractCompileEntry(appConfig, args, ctx);
+            async modifyAppConfig(appConfig) {
+              extractCompileEntry(appConfig, args, ctx);
 
-                await ctx.applyPlugins({
-                  name: hooks.MODIFY_APP_CONFIG,
-                  opts: {
-                    appConfig,
-                  },
-                });
-              },
-              async modifyViteConfig(viteConfig, data, viteCompilerContext) {
-                await ctx.applyPlugins({
-                  name: hooks.MODIFY_VITE_CONFIG,
-                  initialVal: viteConfig,
-                  opts: {
-                    viteConfig,
-                    data,
-                    viteCompilerContext,
-                  },
-                });
-              },
-              async modifyBuildAssets(assets, miniPlugin) {
-                await ctx.applyPlugins({
-                  name: hooks.MODIFY_BUILD_ASSETS,
-                  initialVal: assets,
-                  opts: {
-                    assets,
-                    miniPlugin,
-                  },
-                });
-              },
-              async modifyMiniConfigs(configMap) {
-                await ctx.applyPlugins({
-                  name: hooks.MODIFY_MINI_CONFIGS,
-                  initialVal: configMap,
-                  opts: {
-                    configMap,
-                  },
-                });
-              },
-              async modifyComponentConfig(componentConfig, config) {
-                await ctx.applyPlugins({
-                  name: hooks.MODIFY_COMPONENT_CONFIG,
-                  opts: {
-                    componentConfig,
-                    config,
-                  },
-                });
-              },
-              async onParseCreateElement(nodeName, componentConfig) {
-                await ctx.applyPlugins({
-                  name: hooks.ON_PARSE_CREATE_ELEMENT,
-                  opts: {
-                    nodeName,
-                    componentConfig,
-                  },
-                });
-              },
-              async onBuildFinish({ error, stats, isWatch }) {
-                await ctx.applyPlugins({
-                  name: hooks.ON_BUILD_FINISH,
-                  opts: {
-                    error,
-                    stats,
-                    isWatch,
-                  },
-                });
-              },
+              await ctx.applyPlugins({
+                name: hooks.MODIFY_APP_CONFIG,
+                opts: {
+                  appConfig,
+                },
+              });
+            },
+            async modifyViteConfig(viteConfig, data, viteCompilerContext) {
+              await ctx.applyPlugins({
+                name: hooks.MODIFY_VITE_CONFIG,
+                initialVal: viteConfig,
+                opts: {
+                  viteConfig,
+                  data,
+                  viteCompilerContext,
+                },
+              });
+            },
+            async modifyBuildAssets(assets, miniPlugin) {
+              await ctx.applyPlugins({
+                name: hooks.MODIFY_BUILD_ASSETS,
+                initialVal: assets,
+                opts: {
+                  assets,
+                  miniPlugin,
+                },
+              });
+            },
+            async modifyMiniConfigs(configMap) {
+              await ctx.applyPlugins({
+                name: hooks.MODIFY_MINI_CONFIGS,
+                initialVal: configMap,
+                opts: {
+                  configMap,
+                },
+              });
+            },
+            async modifyComponentConfig(componentConfig, config) {
+              await ctx.applyPlugins({
+                name: hooks.MODIFY_COMPONENT_CONFIG,
+                opts: {
+                  componentConfig,
+                  config,
+                },
+              });
+            },
+            async onParseCreateElement(nodeName, componentConfig) {
+              await ctx.applyPlugins({
+                name: hooks.ON_PARSE_CREATE_ELEMENT,
+                opts: {
+                  nodeName,
+                  componentConfig,
+                },
+              });
+            },
+            async onBuildFinish({ error, stats, isWatch }) {
+              await ctx.applyPlugins({
+                name: hooks.ON_BUILD_FINISH,
+                opts: {
+                  error,
+                  stats,
+                  isWatch,
+                },
+              });
             },
           },
-        });
+        },
+      });
       await ctx.applyPlugins(hooks.ON_BUILD_COMPLETE);
     },
   });

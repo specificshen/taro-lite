@@ -34,9 +34,10 @@ import type React from 'react';
 import type TReactDOM from 'react-dom';
 import type TReactDOMClient from 'react-dom/client';
 
-type ReactDOMRenderer = typeof TReactDOM & typeof TReactDOMClient & {
-  render: (element: React.ReactElement, container: unknown) => void;
-};
+type ReactDOMRenderer = typeof TReactDOM &
+  typeof TReactDOMClient & {
+    render: (element: React.ReactElement, container: unknown) => void;
+  };
 
 declare const getCurrentPages: () => PageInstance[];
 

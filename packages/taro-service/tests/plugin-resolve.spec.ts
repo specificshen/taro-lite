@@ -33,7 +33,9 @@ describe('插件解析', () => {
       PluginType.Plugin,
     );
 
-    expect(plugins.map((plugin) => path.relative(cliPackagePath, plugin.path))).toEqual(['dist/platform-weapp/index.js']);
+    expect(plugins.map((plugin) => path.relative(cliPackagePath, plugin.path))).toEqual([
+      'dist/platform-weapp/index.js',
+    ]);
   });
 
   it('按最终路径去重并合并重复插件配置', () => {
