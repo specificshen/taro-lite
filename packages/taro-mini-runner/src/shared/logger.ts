@@ -15,12 +15,14 @@ type LoggerInfoOptions = Parameters<Logger['info']>[1];
 
 const VITE_BUILDING_ENVIRONMENT_MESSAGE = /^vite v\S+ building \S+ environment for \S+\.\.\.$/;
 const VITE_BUILD_STARTED_MESSAGE = /^build started\.\.\.$/;
+const VITE_WATCHING_MESSAGE = /^watching for file changes\.\.\.$/;
 const VITE_BUILT_IN_MESSAGE = /^built in (\S+)\.$/;
 const ANSI_ESCAPE_CODE = /\u001b\[[0-?]*[ -/]*[@-~]/g;
 const BUILD_LOG_RESET = '\u001B[0m';
 const BUILD_LOG_ACCENT = '\u001B[38;2;255;78;205m';
 const BUILD_LOG_DIM_ACCENT = '\u001B[38;2;74;22;63m';
 const BUILD_LOG_GLOW = '\u001B[38;2;255;154;240m';
+const BUILD_LOG_SUCCESS = '\u001B[92m';
 
 function formatBytes(byteSize: number): string {
   if (byteSize < 1024) return `${byteSize.toFixed(0)} B`;
@@ -57,10 +59,10 @@ function createBuildProgressRenderer() {
       isBuildActive = true;
       const percent = frames[Math.min(currentFrameIndex, frames.length - 1)];
       currentFrameIndex += 1;
-      renderBuildProgress(percent, '代码正在穿微信小程序外套');
+      renderBuildProgress(percent, '代码正在换上小程序外套');
     },
     finish() {
-      renderBuildProgress(100, '构建完成，继续监听变更');
+      renderBuildProgress(100, '小程序出炉，继续守炉');
       process.stdout.write('\n');
       currentFrameIndex = 0;
       isBuildActive = false;
@@ -82,8 +84,9 @@ function createBuildProgressRenderer() {
       const symbol = index < filledLength ? '━' : '·';
       return `${color}${symbol}${BUILD_LOG_RESET}`;
     }).join('');
+    const percentLabel = `${percent}%`.padStart(4, ' ');
     process.stdout.write(
-      `${BUILD_LOG_ACCENT}构建进度${BUILD_LOG_RESET} ${BUILD_LOG_GLOW}${percent}%${BUILD_LOG_RESET} ${BUILD_LOG_ACCENT}⟦${BUILD_LOG_RESET}${bar}${BUILD_LOG_ACCENT}⟧${BUILD_LOG_RESET} ${label}\n`,
+      `${BUILD_LOG_ACCENT}出炉进度${BUILD_LOG_RESET} ${BUILD_LOG_GLOW}${percentLabel}${BUILD_LOG_RESET} ${BUILD_LOG_ACCENT}⟦${BUILD_LOG_RESET}${bar}${BUILD_LOG_ACCENT}⟧${BUILD_LOG_RESET} ${label}\n`,
     );
     isProgressLineActive = false;
   }
@@ -110,12 +113,18 @@ export function createDevBuildSummaryLogger(outputRoot: string): Logger {
         progress.start();
         continue;
       }
+      if (VITE_WATCHING_MESSAGE.test(trimmedLine)) {
+        continue;
+      }
+
       const builtInResult = trimmedLine.match(VITE_BUILT_IN_MESSAGE);
       if (builtInResult) {
         progress.finish();
         const [, viteDurationLabel] = builtInResult;
         const outputSizeLabel = formatBytes(calculateDirectorySize(outputRoot));
-        process.stdout.write(`✨ 小程序编译完成：Vite 耗时 ${viteDurationLabel} · 产物总体积 ${outputSizeLabel}\n`);
+        process.stdout.write(
+          `${BUILD_LOG_SUCCESS}✨ 小程序出炉：耗时 ${viteDurationLabel} · 产物总体积 ${outputSizeLabel}${BUILD_LOG_RESET}\n`,
+        );
         continue;
       }
       if (trimmedLine) {

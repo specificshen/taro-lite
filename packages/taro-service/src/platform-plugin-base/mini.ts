@@ -71,11 +71,11 @@ export abstract class TaroPlatformBase<T extends TConfig = TConfig> extends Taro
     const { chalk } = this.helper;
     const isProduction = process.env.NODE_ENV === 'production';
     const modeLabel = isProduction ? '生产模式' : '开发模式';
-    const modeHint = isProduction ? '准备见用户，保持体面' : '正在热身，改完就看';
-    const watchLabel = this.config.isWatch ? '监听变更' : '单次构建';
-    const watchHint = this.config.isWatch ? '我盯着文件，你放心写' : '一锤定音，构建完就收工';
+    const modeHint = isProduction ? '准备端上桌，保持体面' : '小火预热，改完就尝';
+    const watchLabel = this.config.isWatch ? '守炉模式' : '单炉出餐';
+    const watchHint = this.config.isWatch ? '我看着烤箱，你放心加料' : '一炉定型，出炉就收工';
     const minifyLabel = process.env.TARO_MINIFY === 'true' || isProduction ? '开启' : '关闭';
-    const humorLine = isProduction ? '产物已打磨好，适合上线见人。' : '正在监听变更，改完马上看。';
+    const humorLine = isProduction ? '小程序已出炉，适合端给用户。' : '烤箱常开，改完马上尝。';
     const accent = chalk.hex('#ff4ecd');
     const dimAccent = chalk.hex('#ff9af0');
     const highlight = chalk.hex('#ff6fdd');
@@ -83,15 +83,20 @@ export abstract class TaroPlatformBase<T extends TConfig = TConfig> extends Taro
     const line = (content: string, color: (value: string) => string) => {
       return accent('│') + color(this.padEndByDisplayWidth(content, contentWidth)) + accent('│');
     };
+    const row = (label: string, value: string, hint: string, color: (value: string) => string) => {
+      const labelColumn = this.padEndByDisplayWidth(label, 4);
+      const valueColumn = this.padEndByDisplayWidth(value, 10);
+      return line(`  ${labelColumn}  ${valueColumn}  ${hint}`, color);
+    };
 
     const lines = [
       accent(`╭${'─'.repeat(contentWidth)}╮`),
-      line('  SPCSN Taro 小程序构建站已开张', highlight.bold),
+      line('  SPCSN Taro 小程序烘焙坊已开张', highlight.bold),
       line('', chalk.gray),
-      line(`  模式  ${modeLabel}  ·  ${modeHint}`, dimAccent),
-      line(`  目标  ${this.platform}  ·  React 19 小程序 × Skyline`, highlight),
-      line(`  压缩  ${minifyLabel}  ·  输出微信小程序产物`, dimAccent),
-      line(`  节奏  ${watchLabel}  ·  ${watchHint}`, highlight),
+      row('模式', modeLabel, modeHint, dimAccent),
+      row('目标', this.platform, 'React 19 小程序 × Skyline', highlight),
+      row('压缩', minifyLabel, '输出微信小程序产物', dimAccent),
+      row('节奏', watchLabel, watchHint, highlight),
       line('', chalk.gray),
       line(`  ${humorLine}`, chalk.whiteBright),
       accent(`╰${'─'.repeat(contentWidth)}╯`),
@@ -229,8 +234,9 @@ export abstract class TaroPlatformBase<T extends TConfig = TConfig> extends Taro
         if (index === filledLength - 1 && percent < 100) return glow('◆');
         return index < filledLength ? accent('━') : dimAccent('·');
       }).join('');
+      const percentLabel = `${percent}%`.padStart(4, ' ');
       process.stdout.write(
-        `\r${accent('构建进度')} ${glow(`${percent}%`)} ${accent('⟦')}${bar}${accent('⟧')} ${label}`,
+        `\r\u001B[2K${accent('出炉进度')} ${glow(percentLabel)} ${accent('⟦')}${bar}${accent('⟧')} ${label}`,
       );
     };
 
@@ -240,21 +246,21 @@ export abstract class TaroPlatformBase<T extends TConfig = TConfig> extends Taro
 
     return {
       start() {
-        render(8, '启动业务构建');
+        render(8, '开炉预热');
         timer = setInterval(() => {
           const percent = frames[Math.min(currentFrameIndex, frames.length - 1)];
           currentFrameIndex += 1;
-          render(percent, '代码正在穿微信小程序外套');
+          render(percent, '代码正在换上小程序外套');
         }, 180);
       },
       finish() {
         if (timer) clearInterval(timer);
-        render(100, '构建完成，收工');
+        render(100, '小程序出炉，收工');
         clearLine();
       },
       fail() {
         if (timer) clearInterval(timer);
-        render(100, chalk.red('构建失败'));
+        render(100, chalk.red('烘焙翻车'));
         clearLine();
       },
     };
@@ -268,7 +274,7 @@ export abstract class TaroPlatformBase<T extends TConfig = TConfig> extends Taro
     const durationLabel = this.formatDuration(durationMs);
     const outputSizeLabel = this.formatFileSize(outputSize);
 
-    console.log(chalk.greenBright(`✨ 小程序构建完成：耗时 ${durationLabel} · 产物总体积 ${outputSizeLabel}`));
+    console.log(chalk.greenBright(`✨ 小程序出炉：耗时 ${durationLabel} · 产物总体积 ${outputSizeLabel}`));
     console.log();
   }
 
