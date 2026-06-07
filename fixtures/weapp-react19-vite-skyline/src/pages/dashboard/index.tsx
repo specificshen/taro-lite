@@ -5,102 +5,8 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { IconCircle, SvgIcon } from '@/components/ui/icon';
 import { Separator } from '@/components/ui/separator';
+import { coverageItems, dashboardStats, fixturePages, qualitySignals } from '@/features/fixture-navigation';
 import styles from './index.module.css';
-
-interface NavItem {
-  title: string;
-  desc: string;
-  path: string;
-  icon: 'layers' | 'form' | 'list' | 'wifi' | 'hand' | 'zap';
-  gradient: 'primary' | 'warm' | 'ocean' | 'rose' | 'sky' | 'success';
-  badge: string;
-  badgeVariant: 'default' | 'secondary' | 'success' | 'warning';
-  coverage: string;
-  health: string;
-}
-
-const navItems: NavItem[] = [
-  {
-    title: '组件库',
-    desc: '基础 UI 原语与 Drawer 多方向动效验证',
-    path: '/pages/components/index',
-    icon: 'layers',
-    gradient: 'primary',
-    badge: 'UI',
-    badgeVariant: 'default',
-    coverage: '12 primitives',
-    health: 'Motion ready',
-  },
-  {
-    title: '表单测试',
-    desc: '输入、滑动、开关、单选等控件行为',
-    path: '/pages/form/index',
-    icon: 'form',
-    gradient: 'warm',
-    badge: 'Form',
-    badgeVariant: 'warning',
-    coverage: '6 controls',
-    health: 'Validation ready',
-  },
-  {
-    title: '列表测试',
-    desc: 'ScrollView 刷新加载与 ListView 渲染',
-    path: '/pages/list/index',
-    icon: 'list',
-    gradient: 'ocean',
-    badge: 'List',
-    badgeVariant: 'success',
-    coverage: '50 records',
-    health: 'Virtual ready',
-  },
-  {
-    title: '网络测试',
-    desc: '请求、拦截器、错误态与日志链路',
-    path: '/pages/network/index',
-    icon: 'wifi',
-    gradient: 'sky',
-    badge: 'Net',
-    badgeVariant: 'secondary',
-    coverage: '3 flows',
-    health: 'Interceptor ready',
-  },
-  {
-    title: '手势测试',
-    desc: 'Skyline Tap / Pan / LongPress 原生手势',
-    path: '/pages/gesture/index',
-    icon: 'hand',
-    gradient: 'rose',
-    badge: 'Gesture',
-    badgeVariant: 'default',
-    coverage: 'Tap/Pan/Press',
-    health: 'Fallback ready',
-  },
-  {
-    title: '状态测试',
-    desc: 'React 19 transition、reducer、Context 与批量更新',
-    path: '/pages/state/index',
-    icon: 'zap',
-    gradient: 'success',
-    badge: 'State',
-    badgeVariant: 'secondary',
-    coverage: 'React 19',
-    health: 'Concurrent ready',
-  },
-];
-
-const stats = [
-  { label: 'Renderer', value: 'Skyline' },
-  { label: 'Runtime', value: 'React 19' },
-  { label: 'Target', value: 'WeApp' },
-];
-
-const coverageItems = [
-  { label: 'UI primitives', value: '12', tone: 'primary' },
-  { label: 'Runtime pages', value: '6', tone: 'success' },
-  { label: 'Event paths', value: '18+', tone: 'warning' },
-];
-
-const qualitySignals = ['Safe area', 'CSS Modules', 'Logs', 'Fallbacks'];
 
 export default function IndexPage() {
   const navigateTo = (path: string) => {
@@ -120,7 +26,7 @@ export default function IndexPage() {
             React 19 × Skyline 的最小业务样板，覆盖组件、状态、列表、网络与手势链路。
           </Text>
           <View className={styles.statsGrid}>
-            {stats.map((item) => (
+            {dashboardStats.map((item) => (
               <View key={item.label} className={styles.statCard}>
                 <Text className={styles.statValue}>{item.value}</Text>
                 <Text className={styles.statLabel}>{item.label}</Text>
@@ -162,18 +68,18 @@ export default function IndexPage() {
               <Text className={styles.navTitle}>验证场景</Text>
               <Text className={styles.navSubtitle}>按能力域拆分，便于回归测试</Text>
             </View>
-            <Badge variant="outline">6 pages</Badge>
+            <Badge variant="outline">{fixturePages.length} pages</Badge>
           </View>
 
           <View className={styles.navList}>
-            {navItems.map((item, idx) => (
+            {fixturePages.map((item, idx) => (
               <View
-                key={item.path}
+                key={item.route}
                 className={`${styles.navCardWrap} ${idx > 0 ? styles.navCardWrapSpaced : ''} stagger-${idx + 1}`}
                 style={{ animationDelay: `${idx * 50}ms` }}
               >
                 <Card className={styles.navCard}>
-                  <View className={styles.navCardInner} onClick={() => navigateTo(item.path)}>
+                  <View className={styles.navCardInner} onClick={() => navigateTo(item.route)}>
                     <IconCircle name={item.icon} gradient={item.gradient} size="md" />
                     <View className={styles.navCardMain}>
                       <View className={styles.navCardTitleRow}>
@@ -200,7 +106,7 @@ export default function IndexPage() {
         <View className={styles.footer}>
           <Separator />
           <View className={styles.footerContent}>
-            <Text className={styles.footerText}>src/components · src/pages · src/styles</Text>
+            <Text className={styles.footerText}>src/features · src/components · src/pages</Text>
             <Text className={styles.footerVersion}>SPCSN Taro Lite · glass-easel</Text>
           </View>
         </View>

@@ -28,7 +28,7 @@
   border-radius: var(--radius-full, 9999px);
   flex-shrink: 0;
   color: #ffffff;
-  box-shadow: var(--shadow-md, 0 10px 24px rgba(15, 23, 42, 0.16));
+  box-shadow: var(--shadow-md, 0 10px 24px rgba(249, 115, 22, 0.16));
 }
 
 .iconCircle_sm {
@@ -47,7 +47,7 @@
 }
 
 .iconCircle_primary {
-  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+  background: linear-gradient(135deg, #fb7185 0%, #f97316 54%, #facc15 100%);
 }
 
 .iconCircle_warm {
@@ -55,7 +55,7 @@
 }
 
 .iconCircle_ocean {
-  background: linear-gradient(135deg, #06b6d4 0%, #10b981 100%);
+  background: linear-gradient(135deg, #22d3ee 0%, #34d399 100%);
 }
 
 .iconCircle_rose {
@@ -63,11 +63,11 @@
 }
 
 .iconCircle_sky {
-  background: linear-gradient(135deg, #38bdf8 0%, #2563eb 100%);
+  background: linear-gradient(135deg, #38bdf8 0%, #60a5fa 100%);
 }
 
 .iconCircle_dark {
-  background: var(--gradient-dark, linear-gradient(135deg, #1e293b 0%, #0f172a 100%));
+  background: var(--gradient-dark, linear-gradient(135deg, #475569 0%, #334155 100%));
   color: #ffffff;
 }
 

@@ -1,5 +1,5 @@
 .separator {
-  background-color: var(--border, #e2e8f0);
+  background-color: var(--border, #fed7aa);
   flex-shrink: 0;
 }
 

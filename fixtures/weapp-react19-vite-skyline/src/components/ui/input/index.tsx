@@ -16,12 +16,15 @@ interface InputValueEvent {
   detail?: {
     value?: string;
   };
-  target?: {
-    value?: string;
-  };
-  currentTarget?: {
-    value?: string;
-  };
+  target?: unknown;
+  currentTarget?: unknown;
+}
+
+function getNodeValue(node: unknown) {
+  if (node && typeof node === 'object' && 'value' in node) {
+    const value = node.value;
+    return typeof value === 'string' ? value : undefined;
+  }
 }
 
 function getInputValue(event: InputValueEvent | string) {
@@ -29,7 +32,7 @@ function getInputValue(event: InputValueEvent | string) {
     return event;
   }
 
-  return event.detail?.value ?? event.target?.value ?? event.currentTarget?.value ?? '';
+  return event.detail?.value ?? getNodeValue(event.target) ?? getNodeValue(event.currentTarget) ?? '';
 }
 
 export function Input({ value, placeholder, disabled, className, type = 'text', password, onInput }: InputProps) {

@@ -1,12 +1,14 @@
+import { fixturePageRoutes } from './features/fixture-navigation';
+
 export default defineAppConfig({
   pages: [
-    'pages/index/index',
-    'pages/components/index',
-    'pages/form/index',
-    'pages/list/index',
-    'pages/network/index',
-    'pages/gesture/index',
-    'pages/state/index',
+    fixturePageRoutes.dashboard,
+    fixturePageRoutes.uiLab,
+    fixturePageRoutes.formLab,
+    fixturePageRoutes.listLab,
+    fixturePageRoutes.networkLab,
+    fixturePageRoutes.gestureLab,
+    fixturePageRoutes.stateLab,
   ],
   window: {
     navigationStyle: 'custom',

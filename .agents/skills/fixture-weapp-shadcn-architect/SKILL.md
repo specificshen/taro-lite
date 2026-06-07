@@ -29,6 +29,11 @@ src/
 ├── hooks/
 │   ├── use-safe-area.ts
 │   └── use-logger.ts
+├── features/
+│   ├── fixture-navigation/
+│   │   └── index.ts
+│   └── <feature-name>/
+│       └── index.ts
 ├── components/
 │   ├── ui/
 │   │   ├── button/
@@ -48,25 +53,30 @@ src/
 │       ├── log-console.tsx
 │       └── demo.module.css
 └── pages/
-    ├── index/
-    ├── components/
-    ├── form/
-    ├── list/
-    ├── network/
-    ├── gesture/
-    └── state/
+  ├── dashboard/
+  ├── ui-lab/
+  ├── form-lab/
+  │   └── components/
+  ├── list-lab/
+  ├── network-lab/
+  ├── gesture-lab/
+  └── state-lab/
 ```
 
 ## Core Rules
 
-1. Every new page lives under `src/pages/<page-name>/` with `index.tsx`, `index.config.ts`, and optional `index.module.css`.
+1. Every new page lives under `src/pages/<page-name>/` with `index.tsx`, `index.config.ts`, and optional `index.module.css`. Prefer explicit kebab-case capability names such as `form-lab`, `network-lab`, or `dashboard` over generic names like `form`, `network`, or `index`.
 2. Reusable primitive components go into `src/components/ui/<component-name>/`.
 3. Every UI primitive must be one folder with `index.tsx` and `index.module.css`.
 4. Do not add flat files like `src/components/ui/button.tsx`.
 5. Do not create or depend on a shared `src/components/ui/ui.module.css`.
 6. Import primitives through the folder path, for example `@/components/ui/button`, never `@/components/ui/button/index`.
 7. Keep `components/` shallow: use `ui/`, `layout/`, and `demo/`; do not add broad `common/` or `shared/` folders.
-8. `lib/utils.ts` must remain dependency-free. Use the built-in `cn()` helper instead of adding `clsx`.
+8. Page-local presentation components may live under `src/pages/<page-name>/components/` when a page grows beyond a small single-file demo.
+9. Cross-page domain data, route metadata, option lists, validation helpers, and feature-specific types belong under `src/features/<feature-name>/index.ts`, not inside page files.
+10. Aside from page entry modules, prefer named exports for components, helpers, constants, and types. Avoid default exports in `components/`, `features/`, and page-local `components/`.
+11. Centralize page route strings in a feature module, then reuse them from `app.config.ts` and dashboard/navigation UI instead of duplicating hard-coded paths.
+12. `lib/utils.ts` must remain dependency-free. Use the built-in `cn()` helper instead of adding `clsx`.
 
 ## UI Primitive Pattern
 
@@ -142,8 +152,9 @@ Mini-program overlays can be mounted outside the page node that carries `page` C
 
 1. Do not use CSS nesting such as `> :not(:first-child)` inside a rule block.
 2. Do not depend on pseudo-class spacing such as `.container > :not(:first-child)` for critical layout. Prefer explicit classes like `.sectionSpaced` or direct margins on named elements.
-3. Do not depend on `gap` for critical layout spacing. Use explicit margins or grid margin fallbacks when spacing must render in Skyline.
-4. Avoid shorthand positioning like `inset: var(...)`. Use explicit `top`, `right`, `bottom`, and `left` declarations for overlay roots.
+3. Do not use CSS Grid in `fixtures/weapp-react19-vite-skyline`; Skyline does not support grid layout reliably. Use flex containers for horizontal/vertical groups instead.
+4. For repeated horizontal groups such as metric cards, action buttons, filter chips, or status panels, prefer `display: flex` with `gap`, and give equal-width children `flex: 1; min-width: 0;`.
+5. Avoid shorthand positioning like `inset: var(...)`. Use explicit `top`, `right`, `bottom`, and `left` declarations for overlay roots.
 
 ## Gesture Demo Guidance
 
@@ -163,13 +174,15 @@ Use `<LogConsole logs={logs} onClear={clear} />` at the bottom of test pages for
 
 ## Adding A New Page
 
-1. Create `src/pages/<page-name>/`.
+1. Create `src/pages/<page-name>/` with an explicit kebab-case capability name.
 2. Add `index.config.ts` with `navigationStyle: 'custom'` and `renderer: 'skyline'`.
 3. Add `index.tsx` using `<PageWrapper>` and, for test pages, `<LogConsole>`.
 4. Add `index.module.css` when page-local styling is needed.
-5. Register the page in `src/app.config.ts`.
-6. Add the dashboard link in `src/pages/index/index.tsx`.
-7. Verify token usage and avoid hard-coded colors unless the component is intentionally defining a token fallback.
+5. Add page-local components under `src/pages/<page-name>/components/` if the page needs multiple sections or repeated UI blocks.
+6. Put shared route metadata, options, and validation/model helpers under `src/features/<feature-name>/index.ts`.
+7. Register the page through the centralized route constants used by `src/app.config.ts`.
+8. Add the dashboard link through the shared fixture navigation feature.
+9. Verify token usage and avoid hard-coded colors unless the component is intentionally defining a token fallback.
 
 ## Baseline Test Coverage Checklist
 
@@ -196,4 +209,6 @@ When adding fixture coverage, exercise at least one meaningful area:
 4. Depending on `app.css` variables inside overlay roots without local fallbacks.
 5. Installing `clsx`, `tailwindcss`, or external component libraries for fixture primitives.
 6. Forgetting `renderer: 'skyline'` in page configs.
-7. Adding a page to `app.config.ts` but not to the dashboard `navItems`.
+7. Adding a page route in `app.config.ts` but not in the centralized fixture navigation feature.
+8. Leaving hard-coded route strings in page components after introducing `src/features/fixture-navigation`.
+9. Using default exports for non-page components or feature helpers.

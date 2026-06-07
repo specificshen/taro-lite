@@ -8,7 +8,7 @@
 .gestureHero {
   padding: var(--space-6);
   border-radius: var(--radius-xl);
-  background: linear-gradient(135deg, #831843 0%, #be123c 50%, #7c2d12 100%);
+  background: linear-gradient(135deg, #f472b6 0%, #fb7185 50%, #fb923c 100%);
   box-shadow: var(--shadow-lg);
   display: flex;
   flex-direction: column;
@@ -29,13 +29,14 @@
 }
 
 .gestureCardGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  margin: var(--space-4) 0 var(--space-5) calc(-1 * var(--space-3));
+  display: flex;
+  gap: var(--space-3);
+  margin: var(--space-4) 0 var(--space-5);
 }
 
 .gestureInfoCard {
-  margin-left: var(--space-3);
+  flex: 1;
+  min-width: 0;
   padding: var(--space-4);
   border-radius: var(--radius-lg);
   background: var(--card);
@@ -95,7 +96,7 @@
 
 .gestureZone {
   margin-top: var(--space-3);
-  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 50%, #db2777 100%);
+  background: linear-gradient(135deg, #fb7185 0%, #f97316 50%, #facc15 100%);
   border-radius: var(--radius-lg);
   padding: var(--space-8) 0;
   display: flex;
@@ -118,7 +119,7 @@
 
 .gestureZoneSecondary {
   margin-top: var(--space-3);
-  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+  background: linear-gradient(135deg, #fffdf7 0%, #ecfeff 100%);
   border-radius: var(--radius-lg);
   padding: var(--space-8) 0;
   display: flex;
@@ -142,7 +143,7 @@
 
 .panArea {
   margin-top: var(--space-3);
-  background: linear-gradient(180deg, var(--muted) 0%, #f1f5f9 100%);
+  background: linear-gradient(180deg, var(--muted) 0%, #ecfeff 100%);
   border-radius: var(--radius-lg);
   border: 2px dashed var(--border);
   height: 320px;
@@ -157,13 +158,13 @@
   width: 120px;
   height: 120px;
   border-radius: 9999px;
-  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+  background: linear-gradient(135deg, #38bdf8 0%, #34d399 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow:
-    0 8px 32px rgba(37, 99, 235, 0.4),
-    0 0 0 4px rgba(37, 99, 235, 0.1);
+    0 8px 32px rgba(34, 211, 238, 0.32),
+    0 0 0 4px rgba(52, 211, 153, 0.12);
   will-change: transform;
   position: relative;
 }
@@ -194,7 +195,7 @@
 }
 
 .gestureLog {
-  background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+  background: linear-gradient(180deg, #334155 0%, #475569 100%);
   border-radius: var(--radius-md);
   padding: var(--space-4);
   min-height: 200px;
@@ -219,7 +220,7 @@
 
 .gestureLogText {
   margin-left: var(--space-2);
-  color: #e2e8f0;
+  color: #f8fafc;
   font-family: var(--font-mono);
   font-size: 22px;
 }

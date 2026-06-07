@@ -1,10 +1,10 @@
 .drawerPortal {
   --drawer-local-background: var(--background, #ffffff);
-  --drawer-local-foreground: var(--foreground, #0f172a);
+  --drawer-local-foreground: var(--foreground, #263238);
   --drawer-local-muted-foreground: var(--muted-foreground, #64748b);
-  --drawer-local-secondary: var(--secondary, #f1f5f9);
-  --drawer-local-border: var(--border, #e2e8f0);
-  --drawer-local-shadow: var(--shadow-xl, 0 25px 50px -12px rgba(15, 23, 42, 0.12));
+  --drawer-local-secondary: var(--secondary, #ecfeff);
+  --drawer-local-border: var(--border, #fed7aa);
+  --drawer-local-shadow: var(--shadow-xl, 0 25px 50px -12px rgba(124, 45, 18, 0.16));
   --drawer-local-ease: cubic-bezier(0.2, 0.85, 0.25, 1);
   --drawer-local-duration: 320ms;
   --drawer-local-radius-xl: var(--radius-xl, 28px);
@@ -35,7 +35,7 @@
   right: 0;
   bottom: 0;
   left: 0;
-  background-color: rgba(15, 23, 42, 0.4);
+  background-color: rgba(124, 45, 18, 0.28);
   opacity: 0;
   transition: opacity var(--drawer-local-duration) var(--drawer-local-ease);
 }

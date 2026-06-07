@@ -1,9 +1,10 @@
 import { useState, useTransition, useReducer, useCallback, createContext, useContext, useDeferredValue } from 'react';
-import { View, Text, Input as TaroInput } from '@spcsn/taro-components';
+import { View, Text } from '@spcsn/taro-components';
 import { PageWrapper } from '@/components/layout/page-wrapper';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
 import { LogConsole } from '@/components/demo/log-console';
 import { useLogger } from '@/hooks/use-logger';
 import { sleep } from '@/lib/utils';
@@ -155,12 +156,7 @@ export default function StatePage() {
             <View className={styles.field}>
               <Text className={styles.label}>前缀名称</Text>
               <View className={styles.inputRow}>
-                <TaroInput
-                  className={styles.textInput}
-                  placeholder="输入前缀..."
-                  value={name}
-                  onInput={(e: any) => setName(e.detail.value)}
-                />
+                <Input className={styles.inlineInput} placeholder="输入前缀..." value={name} onInput={setName} />
                 <Button disabled={isPending} onClick={handleGenerate}>
                   {isPending ? '生成中...' : '生成 200 条'}
                 </Button>
@@ -190,12 +186,7 @@ export default function StatePage() {
           <CardContent>
             <View className={styles.field}>
               <Text className={styles.label}>筛选关键字</Text>
-              <TaroInput
-                className={styles.textInput}
-                placeholder="输入列表前缀..."
-                value={query}
-                onInput={(e: any) => setQuery(e.detail.value)}
-              />
+              <Input placeholder="输入列表前缀..." value={query} onInput={setQuery} />
               <Text className={styles.deferredMeta}>
                 输入值: {query || '(空)'} · 延迟值: {deferredQuery || '(空)'}
               </Text>

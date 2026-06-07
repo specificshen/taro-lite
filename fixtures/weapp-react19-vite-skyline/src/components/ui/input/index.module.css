@@ -1,13 +1,13 @@
 .input {
-  background-color: var(--input, #f1f5f9);
-  border: 1.5px solid var(--border, #e2e8f0);
+  background-color: var(--input, #fff7ed);
+  border: 1.5px solid var(--border, #fed7aa);
   border-radius: var(--radius-sm, 10px);
-  min-height: 88px;
-  height: 88px;
-  line-height: 88px;
+  min-height: 96px;
+  height: 96px;
+  line-height: 96px;
   padding: 0 24px;
   font-size: 28px;
-  color: var(--foreground, #0f172a);
+  color: var(--foreground, #263238);
   width: 100%;
   box-sizing: border-box;
   transition:
@@ -16,8 +16,8 @@
 }
 
 .input:focus {
-  border-color: var(--ring, #2563eb);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  border-color: var(--ring, #fb923c);
+  box-shadow: 0 0 0 3px rgba(251, 146, 60, 0.18);
 }
 
 .input::placeholder {

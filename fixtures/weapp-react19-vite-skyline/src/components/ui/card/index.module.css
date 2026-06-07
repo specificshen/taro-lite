@@ -1,8 +1,8 @@
 .card {
   background-color: var(--card, #ffffff);
   border-radius: var(--radius, 16px);
-  border: 1px solid var(--border, #e2e8f0);
-  box-shadow: var(--shadow-sm, 0 1px 3px rgba(15, 23, 42, 0.06));
+  border: 1px solid var(--border, #fed7aa);
+  box-shadow: var(--shadow-sm, 0 1px 3px rgba(124, 45, 18, 0.06));
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -18,7 +18,7 @@
 .cardTitle {
   font-size: 30px;
   font-weight: 700;
-  color: var(--card-foreground, #0f172a);
+  color: var(--card-foreground, #263238);
   letter-spacing: 0;
 }
 
