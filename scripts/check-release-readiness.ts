@@ -44,8 +44,8 @@ const BUSINESS_ENTRY_ALLOWED_PEER_DEPENDENCIES: Record<string, string[]> = {
 
 const README_PATH = 'README.md';
 const INTERNAL_GUIDANCE_DOC_PATHS = ['docs/package-consolidation.md', 'docs/taro-react-only-modernization.md'];
-const BUSINESS_FIXTURE_PACKAGE_JSON_PATH = 'fixtures/weapp-react19-vite-skyline/package.json';
-const BUSINESS_FIXTURE_CONFIG_PATH = 'fixtures/weapp-react19-vite-skyline/config/index.ts';
+const BUSINESS_FIXTURE_PACKAGE_JSON_PATH = 'fixtures/taro-lite-sunshine-lab/package.json';
+const BUSINESS_FIXTURE_CONFIG_PATH = 'fixtures/taro-lite-sunshine-lab/config/index.ts';
 const CLI_DEFAULT_FIXTURE_PACKAGE_JSON_PATH = 'packages/taro-cli/tests/fixtures/default/package.json';
 const BUSINESS_TEMPLATE_PACKAGE_JSON_PATH = 'packages/taro-cli/templates/default/package.json.tmpl';
 const PLUGIN_TEMPLATE_PACKAGE_JSON_PATH = 'packages/taro-cli/templates/plugin-compile/package.json.tmpl';

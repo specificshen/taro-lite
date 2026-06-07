@@ -18,7 +18,7 @@
 - `@spcsn/taro-runner-utils` 已并入 `@spcsn/taro-service` 与 `@spcsn/taro-mini-runner`。
 - `babel-preset-taro` 已改为 `@spcsn/taro-cli/babel-preset-taro` 子路径能力。
 - PostCSS / Babel 历史插件包已从公开接入面移除，相关历史包已从 `pnpm-workspace.yaml` 排除。
-- 已建立 `fixtures/weapp-react19-vite-skyline`，用于验证 React 19 开发 WeApp + Skyline / glass-easel 构建链路。
+- 已建立 `fixtures/taro-lite-sunshine-lab`，用于验证 React 19 开发 WeApp + Skyline / glass-easel 构建链路。
 - `scripts/check-release-readiness.ts` 已作为发布前防回退检查，覆盖公开包版本、发布面和业务可见类型注释边界。
 
 仍处于过渡态：

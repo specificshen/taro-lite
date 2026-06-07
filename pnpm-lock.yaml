@@ -24,7 +24,7 @@ importers:
         specifier: ~6.0.3
         version: 6.0.3
 
-  fixtures/weapp-react19-vite-skyline:
+  fixtures/taro-lite-sunshine-lab:
     dependencies:
       '@spcsn/taro':
         specifier: link:../../packages/taro

@@ -1,9 +1,9 @@
 {
-  "name": "@spcsn/fixture-weapp-react19-vite-skyline",
+  "name": "@spcsn/fixture-taro-lite-sunshine-lab",
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Minimal business-like fixture for React 19 WeApp Skyline / glass-easel validation.",
+  "description": "Bright Taro Lite lab for React 19 WeApp Skyline / glass-easel validation.",
   "author": "Samuel Ouyang",
   "scripts": {
     "build": "taro build",

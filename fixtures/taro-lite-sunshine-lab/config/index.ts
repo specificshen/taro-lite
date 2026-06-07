@@ -4,7 +4,7 @@ import { defineConfig, type UserConfigExport } from '@spcsn/taro-cli';
 export default defineConfig<'vite'>(
   () =>
     ({
-      projectName: 'weapp-react19-vite-skyline-fixture',
+      projectName: 'taro-lite-sunshine-lab',
       alias: {
         '@': path.resolve(__dirname, '..', 'src'),
       },

@@ -1,7 +1,7 @@
 {
   "miniprogramRoot": "dist/",
-  "projectname": "weapp-react19-vite-skyline-fixture",
-  "description": "SPCSN Taro Lite validation fixture",
+  "projectname": "taro-lite-sunshine-lab",
+  "description": "SPCSN Taro Lite Sunshine Lab",
   "appid": "wx486d3d83011e15a8",
   "setting": {
     "urlCheck": true,
