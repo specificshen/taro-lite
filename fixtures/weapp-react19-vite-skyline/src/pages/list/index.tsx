@@ -85,7 +85,7 @@ export default function ListPage() {
 
   return (
     <PageWrapper title="列表测试">
-      <View className={styles.container}>
+      <View className={`${styles.container} animate-fade-in-up`}>
         <Card>
           <CardHeader>
             <CardTitle>列表控制</CardTitle>
@@ -123,6 +123,7 @@ export default function ListPage() {
           >
             {items.length === 0 ? (
               <View className={styles.empty}>
+                <Text className={styles.emptyIcon}>📭</Text>
                 <Text className={styles.emptyText}>列表为空</Text>
               </View>
             ) : (

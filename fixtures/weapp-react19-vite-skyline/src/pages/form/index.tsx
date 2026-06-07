@@ -75,7 +75,7 @@ export default function FormPage() {
 
   return (
     <PageWrapper title="表单测试">
-      <View className={styles.container}>
+      <View className={`${styles.container} animate-fade-in-up`}>
         <Card>
           <CardHeader>
             <CardTitle>用户信息</CardTitle>

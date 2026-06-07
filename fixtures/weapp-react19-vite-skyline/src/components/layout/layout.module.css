@@ -1,5 +1,5 @@
 /** ========================================
- *  layout.module.css — shared layout primitives
+ *  layout.module.css — Premium layout primitives
  * ======================================== */
 
 .pageWrapper {
@@ -26,45 +26,67 @@
   top: 0;
   left: 0;
   right: 0;
-  background-color: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
   z-index: 100;
   display: flex;
   align-items: center;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid transparent;
   box-sizing: border-box;
 }
 
+.navbar::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--border) 20%, var(--border) 80%, transparent 100%);
+}
+
 .navbarInner {
-  padding-left: 32px;
+  padding-left: 24px;
+  padding-right: 24px;
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
+  width: 100%;
 }
 
 .backButton {
   display: flex;
   align-items: center;
   gap: 4px;
-  padding: 8px 12px 8px 0;
-  margin-right: 8px;
+  padding: 10px 14px;
+  margin-right: 4px;
+  border-radius: var(--radius-full);
+  background-color: transparent;
+  transition: background-color var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out);
+}
+
+.backButton:active {
+  background-color: var(--secondary);
+  transform: scale(0.95);
 }
 
 .backIcon {
-  font-size: 32px;
+  font-size: 28px;
   color: var(--primary);
   font-weight: 700;
+  line-height: 1;
 }
 
 .backText {
-  font-size: 28px;
+  font-size: 26px;
   color: var(--primary);
   font-weight: 600;
 }
 
 .navbarTitle {
-  font-size: 34px;
+  font-size: 32px;
   font-weight: 700;
   color: var(--foreground);
-  letter-spacing: 0.5px;
+  letter-spacing: -0.3px;
+  flex: 1;
 }

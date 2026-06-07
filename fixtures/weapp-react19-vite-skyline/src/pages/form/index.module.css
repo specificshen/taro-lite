@@ -1,61 +1,65 @@
 .container {
-  padding: 16px;
-  padding-bottom: 48px;
+  padding: var(--space-4);
+  padding-bottom: var(--space-12);
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-5);
 }
 
 .field {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 20px;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
 }
 
 .label {
   font-size: 26px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--foreground);
 }
 
 .error {
   font-size: 22px;
   color: var(--destructive);
+  font-weight: 500;
 }
 
 .radioGroup {
   display: flex;
-  gap: 16px;
+  gap: var(--space-3);
 }
 
 .radioItem {
-  padding: 16px 28px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--border);
   background-color: var(--secondary);
+  transition: all var(--duration-fast) var(--ease-out);
 }
 
 .radioItemActive {
-  border-color: var(--primary);
-  background-color: var(--accent);
+  border-color: transparent;
+  background: var(--gradient-primary);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
 }
 
 .radioText {
   font-size: 26px;
   color: var(--secondary-foreground);
+  font-weight: 500;
 }
 
 .radioTextActive {
   font-size: 26px;
-  color: var(--accent-foreground);
-  font-weight: 600;
+  color: #ffffff;
+  font-weight: 700;
 }
 
 .switchRow {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: var(--space-3);
 }
 
 .switchLabel {
@@ -65,18 +69,20 @@
 
 .actions {
   display: flex;
-  gap: 16px;
-  margin-top: 8px;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
 }
 
 .result {
-  margin-top: 20px;
-  padding: 20px;
-  background-color: var(--accent);
-  border-radius: var(--radius-sm);
+  margin-top: var(--space-4);
+  padding: var(--space-4);
+  background: linear-gradient(135deg, var(--success-light) 0%, #d1fae5 100%);
+  border-radius: var(--radius);
+  border: 1px solid rgba(16, 185, 129, 0.2);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--space-2);
+  animation: scaleIn var(--duration-normal) var(--ease-out) both;
 }
 
 .resultText {

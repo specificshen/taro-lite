@@ -118,7 +118,7 @@ export default function StatePage() {
 
   return (
     <PageWrapper title="状态测试">
-      <View className={styles.container}>
+      <View className={`${styles.container} animate-fade-in-up`}>
         {/* Transition Section */}
         <Card>
           <CardHeader>

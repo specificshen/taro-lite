@@ -48,7 +48,7 @@ export default function ComponentsPage() {
 
   return (
     <PageWrapper title="组件库">
-      <View className={styles.container}>
+      <View className={`${styles.container} animate-fade-in-up`}>
         {/* Card Demo */}
         <View className={styles.section}>
           <Text className={styles.sectionTitle}>Card 卡片</Text>

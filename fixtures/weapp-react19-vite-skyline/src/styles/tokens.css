@@ -1,57 +1,112 @@
 /**
- * Design Tokens — shadcn-inspired CSS variables for Taro Mini Program
- * Uses flat RGB values for maximum WeChat/WXSS compatibility.
+ * Design Tokens — Refined shadcn-inspired visual system
+ * Premium color palette, layered shadows, and spatial rhythm.
  */
 
 page {
+  /* ── Base ── */
   --background: #ffffff;
-  --foreground: #1f2329;
+  --foreground: #0f172a;
 
+  /* ── Card / Popover ── */
   --card: #ffffff;
-  --card-foreground: #1f2329;
-
+  --card-foreground: #0f172a;
   --popover: #ffffff;
-  --popover-foreground: #1f2329;
+  --popover-foreground: #0f172a;
 
-  --primary: #165dff;
+  /* ── Primary: Blue → Indigo gradient axis ── */
+  --primary: #2563eb;
   --primary-foreground: #ffffff;
+  --primary-light: #dbeafe;
+  --primary-dark: #1d4ed8;
 
-  --secondary: #f2f3f5;
-  --secondary-foreground: #1f2329;
+  /* ── Secondary: Warm gray ── */
+  --secondary: #f1f5f9;
+  --secondary-foreground: #0f172a;
 
-  --muted: #f6f8fa;
-  --muted-foreground: #86909c;
+  /* ── Muted / Tertiary ── */
+  --muted: #f8fafc;
+  --muted-foreground: #64748b;
 
-  --accent: #e8f3ff;
-  --accent-foreground: #165dff;
+  /* ── Accent: Purple tint ── */
+  --accent: #f3e8ff;
+  --accent-foreground: #7c3aed;
 
-  --destructive: #f53f3f;
+  /* ── Destructive ── */
+  --destructive: #ef4444;
   --destructive-foreground: #ffffff;
+  --destructive-light: #fee2e2;
 
-  --border: #e1e3e6;
-  --input: #f2f3f5;
-  --ring: #165dff;
-
-  --radius: 12px;
-  --radius-sm: 8px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
-
-  --success: #00b42a;
+  /* ── Success ── */
+  --success: #10b981;
   --success-foreground: #ffffff;
-  --warning: #ff7d00;
-  --warning-foreground: #ffffff;
-  --info: #165dff;
-  --info-foreground: #ffffff;
+  --success-light: #d1fae5;
 
+  /* ── Warning ── */
+  --warning: #f59e0b;
+  --warning-foreground: #ffffff;
+  --warning-light: #fef3c7;
+
+  /* ── Info ── */
+  --info: #0ea5e9;
+  --info-foreground: #ffffff;
+  --info-light: #e0f2fe;
+
+  /* ── Surface / Elevation ── */
+  --border: #e2e8f0;
+  --input: #f1f5f9;
+  --ring: #2563eb;
+  --surface-elevated: #ffffff;
+
+  /* ── Radius ── */
+  --radius: 16px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-full: 9999px;
+
+  /* ── Gradients ── */
+  --gradient-primary: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+  --gradient-warm: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+  --gradient-ocean: linear-gradient(135deg, #0ea5e9 0%, #10b981 100%);
+  --gradient-rose: linear-gradient(135deg, #ec4899 0%, #f43f5e 100%);
+  --gradient-sky: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+  --gradient-dark: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  --gradient-soft: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+
+  /* ── Shadows (layered depth) ── */
+  --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.06), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 10px 15px -3px rgba(15, 23, 42, 0.07), 0 4px 6px -4px rgba(15, 23, 42, 0.04);
+  --shadow-lg: 0 20px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
+  --shadow-xl: 0 25px 50px -12px rgba(15, 23, 42, 0.12);
+  --shadow-glow-primary: 0 0 20px rgba(37, 99, 235, 0.25);
+  --shadow-glow-success: 0 0 20px rgba(16, 185, 129, 0.25);
+
+  /* ── Typography ── */
   --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, sans-serif;
+    "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", sans-serif;
   --font-mono: "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
 
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
-  --shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 6px 24px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 12px 48px rgba(0, 0, 0, 0.12);
+  /* ── Spacing Scale ── */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  /* ── Animation ── */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 400ms;
 
   background: var(--muted);
   color: var(--foreground);

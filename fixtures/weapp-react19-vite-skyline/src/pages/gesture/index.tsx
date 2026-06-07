@@ -32,7 +32,7 @@ export default function GesturePage() {
 
   return (
     <PageWrapper title="手势测试">
-      <View className={styles.container}>
+      <View className={`${styles.container} animate-fade-in-up`}>
         <Card>
           <CardHeader>
             <CardTitle>Skyline 原生手势</CardTitle>

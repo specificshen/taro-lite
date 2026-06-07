@@ -119,7 +119,7 @@ export default function NetworkPage() {
 
   return (
     <PageWrapper title="网络测试">
-      <View className={styles.container}>
+      <View className={`${styles.container} animate-fade-in-up`}>
         <Card>
           <CardHeader>
             <CardTitle>请求配置</CardTitle>
