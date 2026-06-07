@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import type { PropsWithChildren } from 'react';
 import { View, Text } from '@spcsn/taro-components';
 import { cn } from '@/lib/utils';
@@ -20,11 +21,38 @@ export function Drawer({
   className,
   children,
 }: DrawerProps) {
-  if (!open) return null;
+  const [visible, setVisible] = useState(open);
+  const [closing, setClosing] = useState(false);
+
+  useEffect(() => {
+    if (open) {
+      setVisible(true);
+      setClosing(false);
+    } else if (visible) {
+      setClosing(true);
+    }
+  }, [open]);
+
+  const handleAnimationEnd = () => {
+    if (closing) {
+      setClosing(false);
+      setVisible(false);
+      onOpenChange(false);
+    }
+  };
+
+  const handleOverlayClick = () => {
+    setClosing(true);
+  };
+
+  if (!visible) return null;
 
   return (
-    <View className={cn(styles.drawerPortal, className)}>
-      <View className={styles.drawerOverlay} onClick={() => onOpenChange(false)} />
+    <View
+      className={cn(styles.drawerPortal, closing && styles.drawerClosing, className)}
+      onAnimationEnd={handleAnimationEnd}
+    >
+      <View className={styles.drawerOverlay} onClick={handleOverlayClick} />
       <View className={cn(styles.drawerContent, styles[`drawerContent_${side}`])}>
         {children}
       </View>

@@ -149,3 +149,37 @@ export function IconCircle({ name, gradient = 'primary', size = 'md', className 
     </View>
   );
 }
+
+/* =========================================================
+ *  SvgIcon — CSS-drawn geometric icons (zero-dependency)
+ * ========================================================= */
+export type SvgIconName =
+  | 'arrow-left'
+  | 'arrow-right'
+  | 'chevron-left'
+  | 'chevron-right'
+  | 'chevron-up'
+  | 'chevron-down'
+  | 'x'
+  | 'check'
+  | 'plus'
+  | 'minus'
+  | 'menu'
+  | 'more';
+
+interface SvgIconProps {
+  name: SvgIconName;
+  size?: number;
+  color?: string;
+  className?: string;
+}
+
+export function SvgIcon({ name, size = 20, color = 'currentColor', className }: SvgIconProps) {
+  const style = { color, width: `${size}px`, height: `${size}px` } as React.CSSProperties;
+  return (
+    <View
+      className={cn(styles.svgIcon, styles[`svgIcon_${name}`], className)}
+      style={style}
+    />
+  );
+}

@@ -1,6 +1,8 @@
 import { View, Text } from '@spcsn/taro-components';
 import Taro from '@spcsn/taro';
 import { useSafeArea } from '@/hooks/use-safe-area';
+import { SvgIcon } from '@/components/ui/icon';
+import { cn } from '@/lib/utils';
 import styles from './layout.module.css';
 
 interface NavbarProps {
@@ -10,6 +12,7 @@ interface NavbarProps {
 
 export function Navbar({ title, showBack = false }: NavbarProps) {
   const { statusBarHeight, navBarHeight } = useSafeArea();
+  const totalHeight = statusBarHeight + navBarHeight;
 
   const handleBack = () => {
     try {
@@ -23,18 +26,21 @@ export function Navbar({ title, showBack = false }: NavbarProps) {
     <View
       className={styles.navbar}
       style={{
+        height: `${totalHeight}px`,
         paddingTop: `${statusBarHeight}px`,
-        height: `${navBarHeight}px`,
       }}
     >
-      <View className={styles.navbarInner}>
+      <View
+        className={styles.navbarInner}
+        style={{ height: `${navBarHeight}px` }}
+      >
         {showBack && (
           <View className={styles.backButton} onClick={handleBack}>
-            <Text className={styles.backIcon}>←</Text>
+            <SvgIcon name="arrow-left" size={20} className={styles.backIcon} />
             <Text className={styles.backText}>返回</Text>
           </View>
         )}
-        <Text className={styles.navbarTitle}>{title}</Text>
+        <Text className={cn(styles.navbarTitle, showBack && styles.navbarTitleWithBack)}>{title}</Text>
       </View>
     </View>
   );

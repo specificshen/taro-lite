@@ -3,7 +3,7 @@ import Taro from '@spcsn/taro';
 import { PageWrapper } from '@/components/layout/page-wrapper';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { IconCircle } from '@/components/ui/icon';
+import { IconCircle, SvgIcon } from '@/components/ui/icon';
 import { Separator } from '@/components/ui/separator';
 import styles from './index.module.css';
 
@@ -119,7 +119,8 @@ export default function IndexPage() {
                     <Text className={styles.navCardTitle}>{item.title}</Text>
                     <Text className={styles.navCardDesc}>{item.desc}</Text>
                     <View className={styles.navCardArrow}>
-                      <Text className={styles.navCardArrowText}>进入测试 →</Text>
+                      <Text className={styles.navCardArrowText}>进入测试</Text>
+                      <SvgIcon name="chevron-right" size={16} color="var(--primary)" />
                     </View>
                   </View>
                 </Card>

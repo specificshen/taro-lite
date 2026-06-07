@@ -9,6 +9,11 @@ export interface SafeAreaInfo {
   screenWidth: number;
   screenHeight: number;
   safeAreaBottom: number;
+  menuButtonTop: number;
+  menuButtonHeight: number;
+  menuButtonWidth: number;
+  menuButtonLeft: number;
+  menuButtonRight: number;
 }
 
 export function useSafeArea(): SafeAreaInfo {
@@ -18,6 +23,11 @@ export function useSafeArea(): SafeAreaInfo {
     screenWidth: 375,
     screenHeight: 812,
     safeAreaBottom: 0,
+    menuButtonTop: 24,
+    menuButtonHeight: 32,
+    menuButtonWidth: 88,
+    menuButtonLeft: 280,
+    menuButtonRight: 368,
   });
 
   useEffect(() => {
@@ -26,7 +36,7 @@ export function useSafeArea(): SafeAreaInfo {
         ? (Taro as any).getWindowInfo()
         : Taro.getSystemInfoSync();
 
-      let menuButtonInfo = { bottom: 58, top: 24, height: 32 };
+      let menuButtonInfo = { bottom: 58, top: 24, height: 32, width: 88, left: 280, right: 368 };
       if (typeof wx !== 'undefined' && wx.getMenuButtonBoundingClientRect) {
         try {
           menuButtonInfo = wx.getMenuButtonBoundingClientRect();
@@ -49,6 +59,11 @@ export function useSafeArea(): SafeAreaInfo {
         screenWidth: windowInfo.screenWidth || 375,
         screenHeight: windowInfo.screenHeight || 812,
         safeAreaBottom,
+        menuButtonTop: menuButtonInfo.top || 24,
+        menuButtonHeight: menuButtonInfo.height || 32,
+        menuButtonWidth: menuButtonInfo.width || 88,
+        menuButtonLeft: menuButtonInfo.left || 280,
+        menuButtonRight: menuButtonInfo.right || 368,
       });
     } catch {
       // fallback defaults already set
