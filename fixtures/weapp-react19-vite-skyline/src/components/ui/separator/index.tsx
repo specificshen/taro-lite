@@ -1,6 +1,6 @@
 import { View } from '@spcsn/taro-components';
 import { cn } from '@/lib/utils';
-import styles from './ui.module.css';
+import styles from './index.module.css';
 
 interface SeparatorProps {
   orientation?: 'horizontal' | 'vertical';

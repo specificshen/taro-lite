@@ -1,6 +1,6 @@
 import { Input as TaroInput } from '@spcsn/taro-components';
 import { cn } from '@/lib/utils';
-import styles from './ui.module.css';
+import styles from './index.module.css';
 
 interface InputProps {
   value?: string;
@@ -21,7 +21,7 @@ export function Input({ value, placeholder, disabled, className, type = 'text', 
       disabled={disabled}
       type={type}
       password={password}
-      onInput={(e: any) => onInput?.(e.detail.value)}
+      onInput={(event: any) => onInput?.(event.detail.value)}
     />
   );
 }

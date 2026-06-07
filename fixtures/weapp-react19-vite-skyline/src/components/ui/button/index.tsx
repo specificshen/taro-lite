@@ -1,6 +1,7 @@
+import type { ReactNode } from 'react';
 import { Button as TaroButton } from '@spcsn/taro-components';
 import { cn } from '@/lib/utils';
-import styles from './ui.module.css';
+import styles from './index.module.css';
 
 export type ButtonVariant = 'default' | 'secondary' | 'destructive' | 'outline' | 'ghost';
 export type ButtonSize = 'default' | 'sm' | 'lg' | 'icon';
@@ -11,7 +12,7 @@ interface ButtonProps {
   disabled?: boolean;
   className?: string;
   onClick?: () => void;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export function Button({

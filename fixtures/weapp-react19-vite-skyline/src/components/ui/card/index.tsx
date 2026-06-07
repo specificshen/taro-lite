@@ -1,18 +1,14 @@
 import type { PropsWithChildren } from 'react';
 import { View, Text } from '@spcsn/taro-components';
 import { cn } from '@/lib/utils';
-import styles from './ui.module.css';
+import styles from './index.module.css';
 
 interface CardProps {
   className?: string;
 }
 
 export function Card({ children, className }: PropsWithChildren<CardProps>) {
-  return (
-    <View className={cn(styles.card, className)}>
-      {children}
-    </View>
-  );
+  return <View className={cn(styles.card, className)}>{children}</View>;
 }
 
 interface CardHeaderProps {
@@ -20,11 +16,7 @@ interface CardHeaderProps {
 }
 
 export function CardHeader({ children, className }: PropsWithChildren<CardHeaderProps>) {
-  return (
-    <View className={cn(styles.cardHeader, className)}>
-      {children}
-    </View>
-  );
+  return <View className={cn(styles.cardHeader, className)}>{children}</View>;
 }
 
 interface CardTitleProps {
@@ -32,11 +24,7 @@ interface CardTitleProps {
 }
 
 export function CardTitle({ children, className }: PropsWithChildren<CardTitleProps>) {
-  return (
-    <Text className={cn(styles.cardTitle, className)}>
-      {children}
-    </Text>
-  );
+  return <Text className={cn(styles.cardTitle, className)}>{children}</Text>;
 }
 
 interface CardDescriptionProps {
@@ -44,11 +32,7 @@ interface CardDescriptionProps {
 }
 
 export function CardDescription({ children, className }: PropsWithChildren<CardDescriptionProps>) {
-  return (
-    <Text className={cn(styles.cardDescription, className)}>
-      {children}
-    </Text>
-  );
+  return <Text className={cn(styles.cardDescription, className)}>{children}</Text>;
 }
 
 interface CardContentProps {
@@ -56,11 +40,7 @@ interface CardContentProps {
 }
 
 export function CardContent({ children, className }: PropsWithChildren<CardContentProps>) {
-  return (
-    <View className={cn(styles.cardContent, className)}>
-      {children}
-    </View>
-  );
+  return <View className={cn(styles.cardContent, className)}>{children}</View>;
 }
 
 interface CardFooterProps {
@@ -68,9 +48,5 @@ interface CardFooterProps {
 }
 
 export function CardFooter({ children, className }: PropsWithChildren<CardFooterProps>) {
-  return (
-    <View className={cn(styles.cardFooter, className)}>
-      {children}
-    </View>
-  );
+  return <View className={cn(styles.cardFooter, className)}>{children}</View>;
 }

@@ -12,12 +12,14 @@
 .section {
   display: flex;
   flex-direction: column;
-  /* gap fallback */
   > :not(:first-child) {
     margin-top: var(--space-3);
   }
-  padding-left: var(--space-3);
-  border-left: 3px solid var(--primary);
+  padding: var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--card);
+  box-shadow: var(--shadow-sm);
 }
 
 .sectionTitle {
@@ -124,11 +126,20 @@
   margin-bottom: var(--space-1);
 }
 
+.drawerTriggerGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin: calc(-1 * var(--space-3)) 0 0 calc(-1 * var(--space-3));
+}
+
+.drawerTriggerGrid > * {
+  margin: var(--space-3) 0 0 var(--space-3);
+}
+
 .drawerBody {
-  padding: var(--space-5);
+  padding: var(--space-5) var(--space-6);
   display: flex;
   flex-direction: column;
-  /* gap fallback */
   > :not(:first-child) {
     margin-top: var(--space-3);
   }

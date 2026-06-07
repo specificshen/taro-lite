@@ -16,16 +16,28 @@ import {
   DrawerFooter,
   DrawerClose,
 } from '@/components/ui/drawer';
+import type { DrawerSide } from '@/components/ui/drawer';
 import { LogConsole } from '@/components/demo/log-console';
 import { useLogger } from '@/hooks/use-logger';
 import styles from './index.module.css';
+
+const drawerSides: Array<{ label: string; value: DrawerSide }> = [
+  { label: '底部', value: 'bottom' },
+  { label: '右侧', value: 'right' },
+  { label: '左侧', value: 'left' },
+  { label: '顶部', value: 'top' },
+];
 
 export default function ComponentsPage() {
   const { logs, add, clear } = useLogger();
   const [inputValue, setInputValue] = useState('');
   const [loading, setLoading] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [drawerSide, setDrawerSide] = useState<'bottom' | 'right' | 'left' | 'top'>('bottom');
+  const [drawerSide, setDrawerSide] = useState<DrawerSide>('bottom');
+
+  const closeDrawer = () => {
+    setDrawerOpen(false);
+  };
 
   const handleDemoAction = (name: string) => {
     add(`点击了 ${name}`, 'info');
@@ -177,31 +189,33 @@ export default function ComponentsPage() {
         {/* Drawer Demo */}
         <View className={styles.section}>
           <Text className={styles.sectionTitle}>Drawer 抽屉</Text>
-          <View className={styles.rowGap}>
-            <Button variant="outline" onClick={() => openDrawer('bottom')}>底部抽屉</Button>
-            <Button variant="outline" onClick={() => openDrawer('right')}>右侧抽屉</Button>
-            <Button variant="outline" onClick={() => openDrawer('left')}>左侧抽屉</Button>
-            <Button variant="outline" onClick={() => openDrawer('top')}>顶部抽屉</Button>
+          <Text className={styles.mutedText}>验证受控关闭时的退场动画：按钮、遮罩、确认按钮都应先播放收起动效，再卸载节点。</Text>
+          <View className={styles.drawerTriggerGrid}>
+            {drawerSides.map((item) => (
+              <Button key={item.value} variant="outline" onClick={() => openDrawer(item.value)}>
+                {item.label}抽屉
+              </Button>
+            ))}
           </View>
         </View>
 
         <Drawer open={drawerOpen} onOpenChange={setDrawerOpen} side={drawerSide}>
           <DrawerHeader>
-            <DrawerClose onClick={() => setDrawerOpen(false)} />
-            <DrawerTitle>抽屉标题</DrawerTitle>
-            <DrawerDescription>这是一个 {drawerSide} 方向的抽屉组件演示</DrawerDescription>
+            <DrawerClose onClick={closeDrawer} />
+            <DrawerTitle>{drawerSides.find((item) => item.value === drawerSide)?.label}抽屉</DrawerTitle>
+            <DrawerDescription>受控 open=false 时保留挂载，等退场动画完成后再卸载。</DrawerDescription>
           </DrawerHeader>
           <View className={styles.drawerBody}>
             <Text className={styles.drawerBodyText}>
-              抽屉内容区域。可以放置表单、列表、操作按钮等任意内容。
+              这个样例专门覆盖 Skyline 下的 Drawer 弹出 / 收起链路。
             </Text>
             <Text className={styles.drawerBodyText}>
-              点击遮罩层或右上角的关闭按钮可以关闭抽屉。
+              点击遮罩层、右上角关闭、取消或确认，应该看到同一套平滑收起动画。
             </Text>
           </View>
           <DrawerFooter>
-            <Button variant="secondary" onClick={() => setDrawerOpen(false)}>取消</Button>
-            <Button onClick={() => { setDrawerOpen(false); add('抽屉确认操作', 'success'); }}>确认</Button>
+            <Button variant="secondary" onClick={closeDrawer}>取消</Button>
+            <Button onClick={() => { closeDrawer(); add('抽屉确认操作', 'success'); }}>确认</Button>
           </DrawerFooter>
         </Drawer>
 

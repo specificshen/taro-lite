@@ -1,13 +1,11 @@
 import { View } from '@spcsn/taro-components';
 import { cn } from '@/lib/utils';
-import styles from './ui.module.css';
+import styles from './index.module.css';
 
 interface SkeletonProps {
   className?: string;
 }
 
 export function Skeleton({ className }: SkeletonProps) {
-  return (
-    <View className={cn(styles.skeleton, className)} />
-  );
+  return <View className={cn(styles.skeleton, className)} />;
 }
