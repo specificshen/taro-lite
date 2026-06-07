@@ -12,6 +12,26 @@ interface InputProps {
   onInput?: (value: string) => void;
 }
 
+interface InputValueEvent {
+  detail?: {
+    value?: string;
+  };
+  target?: {
+    value?: string;
+  };
+  currentTarget?: {
+    value?: string;
+  };
+}
+
+function getInputValue(event: InputValueEvent | string) {
+  if (typeof event === 'string') {
+    return event;
+  }
+
+  return event.detail?.value ?? event.target?.value ?? event.currentTarget?.value ?? '';
+}
+
 export function Input({ value, placeholder, disabled, className, type = 'text', password, onInput }: InputProps) {
   return (
     <TaroInput
@@ -21,7 +41,7 @@ export function Input({ value, placeholder, disabled, className, type = 'text', 
       disabled={disabled}
       type={type}
       password={password}
-      onInput={(event: any) => onInput?.(event.detail.value)}
+      onInput={(event: InputValueEvent | string) => onInput?.(getInputValue(event))}
     />
   );
 }
