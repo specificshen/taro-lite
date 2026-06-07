@@ -3,23 +3,20 @@
   padding-bottom: var(--space-12);
   display: flex;
   flex-direction: column;
-  /* gap fallback */
-  > :not(:first-child) {
-    margin-top: var(--space-5);
-  }
+}
+
+.sectionSpaced {
+  margin-top: var(--space-5);
 }
 
 .field {
   display: flex;
   flex-direction: column;
-  /* gap fallback */
-  > :not(:first-child) {
-    margin-top: var(--space-2);
-  }
   margin-bottom: var(--space-3);
 }
 
 .label {
+  margin-bottom: var(--space-2);
   font-size: 26px;
   font-weight: 600;
   color: var(--foreground);
@@ -27,11 +24,12 @@
 
 .inputRow {
   display: flex;
-  /* gap fallback */
-  > :not(:first-child) {
-    margin-left: var(--space-3);
-  }
+  margin-left: calc(-1 * var(--space-3));
   align-items: center;
+}
+
+.inputRow > * {
+  margin-left: var(--space-3);
 }
 
 .textInput {
@@ -43,7 +41,9 @@
   font-size: 28px;
   color: var(--foreground);
   box-sizing: border-box;
-  transition: border-color var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
 }
 
 .textInput:focus {
@@ -55,13 +55,10 @@
   margin-top: var(--space-3);
   display: flex;
   flex-direction: column;
-  /* gap fallback */
-  > :not(:first-child) {
-    margin-top: var(--space-3);
-  }
 }
 
 .listCount {
+  margin-bottom: var(--space-3);
   font-size: 24px;
   color: var(--muted-foreground);
 }
@@ -80,10 +77,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* gap fallback */
-  > :not(:first-child) {
-    margin-top: var(--space-4);
-  }
   padding: var(--space-6) 0;
 }
 
@@ -97,32 +90,36 @@
 }
 
 .historyRow {
+  margin-top: var(--space-4);
   display: flex;
-  /* gap fallback */
-  > :not(:first-child) {
-    margin-left: var(--space-2);
-  }
+  margin-left: calc(-1 * var(--space-2));
   flex-wrap: wrap;
   justify-content: center;
+}
+
+.historyRow > * {
+  margin-left: var(--space-2);
 }
 
 .counterControls {
   display: flex;
   justify-content: center;
-  /* gap fallback */
-  > :not(:first-child) {
-    margin-left: var(--space-4);
-  }
+  margin-left: calc(-1 * var(--space-4));
+}
+
+.counterControls > * {
+  margin-left: var(--space-4);
 }
 
 /* Batch */
 .batchGrid {
   display: flex;
-  /* gap fallback */
-  > :not(:first-child) {
-    margin-left: var(--space-4);
-  }
+  margin-left: calc(-1 * var(--space-4));
   margin-bottom: var(--space-5);
+}
+
+.batchGrid > * {
+  margin-left: var(--space-4);
 }
 
 .batchItem {
@@ -133,10 +130,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* gap fallback */
-  > :not(:first-child) {
-    margin-top: var(--space-2);
-  }
   border: 1px solid var(--border);
   box-shadow: var(--shadow-sm);
 }
@@ -160,6 +153,7 @@
 }
 
 .batchValue {
+  margin-top: var(--space-2);
   font-size: 44px;
   font-weight: 700;
   color: var(--foreground);

@@ -39,10 +39,6 @@
   flex-direction: column;
 }
 
-.cardHeader > :not(:first-child) {
-  margin-top: var(--space-1, 4px);
-}
-
 .cardTitle {
   font-size: 30px;
   font-weight: 700;
@@ -51,6 +47,7 @@
 }
 
 .cardDescription {
+  margin-top: var(--space-1, 4px);
   font-size: 24px;
   color: var(--muted-foreground, #64748b);
   line-height: 1.4;
@@ -66,8 +63,9 @@
   padding: 0 var(--space-5, 20px) var(--space-5, 20px);
   display: flex;
   align-items: center;
+  margin-left: calc(-1 * var(--space-3, 12px));
 }
 
-.cardFooter > :not(:first-child) {
+.cardFooter > * {
   margin-left: var(--space-3, 12px);
 }

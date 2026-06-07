@@ -28,13 +28,16 @@ export default function NetworkPage() {
         Taro.addInterceptor((chain) => {
           const params = chain.requestParams;
           add(`[拦截器] 请求: ${params.method || 'GET'} ${params.url}`, 'info');
-          return chain.proceed(params).then((res) => {
-            add(`[拦截器] 响应: ${res.statusCode}`, 'success');
-            return res;
-          }).catch((err) => {
-            add(`[拦截器] 错误: ${err.message || err}`, 'error');
-            throw err;
-          });
+          return chain
+            .proceed(params)
+            .then((res) => {
+              add(`[拦截器] 响应: ${res.statusCode}`, 'success');
+              return res;
+            })
+            .catch((err) => {
+              add(`[拦截器] 错误: ${err.message || err}`, 'error');
+              throw err;
+            });
         });
         add('拦截器注册成功', 'success');
       }
@@ -147,12 +150,17 @@ export default function NetworkPage() {
 
             <View className={styles.actions}>
               <Button onClick={doRequest}>发送请求</Button>
-              <Button variant="destructive" onClick={doErrorRequest}>模拟错误</Button>
-              <Button variant="secondary" onClick={() => {
-                setResponse('');
-                setLatency(0);
-                add('响应已清空', 'info');
-              }}>
+              <Button variant="destructive" onClick={doErrorRequest}>
+                模拟错误
+              </Button>
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  setResponse('');
+                  setLatency(0);
+                  add('响应已清空', 'info');
+                }}
+              >
                 清空响应
               </Button>
             </View>
@@ -160,7 +168,7 @@ export default function NetworkPage() {
         </Card>
 
         {response && (
-          <Card>
+          <Card className={styles.responseCard}>
             <CardHeader>
               <View className={styles.resHeader}>
                 <CardTitle>响应结果</CardTitle>

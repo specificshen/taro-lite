@@ -3,19 +3,16 @@
   padding-bottom: var(--space-12);
   display: flex;
   flex-direction: column;
-  /* gap fallback */
-  > :not(:first-child) {
-    margin-top: var(--space-5);
-  }
 }
 
 .controls {
   display: flex;
-  /* gap fallback */
-  > :not(:first-child) {
-    margin-left: var(--space-3);
-  }
+  margin-left: calc(-1 * var(--space-3));
   flex-wrap: wrap;
+}
+
+.controls > * {
+  margin-left: var(--space-3);
 }
 
 .stats {
@@ -26,15 +23,13 @@
 }
 
 .listSection {
+  margin-top: var(--space-5);
   display: flex;
   flex-direction: column;
-  /* gap fallback */
-  > :not(:first-child) {
-    margin-top: var(--space-3);
-  }
 }
 
 .sectionTitle {
+  margin-bottom: var(--space-3);
   font-size: 28px;
   font-weight: 700;
   color: var(--foreground);
@@ -56,10 +51,6 @@
   justify-content: center;
   align-items: center;
   padding: var(--space-10) 0;
-  /* gap fallback */
-  > :not(:first-child) {
-    margin-top: var(--space-3);
-  }
 }
 
 .emptyIcon {
@@ -68,6 +59,7 @@
 }
 
 .emptyText {
+  margin-top: var(--space-3);
   font-size: 28px;
   color: var(--muted-foreground);
   font-weight: 500;
@@ -88,10 +80,6 @@
 .listRowLeft {
   display: flex;
   flex-direction: column;
-  /* gap fallback */
-  > :not(:first-child) {
-    margin-left: var(--space-1);
-  }
   flex: 1;
 }
 
@@ -102,12 +90,14 @@
 }
 
 .listDesc {
+  margin-top: var(--space-1);
   font-size: 24px;
   color: var(--muted-foreground);
   line-height: 1.4;
 }
 
 .listDate {
+  margin-top: var(--space-1);
   font-size: 20px;
   color: var(--muted-foreground);
 }
@@ -156,10 +146,6 @@
   border-radius: var(--radius-sm);
   display: flex;
   flex-direction: column;
-  /* gap fallback */
-  > :not(:first-child) {
-    margin-top: var(--space-1);
-  }
   margin-bottom: var(--space-2);
 }
 
@@ -170,6 +156,7 @@
 }
 
 .skylineDesc {
+  margin-top: var(--space-1);
   font-size: 24px;
   color: var(--muted-foreground);
 }

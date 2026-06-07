@@ -51,11 +51,7 @@ function useCounter() {
 
 function CounterProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(counterReducer, { count: 0, history: [] });
-  return (
-    <CounterContext.Provider value={{ state, dispatch }}>
-      {children}
-    </CounterContext.Provider>
-  );
+  return <CounterContext.Provider value={{ state, dispatch }}>{children}</CounterContext.Provider>;
 }
 
 function CounterDisplay() {
@@ -65,7 +61,9 @@ function CounterDisplay() {
       <Text className={styles.counterNumber}>{state.count}</Text>
       <View className={styles.historyRow}>
         {state.history.slice(0, 5).map((h, i) => (
-          <Badge key={i} variant="outline">{h}</Badge>
+          <Badge key={i} variant="outline">
+            {h}
+          </Badge>
         ))}
       </View>
     </View>
@@ -76,9 +74,15 @@ function CounterControls() {
   const { dispatch } = useCounter();
   return (
     <View className={styles.counterControls}>
-      <Button size="sm" onClick={() => dispatch({ type: 'decrement' })}>-1</Button>
-      <Button size="sm" variant="secondary" onClick={() => dispatch({ type: 'reset' })}>重置</Button>
-      <Button size="sm" onClick={() => dispatch({ type: 'increment' })}>+1</Button>
+      <Button size="sm" onClick={() => dispatch({ type: 'decrement' })}>
+        -1
+      </Button>
+      <Button size="sm" variant="secondary" onClick={() => dispatch({ type: 'reset' })}>
+        重置
+      </Button>
+      <Button size="sm" onClick={() => dispatch({ type: 'increment' })}>
+        +1
+      </Button>
     </View>
   );
 }
@@ -120,7 +124,7 @@ export default function StatePage() {
     <PageWrapper title="状态测试">
       <View className={`${styles.container} animate-fade-in-up`}>
         {/* Transition Section */}
-        <Card>
+        <Card className={styles.sectionSpaced}>
           <CardHeader>
             <CardTitle>useTransition 并发更新</CardTitle>
             <CardDescription>React 19 并发特性，大数据渲染不阻塞 UI</CardDescription>
@@ -145,11 +149,11 @@ export default function StatePage() {
                 <Text className={styles.listCount}>已生成 {list.length} 项</Text>
                 <View className={styles.tagCloud}>
                   {list.slice(0, 20).map((item, i) => (
-                    <Badge key={i} variant="secondary">{item}</Badge>
+                    <Badge key={i} variant="secondary">
+                      {item}
+                    </Badge>
                   ))}
-                  {list.length > 20 && (
-                    <Badge variant="outline">+{list.length - 20} more</Badge>
-                  )}
+                  {list.length > 20 && <Badge variant="outline">+{list.length - 20} more</Badge>}
                 </View>
               </View>
             )}
@@ -157,7 +161,7 @@ export default function StatePage() {
         </Card>
 
         {/* Reducer + Context Section */}
-        <Card>
+        <Card className={styles.sectionSpaced}>
           <CardHeader>
             <CardTitle>useReducer + Context</CardTitle>
             <CardDescription>跨组件状态共享与复杂状态逻辑</CardDescription>

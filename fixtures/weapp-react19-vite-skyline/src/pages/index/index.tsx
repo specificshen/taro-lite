@@ -94,7 +94,9 @@ export default function IndexPage() {
             <Text className={styles.heroKickerText}>Fixture · WeApp</Text>
           </View>
           <Text className={styles.heroTitle}>小程序底座验证台</Text>
-          <Text className={styles.heroSub}>React 19 × Vite × Skyline 的最小业务样板，覆盖组件、状态、列表、网络与手势链路。</Text>
+          <Text className={styles.heroSub}>
+            React 19 × Vite × Skyline 的最小业务样板，覆盖组件、状态、列表、网络与手势链路。
+          </Text>
           <View className={styles.statsGrid}>
             {stats.map((item) => (
               <View key={item.label} className={styles.statCard}>
@@ -118,7 +120,7 @@ export default function IndexPage() {
             {navItems.map((item, idx) => (
               <View
                 key={item.path}
-                className={`${styles.navCardWrap} stagger-${idx + 1}`}
+                className={`${styles.navCardWrap} ${idx > 0 ? styles.navCardWrapSpaced : ''} stagger-${idx + 1}`}
                 style={{ animationDelay: `${idx * 50}ms` }}
               >
                 <Card className={styles.navCard}>

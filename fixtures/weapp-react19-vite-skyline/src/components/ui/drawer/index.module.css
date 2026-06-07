@@ -14,10 +14,14 @@
   --drawer-local-space-6: var(--space-6, 24px);
 
   position: fixed;
-  inset: 0;
+  top: env(safe-area-inset-top, 0);
+  right: 0;
+  bottom: 0;
+  left: 0;
   z-index: 200;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
   pointer-events: none;
 }
 
@@ -27,7 +31,10 @@
 
 .drawerOverlay {
   position: absolute;
-  inset: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   background-color: rgba(15, 23, 42, 0.4);
   opacity: 0;
   transition: opacity var(--drawer-local-duration) var(--drawer-local-ease);
@@ -99,8 +106,8 @@
 .drawerContent_top {
   left: var(--drawer-local-space-3);
   right: var(--drawer-local-space-3);
-  top: 0;
-  border-radius: 0 0 var(--drawer-local-radius-xl) var(--drawer-local-radius-xl);
+  top: var(--drawer-local-space-3);
+  border-radius: var(--drawer-local-radius-xl);
   max-height: 82vh;
   transform: translate3d(0, -100%, 0);
 }
@@ -117,10 +124,6 @@
   position: relative;
 }
 
-.drawerHeader > :not(:first-child) {
-  margin-top: 4px;
-}
-
 .drawerTitle {
   font-size: 32px;
   font-weight: 700;
@@ -129,6 +132,7 @@
 }
 
 .drawerDescription {
+  margin-top: 4px;
   font-size: 24px;
   color: var(--drawer-local-muted-foreground);
   line-height: 1.4;
@@ -138,9 +142,10 @@
   padding: 0 var(--drawer-local-space-6) var(--drawer-local-space-6);
   display: flex;
   align-items: center;
+  margin-left: calc(-1 * var(--drawer-local-space-3));
 }
 
-.drawerFooter > :not(:first-child) {
+.drawerFooter > * {
   margin-left: var(--drawer-local-space-3);
 }
 

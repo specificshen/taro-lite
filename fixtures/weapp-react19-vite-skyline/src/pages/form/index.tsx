@@ -84,32 +84,19 @@ export default function FormPage() {
           <CardContent>
             <View className={styles.field}>
               <Text className={styles.label}>姓名 *</Text>
-              <Input
-                placeholder="请输入姓名"
-                value={form.name}
-                onInput={(v) => updateField('name', v)}
-              />
+              <Input placeholder="请输入姓名" value={form.name} onInput={(v) => updateField('name', v)} />
               {errors.name && <Text className={styles.error}>{errors.name}</Text>}
             </View>
 
             <View className={styles.field}>
               <Text className={styles.label}>邮箱 *</Text>
-              <Input
-                placeholder="请输入邮箱"
-                value={form.email}
-                onInput={(v) => updateField('email', v)}
-              />
+              <Input placeholder="请输入邮箱" value={form.email} onInput={(v) => updateField('email', v)} />
               {errors.email && <Text className={styles.error}>{errors.email}</Text>}
             </View>
 
             <View className={styles.field}>
               <Text className={styles.label}>年龄: {form.age}</Text>
-              <Slider
-                min={1}
-                max={100}
-                value={form.age}
-                onChange={(e: any) => updateField('age', e.detail.value)}
-              />
+              <Slider min={1} max={100} value={form.age} onChange={(e: any) => updateField('age', e.detail.value)} />
               {errors.age && <Text className={styles.error}>{errors.age}</Text>}
             </View>
 
@@ -132,10 +119,7 @@ export default function FormPage() {
 
             <View className={styles.field}>
               <View className={styles.switchRow}>
-                <Switch
-                  checked={form.agree}
-                  onChange={(e: any) => updateField('agree', e.detail.value)}
-                />
+                <Switch checked={form.agree} onChange={(e: any) => updateField('agree', e.detail.value)} />
                 <Text className={styles.switchLabel}>我同意服务条款和隐私政策</Text>
               </View>
               {errors.agree && <Text className={styles.error}>{errors.agree}</Text>}
@@ -145,15 +129,15 @@ export default function FormPage() {
 
             <View className={styles.actions}>
               <Button onClick={handleSubmit}>提交表单</Button>
-              <Button variant="secondary" onClick={handleReset}>重置</Button>
+              <Button variant="secondary" onClick={handleReset}>
+                重置
+              </Button>
             </View>
 
             {submitted && (
               <View className={styles.result}>
                 <Badge variant="success">提交成功</Badge>
-                <Text className={styles.resultText}>
-                  {JSON.stringify(form, null, 2)}
-                </Text>
+                <Text className={styles.resultText}>{JSON.stringify(form, null, 2)}</Text>
               </View>
             )}
           </CardContent>

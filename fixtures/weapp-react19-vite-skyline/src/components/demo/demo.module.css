@@ -26,10 +26,6 @@
   color: var(--foreground);
   display: flex;
   align-items: center;
-  /* gap fallback */
-  > :not(:first-child) {
-    margin-top: var(--space-2);
-  }
 }
 
 .logClear {
@@ -56,7 +52,7 @@
 }
 
 .logConsole::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;

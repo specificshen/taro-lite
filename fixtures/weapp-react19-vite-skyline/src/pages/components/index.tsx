@@ -74,14 +74,18 @@ export default function ComponentsPage() {
               <Text className={styles.cardBodyText}>本月支出: ¥3,240.00</Text>
             </CardContent>
             <CardFooter>
-              <Button size="sm" onClick={() => handleDemoAction('Card 主要操作')}>查看详情</Button>
-              <Button variant="secondary" size="sm" onClick={() => handleDemoAction('Card 次要操作')}>导出</Button>
+              <Button size="sm" onClick={() => handleDemoAction('Card 主要操作')}>
+                查看详情
+              </Button>
+              <Button variant="secondary" size="sm" onClick={() => handleDemoAction('Card 次要操作')}>
+                导出
+              </Button>
             </CardFooter>
           </Card>
         </View>
 
         {/* Badge Demo */}
-        <View className={styles.section}>
+        <View className={`${styles.section} ${styles.sectionSpaced}`}>
           <Text className={styles.sectionTitle}>Badge 徽标</Text>
           <View className={styles.rowWrap}>
             <Badge>默认</Badge>
@@ -94,45 +98,49 @@ export default function ComponentsPage() {
         </View>
 
         {/* Button Demo */}
-        <View className={styles.section}>
+        <View className={`${styles.section} ${styles.sectionSpaced}`}>
           <Text className={styles.sectionTitle}>Button 按钮</Text>
           <View className={styles.colGap}>
             <Button onClick={() => handleDemoAction('默认按钮')}>默认按钮</Button>
-            <Button variant="secondary" onClick={() => handleDemoAction('次要按钮')}>次要按钮</Button>
-            <Button variant="destructive" onClick={() => handleDemoAction('危险按钮')}>危险按钮</Button>
-            <Button variant="outline" onClick={() => handleDemoAction('边框按钮')}>边框按钮</Button>
-            <Button variant="ghost" onClick={() => handleDemoAction('幽灵按钮')}>幽灵按钮</Button>
+            <Button variant="secondary" onClick={() => handleDemoAction('次要按钮')}>
+              次要按钮
+            </Button>
+            <Button variant="destructive" onClick={() => handleDemoAction('危险按钮')}>
+              危险按钮
+            </Button>
+            <Button variant="outline" onClick={() => handleDemoAction('边框按钮')}>
+              边框按钮
+            </Button>
+            <Button variant="ghost" onClick={() => handleDemoAction('幽灵按钮')}>
+              幽灵按钮
+            </Button>
             <View className={styles.rowGap}>
-              <Button size="sm" onClick={() => handleDemoAction('小按钮')}>小</Button>
-              <Button size="default" onClick={() => handleDemoAction('默认按钮')}>默认</Button>
-              <Button size="lg" onClick={() => handleDemoAction('大按钮')}>大</Button>
+              <Button size="sm" onClick={() => handleDemoAction('小按钮')}>
+                小
+              </Button>
+              <Button size="default" onClick={() => handleDemoAction('默认按钮')}>
+                默认
+              </Button>
+              <Button size="lg" onClick={() => handleDemoAction('大按钮')}>
+                大
+              </Button>
             </View>
           </View>
         </View>
 
         {/* Input Demo */}
-        <View className={styles.section}>
+        <View className={`${styles.section} ${styles.sectionSpaced}`}>
           <Text className={styles.sectionTitle}>Input 输入框</Text>
           <View className={styles.colGap}>
-            <Input
-              placeholder="请输入内容..."
-              value={inputValue}
-              onInput={setInputValue}
-            />
-            <Input
-              placeholder="禁用状态"
-              disabled
-            />
-            <Input
-              placeholder="密码输入"
-              password
-            />
+            <Input placeholder="请输入内容..." value={inputValue} onInput={setInputValue} />
+            <Input placeholder="禁用状态" disabled />
+            <Input placeholder="密码输入" password />
             <Text className={styles.inputValue}>当前值: {inputValue || '(空)'}</Text>
           </View>
         </View>
 
         {/* Avatar Demo */}
-        <View className={styles.section}>
+        <View className={`${styles.section} ${styles.sectionSpaced}`}>
           <Text className={styles.sectionTitle}>Avatar 头像</Text>
           <View className={styles.rowGap}>
             <Avatar>
@@ -149,7 +157,7 @@ export default function ComponentsPage() {
         </View>
 
         {/* Separator Demo */}
-        <View className={styles.section}>
+        <View className={`${styles.section} ${styles.sectionSpaced}`}>
           <Text className={styles.sectionTitle}>Separator 分割线</Text>
           <Text className={styles.mutedText}>水平分割线</Text>
           <Separator />
@@ -162,7 +170,7 @@ export default function ComponentsPage() {
         </View>
 
         {/* Skeleton Demo */}
-        <View className={styles.section}>
+        <View className={`${styles.section} ${styles.sectionSpaced}`}>
           <Text className={styles.sectionTitle}>Skeleton 骨架屏</Text>
           <Button variant="outline" onClick={triggerSkeleton}>
             {loading ? '加载中...' : '触发骨架屏'}
@@ -189,7 +197,9 @@ export default function ComponentsPage() {
         {/* Drawer Demo */}
         <View className={styles.section}>
           <Text className={styles.sectionTitle}>Drawer 抽屉</Text>
-          <Text className={styles.mutedText}>验证受控关闭时的退场动画：按钮、遮罩、确认按钮都应先播放收起动效，再卸载节点。</Text>
+          <Text className={styles.mutedText}>
+            验证受控关闭时的退场动画：按钮、遮罩、确认按钮都应先播放收起动效，再卸载节点。
+          </Text>
           <View className={styles.drawerTriggerGrid}>
             {drawerSides.map((item) => (
               <Button key={item.value} variant="outline" onClick={() => openDrawer(item.value)}>
@@ -206,16 +216,23 @@ export default function ComponentsPage() {
             <DrawerDescription>受控 open=false 时保留挂载，等退场动画完成后再卸载。</DrawerDescription>
           </DrawerHeader>
           <View className={styles.drawerBody}>
-            <Text className={styles.drawerBodyText}>
-              这个样例专门覆盖 Skyline 下的 Drawer 弹出 / 收起链路。
-            </Text>
-            <Text className={styles.drawerBodyText}>
+            <Text className={styles.drawerBodyText}>这个样例专门覆盖 Skyline 下的 Drawer 弹出 / 收起链路。</Text>
+            <Text className={`${styles.drawerBodyText} ${styles.drawerBodyTextSpaced}`}>
               点击遮罩层、右上角关闭、取消或确认，应该看到同一套平滑收起动画。
             </Text>
           </View>
           <DrawerFooter>
-            <Button variant="secondary" onClick={closeDrawer}>取消</Button>
-            <Button onClick={() => { closeDrawer(); add('抽屉确认操作', 'success'); }}>确认</Button>
+            <Button variant="secondary" onClick={closeDrawer}>
+              取消
+            </Button>
+            <Button
+              onClick={() => {
+                closeDrawer();
+                add('抽屉确认操作', 'success');
+              }}
+            >
+              确认
+            </Button>
           </DrawerFooter>
         </Drawer>
 

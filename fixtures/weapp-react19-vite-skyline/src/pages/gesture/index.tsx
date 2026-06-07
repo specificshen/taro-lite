@@ -41,12 +41,9 @@ export default function GesturePage() {
           <CardContent>
             <View className={styles.gestureGrid}>
               {/* Tap Gesture */}
-              <View className={styles.gestureItem}>
+              <View className={`${styles.gestureItem} ${styles.gestureItemSpaced}`}>
                 <Text className={styles.gestureLabel}>Tap 点击</Text>
-                <TapGestureHandler
-                  onGestureWorklet="onTap"
-                  onGestureEvent={() => pushGesture('Tap', '单次点击')}
-                >
+                <TapGestureHandler onGestureWorklet="onTap" onGestureEvent={() => pushGesture('Tap', '单次点击')}>
                   <View className={styles.gestureZone}>
                     <Text className={styles.gestureZoneText}>点击我</Text>
                   </View>
@@ -67,7 +64,7 @@ export default function GesturePage() {
               </View>
 
               {/* Pan Gesture */}
-              <View className={styles.gestureItemFull}>
+              <View className={`${styles.gestureItemFull} ${styles.gestureItemSpaced}`}>
                 <Text className={styles.gestureLabel}>Pan 拖拽</Text>
                 <PanGestureHandler
                   onGestureWorklet="onPan"
@@ -104,11 +101,13 @@ export default function GesturePage() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className={styles.sectionSpaced}>
           <CardHeader>
             <View className={styles.cardHeaderRow}>
               <CardTitle>手势日志</CardTitle>
-              <Button size="sm" variant="ghost" onClick={() => setGestureLog([])}>清空</Button>
+              <Button size="sm" variant="ghost" onClick={() => setGestureLog([])}>
+                清空
+              </Button>
             </View>
           </CardHeader>
           <CardContent>

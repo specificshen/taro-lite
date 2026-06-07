@@ -30,10 +30,7 @@ export function Navbar({ title, showBack = false }: NavbarProps) {
         paddingTop: `${statusBarHeight}px`,
       }}
     >
-      <View
-        className={styles.navbarInner}
-        style={{ height: `${navBarHeight}px` }}
-      >
+      <View className={styles.navbarInner} style={{ height: `${navBarHeight}px` }}>
         {showBack && (
           <View className={styles.backButton} onClick={handleBack}>
             <SvgIcon name="arrow-left" size={20} className={styles.backIcon} />

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import type { PropsWithChildren, ReactNode } from 'react';
+import type { CSSProperties, PropsWithChildren, ReactNode } from 'react';
 import { View, Text } from '@spcsn/taro-components';
+import { useSafeArea } from '@/hooks/use-safe-area';
 import { cn } from '@/lib/utils';
 import styles from './index.module.css';
 
@@ -18,10 +19,12 @@ interface DrawerProps {
 }
 
 export function Drawer({ open, onOpenChange, side = 'bottom', className, children }: DrawerProps) {
+  const { statusBarHeight, navBarHeight } = useSafeArea();
   const [visible, setVisible] = useState(open);
   const [active, setActive] = useState(open);
   const [closing, setClosing] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const portalStyle: CSSProperties = { top: `${statusBarHeight + navBarHeight}px` };
 
   const clearTimer = useCallback(() => {
     if (!timerRef.current) return;
@@ -74,7 +77,10 @@ export function Drawer({ open, onOpenChange, side = 'bottom', className, childre
   if (!visible) return null;
 
   return (
-    <View className={cn(styles.drawerPortal, active && styles.drawerOpen, closing && styles.drawerClosing, className)}>
+    <View
+      className={cn(styles.drawerPortal, active && styles.drawerOpen, closing && styles.drawerClosing, className)}
+      style={portalStyle}
+    >
       <View className={styles.drawerOverlay} onClick={requestClose} />
       <View className={cn(styles.drawerContent, styles[`drawerContent_${side}`])}>{children}</View>
     </View>

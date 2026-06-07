@@ -12,7 +12,9 @@ export function LogConsole({ logs, onClear }: LogConsoleProps) {
     <View className={styles.logSection}>
       <View className={styles.logHeader}>
         <Text className={styles.logTitle}>运行日志台</Text>
-        <Text className={styles.logClear} onClick={onClear}>清空</Text>
+        <Text className={styles.logClear} onClick={onClear}>
+          清空
+        </Text>
       </View>
 
       <View className={styles.logConsole}>
@@ -24,9 +26,7 @@ export function LogConsole({ logs, onClear }: LogConsoleProps) {
           logs.map((log) => (
             <View className={styles.logLine} key={log.id}>
               <Text className={styles.logTime}>[{log.time}]</Text>
-              <Text className={`${styles.logMessage} ${styles[`logType_${log.type}`]}`}>
-                {log.text}
-              </Text>
+              <Text className={`${styles.logMessage} ${styles[`logType_${log.type}`]}`}>{log.text}</Text>
             </View>
           ))
         )}

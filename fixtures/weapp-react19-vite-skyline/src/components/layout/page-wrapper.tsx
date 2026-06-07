@@ -21,11 +21,7 @@ export function PageWrapper({ title, showBack, children }: PageWrapperProps) {
   return (
     <View className={styles.pageWrapper}>
       <Navbar title={title} showBack={shouldShowBack} />
-      <ScrollView
-        className={styles.pageScroll}
-        scrollY
-        style={{ top: `${topOffset}px` }}
-      >
+      <ScrollView className={styles.pageScroll} scrollY style={{ top: `${topOffset}px` }}>
         {children}
       </ScrollView>
     </View>

@@ -3,29 +3,23 @@
   padding-bottom: var(--space-12);
   display: flex;
   flex-direction: column;
-  /* gap fallback */
-  > :not(:first-child) {
-    margin-top: var(--space-5);
-  }
 }
 
 .field {
   display: flex;
   flex-direction: column;
-  /* gap fallback */
-  > :not(:first-child) {
-    margin-top: var(--space-2);
-  }
   margin-bottom: var(--space-4);
 }
 
 .label {
+  margin-bottom: var(--space-2);
   font-size: 26px;
   font-weight: 600;
   color: var(--foreground);
 }
 
 .error {
+  margin-top: var(--space-2);
   font-size: 22px;
   color: var(--destructive);
   font-weight: 500;
@@ -33,10 +27,11 @@
 
 .radioGroup {
   display: flex;
-  /* gap fallback */
-  > :not(:first-child) {
-    margin-top: var(--space-3);
-  }
+  margin-left: calc(-1 * var(--space-3));
+}
+
+.radioGroup > * {
+  margin-left: var(--space-3);
 }
 
 .radioItem {
@@ -68,10 +63,11 @@
 .switchRow {
   display: flex;
   align-items: center;
-  /* gap fallback */
-  > :not(:first-child) {
-    margin-left: var(--space-3);
-  }
+  margin-left: calc(-1 * var(--space-3));
+}
+
+.switchRow > * {
+  margin-left: var(--space-3);
 }
 
 .switchLabel {
@@ -81,11 +77,12 @@
 
 .actions {
   display: flex;
-  /* gap fallback */
-  > :not(:first-child) {
-    margin-left: var(--space-3);
-  }
+  margin-left: calc(-1 * var(--space-3));
   margin-top: var(--space-2);
+}
+
+.actions > * {
+  margin-left: var(--space-3);
 }
 
 .result {
@@ -96,14 +93,11 @@
   border: 1px solid rgba(16, 185, 129, 0.2);
   display: flex;
   flex-direction: column;
-  /* gap fallback */
-  > :not(:first-child) {
-    margin-top: var(--space-2);
-  }
   animation: scaleIn var(--duration-normal) var(--ease-out) both;
 }
 
 .resultText {
+  margin-top: var(--space-2);
   font-size: 22px;
   color: var(--foreground);
   font-family: var(--font-mono);

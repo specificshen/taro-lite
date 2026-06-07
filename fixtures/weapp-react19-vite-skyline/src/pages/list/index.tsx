@@ -98,11 +98,15 @@ export default function ListPage() {
               <Button size="sm" variant="secondary" onClick={() => setItems([])}>
                 清空列表
               </Button>
-              <Button size="sm" variant="outline" onClick={() => {
-                setItems(generateItems(1, 10));
-                setHasMore(true);
-                add('列表已重置', 'info');
-              }}>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => {
+                  setItems(generateItems(1, 10));
+                  setHasMore(true);
+                  add('列表已重置', 'info');
+                }}
+              >
                 重置数据
               </Button>
             </View>
@@ -135,9 +139,7 @@ export default function ListPage() {
                       <Text className={styles.listDesc}>{item.desc}</Text>
                       <Text className={styles.listDate}>{item.date}</Text>
                     </View>
-                    <View className={styles.listRowRight}>
-                      {statusBadge(item.status)}
-                    </View>
+                    <View className={styles.listRowRight}>{statusBadge(item.status)}</View>
                   </View>
                   {idx < items.length - 1 && <Separator />}
                 </View>

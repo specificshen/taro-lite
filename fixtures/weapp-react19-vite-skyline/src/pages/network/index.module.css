@@ -3,23 +3,20 @@
   padding-bottom: var(--space-12);
   display: flex;
   flex-direction: column;
-  /* gap fallback */
-  > :not(:first-child) {
-    margin-top: var(--space-5);
-  }
+}
+
+.responseCard {
+  margin-top: var(--space-5);
 }
 
 .field {
   display: flex;
   flex-direction: column;
-  /* gap fallback */
-  > :not(:first-child) {
-    margin-top: var(--space-2);
-  }
   margin-bottom: var(--space-4);
 }
 
 .label {
+  margin-bottom: var(--space-2);
   font-size: 26px;
   font-weight: 600;
   color: var(--foreground);
@@ -27,10 +24,11 @@
 
 .methodGroup {
   display: flex;
-  /* gap fallback */
-  > :not(:first-child) {
-    margin-top: var(--space-3);
-  }
+  margin-left: calc(-1 * var(--space-3));
+}
+
+.methodGroup > * {
+  margin-left: var(--space-3);
 }
 
 .methodItem {
@@ -61,11 +59,12 @@
 
 .actions {
   display: flex;
-  /* gap fallback */
-  > :not(:first-child) {
-    margin-left: var(--space-3);
-  }
+  margin-left: calc(-1 * var(--space-3));
   flex-wrap: wrap;
+}
+
+.actions > * {
+  margin-left: var(--space-3);
 }
 
 .resHeader {

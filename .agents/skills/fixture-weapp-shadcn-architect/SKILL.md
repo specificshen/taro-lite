@@ -136,6 +136,14 @@ Mini-program overlays can be mounted outside the page node that carries `page` C
 4. Keep the node mounted during exit until the transition duration elapses, then unmount.
 5. Use `opacity` and `transform: translate3d(...)` for motion. Avoid animating layout properties such as `height`, `top`, or `bottom`.
 6. Add literal or local duration/easing fallbacks. Do not depend exclusively on variables from `app.css`.
+7. Overlay roots that can cover the top of the viewport must reserve the Mini Program status bar and capsule/navigation area. Prefer reading `useSafeArea()` and writing explicit inline layout values such as `top: statusBarHeight + navBarHeight` onto the portal. Avoid relying on inline CSS custom properties for this path.
+
+## WXSS / Skyline CSS Compatibility
+
+1. Do not use CSS nesting such as `> :not(:first-child)` inside a rule block.
+2. Do not depend on pseudo-class spacing such as `.container > :not(:first-child)` for critical layout. Prefer explicit classes like `.sectionSpaced` or direct margins on named elements.
+3. Do not depend on `gap` for critical layout spacing. Use explicit margins or grid margin fallbacks when spacing must render in Skyline.
+4. Avoid shorthand positioning like `inset: var(...)`. Use explicit `top`, `right`, `bottom`, and `left` declarations for overlay roots.
 
 ## Page Pattern
 

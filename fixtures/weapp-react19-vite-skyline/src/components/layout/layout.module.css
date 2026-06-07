@@ -40,10 +40,6 @@
   padding-right: 16px;
   display: flex;
   align-items: center;
-  /* gap fallback */
-  > :not(:first-child) {
-    margin-left: 8px;
-  }
   width: 100%;
   box-sizing: border-box;
 }
@@ -51,15 +47,13 @@
 .backButton {
   display: flex;
   align-items: center;
-  /* gap fallback */
-  > :not(:first-child) {
-    margin-left: 4px;
-  }
   padding: 8px 12px;
   margin-right: 4px;
   border-radius: var(--radius-full);
   background-color: transparent;
-  transition: background-color var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out);
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
 }
 
 .backButton:active {
@@ -72,6 +66,7 @@
 }
 
 .backText {
+  margin-left: 4px;
   font-size: 26px;
   color: var(--primary);
   font-weight: 600;
@@ -88,6 +83,7 @@
 }
 
 .navbarTitleWithBack {
+  margin-left: 8px;
   padding-right: 0;
   text-align: left;
 }
