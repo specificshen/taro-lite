@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import type { PropsWithChildren } from 'react';
 import { View, Text } from '@spcsn/taro-components';
 import { cn } from '@/lib/utils';
@@ -23,36 +23,43 @@ export function Drawer({
 }: DrawerProps) {
   const [visible, setVisible] = useState(open);
   const [closing, setClosing] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (open) {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
       setVisible(true);
       setClosing(false);
-    } else if (visible) {
-      setClosing(true);
     }
   }, [open]);
 
-  const handleAnimationEnd = () => {
-    if (closing) {
+  const startClose = () => {
+    if (closing || !visible) return;
+    setClosing(true);
+    timerRef.current = setTimeout(() => {
       setClosing(false);
       setVisible(false);
       onOpenChange(false);
-    }
+      timerRef.current = null;
+    }, 350);
   };
 
-  const handleOverlayClick = () => {
-    setClosing(true);
-  };
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
 
   if (!visible) return null;
 
   return (
     <View
       className={cn(styles.drawerPortal, closing && styles.drawerClosing, className)}
-      onAnimationEnd={handleAnimationEnd}
     >
-      <View className={styles.drawerOverlay} onClick={handleOverlayClick} />
+      <View className={styles.drawerOverlay} onClick={startClose} />
       <View className={cn(styles.drawerContent, styles[`drawerContent_${side}`])}>
         {children}
       </View>
