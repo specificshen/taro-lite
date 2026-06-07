@@ -5,6 +5,70 @@
   flex-direction: column;
 }
 
+.listHero {
+  padding: var(--space-6);
+  border-radius: var(--radius-xl);
+  background: linear-gradient(135deg, #064e3b 0%, #0e7490 55%, #1d4ed8 100%);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+}
+
+.heroTitle {
+  font-size: 42px;
+  font-weight: 800;
+  line-height: 1.15;
+  color: #ffffff;
+}
+
+.heroDesc {
+  margin-top: var(--space-3);
+  font-size: 23px;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.76);
+}
+
+.metricGrid {
+  margin: var(--space-4) 0 var(--space-5) calc(-1 * var(--space-3));
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.metricCard {
+  margin-left: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+}
+
+.metricCard_primary {
+  border-top: 4px solid var(--primary);
+}
+
+.metricCard_success {
+  border-top: 4px solid var(--success);
+}
+
+.metricCard_warning {
+  border-top: 4px solid var(--warning);
+}
+
+.metricValue {
+  font-size: 34px;
+  font-weight: 800;
+  color: var(--foreground);
+}
+
+.metricLabel {
+  margin-top: var(--space-1);
+  font-size: 20px;
+  color: var(--muted-foreground);
+}
+
 .controls {
   display: flex;
   margin-left: calc(-1 * var(--space-3));
@@ -20,6 +84,40 @@
   font-size: 24px;
   color: var(--muted-foreground);
   font-weight: 500;
+}
+
+.filterRow {
+  margin: var(--space-4) 0 0 calc(-1 * var(--space-2));
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.filterChip {
+  margin: var(--space-2) 0 0 var(--space-2);
+  padding: 9px 14px;
+  border-radius: var(--radius-full);
+  background: var(--secondary);
+  border: 1px solid var(--border);
+}
+
+.filterChipActive {
+  background: var(--gradient-primary);
+  border-color: transparent;
+  box-shadow: var(--shadow-glow-primary);
+}
+
+.filterText,
+.filterTextActive {
+  font-size: 21px;
+  font-weight: 700;
+}
+
+.filterText {
+  color: var(--foreground);
+}
+
+.filterTextActive {
+  color: #ffffff;
 }
 
 .listSection {

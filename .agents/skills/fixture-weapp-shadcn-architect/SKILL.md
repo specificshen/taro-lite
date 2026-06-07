@@ -145,6 +145,12 @@ Mini-program overlays can be mounted outside the page node that carries `page` C
 3. Do not depend on `gap` for critical layout spacing. Use explicit margins or grid margin fallbacks when spacing must render in Skyline.
 4. Avoid shorthand positioning like `inset: var(...)`. Use explicit `top`, `right`, `bottom`, and `left` declarations for overlay roots.
 
+## Gesture Demo Guidance
+
+1. Skyline gesture handler components such as `TapGestureHandler`, `PanGestureHandler`, and `LongPressGestureHandler` require worklet string callbacks. Do not pass ordinary React callback props such as `onGestureEvent` and expect them to run.
+2. For fixture pages that need visible JS-side logs, use standard Mini Program events such as `onClick`, `onLongPress`, `onTouchStart`, `onTouchMove`, and `onTouchEnd`.
+3. For visible long-press demos, pair `onLongPress` with `onLongClick` and a small touch timer fallback so runtime event-name differences do not make the demo appear dead.
+
 ## Page Pattern
 
 Every page should use `<PageWrapper title="...">` to get:

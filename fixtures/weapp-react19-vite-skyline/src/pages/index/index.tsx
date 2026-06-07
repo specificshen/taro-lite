@@ -15,6 +15,8 @@ interface NavItem {
   gradient: 'primary' | 'warm' | 'ocean' | 'rose' | 'sky' | 'success';
   badge: string;
   badgeVariant: 'default' | 'secondary' | 'success' | 'warning';
+  coverage: string;
+  health: string;
 }
 
 const navItems: NavItem[] = [
@@ -26,6 +28,8 @@ const navItems: NavItem[] = [
     gradient: 'primary',
     badge: 'UI',
     badgeVariant: 'default',
+    coverage: '12 primitives',
+    health: 'Motion ready',
   },
   {
     title: '表单测试',
@@ -35,6 +39,8 @@ const navItems: NavItem[] = [
     gradient: 'warm',
     badge: 'Form',
     badgeVariant: 'warning',
+    coverage: '6 controls',
+    health: 'Validation ready',
   },
   {
     title: '列表测试',
@@ -44,6 +50,8 @@ const navItems: NavItem[] = [
     gradient: 'ocean',
     badge: 'List',
     badgeVariant: 'success',
+    coverage: '50 records',
+    health: 'Virtual ready',
   },
   {
     title: '网络测试',
@@ -53,6 +61,8 @@ const navItems: NavItem[] = [
     gradient: 'sky',
     badge: 'Net',
     badgeVariant: 'secondary',
+    coverage: '3 flows',
+    health: 'Interceptor ready',
   },
   {
     title: '手势测试',
@@ -62,6 +72,8 @@ const navItems: NavItem[] = [
     gradient: 'rose',
     badge: 'Gesture',
     badgeVariant: 'default',
+    coverage: 'Tap/Pan/Press',
+    health: 'Fallback ready',
   },
   {
     title: '状态测试',
@@ -71,14 +83,24 @@ const navItems: NavItem[] = [
     gradient: 'success',
     badge: 'State',
     badgeVariant: 'secondary',
+    coverage: 'React 19',
+    health: 'Concurrent ready',
   },
 ];
 
 const stats = [
   { label: 'Renderer', value: 'Skyline' },
   { label: 'Runtime', value: 'React 19' },
-  { label: 'Builder', value: 'Vite' },
+  { label: 'Target', value: 'WeApp' },
 ];
+
+const coverageItems = [
+  { label: 'UI primitives', value: '12', tone: 'primary' },
+  { label: 'Runtime pages', value: '6', tone: 'success' },
+  { label: 'Event paths', value: '18+', tone: 'warning' },
+];
+
+const qualitySignals = ['Safe area', 'CSS Modules', 'Logs', 'Fallbacks'];
 
 export default function IndexPage() {
   const navigateTo = (path: string) => {
@@ -95,7 +117,7 @@ export default function IndexPage() {
           </View>
           <Text className={styles.heroTitle}>小程序底座验证台</Text>
           <Text className={styles.heroSub}>
-            React 19 × Vite × Skyline 的最小业务样板，覆盖组件、状态、列表、网络与手势链路。
+            React 19 × Skyline 的最小业务样板，覆盖组件、状态、列表、网络与手势链路。
           </Text>
           <View className={styles.statsGrid}>
             {stats.map((item) => (
@@ -108,6 +130,33 @@ export default function IndexPage() {
         </View>
 
         <View className={styles.navSection}>
+          <View className={styles.coverageStrip}>
+            {coverageItems.map((item) => (
+              <View key={item.label} className={`${styles.coverageCard} ${styles[`coverageCard_${item.tone}`]}`}>
+                <Text className={styles.coverageValue}>{item.value}</Text>
+                <Text className={styles.coverageLabel}>{item.label}</Text>
+              </View>
+            ))}
+          </View>
+
+          <Card className={styles.commandCard}>
+            <View className={styles.commandHeader}>
+              <View>
+                <Text className={styles.commandTitle}>底座健康状态</Text>
+                <Text className={styles.commandDesc}>小程序端关键链路集中巡检</Text>
+              </View>
+              <Badge variant="success">Ready</Badge>
+            </View>
+            <View className={styles.signalRow}>
+              {qualitySignals.map((item) => (
+                <View key={item} className={styles.signalPill}>
+                  <SvgIcon name="check" size={14} color="var(--success)" />
+                  <Text className={styles.signalText}>{item}</Text>
+                </View>
+              ))}
+            </View>
+          </Card>
+
           <View className={styles.navHeader}>
             <View>
               <Text className={styles.navTitle}>验证场景</Text>
@@ -132,6 +181,11 @@ export default function IndexPage() {
                         <Badge variant={item.badgeVariant}>{item.badge}</Badge>
                       </View>
                       <Text className={styles.navCardDesc}>{item.desc}</Text>
+                      <View className={styles.navMetaRow}>
+                        <Text className={styles.navMeta}>{item.coverage}</Text>
+                        <Text className={styles.navMetaDot}>/</Text>
+                        <Text className={styles.navMeta}>{item.health}</Text>
+                      </View>
                     </View>
                     <View className={styles.navCardArrow}>
                       <SvgIcon name="chevron-right" size={18} color="var(--muted-foreground)" />

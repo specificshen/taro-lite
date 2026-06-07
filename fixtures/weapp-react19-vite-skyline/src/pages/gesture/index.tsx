@@ -1,15 +1,5 @@
 import { useState, useRef } from 'react';
 import { View, Text } from '@spcsn/taro-components';
-import {
-  TapGestureHandler as _TapGestureHandler,
-  PanGestureHandler as _PanGestureHandler,
-  LongPressGestureHandler as _LongPressGestureHandler,
-} from '@spcsn/taro-components';
-
-// Skyline gesture handlers expose runtime event props not present in current type declarations.
-const TapGestureHandler = _TapGestureHandler as any;
-const PanGestureHandler = _PanGestureHandler as any;
-const LongPressGestureHandler = _LongPressGestureHandler as any;
 import { PageWrapper } from '@/components/layout/page-wrapper';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -18,11 +8,36 @@ import { LogConsole } from '@/components/demo/log-console';
 import { useLogger } from '@/hooks/use-logger';
 import styles from './index.module.css';
 
+interface TouchPointLike {
+  clientX?: number;
+  clientY?: number;
+  pageX?: number;
+  pageY?: number;
+}
+
+interface TouchEventLike {
+  touches?: TouchPointLike[];
+  changedTouches?: TouchPointLike[];
+}
+
+function getTouchPoint(event: TouchEventLike): TouchPointLike | undefined {
+  return event.touches?.[0] ?? event.changedTouches?.[0];
+}
+
+const gestureCards = [
+  { label: 'Tap', desc: '点击事件', value: 'onClick' },
+  { label: 'Press', desc: '长按兜底', value: 'press + timer' },
+  { label: 'Pan', desc: '拖拽轨迹', value: 'touch move' },
+];
+
 export default function GesturePage() {
   const { logs, add, clear } = useLogger();
   const [gestureLog, setGestureLog] = useState<string[]>([]);
   const [panPos, setPanPos] = useState({ x: 0, y: 0 });
   const panStart = useRef({ x: 0, y: 0 });
+  const touchStart = useRef({ x: 0, y: 0 });
+  const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const longPressFired = useRef(false);
 
   const pushGesture = (name: string, detail?: string) => {
     const msg = detail ? `${name}: ${detail}` : name;
@@ -30,72 +45,118 @@ export default function GesturePage() {
     add(msg, 'info');
   };
 
+  const handlePanStart = (event: TouchEventLike) => {
+    const point = getTouchPoint(event);
+    if (!point) return;
+
+    touchStart.current = { x: point.clientX ?? point.pageX ?? 0, y: point.clientY ?? point.pageY ?? 0 };
+    panStart.current = { ...panPos };
+    pushGesture('Pan', '开始拖拽');
+  };
+
+  const handlePanMove = (event: TouchEventLike) => {
+    const point = getTouchPoint(event);
+    if (!point) return;
+
+    setPanPos({
+      x: panStart.current.x + (point.clientX ?? point.pageX ?? 0) - touchStart.current.x,
+      y: panStart.current.y + (point.clientY ?? point.pageY ?? 0) - touchStart.current.y,
+    });
+  };
+
+  const handlePanEnd = () => {
+    pushGesture('Pan', `结束拖拽 (${Math.round(panPos.x)}, ${Math.round(panPos.y)})`);
+  };
+
+  const clearLongPressTimer = () => {
+    if (!longPressTimer.current) return;
+
+    clearTimeout(longPressTimer.current);
+    longPressTimer.current = null;
+  };
+
+  const triggerLongPress = () => {
+    if (longPressFired.current) return;
+
+    longPressFired.current = true;
+    pushGesture('LongPress', '长按触发');
+  };
+
+  const handleLongPressStart = () => {
+    clearLongPressTimer();
+    longPressFired.current = false;
+    longPressTimer.current = setTimeout(triggerLongPress, 420);
+  };
+
+  const handleLongPressEnd = () => {
+    clearLongPressTimer();
+  };
+
   return (
     <PageWrapper title="手势测试">
       <View className={`${styles.container} animate-fade-in-up`}>
+        <View className={styles.gestureHero}>
+          <Text className={styles.heroTitle}>手势事件实验台</Text>
+          <Text className={styles.heroDesc}>标准事件、长按兼容兜底、拖拽位移和日志链路集中验证。</Text>
+        </View>
+
+        <View className={styles.gestureCardGrid}>
+          {gestureCards.map((item) => (
+            <View key={item.label} className={styles.gestureInfoCard}>
+              <Text className={styles.gestureInfoLabel}>{item.label}</Text>
+              <Text className={styles.gestureInfoDesc}>{item.desc}</Text>
+              <Text className={styles.gestureInfoValue}>{item.value}</Text>
+            </View>
+          ))}
+        </View>
+
         <Card>
           <CardHeader>
-            <CardTitle>Skyline 原生手势</CardTitle>
-            <CardDescription>Tap / Pan / LongPress 手势识别测试</CardDescription>
+            <CardTitle>小程序手势交互</CardTitle>
+            <CardDescription>点击、长按、拖拽事件链路验证</CardDescription>
           </CardHeader>
           <CardContent>
             <View className={styles.gestureGrid}>
-              {/* Tap Gesture */}
-              <View className={`${styles.gestureItem} ${styles.gestureItemSpaced}`}>
-                <Text className={styles.gestureLabel}>Tap 点击</Text>
-                <TapGestureHandler onGestureWorklet="onTap" onGestureEvent={() => pushGesture('Tap', '单次点击')}>
-                  <View className={styles.gestureZone}>
-                    <Text className={styles.gestureZoneText}>点击我</Text>
-                  </View>
-                </TapGestureHandler>
-              </View>
-
-              {/* Long Press Gesture */}
               <View className={styles.gestureItem}>
-                <Text className={styles.gestureLabel}>LongPress 长按</Text>
-                <LongPressGestureHandler
-                  onGestureWorklet="onLongPress"
-                  onGestureEvent={() => pushGesture('LongPress', '长按触发')}
-                >
-                  <View className={styles.gestureZoneSecondary}>
-                    <Text className={styles.gestureZoneText}>长按我</Text>
-                  </View>
-                </LongPressGestureHandler>
+                <Text className={styles.gestureLabel}>Tap 点击</Text>
+                <View className={styles.gestureZone} onClick={() => pushGesture('Tap', '单次点击')}>
+                  <Text className={styles.gestureZoneText}>点击我</Text>
+                </View>
               </View>
 
-              {/* Pan Gesture */}
+              <View className={`${styles.gestureItem} ${styles.gestureItemSpaced}`}>
+                <Text className={styles.gestureLabel}>LongPress 长按</Text>
+                <View
+                  className={styles.gestureZoneSecondary}
+                  onLongPress={triggerLongPress}
+                  onLongClick={triggerLongPress}
+                  onTouchStart={handleLongPressStart}
+                  onTouchEnd={handleLongPressEnd}
+                  onTouchCancel={handleLongPressEnd}
+                >
+                  <Text className={styles.gestureZoneText}>长按我</Text>
+                </View>
+              </View>
+
               <View className={`${styles.gestureItemFull} ${styles.gestureItemSpaced}`}>
                 <Text className={styles.gestureLabel}>Pan 拖拽</Text>
-                <PanGestureHandler
-                  onGestureWorklet="onPan"
-                  onGestureEvent={(e: any) => {
-                    const state = e.detail?.state || e.detail?.gestureState;
-                    if (state === 'begin') {
-                      panStart.current = { ...panPos };
-                      pushGesture('Pan', '开始拖拽');
-                    } else if (state === 'change' || e.detail?.deltaX !== undefined) {
-                      const dx = e.detail?.deltaX || 0;
-                      const dy = e.detail?.deltaY || 0;
-                      setPanPos({
-                        x: panStart.current.x + dx,
-                        y: panStart.current.y + dy,
-                      });
-                    } else if (state === 'end') {
-                      pushGesture('Pan', '拖拽结束');
-                    }
-                  }}
+                <View
+                  className={styles.panArea}
+                  catchMove
+                  onTouchStart={handlePanStart}
+                  onTouchMove={handlePanMove}
+                  onTouchEnd={handlePanEnd}
+                  onTouchCancel={handlePanEnd}
                 >
-                  <View className={styles.panArea}>
-                    <View
-                      className={styles.panBall}
-                      style={{
-                        transform: `translate3d(${panPos.x}px, ${panPos.y}px, 0)`,
-                      }}
-                    >
-                      <Text className={styles.panBallText}>拖拽球</Text>
-                    </View>
+                  <View
+                    className={styles.panBall}
+                    style={{
+                      transform: `translate3d(${panPos.x}px, ${panPos.y}px, 0)`,
+                    }}
+                  >
+                    <Text className={styles.panBallText}>拖拽球</Text>
                   </View>
-                </PanGestureHandler>
+                </View>
               </View>
             </View>
           </CardContent>
@@ -115,10 +176,10 @@ export default function GesturePage() {
               {gestureLog.length === 0 ? (
                 <Text className={styles.gestureLogEmpty}>等待手势操作...</Text>
               ) : (
-                gestureLog.map((g, i) => (
-                  <View key={i} className={styles.gestureLogRow}>
-                    <Badge variant="outline">#{gestureLog.length - i}</Badge>
-                    <Text className={styles.gestureLogText}>{g}</Text>
+                gestureLog.map((item, index) => (
+                  <View key={`${item}-${index}`} className={styles.gestureLogRow}>
+                    <Badge variant="outline">#{gestureLog.length - index}</Badge>
+                    <Text className={styles.gestureLogText}>{item}</Text>
                   </View>
                 ))
               )}

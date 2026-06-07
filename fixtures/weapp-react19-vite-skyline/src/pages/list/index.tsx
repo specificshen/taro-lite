@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { View, Text, ScrollView, ListView, ListItem } from '@spcsn/taro-components';
 import { PageWrapper } from '@/components/layout/page-wrapper';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
@@ -18,6 +18,15 @@ interface ListRecord {
   status: 'active' | 'pending' | 'completed';
   date: string;
 }
+
+type StatusFilter = 'all' | ListRecord['status'];
+
+const filters: Array<{ label: string; value: StatusFilter }> = [
+  { label: '全部', value: 'all' },
+  { label: '进行中', value: 'active' },
+  { label: '待处理', value: 'pending' },
+  { label: '已完成', value: 'completed' },
+];
 
 function generateItems(start: number, count: number): ListRecord[] {
   return Array.from({ length: count }, (_, i) => {
@@ -39,6 +48,21 @@ export default function ListPage() {
   const [refreshing, setRefreshing] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const [filter, setFilter] = useState<StatusFilter>('all');
+
+  const metrics = useMemo(
+    () => [
+      { label: '全部任务', value: items.length, tone: 'primary' },
+      { label: '进行中', value: items.filter((item) => item.status === 'active').length, tone: 'success' },
+      { label: '待处理', value: items.filter((item) => item.status === 'pending').length, tone: 'warning' },
+    ],
+    [items],
+  );
+
+  const visibleItems = useMemo(
+    () => (filter === 'all' ? items : items.filter((item) => item.status === filter)),
+    [filter, items],
+  );
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -86,6 +110,20 @@ export default function ListPage() {
   return (
     <PageWrapper title="列表测试">
       <View className={`${styles.container} animate-fade-in-up`}>
+        <View className={styles.listHero}>
+          <Text className={styles.heroTitle}>任务流看板</Text>
+          <Text className={styles.heroDesc}>验证刷新、分页、空态、筛选、骨架屏和 Skyline ListView 的组合表现。</Text>
+        </View>
+
+        <View className={styles.metricGrid}>
+          {metrics.map((item) => (
+            <View key={item.label} className={`${styles.metricCard} ${styles[`metricCard_${item.tone}`]}`}>
+              <Text className={styles.metricValue}>{item.value}</Text>
+              <Text className={styles.metricLabel}>{item.label}</Text>
+            </View>
+          ))}
+        </View>
+
         <Card>
           <CardHeader>
             <CardTitle>列表控制</CardTitle>
@@ -110,7 +148,22 @@ export default function ListPage() {
                 重置数据
               </Button>
             </View>
-            <Text className={styles.stats}>当前共 {items.length} 条数据</Text>
+            <View className={styles.filterRow}>
+              {filters.map((item) => (
+                <View
+                  key={item.value}
+                  className={`${styles.filterChip} ${filter === item.value ? styles.filterChipActive : ''}`}
+                  onClick={() => setFilter(item.value)}
+                >
+                  <Text className={filter === item.value ? styles.filterTextActive : styles.filterText}>
+                    {item.label}
+                  </Text>
+                </View>
+              ))}
+            </View>
+            <Text className={styles.stats}>
+              当前显示 {visibleItems.length} 条 / 总计 {items.length} 条
+            </Text>
           </CardContent>
         </Card>
 
@@ -125,13 +178,13 @@ export default function ListPage() {
             onScrollToLower={onScrollToLower}
             lowerThreshold={100}
           >
-            {items.length === 0 ? (
+            {visibleItems.length === 0 ? (
               <View className={styles.empty}>
                 <Text className={styles.emptyIcon}>📭</Text>
                 <Text className={styles.emptyText}>列表为空</Text>
               </View>
             ) : (
-              items.map((item, idx) => (
+              visibleItems.map((item, idx) => (
                 <View key={item.id}>
                   <View className={styles.listRow}>
                     <View className={styles.listRowLeft}>
@@ -141,12 +194,12 @@ export default function ListPage() {
                     </View>
                     <View className={styles.listRowRight}>{statusBadge(item.status)}</View>
                   </View>
-                  {idx < items.length - 1 && <Separator />}
+                  {idx < visibleItems.length - 1 && <Separator />}
                 </View>
               ))
             )}
 
-            {items.length > 0 && (
+            {visibleItems.length > 0 && (
               <View className={styles.loadMore}>
                 {loadingMore ? (
                   <View className={styles.skeletonRow}>
@@ -165,7 +218,7 @@ export default function ListPage() {
         <View className={styles.listSection}>
           <Text className={styles.sectionTitle}>ListView 高性能列表 (Skyline)</Text>
           <ListView className={styles.skylineList}>
-            {items.slice(0, 8).map((item) => (
+            {visibleItems.slice(0, 8).map((item) => (
               <ListItem key={`sky-${item.id}`}>
                 <View className={styles.skylineItem}>
                   <Text className={styles.skylineTitle}>{item.title}</Text>

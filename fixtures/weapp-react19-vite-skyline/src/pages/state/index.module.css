@@ -5,6 +5,57 @@
   flex-direction: column;
 }
 
+.stateHero {
+  padding: var(--space-6);
+  border-radius: var(--radius-xl);
+  background: linear-gradient(135deg, #14532d 0%, #2563eb 52%, #6d28d9 100%);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+}
+
+.heroTitle {
+  font-size: 42px;
+  line-height: 1.15;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.heroDesc {
+  margin-top: var(--space-3);
+  font-size: 23px;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.76);
+}
+
+.heroMetricRow {
+  margin: var(--space-5) 0 0 calc(-1 * var(--space-3));
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.heroMetric {
+  margin-left: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.13);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  display: flex;
+  flex-direction: column;
+}
+
+.heroMetricValue {
+  font-size: 32px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.heroMetricLabel {
+  margin-top: var(--space-1);
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.68);
+}
+
 .sectionSpaced {
   margin-top: var(--space-5);
 }
@@ -70,6 +121,32 @@
 }
 .tagCloud > * {
   margin: var(--space-2) 0 0 var(--space-2);
+}
+
+.deferredMeta {
+  margin-top: var(--space-2);
+  font-size: 21px;
+  color: var(--muted-foreground);
+}
+
+.deferredGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin: calc(-1 * var(--space-3)) 0 0 calc(-1 * var(--space-3));
+}
+
+.deferredCell {
+  margin: var(--space-3) 0 0 var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: linear-gradient(180deg, var(--muted) 0%, #f1f5f9 100%);
+  border: 1px solid var(--border);
+}
+
+.deferredCellText {
+  font-size: 21px;
+  line-height: 1.35;
+  color: var(--foreground);
 }
 
 /* Counter */

@@ -15,6 +15,77 @@
   box-shadow: var(--shadow-sm);
 }
 
+.labHero {
+  padding: var(--space-6);
+  border-radius: var(--radius-xl);
+  background: linear-gradient(135deg, #0f172a 0%, #155e75 54%, #065f46 100%);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+}
+
+.labEyebrow {
+  align-self: flex-start;
+  padding: 8px 14px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.labTitle {
+  margin-top: var(--space-4);
+  font-size: 42px;
+  line-height: 1.15;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.labDesc {
+  margin-top: var(--space-3);
+  font-size: 24px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.76);
+}
+
+.metricGrid {
+  margin: var(--space-4) 0 0 calc(-1 * var(--space-3));
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.metricCard {
+  margin-left: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+}
+
+.metricValue {
+  font-size: 34px;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.metricLabel {
+  margin-top: var(--space-1);
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--foreground);
+}
+
+.metricDesc {
+  margin-top: var(--space-2);
+  font-size: 18px;
+  line-height: 1.35;
+  color: var(--muted-foreground);
+}
+
 .sectionSpaced {
   margin-top: var(--space-6);
 }
@@ -82,6 +153,52 @@
 .mutedText {
   font-size: 24px;
   color: var(--muted-foreground);
+}
+
+.swatchGrid {
+  margin: var(--space-4) 0 0 calc(-1 * var(--space-3));
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.swatchCard {
+  margin: var(--space-3) 0 0 var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--muted);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+}
+
+.swatchBlock {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+}
+
+.swatchPrimary {
+  background: var(--gradient-primary);
+}
+
+.swatchSuccess {
+  background: var(--gradient-ocean);
+}
+
+.swatchWarning {
+  background: var(--gradient-warm);
+}
+
+.swatchRose {
+  background: var(--gradient-rose);
+}
+
+.swatchText {
+  margin-left: var(--space-3);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--foreground);
 }
 
 .skeletonArea {

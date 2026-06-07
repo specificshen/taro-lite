@@ -28,6 +28,19 @@ const drawerSides: Array<{ label: string; value: DrawerSide }> = [
   { label: '顶部', value: 'top' },
 ];
 
+const componentMetrics = [
+  { label: '基础原语', value: '12', desc: 'Button / Card / Badge / Input' },
+  { label: '反馈状态', value: '5', desc: '成功、警告、危险、加载、空态' },
+  { label: '动效方位', value: '4', desc: 'Drawer 多方向进退场' },
+];
+
+const tokenSwatches = [
+  { label: 'Primary', className: 'swatchPrimary' },
+  { label: 'Success', className: 'swatchSuccess' },
+  { label: 'Warning', className: 'swatchWarning' },
+  { label: 'Rose', className: 'swatchRose' },
+];
+
 export default function ComponentsPage() {
   const { logs, add, clear } = useLogger();
   const [inputValue, setInputValue] = useState('');
@@ -61,6 +74,37 @@ export default function ComponentsPage() {
   return (
     <PageWrapper title="组件库">
       <View className={`${styles.container} animate-fade-in-up`}>
+        <View className={styles.labHero}>
+          <Text className={styles.labEyebrow}>Primitive Lab</Text>
+          <Text className={styles.labTitle}>UI 原语实验室</Text>
+          <Text className={styles.labDesc}>
+            覆盖布局、反馈、输入、头像、骨架屏与抽屉动效，方便快速发现端上样式差异。
+          </Text>
+        </View>
+
+        <View className={styles.metricGrid}>
+          {componentMetrics.map((item) => (
+            <View key={item.label} className={styles.metricCard}>
+              <Text className={styles.metricValue}>{item.value}</Text>
+              <Text className={styles.metricLabel}>{item.label}</Text>
+              <Text className={styles.metricDesc}>{item.desc}</Text>
+            </View>
+          ))}
+        </View>
+
+        <View className={`${styles.section} ${styles.sectionSpaced}`}>
+          <Text className={styles.sectionTitle}>Design Tokens</Text>
+          <Text className={styles.mutedText}>颜色、圆角、阴影、动效都从页面 token 读取，端上覆盖更容易定位。</Text>
+          <View className={styles.swatchGrid}>
+            {tokenSwatches.map((item) => (
+              <View key={item.label} className={styles.swatchCard}>
+                <View className={`${styles.swatchBlock} ${styles[item.className]}`} />
+                <Text className={styles.swatchText}>{item.label}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+
         {/* Card Demo */}
         <View className={styles.section}>
           <Text className={styles.sectionTitle}>Card 卡片</Text>

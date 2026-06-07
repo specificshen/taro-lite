@@ -5,6 +5,88 @@
   flex-direction: column;
 }
 
+.netHero {
+  padding: var(--space-6);
+  border-radius: var(--radius-xl);
+  background: linear-gradient(135deg, #0c4a6e 0%, #1d4ed8 52%, #581c87 100%);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  margin-bottom: var(--space-4);
+}
+
+.heroTitle {
+  font-size: 42px;
+  line-height: 1.15;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.heroDesc {
+  margin-top: var(--space-3);
+  font-size: 23px;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.76);
+}
+
+.statusRow {
+  margin: var(--space-5) 0 0 calc(-1 * var(--space-3));
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.statusPill {
+  margin-left: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.13);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  display: flex;
+  flex-direction: column;
+}
+
+.statusLabel {
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.statusValue {
+  margin-top: var(--space-1);
+  font-size: 24px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.presetGrid {
+  margin: 0 0 var(--space-4) calc(-1 * var(--space-3));
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.presetCard {
+  margin-left: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+}
+
+.presetLabel {
+  font-size: 23px;
+  font-weight: 800;
+  color: var(--foreground);
+}
+
+.presetMethod {
+  margin-top: var(--space-2);
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--primary);
+}
+
 .responseCard {
   margin-top: var(--space-5);
 }
@@ -71,6 +153,16 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.responseBadges {
+  display: flex;
+  align-items: center;
+  margin-left: calc(-1 * var(--space-2));
+}
+
+.responseBadges > * {
+  margin-left: var(--space-2);
 }
 
 .jsonScroll {

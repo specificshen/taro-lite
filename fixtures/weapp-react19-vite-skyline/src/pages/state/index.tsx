@@ -1,4 +1,4 @@
-import { useState, useTransition, useReducer, useCallback, createContext, useContext } from 'react';
+import { useState, useTransition, useReducer, useCallback, createContext, useContext, useDeferredValue } from 'react';
 import { View, Text, Input as TaroInput } from '@spcsn/taro-components';
 import { PageWrapper } from '@/components/layout/page-wrapper';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
@@ -97,6 +97,8 @@ export default function StatePage() {
   const [name, setName] = useState('');
   const [list, setList] = useState<string[]>([]);
   const [isPending, startTransition] = useTransition();
+  const [query, setQuery] = useState('Item');
+  const deferredQuery = useDeferredValue(query);
 
   const handleGenerate = useCallback(() => {
     startTransition(async () => {
@@ -120,9 +122,29 @@ export default function StatePage() {
     add('批量更新完成', 'success');
   }, [add]);
 
+  const deferredItems = Array.from(
+    { length: 36 },
+    (_, index) => `${deferredQuery || 'Item'} / Skyline cell ${index + 1}`,
+  );
+
   return (
     <PageWrapper title="状态测试">
       <View className={`${styles.container} animate-fade-in-up`}>
+        <View className={styles.stateHero}>
+          <Text className={styles.heroTitle}>React 状态实验台</Text>
+          <Text className={styles.heroDesc}>并发更新、延迟派生、Reducer、Context 与批量更新集中验证。</Text>
+          <View className={styles.heroMetricRow}>
+            <View className={styles.heroMetric}>
+              <Text className={styles.heroMetricValue}>{list.length || 0}</Text>
+              <Text className={styles.heroMetricLabel}>transition items</Text>
+            </View>
+            <View className={styles.heroMetric}>
+              <Text className={styles.heroMetricValue}>{deferredItems.length}</Text>
+              <Text className={styles.heroMetricLabel}>deferred cells</Text>
+            </View>
+          </View>
+        </View>
+
         {/* Transition Section */}
         <Card className={styles.sectionSpaced}>
           <CardHeader>
@@ -157,6 +179,34 @@ export default function StatePage() {
                 </View>
               </View>
             )}
+          </CardContent>
+        </Card>
+
+        <Card className={styles.sectionSpaced}>
+          <CardHeader>
+            <CardTitle>useDeferredValue 延迟派生</CardTitle>
+            <CardDescription>输入即时响应，列表渲染使用延迟值，观察端上流畅度。</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <View className={styles.field}>
+              <Text className={styles.label}>筛选关键字</Text>
+              <TaroInput
+                className={styles.textInput}
+                placeholder="输入列表前缀..."
+                value={query}
+                onInput={(e: any) => setQuery(e.detail.value)}
+              />
+              <Text className={styles.deferredMeta}>
+                输入值: {query || '(空)'} · 延迟值: {deferredQuery || '(空)'}
+              </Text>
+            </View>
+            <View className={styles.deferredGrid}>
+              {deferredItems.slice(0, 12).map((item) => (
+                <View key={item} className={styles.deferredCell}>
+                  <Text className={styles.deferredCellText}>{item}</Text>
+                </View>
+              ))}
+            </View>
           </CardContent>
         </Card>
 

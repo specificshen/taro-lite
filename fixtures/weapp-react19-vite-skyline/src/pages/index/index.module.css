@@ -102,6 +102,99 @@
   flex-direction: column;
 }
 
+.coverageStrip {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  margin: 0 0 var(--space-4) calc(-1 * var(--space-3));
+}
+
+.coverageCard {
+  margin-left: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.coverageCard_primary {
+  border-top: 4px solid var(--primary);
+}
+
+.coverageCard_success {
+  border-top: 4px solid var(--success);
+}
+
+.coverageCard_warning {
+  border-top: 4px solid var(--warning);
+}
+
+.coverageValue {
+  font-size: 36px;
+  font-weight: 800;
+  color: var(--foreground);
+  line-height: 1;
+}
+
+.coverageLabel {
+  margin-top: var(--space-2);
+  font-size: 20px;
+  color: var(--muted-foreground);
+  line-height: 1.25;
+}
+
+.commandCard {
+  margin-bottom: var(--space-5);
+}
+
+.commandHeader {
+  padding: var(--space-5);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.commandTitle {
+  display: block;
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--foreground);
+}
+
+.commandDesc {
+  display: block;
+  margin-top: var(--space-1);
+  font-size: 22px;
+  color: var(--muted-foreground);
+}
+
+.signalRow {
+  padding: 0 var(--space-5) var(--space-5);
+  display: flex;
+  flex-wrap: wrap;
+  margin: calc(-1 * var(--space-2)) 0 0 calc(-1 * var(--space-2));
+}
+
+.signalPill {
+  margin: var(--space-2) 0 0 var(--space-2);
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: var(--radius-full);
+  background: var(--success-light);
+  border: 1px solid rgba(16, 185, 129, 0.18);
+}
+
+.signalText {
+  margin-left: var(--space-1);
+  font-size: 20px;
+  font-weight: 700;
+  color: #047857;
+}
+
 .navHeader {
   display: flex;
   justify-content: space-between;
@@ -174,6 +267,25 @@
   font-size: 23px;
   color: var(--muted-foreground);
   line-height: 1.42;
+}
+
+.navMetaRow {
+  margin-top: var(--space-3);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.navMeta {
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.navMetaDot {
+  margin: 0 var(--space-2);
+  font-size: 18px;
+  color: var(--muted-foreground);
 }
 
 .navCardArrow {

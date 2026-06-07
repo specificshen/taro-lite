@@ -5,6 +5,65 @@
   flex-direction: column;
 }
 
+.gestureHero {
+  padding: var(--space-6);
+  border-radius: var(--radius-xl);
+  background: linear-gradient(135deg, #831843 0%, #be123c 50%, #7c2d12 100%);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+}
+
+.heroTitle {
+  font-size: 42px;
+  line-height: 1.15;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.heroDesc {
+  margin-top: var(--space-3);
+  font-size: 23px;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.76);
+}
+
+.gestureCardGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  margin: var(--space-4) 0 var(--space-5) calc(-1 * var(--space-3));
+}
+
+.gestureInfoCard {
+  margin-left: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+}
+
+.gestureInfoLabel {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--foreground);
+}
+
+.gestureInfoDesc {
+  margin-top: var(--space-1);
+  font-size: 19px;
+  color: var(--muted-foreground);
+}
+
+.gestureInfoValue {
+  margin-top: var(--space-2);
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--primary);
+}
+
 .sectionSpaced {
   margin-top: var(--space-5);
 }
@@ -50,7 +109,10 @@
 .gestureZone::before {
   content: "";
   position: absolute;
-  inset: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   background: radial-gradient(ellipse at 30% 20%, rgba(255, 255, 255, 0.15) 0%, transparent 60%);
 }
 
@@ -109,7 +171,10 @@
 .panBall::before {
   content: "";
   position: absolute;
-  inset: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   border-radius: 9999px;
   background: radial-gradient(ellipse at 30% 20%, rgba(255, 255, 255, 0.2) 0%, transparent 60%);
 }

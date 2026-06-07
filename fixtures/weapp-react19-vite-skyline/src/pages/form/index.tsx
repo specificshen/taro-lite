@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, Slider, Switch } from '@spcsn/taro-components';
+import { View, Text, Slider, Switch, Textarea } from '@spcsn/taro-components';
 import { PageWrapper } from '@/components/layout/page-wrapper';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -16,7 +16,22 @@ interface FormData {
   age: number;
   agree: boolean;
   gender: 'male' | 'female' | 'other';
+  role: 'developer' | 'designer' | 'tester';
+  plan: 'basic' | 'team' | 'enterprise';
+  note: string;
 }
+
+const roleOptions: Array<{ value: FormData['role']; label: string; desc: string }> = [
+  { value: 'developer', label: '开发', desc: '构建与调试' },
+  { value: 'designer', label: '设计', desc: '样式与体验' },
+  { value: 'tester', label: '测试', desc: '回归与验收' },
+];
+
+const planOptions: Array<{ value: FormData['plan']; label: string; desc: string }> = [
+  { value: 'basic', label: '基础版', desc: '核心能力巡检' },
+  { value: 'team', label: '团队版', desc: '多人协作验证' },
+  { value: 'enterprise', label: '企业版', desc: '完整链路压测' },
+];
 
 export default function FormPage() {
   const { logs, add, clear } = useLogger();
@@ -26,6 +41,9 @@ export default function FormPage() {
     age: 25,
     agree: false,
     gender: 'male',
+    role: 'developer',
+    plan: 'team',
+    note: '',
   });
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
   const [submitted, setSubmitted] = useState(false);
@@ -55,7 +73,7 @@ export default function FormPage() {
   };
 
   const handleReset = () => {
-    setForm({ name: '', email: '', age: 25, agree: false, gender: 'male' });
+    setForm({ name: '', email: '', age: 25, agree: false, gender: 'male', role: 'developer', plan: 'team', note: '' });
     setErrors({});
     setSubmitted(false);
     add('表单已重置', 'info');
@@ -73,9 +91,33 @@ export default function FormPage() {
     setSubmitted(false);
   };
 
+  const completedCount = [
+    form.name,
+    form.email,
+    form.age > 0,
+    form.gender,
+    form.role,
+    form.plan,
+    form.note,
+    form.agree,
+  ].filter(Boolean).length;
+  const completion = Math.round((completedCount / 8) * 100);
+
   return (
     <PageWrapper title="表单测试">
       <View className={`${styles.container} animate-fade-in-up`}>
+        <View className={styles.formHero}>
+          <View>
+            <Text className={styles.formEyebrow}>Profile Setup</Text>
+            <Text className={styles.formTitle}>用户资料配置</Text>
+            <Text className={styles.formDesc}>验证输入、选择、滑动、开关、长文本和错误态的组合表现。</Text>
+          </View>
+          <View className={styles.progressBox}>
+            <Text className={styles.progressValue}>{completion}%</Text>
+            <Text className={styles.progressLabel}>完成度</Text>
+          </View>
+        </View>
+
         <Card>
           <CardHeader>
             <CardTitle>用户信息</CardTitle>
@@ -115,6 +157,55 @@ export default function FormPage() {
                   </View>
                 ))}
               </View>
+            </View>
+
+            <View className={styles.field}>
+              <Text className={styles.label}>角色</Text>
+              <View className={styles.optionGrid}>
+                {roleOptions.map((item) => (
+                  <View
+                    key={item.value}
+                    className={`${styles.optionCard} ${form.role === item.value ? styles.optionCardActive : ''}`}
+                    onClick={() => updateField('role', item.value)}
+                  >
+                    <Text className={form.role === item.value ? styles.optionTitleActive : styles.optionTitle}>
+                      {item.label}
+                    </Text>
+                    <Text className={form.role === item.value ? styles.optionDescActive : styles.optionDesc}>
+                      {item.desc}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+
+            <View className={styles.field}>
+              <Text className={styles.label}>方案</Text>
+              <View className={styles.planList}>
+                {planOptions.map((item, index) => (
+                  <View
+                    key={item.value}
+                    className={`${styles.planRow} ${index > 0 ? styles.planRowSpaced : ''} ${form.plan === item.value ? styles.planRowActive : ''}`}
+                    onClick={() => updateField('plan', item.value)}
+                  >
+                    <View>
+                      <Text className={styles.planTitle}>{item.label}</Text>
+                      <Text className={styles.planDesc}>{item.desc}</Text>
+                    </View>
+                    {form.plan === item.value && <Badge variant="success">已选</Badge>}
+                  </View>
+                ))}
+              </View>
+            </View>
+
+            <View className={styles.field}>
+              <Text className={styles.label}>备注</Text>
+              <Textarea
+                className={styles.noteArea}
+                placeholder="记录端上验收备注..."
+                value={form.note}
+                onInput={(e: any) => updateField('note', e.detail.value)}
+              />
             </View>
 
             <View className={styles.field}>
