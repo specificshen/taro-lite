@@ -3,6 +3,9 @@
   align-items: center;
   justify-content: center;
   line-height: 1;
+  color: inherit;
+  font-weight: 900;
+  letter-spacing: 0;
 }
 
 .icon_sm {
@@ -24,6 +27,8 @@
   justify-content: center;
   border-radius: var(--radius-full, 9999px);
   flex-shrink: 0;
+  color: #ffffff;
+  box-shadow: var(--shadow-md, 0 10px 24px rgba(15, 23, 42, 0.16));
 }
 
 .iconCircle_sm {
@@ -42,28 +47,23 @@
 }
 
 .iconCircle_primary {
-  background: linear-gradient(135deg, rgba(37, 99, 235, 0.12) 0%, rgba(124, 58, 237, 0.12) 100%);
-  color: var(--primary, #2563eb);
+  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
 }
 
 .iconCircle_warm {
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(239, 68, 68, 0.12) 100%);
-  color: var(--warning, #f59e0b);
+  background: linear-gradient(135deg, #f97316 0%, #ef4444 100%);
 }
 
 .iconCircle_ocean {
-  background: linear-gradient(135deg, rgba(14, 165, 233, 0.12) 0%, rgba(16, 185, 129, 0.12) 100%);
-  color: var(--info, #0ea5e9);
+  background: linear-gradient(135deg, #06b6d4 0%, #10b981 100%);
 }
 
 .iconCircle_rose {
-  background: linear-gradient(135deg, rgba(236, 72, 153, 0.12) 0%, rgba(244, 63, 94, 0.12) 100%);
-  color: #ec4899;
+  background: linear-gradient(135deg, #ec4899 0%, #f43f5e 100%);
 }
 
 .iconCircle_sky {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.12) 0%, rgba(6, 182, 212, 0.12) 100%);
-  color: #0ea5e9;
+  background: linear-gradient(135deg, #38bdf8 0%, #2563eb 100%);
 }
 
 .iconCircle_dark {
@@ -72,93 +72,9 @@
 }
 
 .iconCircle_success {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(5, 150, 105, 0.12) 100%);
-  color: var(--success, #10b981);
+  background: linear-gradient(135deg, #22c55e 0%, #059669 100%);
 }
 
 .iconCircle_warning {
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(217, 119, 6, 0.12) 100%);
-  color: var(--warning, #f59e0b);
-}
-.icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-}
-
-.icon_sm {
-  font-size: 24px;
-}
-.icon_md {
-  font-size: 32px;
-}
-.icon_lg {
-  font-size: 44px;
-}
-.icon_xl {
-  font-size: 56px;
-}
-
-.iconCircle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-full, 9999px);
-  flex-shrink: 0;
-}
-
-.iconCircle_sm {
-  width: 56px;
-  height: 56px;
-}
-
-.iconCircle_md {
-  width: 72px;
-  height: 72px;
-}
-
-.iconCircle_lg {
-  width: 96px;
-  height: 96px;
-}
-
-.iconCircle_primary {
-  background: linear-gradient(135deg, rgba(37, 99, 235, 0.12) 0%, rgba(124, 58, 237, 0.12) 100%);
-  color: var(--primary, #2563eb);
-}
-
-.iconCircle_warm {
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(239, 68, 68, 0.12) 100%);
-  color: var(--warning, #f59e0b);
-}
-
-.iconCircle_ocean {
-  background: linear-gradient(135deg, rgba(14, 165, 233, 0.12) 0%, rgba(16, 185, 129, 0.12) 100%);
-  color: var(--info, #0ea5e9);
-}
-
-.iconCircle_rose {
-  background: linear-gradient(135deg, rgba(236, 72, 153, 0.12) 0%, rgba(244, 63, 94, 0.12) 100%);
-  color: #ec4899;
-}
-
-.iconCircle_sky {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.12) 0%, rgba(6, 182, 212, 0.12) 100%);
-  color: #0ea5e9;
-}
-
-.iconCircle_dark {
-  background: var(--gradient-dark, linear-gradient(135deg, #1e293b 0%, #0f172a 100%));
-  color: #ffffff;
-}
-
-.iconCircle_success {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(5, 150, 105, 0.12) 100%);
-  color: var(--success, #10b981);
-}
-
-.iconCircle_warning {
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(217, 119, 6, 0.12) 100%);
-  color: var(--warning, #f59e0b);
+  background: linear-gradient(135deg, #facc15 0%, #f97316 100%);
 }

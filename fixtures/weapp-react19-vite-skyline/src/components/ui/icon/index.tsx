@@ -63,12 +63,12 @@ export type IconName =
 
 const iconMap: Record<IconName, string> = {
   home: 'home',
-  layers: 'layers',
-  form: 'form',
-  list: 'list',
-  wifi: 'wifi',
-  hand: 'hand',
-  zap: 'zap',
+  layers: 'U',
+  form: 'F',
+  list: 'L',
+  wifi: 'N',
+  hand: 'G',
+  zap: 'S',
   settings: 'settings',
   'arrow-right': '->',
   'arrow-left': '<-',
