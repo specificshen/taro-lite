@@ -1,7 +1,7 @@
 import * as path from 'node:path';
+import * as fs from 'node:fs';
 import { parse } from 'dotenv';
 import { expand } from 'dotenv-expand';
-import * as fs from 'node:fs';
 
 interface ConfigWithEnv {
   env?: Record<string, unknown>;
@@ -28,13 +28,12 @@ export const dotenvParse = (
     envFiles.add(/** mode local file */ `.env.${mode}.local`);
   }
 
-  let parseTemp = {};
-  const load = (envPath) => {
-    // file doesn'et exist
+  let parsedEnvFiles: Record<string, string> = {};
+  const load = (envPath: string) => {
     if (!fs.existsSync(envPath)) return;
     const env = parse(fs.readFileSync(envPath));
-    parseTemp = {
-      ...parseTemp,
+    parsedEnvFiles = {
+      ...parsedEnvFiles,
       ...env,
     };
   };
@@ -43,8 +42,8 @@ export const dotenvParse = (
     load(path.resolve(root, envPath));
   });
 
-  const parsed = {};
-  Object.entries(parseTemp).forEach(([key, value]) => {
+  const parsed: Record<string, string> = {};
+  Object.entries(parsedEnvFiles).forEach(([key, value]) => {
     if (prefixsArr.some((prefix) => key.startsWith(prefix)) || ['TARO_APP_ID'].includes(key)) {
       parsed[key] = value;
     }
@@ -55,7 +54,7 @@ export const dotenvParse = (
 
 // 扩展 env
 export const patchEnv = (config: ConfigWithEnv, expandEnv: Record<string, string>) => {
-  const expandEnvStringify = {};
+  const expandEnvStringify: Record<string, string> = {};
   for (const key in expandEnv) {
     expandEnvStringify[key] = JSON.stringify(expandEnv[key]);
   }

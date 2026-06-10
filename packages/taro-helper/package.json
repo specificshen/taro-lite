@@ -25,7 +25,6 @@
   "files": [
     "index.js",
     "dist",
-    "types",
     "swc"
   ],
   "keywords": [
@@ -48,7 +47,6 @@
     "debug": "^4.3.4",
     "dotenv": "^16.4.5",
     "dotenv-expand": "^11.0.6",
-    "lodash": "^4.17.21",
     "resolve": "^1.22.8"
   },
   "devDependencies": {

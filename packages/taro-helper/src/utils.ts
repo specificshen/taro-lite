@@ -4,7 +4,6 @@ import * as os from 'node:os';
 import * as path from 'node:path';
 import * as babel from '@babel/core';
 import * as nativeFs from 'node:fs';
-import { camelCase, defaults, flatMap, isPlainObject, mergeWith } from 'lodash';
 import {
   CSS_EXT,
   PLATFORMS,
@@ -16,12 +15,30 @@ import {
   SCRIPT_EXT,
   TARO_CONFIG_FOLDER,
 } from './constants';
-import { requireWithEsbuild } from './esbuild';
+import { loadUserConfigModule } from './config-module-loader';
 import { chalk } from './terminal';
 import resolvePath from 'resolve';
 import type TResolve from 'resolve';
 
 const execSync = child_process.execSync;
+
+function isPlainObject(value: unknown): value is Record<string, any> {
+  if (value === null || typeof value !== 'object') {
+    return false;
+  }
+  const prototype = Object.getPrototypeOf(value);
+  return prototype === Object.prototype || prototype === null;
+}
+
+function toCamelCase(value: string): string {
+  return value
+    .replace(/^[\s_-]+|[\s_-]+$/g, '')
+    .replace(/[-_\s]+(.)?/g, (_, character: string = '') => character.toUpperCase());
+}
+
+function normalizeVisitor(value: unknown): unknown {
+  return typeof value === 'function' ? { enter: value } : value;
+}
 
 interface NativeFsCompat {
   access: typeof nativeFs.access;
@@ -349,9 +366,9 @@ export function resolveSync(id: string, opts: TResolve.SyncOpts & { mainFields?:
   try {
     return resolvePath.sync(id, {
       ...opts,
-      packageFilter(pkg, pkgfile, dir) {
+      packageFilter(pkg, pkgFile, dir) {
         if (opts.packageFilter) {
-          pkg = opts.packageFilter(pkg, pkgfile, dir);
+          pkg = opts.packageFilter(pkg, pkgFile, dir);
         } else if (opts.mainFields?.length) {
           pkg.main = pkg[opts.mainFields.find((field) => pkg[field] && typeof pkg[field] === 'string') || 'main'];
         }
@@ -474,12 +491,12 @@ export function generateConstantsList(constants: Record<string, any>): Record<st
 
 export function cssImports(content: string): string[] {
   const results: string[] = [];
-  const cssImportRegx = new RegExp(REG_CSS_IMPORT);
+  const cssImportRegExp = new RegExp(REG_CSS_IMPORT);
   let match: RegExpExecArray | null;
 
   content = String(content).replace(/\/\*.+?\*\/|\/\/.*(?=[\n\r])/g, '');
 
-  while ((match = cssImportRegx.exec(content))) {
+  while ((match = cssImportRegExp.exec(content))) {
     results.push(match[2]);
   }
 
@@ -530,7 +547,7 @@ export function emptyDirectory(
 }
 
 export const pascalCase: (str: string) => string = (str: string): string =>
-  str.charAt(0).toUpperCase() + camelCase(str.substr(1));
+  str.charAt(0).toUpperCase() + toCamelCase(str.slice(1));
 
 export function getInstalledNpmPkgPath(pkgName: string, basedir: string): string | null {
   try {
@@ -548,42 +565,57 @@ export function getInstalledNpmPkgVersion(pkgName: string, basedir: string): str
   return fs.readJSONSync(pkgPath).version;
 }
 
-export const recursiveMerge = <T = any>(src: Partial<T>, ...args: (Partial<T> | undefined)[]) => {
-  return mergeWith(src, ...args, (value, srcValue) => {
-    const typeValue = typeof value;
-    const typeSrcValue = typeof srcValue;
-    if (typeValue !== typeSrcValue) return;
-    if (Array.isArray(value) && Array.isArray(srcValue)) {
-      return value.concat(srcValue);
+export const recursiveMerge = <T = any>(src: Partial<T>, ...args: (Partial<T> | undefined)[]): T => {
+  for (const arg of args) {
+    if (!arg) continue;
+
+    for (const key of Object.keys(arg) as Array<keyof T>) {
+      const value = src[key];
+      const sourceValue = arg[key];
+      const valueType = typeof value;
+      const sourceValueType = typeof sourceValue;
+
+      if (valueType !== sourceValueType) {
+        src[key] = sourceValue;
+      } else if (Array.isArray(value) && Array.isArray(sourceValue)) {
+        src[key] = value.concat(sourceValue) as T[keyof T];
+      } else if (isPlainObject(value) && isPlainObject(sourceValue)) {
+        src[key] = recursiveMerge(value, sourceValue) as T[keyof T];
+      } else {
+        src[key] = sourceValue;
+      }
     }
-    if (typeValue === 'object') {
-      return recursiveMerge(value, srcValue);
-    }
-  });
+  }
+
+  return src as T;
 };
 
 export const mergeVisitors = (src, ...args) => {
   const validFuncs = ['exit', 'enter'];
-  return mergeWith(src, ...args, (value, srcValue, key, object, srcObject) => {
-    if (!object.hasOwnProperty(key) || !srcObject.hasOwnProperty(key)) {
-      return undefined;
-    }
 
-    const shouldMergeToArray = validFuncs.indexOf(key) > -1;
-    if (shouldMergeToArray) {
-      return flatMap([value, srcValue]);
-    }
-    const [newValue, newSrcValue] = [value, srcValue].map((v) => {
-      if (typeof v === 'function') {
-        return {
-          enter: v,
-        };
-      } else {
-        return v;
+  for (const arg of args) {
+    if (!arg) continue;
+
+    for (const key of Object.keys(arg)) {
+      const value = src[key];
+      const sourceValue = arg[key];
+
+      if (!Object.prototype.hasOwnProperty.call(src, key)) {
+        src[key] = sourceValue;
+        continue;
       }
-    });
-    return mergeVisitors(newValue, newSrcValue);
-  });
+
+      const shouldMergeToArray = validFuncs.includes(key);
+      if (shouldMergeToArray) {
+        src[key] = [value, sourceValue].flat();
+        continue;
+      }
+
+      src[key] = mergeVisitors(normalizeVisitor(value), normalizeVisitor(sourceValue));
+    }
+  }
+
+  return src;
 };
 
 export const applyArrayedVisitors = (obj) => {
@@ -768,12 +800,13 @@ export function readConfig<T extends IReadConfigOptions>(configPath: string, opt
     if (REG_JSON.test(configPath)) {
       result = fs.readJSONSync(configPath);
     } else {
-      result = requireWithEsbuild(configPath, {
+      result = loadUserConfigModule(configPath, {
         customConfig: {
           alias: options.alias || {},
-          define: defaults({}, options.defineConstants || {}, {
-            define: 'define', // Note: 该场景下不支持 AMD 导出，这会导致 esbuild 替换 babel 的 define 方法
-          }),
+          define: {
+            define: 'define',
+            ...(options.defineConstants || {}),
+          },
         },
         customSwcConfig: {
           jsc: {

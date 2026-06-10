@@ -1,10 +1,24 @@
+import type { Config } from '@swc/core';
+
+type SwcOnlyMatcher = string | RegExp | ((filename: string) => boolean);
+type SwcPlugin = [string, Record<string, unknown>];
+
+type SwcRegisterConfig = Config & {
+  only: SwcOnlyMatcher[];
+  jsc: NonNullable<Config['jsc']> & {
+    experimental?: {
+      plugins: SwcPlugin[];
+    };
+  };
+};
+
 interface ICreateSwcRegisterParam {
-  only;
-  plugins?: [string, any][];
+  only: SwcOnlyMatcher[];
+  plugins?: SwcPlugin[];
 }
 
 export default function createSwcRegister({ only, plugins }: ICreateSwcRegisterParam) {
-  const config: Record<string, any> = {
+  const config: SwcRegisterConfig = {
     only: Array.from(new Set([...only])),
     jsc: {
       parser: {

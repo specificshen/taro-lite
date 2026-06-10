@@ -2,8 +2,9 @@ import * as path from 'node:path';
 import spawn from 'cross-spawn';
 import resolvePath from 'resolve';
 import * as Util from './utils';
+
 const PEERS = /UNMET PEER DEPENDENCY ([a-z\-0-9.]+)@(.+)/gm;
-const npmCached = {};
+const npmCache = new Map<string, string>();
 
 const erroneous: string[] = [];
 
@@ -37,52 +38,63 @@ function resolveFromCliPackage(pluginName: string, root?: string): string | unde
   }
 }
 
-export function resolveNpm(pluginName: string, root?: string): Promise<string> {
-  if (!npmCached[pluginName]) {
-    return new Promise((resolve, reject) => {
-      resolvePath(`${pluginName}`, { basedir: root }, (err, res) => {
-        if (err && (err as any).code === 'MODULE_NOT_FOUND') {
-          const resolvedFromCliPackage = resolveFromCliPackage(pluginName, root);
-          if (resolvedFromCliPackage) {
-            npmCached[pluginName] = resolvedFromCliPackage;
-            resolve(resolvedFromCliPackage);
-            return;
-          }
+function getNpmCacheKey(pluginName: string, root?: string): string {
+  return `${root || ''}\u0000${pluginName}`;
+}
 
-          resolvePath(`${pluginName}`, { basedir: __dirname }, (err2, res2) => {
-            if (err2) return reject(err2);
-            npmCached[pluginName] = res2;
-            resolve(res2 || '');
-          });
+export function resolveNpm(pluginName: string, root?: string): Promise<string> {
+  const cacheKey = getNpmCacheKey(pluginName, root);
+  const cachedPath = npmCache.get(cacheKey);
+  if (cachedPath) {
+    return Promise.resolve(cachedPath);
+  }
+
+  return new Promise((resolve, reject) => {
+    resolvePath(`${pluginName}`, { basedir: root }, (err, res) => {
+      if (err && (err as NodeJS.ErrnoException).code === 'MODULE_NOT_FOUND') {
+        const resolvedFromCliPackage = resolveFromCliPackage(pluginName, root);
+        if (resolvedFromCliPackage) {
+          npmCache.set(cacheKey, resolvedFromCliPackage);
+          resolve(resolvedFromCliPackage);
           return;
         }
-        if (err) {
-          return reject(err);
-        }
-        npmCached[pluginName] = res;
-        resolve(res || '');
-      });
+
+        resolvePath(`${pluginName}`, { basedir: __dirname }, (err2, res2) => {
+          if (err2) return reject(err2);
+          npmCache.set(cacheKey, res2 || '');
+          resolve(res2 || '');
+        });
+        return;
+      }
+      if (err) {
+        return reject(err);
+      }
+      npmCache.set(cacheKey, res || '');
+      resolve(res || '');
     });
-  }
-  return Promise.resolve(npmCached[pluginName]);
+  });
 }
 
 export function resolveNpmSync(pluginName: string, root?: string): string {
   try {
-    if (!npmCached[pluginName]) {
-      let res;
-      try {
-        res = resolvePath.sync(pluginName, { basedir: root });
-      } catch (e) {
-        if ((e as any).code === 'MODULE_NOT_FOUND') {
-          res = resolveFromCliPackage(pluginName, root) ?? resolvePath.sync(pluginName, { basedir: __dirname });
-        } else {
-          throw e;
-        }
-      }
-      return res;
+    const cacheKey = getNpmCacheKey(pluginName, root);
+    const cachedPath = npmCache.get(cacheKey);
+    if (cachedPath) {
+      return cachedPath;
     }
-    return npmCached[pluginName];
+
+    let resolvedPath: string;
+    try {
+      resolvedPath = resolvePath.sync(pluginName, { basedir: root });
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code === 'MODULE_NOT_FOUND') {
+        resolvedPath = resolveFromCliPackage(pluginName, root) ?? resolvePath.sync(pluginName, { basedir: __dirname });
+      } else {
+        throw error;
+      }
+    }
+    npmCache.set(cacheKey, resolvedPath);
+    return resolvedPath;
   } catch (err) {
     if ((err as { code?: string }).code === 'MODULE_NOT_FOUND') {
       const installOptions: IInstallOptions = {

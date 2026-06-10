@@ -7,7 +7,6 @@ export const createDebug = (id: string) => createDebugLogger(id);
 
 export * from './constants';
 export * from './dotenv';
-export * from './esbuild';
 export * as npm from './npm';
 export { default as createSwcRegister } from './swc-register';
 export * from './terminal';

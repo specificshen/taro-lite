@@ -201,9 +201,6 @@ importers:
       dotenv-expand:
         specifier: ^11.0.6
         version: 11.0.7
-      lodash:
-        specifier: ^4.17.21
-        version: 4.17.21
       resolve:
         specifier: ^1.22.8
         version: 1.22.12

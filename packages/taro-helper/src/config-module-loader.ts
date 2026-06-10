@@ -1,23 +1,13 @@
 import Module from 'node:module';
+import * as fs from 'node:fs';
 import path from 'node:path';
-import { Config, transformSync } from '@swc/core';
-import { defaults } from 'lodash';
-import { fs } from '../utils';
+import { transformSync } from '@swc/core';
+import type { Config } from '@swc/core';
 
-type Loader = 'js' | 'jsx' | 'ts' | 'tsx' | 'json';
-
-export const defaultEsbuildLoader: Record<string, Loader> = {
-  '.js': 'js',
-  '.jsx': 'tsx',
-  '.ts': 'ts',
-  '.json': 'json',
-};
-
-export interface IRequireWithEsbuildOptions {
+interface UserConfigModuleLoaderOptions {
   customConfig?: {
     alias?: Record<string, string>;
     define?: Record<string, string>;
-    loader?: Record<string, Loader>;
   };
   customSwcConfig?: Config;
   cwd?: string;
@@ -54,9 +44,8 @@ function resolveAlias(request: string, alias: Record<string, string> = {}) {
   }
 }
 
-function createSwcConfig(filename: string, customSwcConfig: Config = {}): Config {
-  return defaults(customSwcConfig, {
-    filename,
+function createSwcConfig(customSwcConfig: Config = {}): Config {
+  const defaultSwcConfig: Config = {
     jsc: {
       target: 'es2015',
       parser: {
@@ -68,17 +57,22 @@ function createSwcConfig(filename: string, customSwcConfig: Config = {}): Config
     module: {
       type: 'commonjs',
     },
-  });
+  };
+
+  return {
+    ...defaultSwcConfig,
+    ...customSwcConfig,
+  };
 }
 
 function transformConfigModule(
   filename: string,
-  customConfig: IRequireWithEsbuildOptions['customConfig'],
+  customConfig: UserConfigModuleLoaderOptions['customConfig'],
   customSwcConfig: Config,
 ) {
   const source = fs.readFileSync(filename, 'utf-8');
   const definedSource = applyDefineConstants(source, customConfig?.define);
-  return transformSync(definedSource, createSwcConfig(filename, customSwcConfig)).code || '';
+  return transformSync(definedSource, createSwcConfig(customSwcConfig)).code || '';
 }
 
 function requireFromCode(code: string, filename: string) {
@@ -97,10 +91,9 @@ function requireFromCode(code: string, filename: string) {
   }
 }
 
-/** 兼容旧 API 名称的 SWC require 实现 */
-export function requireWithEsbuild(
+export function loadUserConfigModule(
   id: string,
-  { customConfig = {}, customSwcConfig = {}, cwd = process.cwd() }: IRequireWithEsbuildOptions = {},
+  { customConfig = {}, customSwcConfig = {}, cwd = process.cwd() }: UserConfigModuleLoaderOptions = {},
 ) {
   const nodeModule = Module as ModuleWithInternals;
   const moduleExtensions = nodeModule._extensions;
@@ -150,5 +143,3 @@ export function requireWithEsbuild(
     });
   }
 }
-
-export * from './utils';
