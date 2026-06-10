@@ -31,7 +31,7 @@
   },
   "homepage": "https://github.com/specificshen/taro-lite#readme",
   "engines": {
-    "node": ">= 22"
+    "node": ">= 22.15.0"
   },
   "devDependencies": {
     "@types/node": "^22.19.19",

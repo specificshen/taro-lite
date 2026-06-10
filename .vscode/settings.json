@@ -12,8 +12,13 @@
     "packages/taro-cli/templates/**/*.js": "plaintext"
   },
   "cSpell.words": [
+    "Arrs",
     "cameraroll",
+    "cnpm",
+    "DOMTERM",
     "htmltransform",
+    "KONSOLE",
+    "LOGNAME",
     "Nerv",
     "onattribute",
     "Ouyang",

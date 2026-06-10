@@ -46,7 +46,7 @@
     "weapp"
   ],
   "engines": {
-    "node": ">= 22"
+    "node": ">= 22.15.0"
   },
   "dependencies": {
     "@spcsn/taro-components": "1.0.1",

@@ -34,7 +34,7 @@
     "url": "https://github.com/specificshen/taro-lite/issues"
   },
   "engines": {
-    "node": ">= 22"
+    "node": ">= 22.15.0"
   },
   "homepage": "https://github.com/specificshen/taro-lite#readme",
   "dependencies": {

@@ -34,7 +34,7 @@
   },
   "homepage": "https://github.com/specificshen/taro-lite#readme",
   "engines": {
-    "node": ">= 22"
+    "node": ">= 22.15.0"
   },
   "dependencies": {
     "@spcsn/taro-shared": "1.0.1"

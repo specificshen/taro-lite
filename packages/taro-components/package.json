@@ -44,7 +44,7 @@
   "author": "Samuel Ouyang",
   "license": "MIT",
   "engines": {
-    "node": ">= 22"
+    "node": ">= 22.15.0"
   },
   "dependencies": {
     "@spcsn/taro-shared": "1.0.1"
