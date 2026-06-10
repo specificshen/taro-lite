@@ -1,4 +1,4 @@
-{{#if typescript }}import type { UserConfigExport } from "@spcsn/taro-cli/define-config"{{/if}}
+{{#if typescript }}import type { UserConfigExport } from "@spcsn/taro-cli"{{/if}}
 
 export default {
   mini: {}

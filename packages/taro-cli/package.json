@@ -22,9 +22,7 @@
     "bin",
     "dist",
     "templates",
-    "index.js",
-    "define-config.js",
-    "define-config.d.ts"
+    "index.js"
   ],
   "repository": {
     "type": "git",
