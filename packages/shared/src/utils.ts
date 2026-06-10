@@ -73,12 +73,7 @@ export const hasOwn = (val: Record<any, any>, key: string | symbol) => hasOwnPro
  */
 export function ensure(condition: boolean, msg: string): asserts condition {
   if (!condition) {
-    if (process.env.NODE_ENV !== 'production') {
-      const reportIssue = '\n如有疑问，请提交 issue 至：https://github.com/nervjs/taro/issues';
-      throw new Error(msg + reportIssue);
-    } else {
-      throw new Error(msg);
-    }
+    throw new Error(msg);
   }
 }
 
