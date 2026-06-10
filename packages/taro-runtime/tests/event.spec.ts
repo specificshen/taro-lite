@@ -1,5 +1,4 @@
 import { afterAll, describe, expect, test, vi } from 'vitest';
-
 import { EVENT_CALLBACK_RESULT } from '../src/constants';
 import { eventHandler } from '../src/dom/event';
 import * as runtime from '../src/index';

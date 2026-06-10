@@ -1,5 +1,4 @@
 import type { AppConfig } from '@spcsn/taro';
-
 import type helper from '@spcsn/taro-helper';
 import type { Func, IMiniFilesConfig, IProjectConfig } from '@spcsn/taro/types/compile';
 import type { IModifyChainData } from '@spcsn/taro/types/compile/hooks';

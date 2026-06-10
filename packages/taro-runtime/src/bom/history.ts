@@ -1,9 +1,7 @@
 import { isNumber, isString } from '@spcsn/taro-shared';
-
 import { CONTEXT_ACTIONS } from '../constants';
 import { Events } from '../emitter/emitter';
 import { RuntimeCache } from '../utils/cache';
-
 import type { TaroLocation } from './location';
 
 export interface HistoryState {

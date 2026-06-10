@@ -1,6 +1,5 @@
 import { supportedInputTypes } from './constant';
 import { Props } from './props';
-
 import type { FormElement, TaroElement } from '@spcsn/taro-runtime';
 import type { RestoreType } from './event';
 

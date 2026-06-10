@@ -1,5 +1,4 @@
 import { Current, eventCenter, Events, getCurrentInstance, nextTick, options } from '@spcsn/taro-runtime';
-
 import { ENV_TYPE as envType, getEnv } from './env';
 import Link, { interceptorify } from './interceptor';
 import { logInterceptor, timeoutInterceptor } from './interceptor/interceptors';

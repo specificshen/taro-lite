@@ -1,5 +1,4 @@
 import { processApis } from '@spcsn/taro-shared';
-
 import { needPromiseApis } from './apis-list';
 
 interface WeappNativeApi {

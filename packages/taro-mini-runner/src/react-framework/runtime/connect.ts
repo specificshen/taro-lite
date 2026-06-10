@@ -10,10 +10,8 @@ import {
   setCurrentApp,
 } from '@spcsn/taro-runtime';
 import { EMPTY_OBJ, ensure, hooks } from '@spcsn/taro-shared';
-
 import { reactMeta } from './react-meta';
 import { ensureIsArray, HOOKS_APP_ID, isClassComponent, setDefaultDescriptor, setRouterParams } from './utils';
-
 import type {
   AppInstance,
   Instance,

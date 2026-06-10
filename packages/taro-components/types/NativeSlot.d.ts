@@ -1,5 +1,4 @@
 import { StandardProps } from './common'
-
 import type { ComponentType, ReactNode } from 'react'
 
 interface NativeSlotProps extends StandardProps {

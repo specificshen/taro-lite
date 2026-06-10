@@ -1,5 +1,4 @@
 import { describe, expect, test } from 'vitest';
-
 import * as runtime from '../src/index';
 
 describe('Class', () => {

@@ -1,7 +1,5 @@
 import * as path from 'node:path';
-
 import { fs } from '@spcsn/taro-helper';
-
 import { getRootPath } from '../util';
 
 export default class Creator {

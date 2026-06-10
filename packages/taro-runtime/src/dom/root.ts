@@ -1,11 +1,9 @@
 import { hooks, isArray, isFunction, isUndefined, Shortcuts } from '@spcsn/taro-shared';
-
 import { CUSTOM_WRAPPER, PAGE_INIT, ROOT_STR, SET_DATA } from '../constants';
 import { options } from '../options';
 import { perf } from '../perf';
 import { customWrapperCache, isComment } from '../utils';
 import { TaroElement } from './element';
-
 import type { HydratedData, MpInstance, TFunc, UpdatePayload, UpdatePayloadValue } from '../interface';
 
 function findCustomWrapper(root: TaroRootElement, dataPathArr: string[]) {

@@ -1,5 +1,4 @@
 import * as path from 'node:path';
-
 import {
   createSwcRegister,
   ENTRY,
@@ -14,11 +13,9 @@ import {
 } from '@spcsn/taro-helper';
 import { merge } from 'lodash';
 import ora from 'ora';
-
 import { filterGlobalConfig } from './utils';
 import { CONFIG_DIR_NAME, DEFAULT_CONFIG_FILE } from './utils/constants';
 import { serviceProfiler } from './utils/profile.js';
-
 import type { IProjectConfig } from '@spcsn/taro/types/compile';
 
 interface IConfigOptions {

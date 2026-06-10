@@ -1,10 +1,8 @@
 import { hooks } from '@spcsn/taro-shared';
-
 import { markContainerAsRoot } from './component-tree';
 import { getEventPriority } from './constant';
 import { enqueueStateRestore, getTargetInstForInputOrChangeEvent, RestoreType } from './event';
 import { runWithPriority, TaroReconciler } from './reconciler';
-
 import type { TaroElement, TaroEvent } from '@spcsn/taro-runtime';
 import type { ReactNode } from 'react';
 import type { OpaqueRoot } from 'react-reconciler';

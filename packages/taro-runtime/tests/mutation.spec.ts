@@ -1,5 +1,4 @@
 import { afterEach, beforeEach, describe, expect, test } from 'vitest';
-
 import * as runtime from '../src/index';
 
 describe('MutationObserver', () => {

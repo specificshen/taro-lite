@@ -1,7 +1,6 @@
 import { Current } from './current';
 import { TaroRootElement } from './dom/root';
 import env from './env';
-
 import type { TFunc } from './interface';
 
 const TIMEOUT = 100;

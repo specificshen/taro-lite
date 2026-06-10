@@ -4,7 +4,6 @@ import traverse from '@babel/traverse';
 import * as t from '@babel/types';
 import { fs } from '@spcsn/taro-helper';
 import { flattenDeep, isEmpty, isNil, toArray, uniq, xorWith } from 'lodash';
-
 import { MINI_APP_TYPES } from './constants';
 import { camelCase, camelCaseEnhance, getTypeFilePath, getTypesList, paramCase } from './utils';
 

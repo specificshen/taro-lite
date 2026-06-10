@@ -9,7 +9,6 @@ import {
   toDashed,
   warn,
 } from '@spcsn/taro-shared';
-
 import { PROPERTY_THRESHOLD } from '../constants';
 import { MutationObserver, MutationRecordType } from '../dom-external/mutation-observer';
 import { TaroElement } from './element';

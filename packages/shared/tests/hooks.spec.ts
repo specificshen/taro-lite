@@ -1,5 +1,4 @@
 import { beforeAll, describe, expect, test, vi } from 'vitest';
-
 import { HOOK_TYPE, TaroHook, TaroHooks } from '../src/runtime-hooks';
 import { mergeReconciler } from '../src/utils';
 

@@ -1,7 +1,6 @@
 import { exec } from 'node:child_process';
 import * as path from 'node:path';
 import * as readline from 'node:readline';
-
 import { fs } from '@spcsn/taro-helper';
 
 type ProfileEntry = {

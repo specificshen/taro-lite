@@ -2,7 +2,6 @@ import { access, copyFile } from 'node:fs/promises';
 import { constants } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-
 import { plugins } from './constants';
 
 const scriptDir = dirname(fileURLToPath(import.meta.url));

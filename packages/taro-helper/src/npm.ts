@@ -1,8 +1,6 @@
 import * as path from 'node:path';
-
 import spawn from 'cross-spawn';
 import resolvePath from 'resolve';
-
 import * as Util from './utils';
 const PEERS = /UNMET PEER DEPENDENCY ([a-z\-0-9.]+)@(.+)/gm;
 const npmCached = {};

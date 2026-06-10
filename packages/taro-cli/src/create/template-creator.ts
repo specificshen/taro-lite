@@ -1,7 +1,6 @@
 import { spawn } from 'node:child_process';
 import { copyFile, mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import * as path from 'node:path';
-
 import { chalk } from '@spcsn/taro-helper';
 
 export enum CompilerType {

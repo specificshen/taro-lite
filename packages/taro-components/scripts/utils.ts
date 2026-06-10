@@ -1,7 +1,5 @@
 import path from 'node:path';
-
 import { fs } from '@spcsn/taro-helper';
-
 import { TYPES_DIR } from './constants';
 
 type WordTransform = (word: string, index: number) => string;

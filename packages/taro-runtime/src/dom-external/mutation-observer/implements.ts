@@ -1,5 +1,4 @@
 import { MutationRecordType } from './record';
-
 import type { TaroNode } from '../../dom/node';
 import type { MutationRecord } from './record';
 

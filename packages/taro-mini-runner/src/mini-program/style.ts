@@ -1,5 +1,4 @@
 import path from 'node:path';
-
 import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
 import type { PluginOption, Rolldown } from 'vite';
 

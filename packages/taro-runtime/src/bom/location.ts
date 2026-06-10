@@ -1,5 +1,4 @@
 import { isNumber, isString, warn } from '@spcsn/taro-shared';
-
 import { CONTEXT_ACTIONS } from '../constants';
 import { getCurrentInstance } from '../current';
 import { Events } from '../emitter/emitter';

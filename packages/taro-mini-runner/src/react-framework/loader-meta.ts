@@ -1,10 +1,7 @@
 import path from 'node:path';
-
 import * as acorn from 'acorn';
 import * as walk from 'acorn-walk';
-
 import type { Frameworks } from './index';
-
 import type { ILoaderMeta } from '@spcsn/taro/types/compile/config/plugin';
 
 function addConfig(source: string) {

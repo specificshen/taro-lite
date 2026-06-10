@@ -7,7 +7,6 @@ import nativeSupportPlugin from './native-support';
 import pagePlugin from './page';
 import pipelinePlugin from './pipeline';
 import stylePlugin from './style';
-
 import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
 import type { PluginOption } from 'vite';
 

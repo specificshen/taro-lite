@@ -1,6 +1,5 @@
 import React from 'react'
 import Vue from 'vue'
-
 import Taro from './index'
 
 declare module './index' {

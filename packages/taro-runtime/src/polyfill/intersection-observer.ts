@@ -1,5 +1,4 @@
 import { isFunction, isNumber } from '@spcsn/taro-shared'
-
 import { throttle } from '../utils'
 
 export function handleIntersectionObserverPolyfill () {

@@ -1,5 +1,4 @@
 import { EMPTY_OBJ, hooks, isUndefined } from '@spcsn/taro-shared';
-
 import {
   CONFIRM,
   CURRENT_TARGET,
@@ -12,7 +11,6 @@ import {
 } from '../constants';
 import env from '../env';
 import { isParentBound } from '../utils';
-
 import type { EventOptions, MpEvent } from '../interface';
 import type { TaroElement } from './element';
 

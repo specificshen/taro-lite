@@ -3,11 +3,9 @@ import { isBoolean, isUndefined, noop } from '@spcsn/taro-shared';
 import { createContext } from 'react';
 import Reconciler from 'react-reconciler';
 import { DefaultEventPriority, NoEventPriority } from 'react-reconciler/constants';
-
 import { precacheFiberNode, updateFiberProps } from './component-tree';
 import { track } from './input-value-tracking';
 import { getUpdatePayload, Props, updateProps, updatePropsByPayload } from './props';
-
 import type { TaroElement, TaroText } from '@spcsn/taro-runtime';
 import type { Fiber, HostConfig } from 'react-reconciler';
 

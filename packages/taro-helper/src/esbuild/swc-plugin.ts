@@ -1,11 +1,8 @@
 import { resolve } from 'node:path';
-
 import { transformSync } from '@swc/core';
 import { defaults } from 'lodash';
-
 import { REG_SCRIPTS } from '../constants';
 import { fs } from '../utils';
-
 import type { Config, Output } from '@swc/core';
 
 export function getSwcPlugin(config?: Config) {

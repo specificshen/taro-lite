@@ -1,5 +1,4 @@
 import { isString } from '@spcsn/taro-shared';
-
 import { CONTEXT_ACTIONS } from '../constants';
 import { Events } from '../emitter/emitter';
 import env from '../env';
@@ -8,7 +7,6 @@ import { History } from './history';
 import { Location } from './location';
 import { nav as navigator } from './navigator';
 import { caf, raf } from './raf';
-
 import type { TaroHistory } from './history';
 import type { TaroLocation } from './location';
 

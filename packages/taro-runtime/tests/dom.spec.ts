@@ -1,5 +1,4 @@
 import { afterAll, describe, expect, test } from 'vitest';
-
 import { document, window } from '../src/index';
 
 describe('DOM', () => {

@@ -10,7 +10,6 @@ import {
   isUndefined,
   Shortcuts,
 } from '@spcsn/taro-shared';
-
 import { raf } from '../bom/raf';
 import { taroWindowProvider } from '../bom/window';
 import {
@@ -33,7 +32,6 @@ import env from '../env';
 import { perf } from '../perf';
 import { customWrapperCache, incrementId } from '../utils';
 import { addLeadingSlash } from '../utils/router';
-
 import type { TaroRootElement } from '../dom/root';
 import type { MpInstance, PageConfig, TFunc } from '../interface';
 import type { Instance, PageInstance, PageProps } from './instance';

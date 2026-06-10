@@ -1,5 +1,4 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-
 import { TaroWindow } from '../../src/bom/window';
 import { CONTEXT_ACTIONS } from '../../src/constants';
 

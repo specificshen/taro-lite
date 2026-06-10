@@ -1,5 +1,4 @@
 import { hooks } from '@spcsn/taro-shared';
-
 import * as taroHooks from './hooks';
 
 hooks.tap('initNativeApi', function (taro) {

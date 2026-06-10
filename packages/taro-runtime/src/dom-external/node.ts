@@ -1,6 +1,5 @@
 import { DATASET, PROPS, STYLE } from '../constants';
 import { NodeType } from '../dom/node-types';
-
 import type { TaroNode } from '../dom/node';
 
 export function cloneNode(this: TaroNode, isDeep = false) {

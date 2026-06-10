@@ -1,5 +1,4 @@
 import { describe, expect, test, vi } from 'vitest';
-
 import * as runtime from '../src/index';
 
 describe('location', () => {

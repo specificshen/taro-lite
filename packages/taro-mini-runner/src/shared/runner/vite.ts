@@ -1,5 +1,4 @@
 import { VITE_COMPILER_LABEL } from './constant';
-
 import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
 import type { Rolldown } from 'vite';
 

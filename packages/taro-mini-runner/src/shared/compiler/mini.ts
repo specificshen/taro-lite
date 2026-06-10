@@ -1,14 +1,11 @@
 import path from 'node:path';
-
 import { fs, isAliasPath, readConfig, recursiveMerge, replaceAliasPath, resolveMainFilePath } from '@spcsn/taro-helper';
 import { isArray, isFunction } from '@spcsn/taro-shared';
-
 import defaultConfig from '../../mini-program/default-config';
 import { miniTemplateLoader, QUERY_IS_NATIVE_COMP } from '../../mini-program/native-support';
 import { getComponentName } from '..';
 import { componentConfig } from '../component';
 import { CompilerContext } from './base';
-
 import type { PageConfig } from '@spcsn/taro';
 import type {
   ViteAppMeta,

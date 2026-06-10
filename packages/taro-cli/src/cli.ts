@@ -1,8 +1,6 @@
 import * as path from 'node:path';
-
 import { dotenvParse, patchEnv } from '@spcsn/taro-helper';
 import { Config, Kernel } from '@spcsn/taro-service';
-
 import customCommand from './commands/custom-command';
 import { cliProfiler, getPkgVersion } from './util/index.js';
 

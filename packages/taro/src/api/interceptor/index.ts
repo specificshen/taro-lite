@@ -1,5 +1,4 @@
 import Chain from './chain';
-
 import type { IRequestParams, TInterceptor } from './chain';
 
 export default class Link {

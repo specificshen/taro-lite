@@ -1,8 +1,6 @@
 import { noop } from '@spcsn/taro-shared';
-
 import { MutationObserverImpl, recordMutation } from './implements';
 import { MutationRecord, MutationRecordType } from './record';
-
 import type { TaroNode } from '../../dom/node';
 import type { MutationCallback, MutationObserverInit } from './implements';
 

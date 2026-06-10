@@ -1,5 +1,4 @@
 import { controlledComponent, isUndefined, toCamelCase } from '@spcsn/taro-shared';
-
 import { A, COMMENT, DOCUMENT_ELEMENT_NAME, ROOT_STR } from '../constants';
 import { TaroElement } from '../dom/element';
 import { createEvent } from '../dom/event';

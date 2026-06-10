@@ -1,8 +1,6 @@
 import reactPlugin from '@vitejs/plugin-react';
 import { isString } from '@spcsn/taro-shared';
-
 import { miniVitePlugin } from './vite.mini';
-
 import type { PluginOption } from 'vite';
 
 export type Frameworks = 'react';

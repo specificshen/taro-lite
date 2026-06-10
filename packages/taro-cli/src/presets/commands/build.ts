@@ -1,7 +1,6 @@
 import * as validatorsModule from '../../doctor/validators.js';
 import * as appConfigModule from '../../util/app-config.js';
 import * as hooks from '../constant/hooks.js';
-
 import type { IPluginContext } from '@spcsn/taro-service';
 
 const validators = (validatorsModule as any).default || validatorsModule;

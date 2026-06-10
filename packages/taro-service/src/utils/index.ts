@@ -1,11 +1,8 @@
 import * as path from 'node:path';
-
 import { chalk, getModuleDefaultExport } from '@spcsn/taro-helper';
 import { merge } from 'lodash';
 import * as resolve from 'resolve';
-
 import { PluginType } from './constants';
-
 import type { IProjectConfig, PluginItem } from '@spcsn/taro/types/compile';
 import type { IPlugin, IPluginsObject } from './types';
 

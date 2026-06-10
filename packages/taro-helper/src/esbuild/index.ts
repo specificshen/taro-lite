@@ -1,9 +1,7 @@
 import Module from 'node:module';
 import path from 'node:path';
-
 import { Config, transformSync } from '@swc/core';
 import { defaults } from 'lodash';
-
 import { fs } from '../utils';
 
 type Loader = 'js' | 'jsx' | 'ts' | 'tsx' | 'json';

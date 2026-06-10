@@ -1,5 +1,4 @@
 import { ComponentType } from 'react'
-
 import { StandardProps } from '../common'
 
 interface TapGestureHandlerProps extends StandardProps {

@@ -1,18 +1,15 @@
 import { EventEmitter } from 'node:events';
 import * as path from 'node:path';
-
 import * as helper from '@spcsn/taro-helper';
 import { getPlatformType } from '@spcsn/taro-shared';
 import Joi from 'joi';
 import { merge } from 'lodash';
 import { AsyncSeriesWaterfallHook } from 'tapable';
-
 import Plugin from './service-plugin';
 import * as runnerUtils from './runner-utils';
 import { convertPluginsToObject, mergePlugins, printHelpLog, resolvePresetsOrPlugins } from './utils';
 import { IS_ADD_HOOK, IS_EVENT_HOOK, IS_MODIFY_HOOK, PluginType } from './utils/constants';
 import { serviceProfiler } from './utils/profile.js';
-
 import type { Func, IProjectConfig, PluginItem } from '@spcsn/taro/types/compile';
 import type Config from './service-config';
 import type { ICommand, IHook, IPaths, IPlatform, IPlugin, IPluginsObject, IPreset } from './utils/types';

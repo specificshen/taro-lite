@@ -1,5 +1,4 @@
 import path from 'node:path';
-
 import {
   defaultMainFields,
   fs,
@@ -13,7 +12,6 @@ import { getCSSModulesOptions, getMinify, getMode, getPostcssPlugins, stripMulti
 import { DEFAULT_TERSER_OPTIONS, MINI_EXCLUDE_POSTCSS_PLUGIN_NAME } from '../shared/constants';
 import { createDevBuildSummaryLogger } from '../shared/logger';
 import { buildProfiler } from '../shared/profile.js';
-
 import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
 import type { PluginOption, UserConfig } from 'vite';
 

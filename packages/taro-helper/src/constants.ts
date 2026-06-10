@@ -1,7 +1,5 @@
 import * as os from 'node:os';
-
 import type { ChalkInstance } from 'chalk';
-
 import { chalk } from './terminal';
 
 type GlobalWithPlatforms = typeof global & {

@@ -1,5 +1,4 @@
 import * as path from 'node:path';
-
 import {
   chalk,
   DEFAULT_TEMPLATE_SRC,
@@ -13,13 +12,11 @@ import {
 import { isArray } from '@spcsn/taro-shared';
 import * as inquirer from 'inquirer';
 import ora from 'ora';
-
 import { clearConsole, getPkgVersion, getRootPath } from '../util';
 import { TEMPLATE_CREATOR } from './constants';
 import Creator from './creator';
 import fetchTemplate from './fetch-template';
 import { CompilerType, createProject, CSSType, FrameworkType, NpmType, PeriodType } from './template-creator';
-
 import type { ITemplates } from './fetch-template';
 
 export interface IProjectConf {

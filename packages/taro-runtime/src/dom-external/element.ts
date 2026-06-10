@@ -1,6 +1,5 @@
 import { DOCUMENT_FRAGMENT } from '../constants';
 import { options } from '../options';
-
 import type { TaroElement } from '../dom/element';
 
 export function getBoundingClientRectImpl(this: TaroElement): Promise<null> {

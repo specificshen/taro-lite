@@ -2,11 +2,9 @@ import * as child_process from 'node:child_process';
 import { createHash } from 'node:crypto';
 import * as os from 'node:os';
 import * as path from 'node:path';
-
 import * as babel from '@babel/core';
 import * as nativeFs from 'node:fs';
 import { camelCase, defaults, flatMap, isPlainObject, mergeWith } from 'lodash';
-
 import {
   CSS_EXT,
   PLATFORMS,
@@ -20,9 +18,7 @@ import {
 } from './constants';
 import { requireWithEsbuild } from './esbuild';
 import { chalk } from './terminal';
-
 import resolvePath from 'resolve';
-
 import type TResolve from 'resolve';
 
 const execSync = child_process.execSync;

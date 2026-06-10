@@ -1,10 +1,8 @@
 import path from 'node:path';
 import querystring from 'node:querystring';
-
 import { isNpmPkg, normalizePath, recursiveMerge, REG_NODE_MODULES, resolveSync } from '@spcsn/taro-helper';
 import { backSlashRegEx, MINI_EXCLUDE_POSTCSS_PLUGIN_NAME, needsEscapeRegEx, quoteNewlineRegEx } from './constants';
 import { logger } from './logger';
-
 import type { IPostcssOption } from '@spcsn/taro/types/compile';
 import type { TRollupResolveMethod } from '@spcsn/taro/types/compile/config/plugin';
 import type {

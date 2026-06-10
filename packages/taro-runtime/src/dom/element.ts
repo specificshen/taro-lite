@@ -10,7 +10,6 @@ import {
   toCamelCase,
   warn,
 } from '@spcsn/taro-shared';
-
 import {
   CATCH_VIEW,
   CATCHMOVE,
@@ -33,7 +32,6 @@ import { TaroNode } from './node';
 import { NodeType } from './node-types';
 import { Style } from './style';
 import { treeToArray } from './tree';
-
 import type { Attributes, TFunc } from '../interface';
 import type { TaroEvent } from './event';
 

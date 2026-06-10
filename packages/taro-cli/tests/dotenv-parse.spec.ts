@@ -1,10 +1,7 @@
 import * as path from 'node:path';
-
 import { type MockedClass, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
-
 import { dotenvParse } from '@spcsn/taro-helper';
 import { Kernel } from '@spcsn/taro-service';
-
 import CLI from '../src/cli';
 
 vi.mock('@spcsn/taro-service');

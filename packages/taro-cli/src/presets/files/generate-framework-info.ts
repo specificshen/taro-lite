@@ -1,6 +1,5 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-
 import type { IPluginContext } from '@spcsn/taro-service';
 
 function getPkgVersion(): string {

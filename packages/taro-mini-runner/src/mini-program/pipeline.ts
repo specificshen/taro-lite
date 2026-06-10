@@ -1,6 +1,5 @@
 import { VITE_COMPILER_LABEL } from '../shared/runner';
 import { isFunction } from '@spcsn/taro-shared';
-
 import type { UnRecursiveTemplate } from '@spcsn/taro-shared/dist/template';
 import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
 import type { PluginOption } from 'vite';

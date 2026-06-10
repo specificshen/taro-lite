@@ -7,7 +7,6 @@ import {
 } from './dom-input';
 import { updateValueIfChanged } from './input-value-tracking';
 import { TaroReconciler } from './reconciler';
-
 import type { TaroElement, TaroEvent } from '@spcsn/taro-runtime';
 import type { Fiber } from 'react-reconciler';
 import type { Props } from './props';

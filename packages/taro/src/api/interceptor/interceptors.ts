@@ -1,5 +1,4 @@
 import { isFunction } from '@spcsn/taro-shared';
-
 import type Chain from './chain';
 
 type AbortablePromise<T> = Promise<T> & {

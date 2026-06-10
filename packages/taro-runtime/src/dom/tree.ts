@@ -1,5 +1,4 @@
 import { NodeType } from './node-types';
-
 import type { TaroElement } from './element';
 
 type Filter = (element: TaroElement) => boolean;

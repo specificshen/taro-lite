@@ -1,5 +1,4 @@
 import { PLATFORM_TYPE } from '@spcsn/taro-shared';
-
 import type { Func } from '@spcsn/taro/types/compile';
 import type { IPluginContext, TConfig } from '../utils/types';
 

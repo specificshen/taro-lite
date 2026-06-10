@@ -1,5 +1,4 @@
 import * as path from 'node:path';
-
 import type { IPluginContext } from '@spcsn/taro-service';
 
 export default (ctx: IPluginContext) => {

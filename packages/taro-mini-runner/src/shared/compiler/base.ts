@@ -1,10 +1,8 @@
 import path from 'node:path';
-
 import { fs, isEmptyObject, readConfig, resolveMainFilePath, SCRIPT_EXT } from '@spcsn/taro-helper';
 import { stripMultiPlatformExt } from '..';
 import { logger } from '../logger';
 import { VITE_COMPILER_LABEL } from '../runner';
-
 import type { AppConfig } from '@spcsn/taro';
 import type { IMiniFilesConfig } from '@spcsn/taro/types/compile';
 import type {
