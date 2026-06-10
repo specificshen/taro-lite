@@ -2,7 +2,7 @@ import * as path from 'node:path';
 import { dotenvParse, patchEnv } from '@spcsn/taro-helper';
 import { Config, Kernel } from '@spcsn/taro-service';
 import customCommand from './commands/custom-command';
-import { cliProfiler, getPkgVersion } from './util/index.js';
+import { cliProfiler, getPkgVersion, printPkgVersion } from './util/index.js';
 
 const DEFAULT_FRAMEWORK = 'react';
 const SUPPORTED_COMMANDS = new Set(['build', 'init']);
@@ -133,6 +133,8 @@ export default class CLI {
     const _ = args._;
     const command = _[0];
     if (command) {
+      printPkgVersion();
+
       const appPath = this.appPath;
       const presetsPath = path.resolve(__dirname, 'presets');
       const commandsPath = path.resolve(presetsPath, 'commands');
