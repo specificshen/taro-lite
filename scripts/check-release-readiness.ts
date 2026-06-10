@@ -48,8 +48,6 @@ const BUSINESS_FIXTURE_PACKAGE_JSON_PATH = 'fixtures/taro-lite-sunshine-lab/pack
 const BUSINESS_FIXTURE_CONFIG_PATH = 'fixtures/taro-lite-sunshine-lab/config/index.ts';
 const CLI_DEFAULT_FIXTURE_PACKAGE_JSON_PATH = 'packages/taro-cli/tests/fixtures/default/package.json';
 const BUSINESS_TEMPLATE_PACKAGE_JSON_PATH = 'packages/taro-cli/templates/default/package.json.tmpl';
-const PLUGIN_TEMPLATE_PACKAGE_JSON_PATH = 'packages/taro-cli/templates/plugin-compile/package.json.tmpl';
-const PLUGIN_TEMPLATE_SOURCE_PATH = 'packages/taro-cli/templates/plugin-compile/src/index.ts';
 const BUSINESS_VISIBLE_TYPE_DIRS = ['packages/taro/types', 'packages/taro-components/types'];
 
 const errors: string[] = [];
@@ -80,7 +78,6 @@ checkCliDefaultFixtureDependencyContract();
 checkBusinessFixtureConfigContract();
 checkBusinessFixtureScriptContract();
 checkBusinessTemplateScriptContract();
-checkPluginTemplateDependencyContract();
 checkBusinessVisibleTypeContract();
 
 if (warnings.length > 0) {
@@ -312,22 +309,6 @@ function checkBusinessTemplateScriptContract() {
   hasBusinessFixtureContractErrors = true;
   errors.push(
     `${BUSINESS_TEMPLATE_PACKAGE_JSON_PATH}: business template scripts should use default weapp commands: "taro build" and "taro build --watch"`,
-  );
-}
-
-function checkPluginTemplateDependencyContract() {
-  const packageTemplate = fs.readFileSync(path.join(rootDir, PLUGIN_TEMPLATE_PACKAGE_JSON_PATH), 'utf8');
-  const sourceTemplate = fs.readFileSync(path.join(rootDir, PLUGIN_TEMPLATE_SOURCE_PATH), 'utf8');
-  const exposesInternalService =
-    packageTemplate.includes('@spcsn/taro-service') || sourceTemplate.includes('@spcsn/taro-service');
-  const usesCliPluginTypes =
-    packageTemplate.includes('@spcsn/taro-cli') && sourceTemplate.includes('@spcsn/taro-cli/plugin');
-
-  if (!exposesInternalService && usesCliPluginTypes) return;
-
-  hasBusinessFixtureContractErrors = true;
-  errors.push(
-    `${PLUGIN_TEMPLATE_PACKAGE_JSON_PATH}: plugin template should depend on @spcsn/taro-cli and import plugin types from @spcsn/taro-cli/plugin, not @spcsn/taro-service`,
   );
 }
 

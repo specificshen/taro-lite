@@ -55,7 +55,6 @@ export interface CreateOptions {
   setSubPkgPageName?: string;
   changeExt?: boolean;
   isCustomTemplate?: boolean;
-  pluginType?: string;
 }
 
 export interface ProjectConfig {
