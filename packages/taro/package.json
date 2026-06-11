@@ -4,10 +4,9 @@
   "description": "SPCSN Taro runtime API entry",
   "author": "Samuel Ouyang",
   "license": "MIT",
-  "main": "index.js",
+  "main": "dist/index.js",
   "types": "types/index.d.ts",
   "files": [
-    "index.js",
     "dist",
     "types"
   ],

@@ -4,7 +4,7 @@
   "description": "SPCSN Taro helper utilities",
   "author": "Samuel Ouyang",
   "license": "MIT",
-  "main": "index.js",
+  "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "prod": "pnpm run build",
@@ -23,7 +23,6 @@
     "url": "git+https://github.com/specificshen/taro-lite.git"
   },
   "files": [
-    "index.js",
     "dist",
     "swc"
   ],
