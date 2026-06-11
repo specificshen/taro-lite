@@ -85,7 +85,7 @@ describe('cli', () => {
       const templateSource = 'https://url';
       const template = 'mobx';
       const css = 'none';
-      setProcessArgv('taro init temp --typescript --template-source=https://url --clone --template mobx --css none');
+      setProcessArgv('taro init temp --template-source=https://url --clone --template mobx --css none');
       await cli.run();
       const ins = MockedKernel.mock.instances[0];
       expect(ins.run).toHaveBeenCalledWith({
@@ -95,7 +95,7 @@ describe('cli', () => {
           options: {
             appPath: APP_PATH,
             projectName,
-            typescript: true,
+            typescript: undefined,
             templateSource,
             description: undefined,
             clone: true,

@@ -2,6 +2,7 @@
   "name": "{{ projectName }}",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "description": "{{ description }}",
   "templateInfo": {
     "name": "{{ template }}",
@@ -13,25 +14,15 @@
     "build": "taro build",
     "dev": "taro build --watch"
   },
-  "browserslist": [
-    "defaults and fully supports es6-module",
-    "maintained node versions"
-  ],
   "author": "",
   "dependencies": {
-    "@spcsn/taro-components": "{{ version }}",
     "@spcsn/taro": "{{ version }}",
-    "react-dom": "^19.2.0",
+    "@spcsn/taro-components": "{{ version }}",
     "react": "^19.2.0"
   },
   "devDependencies": {
     "@spcsn/taro-cli": "{{ version }}",
-    "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.3",{{#if (eq css "Sass") }}
-    "sass": "^1.75.0",{{/if}}{{#if (eq css "Less") }}
-    "less": "^4.2.0",{{/if}}{{#if (eq css "Stylus") }}
-    "stylus": "^0.63.0",{{/if}}{{#if typescript }}
-    "typescript": "^5.9.3",{{/if}}
-    "@types/minimatch": "^5"
+    "@types/react": "^19.2.15"{{#if typescript }},
+    "typescript": "^5.9.3"{{/if}}
   }
 }

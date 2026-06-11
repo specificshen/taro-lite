@@ -4,7 +4,7 @@
   "description": "SPCSN Taro Lite CLI for React WeApp mini programs",
   "author": "Samuel Ouyang",
   "license": "MIT",
-  "main": "index.js",
+  "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "prod": "pnpm run build",
@@ -21,8 +21,7 @@
   "files": [
     "bin",
     "dist",
-    "templates",
-    "index.js"
+    "templates"
   ],
   "repository": {
     "type": "git",

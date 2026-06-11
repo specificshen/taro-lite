@@ -107,7 +107,7 @@ export async function createProject(conf: ProjectConfig, handlers: TemplateHandl
     projectName: conf.projectName,
     version: conf.version,
     date: conf.date,
-    typescript: conf.typescript,
+    typescript: true,
     buildEs5: conf.buildEs5,
     template: conf.template,
     pageName: 'index',

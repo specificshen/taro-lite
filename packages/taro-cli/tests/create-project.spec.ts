@@ -42,7 +42,7 @@ describe('createProject', () => {
         autoInstall: false,
         templateRoot: packageRoot,
         version: '1.0.0',
-        typescript: true,
+        typescript: false,
         date: '2026-06-06',
         description: 'Demo app',
         compiler: CompilerType.Vite,
@@ -64,7 +64,7 @@ describe('createProject', () => {
       framework: 'React',
     });
     expect(fs.existsSync(path.join(projectRoot, 'tsconfig.json'))).toBe(true);
-    expect(fs.existsSync(path.join(projectRoot, 'src/app.ts'))).toBe(true);
+    expect(fs.existsSync(path.join(projectRoot, 'src/app.tsx'))).toBe(true);
     expect(fs.existsSync(path.join(projectRoot, 'src/app.css'))).toBe(true);
     expect(pageSource).toContain('export default function Index');
   });

@@ -29,7 +29,7 @@ export function run(name: string, presets: string[] = []): IRun {
     const kernel = new Kernel({
       appPath: appPath,
       presets: [
-        path.resolve(__dirname, '../__mocks__', 'presets.ts'),
+        path.resolve(__dirname, '../fixtures/test-preset/index.ts'),
         ...presets.map((e) => (path.isAbsolute(e) ? e : path.resolve(__dirname, '../../src/presets', `${e}.ts`))),
       ],
       plugins: [],

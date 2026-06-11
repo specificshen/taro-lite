@@ -104,9 +104,9 @@ export default class Project extends Creator {
 
     this.askProjectName(conf, prompts);
     this.askDescription(conf, prompts);
-    this.askTypescript(conf, prompts);
     this.askNpm(conf, prompts);
     const answers = await inquirer.prompt<IProjectConf>(prompts);
+    answers.typescript = true;
 
     if (conf.framework && conf.framework !== SUPPORTED_FRAMEWORK) {
       console.log(chalk.yellow('当前 Fork 仅支持 React 模板，将自动切换为 React。'));
@@ -188,15 +188,6 @@ export default class Project extends Creator {
     }
   };
 
-  askTypescript: AskMethods = function (conf, prompts) {
-    if (typeof conf.typescript !== 'boolean') {
-      prompts.push({
-        type: 'confirm',
-        name: 'typescript',
-        message: '是否需要使用 TypeScript ？',
-      });
-    }
-  };
   askCompiler: AskMethods = function (conf, prompts) {
     const compilerChoices = [
       {

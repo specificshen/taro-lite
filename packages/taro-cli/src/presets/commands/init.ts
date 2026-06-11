@@ -6,7 +6,6 @@ export default (ctx: IPluginContext) => {
     optionsMap: {
       '--name [name]': '项目名称',
       '--description [description]': '项目介绍',
-      '--typescript': '使用TypeScript',
       '--npm [npm]': '包管理工具',
       '--template-source [templateSource]': '项目模板源',
       '--clone [clone]': '拉取远程模板时使用git clone',

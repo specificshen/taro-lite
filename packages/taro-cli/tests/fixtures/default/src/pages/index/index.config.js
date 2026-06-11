@@ -1,3 +1,5 @@
-export default {
-  navigationBarTitleText: '首页',
-};
+export default definePageConfig({
+  navigationBarTitleText: 'Taro Lite',
+  navigationStyle: 'custom',
+  renderer: 'skyline',
+});

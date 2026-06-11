@@ -1,11 +1,14 @@
 {
-  "name": "test",
+  "name": "@spcsn/fixture-taro-cli-default",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Fixture for the modern React WeApp Taro Lite CLI path.",
   "dependencies": {
-    "@babel/runtime": "^7.7.7",
-    "@spcsn/taro": "0.1.6",
-    "@spcsn/taro-components": "0.1.6"
+    "@spcsn/taro": "1.0.1",
+    "@spcsn/taro-components": "1.0.1",
+    "react": "^19.2.0"
   },
   "devDependencies": {
-    "@spcsn/taro-cli": "0.1.6"
+    "@spcsn/taro-cli": "1.0.1"
   }
 }
