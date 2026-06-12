@@ -818,7 +818,7 @@ export function readConfig<T extends IReadConfigOptions>(configPath: string, opt
               legacyDecorator: true,
             },
             experimental: {
-              plugins: [[path.resolve(__dirname, '../swc/swc_plugin_define_config.wasm'), {}]],
+              plugins: [],
             },
           },
           module: {

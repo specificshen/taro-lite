@@ -30,6 +30,20 @@ function applyDefineConstants(source: string, define: Record<string, string> = {
   }, source);
 }
 
+const DEFINE_CONFIG_MACROS = {
+  defineAppConfig: 'function defineAppConfig(config) { return config; }',
+  definePageConfig: 'function definePageConfig(config) { return config; }',
+  importNativeComponent:
+    'function importNativeComponent(path = "", name = "", exportName = "default") { return name; }',
+} as const;
+
+function applyDefineConfigMacros(source: string) {
+  const macros = Object.entries(DEFINE_CONFIG_MACROS)
+    .filter(([name]) => new RegExp(`\\b${escapeRegExp(name)}\\s*\\(`).test(source))
+    .map(([, macro]) => macro);
+  return macros.length > 0 ? `${macros.join('\n')}\n${source}` : source;
+}
+
 function resolveAlias(request: string, alias: Record<string, string> = {}) {
   for (const [key, target] of Object.entries(alias)) {
     if (request === key) return target;
@@ -64,7 +78,8 @@ function transformConfigModule(
   customSwcConfig: Config,
 ) {
   const source = fs.readFileSync(filename, 'utf-8');
-  const definedSource = applyDefineConstants(source, customConfig?.define);
+  const macroSource = applyDefineConfigMacros(source);
+  const definedSource = applyDefineConstants(macroSource, customConfig?.define);
   return transformSync(definedSource, createSwcConfig(customSwcConfig)).code || '';
 }
 

@@ -11,20 +11,17 @@
     "clean": "bun ../../scripts/clean.ts dist",
     "prebuild": "pnpm run clean",
     "build": "tsc",
-    "postbuild": "pnpm run swc:backup",
     "dev": "tsc -w",
     "prepack": "pnpm run build",
     "test": "vitest run",
-    "test:ci": "vitest run --coverage",
-    "swc:backup": "bun scripts/backup.ts"
+    "test:ci": "vitest run --coverage"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/specificshen/taro-lite.git"
   },
   "files": [
-    "dist",
-    "swc"
+    "dist"
   ],
   "keywords": [
     "taro"
@@ -38,7 +35,7 @@
   "homepage": "https://github.com/specificshen/taro-lite#readme",
   "dependencies": {
     "@babel/core": "^7.29.7",
-    "@swc/core": "1.3.96",
+    "@swc/core": "^1.15.41",
     "@swc/register": "0.1.10",
     "chalk": "^5.6.2",
     "chokidar": "^5.0.0",
