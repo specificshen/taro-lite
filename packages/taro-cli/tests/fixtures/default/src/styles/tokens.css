@@ -1,0 +1,117 @@
+/**
+ * Design Tokens — Refined shadcn-inspired visual system
+ * Sunny color palette, layered shadows, and spatial rhythm.
+ */
+
+page {
+  /* ── Base ── */
+  --background: #fffdf7;
+  --foreground: #263238;
+
+  /* ── Card / Popover ── */
+  --card: #ffffff;
+  --card-foreground: #263238;
+  --popover: #ffffff;
+  --popover-foreground: #263238;
+
+  /* ── Primary: Coral sunshine axis ── */
+  --primary: #f97316;
+  --primary-foreground: #ffffff;
+  --primary-light: #ffedd5;
+  --primary-dark: #ea580c;
+
+  /* ── Secondary: Fresh sky tint ── */
+  --secondary: #ecfeff;
+  --secondary-foreground: #155e75;
+
+  /* ── Muted / Tertiary ── */
+  --muted: #fff7ed;
+  --muted-foreground: #64748b;
+
+  /* ── Accent: Sunny tint ── */
+  --accent: #fef3c7;
+  --accent-foreground: #b45309;
+
+  /* ── Destructive ── */
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --destructive-light: #fee2e2;
+
+  /* ── Success ── */
+  --success: #22c55e;
+  --success-foreground: #ffffff;
+  --success-light: #dcfce7;
+
+  /* ── Warning ── */
+  --warning: #facc15;
+  --warning-foreground: #422006;
+  --warning-light: #fef9c3;
+
+  /* ── Info ── */
+  --info: #38bdf8;
+  --info-foreground: #ffffff;
+  --info-light: #e0f2fe;
+
+  /* ── Surface / Elevation ── */
+  --border: #fed7aa;
+  --input: #fff7ed;
+  --ring: #fb923c;
+  --surface-elevated: #ffffff;
+
+  /* ── Radius ── */
+  --radius: 16px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-full: 9999px;
+
+  /* ── Gradients ── */
+  --gradient-primary: linear-gradient(135deg, #fb7185 0%, #f97316 52%, #facc15 100%);
+  --gradient-warm: linear-gradient(135deg, #facc15 0%, #fb923c 100%);
+  --gradient-ocean: linear-gradient(135deg, #22d3ee 0%, #34d399 100%);
+  --gradient-rose: linear-gradient(135deg, #f472b6 0%, #fb7185 100%);
+  --gradient-sky: linear-gradient(135deg, #38bdf8 0%, #60a5fa 100%);
+  --gradient-dark: linear-gradient(135deg, #475569 0%, #334155 100%);
+  --gradient-soft: linear-gradient(180deg, #fffdf7 0%, #ecfeff 100%);
+
+  /* ── Shadows (layered depth) ── */
+  --shadow-xs: 0 1px 2px rgba(124, 45, 18, 0.04);
+  --shadow-sm: 0 1px 3px rgba(124, 45, 18, 0.06), 0 1px 2px rgba(124, 45, 18, 0.04);
+  --shadow: 0 4px 6px -1px rgba(124, 45, 18, 0.06), 0 2px 4px -2px rgba(124, 45, 18, 0.04);
+  --shadow-md: 0 10px 15px -3px rgba(124, 45, 18, 0.08), 0 4px 6px -4px rgba(124, 45, 18, 0.04);
+  --shadow-lg: 0 20px 25px -5px rgba(124, 45, 18, 0.1), 0 8px 10px -6px rgba(124, 45, 18, 0.05);
+  --shadow-xl: 0 25px 50px -12px rgba(124, 45, 18, 0.16);
+  --shadow-glow-primary: 0 0 20px rgba(249, 115, 22, 0.28);
+  --shadow-glow-success: 0 0 20px rgba(34, 197, 94, 0.25);
+
+  /* ── Typography ── */
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB",
+    sans-serif;
+  --font-mono: "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
+
+  /* ── Spacing Scale ── */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  /* ── Animation ── */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --drawer-ease: cubic-bezier(0.2, 0.85, 0.25, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 400ms;
+  --drawer-duration: 320ms;
+
+  background: var(--muted);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}

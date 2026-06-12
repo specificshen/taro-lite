@@ -1,7 +1,6 @@
 import type { PropsWithChildren } from 'react';
 import { useLaunch } from '@spcsn/taro';
-
-import './app.{{ cssExt }}';
+import './app.css';
 
 function App({ children }: PropsWithChildren) {
   useLaunch(() => {

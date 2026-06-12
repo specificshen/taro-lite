@@ -1,6 +1,5 @@
 import type { PropsWithChildren } from 'react';
 import { useLaunch } from '@spcsn/taro';
-
 import './app.css';
 
 function App({ children }: PropsWithChildren) {

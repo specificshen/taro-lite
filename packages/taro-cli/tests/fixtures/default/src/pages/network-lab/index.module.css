@@ -1,0 +1,172 @@
+.container {
+  padding: var(--space-4);
+  padding-bottom: var(--space-12);
+  display: flex;
+  flex-direction: column;
+}
+
+.netHero {
+  padding: var(--space-6);
+  border-radius: var(--radius-xl);
+  background: linear-gradient(135deg, #38bdf8 0%, #60a5fa 52%, #f472b6 100%);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  margin-bottom: var(--space-4);
+}
+
+.heroTitle {
+  font-size: 42px;
+  line-height: 1.15;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.heroDesc {
+  margin-top: var(--space-3);
+  font-size: 23px;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.76);
+}
+
+.statusRow {
+  margin-top: var(--space-5);
+  display: flex;
+  gap: var(--space-3);
+}
+
+.statusPill {
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.13);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  display: flex;
+  flex-direction: column;
+}
+
+.statusLabel {
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.statusValue {
+  margin-top: var(--space-1);
+  font-size: 24px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.presetGrid {
+  margin-bottom: var(--space-4);
+  display: flex;
+  gap: var(--space-3);
+}
+
+.presetCard {
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+}
+
+.presetLabel {
+  font-size: 23px;
+  font-weight: 800;
+  color: var(--foreground);
+}
+
+.presetMethod {
+  margin-top: var(--space-2);
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.responseCard {
+  margin-top: var(--space-5);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: var(--space-4);
+}
+
+.label {
+  margin-bottom: var(--space-2);
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.methodGroup {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.methodItem {
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--border);
+  background-color: var(--secondary);
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.methodItemActive {
+  border-color: transparent;
+  background: var(--gradient-primary);
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.24);
+}
+
+.methodText {
+  font-size: 26px;
+  color: var(--secondary-foreground);
+  font-weight: 500;
+}
+
+.methodTextActive {
+  font-size: 26px;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.resHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.responseBadges {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.jsonScroll {
+  max-height: 400px;
+  background: linear-gradient(180deg, #334155 0%, #475569 100%);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  border: 1px solid rgba(56, 189, 248, 0.1);
+}
+
+.jsonText {
+  color: #f8fafc;
+  font-family: var(--font-mono);
+  font-size: 22px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}

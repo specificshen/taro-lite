@@ -53,7 +53,7 @@ describe('createProject', () => {
 
     const projectRoot = path.join(temporaryRoot, 'demo-app');
     const packageJson = JSON.parse(fs.readFileSync(path.join(projectRoot, 'package.json'), 'utf8'));
-    const pageSource = fs.readFileSync(path.join(projectRoot, 'src/pages/index/index.tsx'), 'utf8');
+    const pageSource = fs.readFileSync(path.join(projectRoot, 'src/pages/dashboard/index.tsx'), 'utf8');
 
     expect(packageJson.name).toBe('demo-app');
     expect(packageJson.description).toBe('Demo app');
@@ -66,6 +66,7 @@ describe('createProject', () => {
     expect(fs.existsSync(path.join(projectRoot, 'tsconfig.json'))).toBe(true);
     expect(fs.existsSync(path.join(projectRoot, 'src/app.tsx'))).toBe(true);
     expect(fs.existsSync(path.join(projectRoot, 'src/app.css'))).toBe(true);
-    expect(pageSource).toContain('export default function Index');
+    expect(pageSource).toContain('export default function IndexPage');
+    expect(pageSource).toContain('<PageWrapper title="Taro Lite">');
   });
 });
