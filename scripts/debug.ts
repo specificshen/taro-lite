@@ -87,7 +87,7 @@ function runDevConcurrently(): Promise<void> | undefined {
 
   const { result } = concurrently(commands, {
     prefix: 'name',
-    killOthers: ['failure', 'success'],
+    killOthersOn: ['failure', 'success'],
   });
 
   return result.then(

@@ -3,7 +3,7 @@ import * as parser from '@babel/parser';
 import traverse from '@babel/traverse';
 import * as t from '@babel/types';
 import { fs } from '@spcsn/taro-helper';
-import { flattenDeep, isEmpty, isNil, toArray, uniq, xorWith } from 'lodash';
+import { isEmpty, isNil, uniq, xorWith } from 'lodash';
 import { MINI_APP_TYPES } from './constants';
 import { camelCase, camelCaseEnhance, getTypeFilePath, getTypesList, paramCase } from './utils';
 
@@ -69,7 +69,7 @@ class GenerateTypes {
 
   // 转换不存在的属性，便于添加到已有的类型声明中
   convertProps(props: PROP = {}) {
-    const array = Array.from(new Set(flattenDeep(toArray(props))));
+    const array = uniq(Object.values(props).flat());
     const reverseProps: PROP = {};
     array.forEach((prop) => {
       reverseProps[prop] = Object.keys(props).filter((key) => props[key].includes(prop));

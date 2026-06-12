@@ -152,6 +152,7 @@ export function installNpmPkg(pkgList: string[] | string, options: IInstallOptio
     }
   }
   const output = spawn.sync(installer, args, {
+    encoding: 'utf8',
     stdio: ['ignore', 'pipe', 'inherit'],
   });
   if (output.status) {
