@@ -2,5 +2,4 @@ templates/*
 !templates/default
 templates/default/.*
 !templates/default/.husky
-!templates/global-config
 !src/__tests__/env/.*
