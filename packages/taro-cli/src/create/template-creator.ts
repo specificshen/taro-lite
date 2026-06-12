@@ -2,6 +2,7 @@ import { spawn } from 'node:child_process';
 import { copyFile, mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import * as path from 'node:path';
 import { chalk } from '@spcsn/taro-helper';
+import { TEMPLATE_CREATOR_FILES } from './constants';
 
 export enum CompilerType {
   Webpack4 = 'Webpack4',
@@ -79,8 +80,7 @@ type TemplateHandlerResult = boolean | { setPageName?: string; setSubPkgName?: s
 type TemplateHandler = (error: Error | null, options: CreateOptions) => TemplateHandlerResult;
 type TemplateHandlers = Record<string, TemplateHandler>;
 
-const TEMPLATE_CREATOR = 'template_creator.js';
-const FILE_FILTER = new Set([TEMPLATE_CREATOR, '.DS_Store', '.npmrc']);
+const FILE_FILTER = new Set([...TEMPLATE_CREATOR_FILES, '.DS_Store', '.npmrc']);
 const MEDIA_FILE_PATTERN = /\.(png|jpe?g|gif|svg|webp|jar|keystore|tgz)$/i;
 const STYLE_EXTENSIONS: Record<CSSType, string> = {
   [CSSType.None]: 'css',

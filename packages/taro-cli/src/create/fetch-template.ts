@@ -4,7 +4,7 @@ import * as AdmZip from 'adm-zip';
 import * as download from 'download-git-repo';
 import ora from 'ora';
 import { getTemplateSourceType, readDirWithFileTypes } from '../util';
-import { TEMPLATE_CREATOR } from './constants';
+import { TEMPLATE_CREATOR_FILES } from './constants';
 
 export interface ITemplates {
   name: string;
@@ -110,9 +110,11 @@ export default async function fetchTemplate(
 
       const res: ITemplates[] = files
         .map((name) => {
-          const creatorFile = path.join(templateRootPath, name, TEMPLATE_CREATOR);
+          const creatorFile = TEMPLATE_CREATOR_FILES
+            .map((fileName) => path.join(templateRootPath, name, fileName))
+            .find((filePath) => fs.existsSync(filePath));
 
-          if (!fs.existsSync(creatorFile)) return { name, value: name };
+          if (!creatorFile) return { name, value: name };
           const { name: displayName, platforms = '', desc = '', isPrivate = false, compiler } = require(creatorFile);
           if (isPrivate) return null;
 
@@ -134,9 +136,11 @@ export default async function fetchTemplate(
 
       let res: ITemplates = { name, value: name, desc: type === 'url' ? templateSource : '' };
 
-      const creatorFile = path.join(templateRootPath, name, TEMPLATE_CREATOR);
+      const creatorFile = TEMPLATE_CREATOR_FILES
+        .map((fileName) => path.join(templateRootPath, name, fileName))
+        .find((filePath) => fs.existsSync(filePath));
 
-      if (fs.existsSync(creatorFile)) {
+      if (creatorFile) {
         const { name: displayName, platforms = '', desc = '', compiler } = require(creatorFile);
 
         res = {

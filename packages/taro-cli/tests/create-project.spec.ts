@@ -12,7 +12,7 @@ import {
 } from '../src/create/template-creator';
 
 const packageRoot = path.resolve(__dirname, '..');
-const templateCreator = require('../templates/default/template_creator.js') as {
+const templateCreator = require('../templates/default/template-creator.cjs') as {
   handler: Parameters<typeof createProject>[1];
 };
 
@@ -65,7 +65,12 @@ describe('createProject', () => {
     });
     expect(fs.existsSync(path.join(projectRoot, 'tsconfig.json'))).toBe(true);
     expect(fs.existsSync(path.join(projectRoot, 'src/app.tsx'))).toBe(true);
-    expect(fs.existsSync(path.join(projectRoot, 'src/app.css'))).toBe(true);
+    expect(fs.existsSync(path.join(projectRoot, '.editorconfig'))).toBe(true);
+    expect(fs.existsSync(path.join(projectRoot, '.gitignore'))).toBe(true);
+    expect(fs.existsSync(path.join(projectRoot, '.env.development'))).toBe(true);
+    expect(fs.existsSync(path.join(projectRoot, '_gitignore'))).toBe(false);
+    expect(fs.existsSync(path.join(projectRoot, 'template-creator.cjs'))).toBe(false);
+    expect(fs.existsSync(path.join(projectRoot, 'template_creator.js'))).toBe(false);
     expect(pageSource).toContain('export default function IndexPage');
     expect(pageSource).toContain('<PageWrapper title="Taro Lite">');
   });

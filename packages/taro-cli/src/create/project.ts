@@ -13,7 +13,7 @@ import { isArray } from '@spcsn/taro-shared';
 import * as inquirer from 'inquirer';
 import ora from 'ora';
 import { clearConsole, getPkgVersion, getRootPath } from '../util';
-import { TEMPLATE_CREATOR } from './constants';
+import { TEMPLATE_CREATOR_FILES } from './constants';
 import Creator from './creator';
 import fetchTemplate from './fetch-template';
 import { CompilerType, createProject, CSSType, FrameworkType, NpmType, PeriodType } from './template-creator';
@@ -414,8 +414,10 @@ export default class Project extends Creator {
     const { projectName, projectDir, template, autoInstall = true, framework, npm } = this.conf as IProjectConf;
     // 引入模板编写者的自定义逻辑
     const templatePath = this.templatePath(template);
-    const handlerPath = path.join(templatePath, TEMPLATE_CREATOR);
-    const handler = fs.existsSync(handlerPath) ? require(handlerPath).handler : {};
+    const handlerPath = TEMPLATE_CREATOR_FILES
+      .map((fileName) => path.join(templatePath, fileName))
+      .find((filePath) => fs.existsSync(filePath));
+    const handler = handlerPath ? require(handlerPath).handler : {};
     createProject(
       {
         projectRoot: projectDir,
