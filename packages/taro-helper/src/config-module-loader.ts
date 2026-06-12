@@ -69,6 +69,7 @@ function createSwcConfig(customSwcConfig: Config = {}): Config {
   return {
     ...defaultSwcConfig,
     ...customSwcConfig,
+    module: customSwcConfig.module ?? defaultSwcConfig.module,
   };
 }
 
@@ -90,12 +91,38 @@ function getParentDirectory(parentURL: string | undefined, cwd: string) {
   return path.dirname(fileURLToPath(parentURL));
 }
 
-function resolveExistingScriptPath(request: string, parentURL: string | undefined, cwd: string) {
-  const requestPath = path.isAbsolute(request) ? request : path.resolve(getParentDirectory(parentURL, cwd), request);
+function toAbsolutePath(request: string, parentURL: string | undefined, cwd: string) {
+  if (request.startsWith('file:')) {
+    return fileURLToPath(request);
+  }
+  if (path.isAbsolute(request)) {
+    return request;
+  }
+  return path.resolve(getParentDirectory(parentURL, cwd), request);
+}
 
-  for (const extension of SCRIPT_EXTENSIONS) {
-    const candidate = `${requestPath}${extension}`;
+function resolveExistingScriptPath(request: string, parentURL: string | undefined, cwd: string) {
+  const requestPath = toAbsolutePath(request, parentURL, cwd);
+  const extension = path.extname(requestPath);
+
+  if (SCRIPT_EXTENSIONS.includes(extension) && fs.existsSync(requestPath)) {
+    return requestPath;
+  }
+
+  for (const ext of SCRIPT_EXTENSIONS) {
+    const candidate = `${requestPath}${ext}`;
     if (fs.existsSync(candidate)) return candidate;
+  }
+
+  try {
+    if (fs.statSync(requestPath).isDirectory()) {
+      for (const ext of SCRIPT_EXTENSIONS) {
+        const candidate = path.join(requestPath, `index${ext}`);
+        if (fs.existsSync(candidate)) return candidate;
+      }
+    }
+  } catch {
+    // ignore
   }
 }
 
@@ -104,10 +131,12 @@ function isScriptModuleURL(url: string) {
   return SCRIPT_EXTENSIONS.includes(path.extname(fileURLToPath(url)));
 }
 
-export function loadUserConfigModule(
+export async function loadUserConfigModule(
   id: string,
   { customConfig = {}, customSwcConfig = {}, cwd = process.cwd() }: UserConfigModuleLoaderOptions = {},
 ) {
+  const resolvedId = path.isAbsolute(id) ? id : path.resolve(cwd, id);
+
   const resolveHook: ResolveHookSync = (request, context, nextResolve) => {
     const aliasPath = resolveAlias(request, customConfig.alias);
     const resolvedRequest = aliasPath || request;
@@ -145,9 +174,9 @@ export function loadUserConfigModule(
   });
 
   try {
-    const resolvedId = path.isAbsolute(id) ? id : path.resolve(cwd, id);
     delete require.cache[require.resolve(resolvedId)];
-    return require(resolvedId);
+    const mod = require(resolvedId);
+    return mod.default ?? mod;
   } finally {
     hooks.deregister();
   }

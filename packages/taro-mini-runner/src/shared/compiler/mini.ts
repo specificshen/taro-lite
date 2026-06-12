@@ -27,13 +27,16 @@ export class TaroCompilerContext extends CompilerContext<ViteMiniBuildConfig> im
 
     this.fileType = this.taroConfig.fileType;
     this.commonChunks = this.getCommonChunks();
-    this.app = this.getApp();
-    this.collectNativeComponents(this.app);
-    this.pages = this.getPages();
   }
 
   processConfig() {
     this.taroConfig = recursiveMerge({}, defaultConfig, this.rawTaroConfig);
+  }
+
+  async init(): Promise<void> {
+    await super.init();
+    await this.collectNativeComponents(this.app);
+    this.pages = await this.getPages();
   }
 
   getCommonChunks() {
@@ -49,14 +52,14 @@ export class TaroCompilerContext extends CompilerContext<ViteMiniBuildConfig> im
     return customCommonChunks;
   }
 
-  compilePage = (pageName: string): VitePageMeta => {
+  compilePage = async (pageName: string): Promise<VitePageMeta> => {
     const { sourceDir, frameworkExts } = this;
 
     const scriptPath = resolveMainFilePath(path.join(sourceDir, pageName), frameworkExts);
     const templatePath = this.getTemplatePath(scriptPath);
     const isNative = this.isNativePageORComponent(templatePath);
     const configPath = isNative ? this.getConfigPath(scriptPath) : this.getConfigFilePath(scriptPath);
-    const config: PageConfig = readConfig(configPath, this.taroConfig) || {};
+    const config: PageConfig = (await readConfig(configPath, this.taroConfig)) || {};
 
     const pageMeta = {
       name: pageName,
@@ -72,7 +75,7 @@ export class TaroCompilerContext extends CompilerContext<ViteMiniBuildConfig> im
       path: configPath,
       content: config,
     };
-    this.collectNativeComponents(pageMeta);
+    await this.collectNativeComponents(pageMeta);
     this.configFileList.push(pageMeta.configPath);
 
     return pageMeta;
@@ -86,25 +89,26 @@ export class TaroCompilerContext extends CompilerContext<ViteMiniBuildConfig> im
     return importPath;
   }
 
-  collectNativeComponents(meta: ViteAppMeta | VitePageMeta | ViteNativeCompMeta): ViteNativeCompMeta[] {
+  async collectNativeComponents(meta: ViteAppMeta | VitePageMeta | ViteNativeCompMeta): Promise<ViteNativeCompMeta[]> {
     const { name, scriptPath, config } = meta;
     const { usingComponents } = config;
 
     const list: ViteNativeCompMeta[] = [];
     if (!usingComponents) return list;
 
-    Object.entries(usingComponents).forEach(([compName, value]) => {
+    for (const [compName, value] of Object.entries(usingComponents)) {
       const compPath = value instanceof Array ? value[0] : value;
       usingComponents[compName] = this.resolvePageImportPath(scriptPath, compPath);
       const compScriptPath = resolveMainFilePath(path.resolve(path.dirname(scriptPath), compPath));
-      if (this.nativeComponents.has(compScriptPath)) return;
+      if (this.nativeComponents.has(compScriptPath)) continue;
 
       const configPath = this.getConfigPath(compScriptPath);
       const templatePath = this.getTemplatePath(compScriptPath);
       const cssPath = this.getStylePath(compScriptPath);
 
       if (!fs.existsSync(compScriptPath)) {
-        return this.logger.warn(`找不到页面 ${name} 依赖的自定义组件：${compScriptPath}`);
+        this.logger.warn(`找不到页面 ${name} 依赖的自定义组件：${compScriptPath}`);
+        continue;
       }
 
       const nativeCompMeta: ViteNativeCompMeta = {
@@ -112,7 +116,7 @@ export class TaroCompilerContext extends CompilerContext<ViteMiniBuildConfig> im
         exportName: 'default',
         scriptPath: compScriptPath,
         configPath,
-        config: readConfig(configPath) || {},
+        config: (await readConfig(configPath)) || {},
         templatePath,
         cssPath,
         isNative: true,
@@ -128,8 +132,8 @@ export class TaroCompilerContext extends CompilerContext<ViteMiniBuildConfig> im
         componentConfig.thirdPartyComponents.set(compName, new Set());
       }
 
-      list.push(...this.collectNativeComponents(nativeCompMeta), nativeCompMeta);
-    });
+      list.push(...(await this.collectNativeComponents(nativeCompMeta)), nativeCompMeta);
+    }
     return list;
   }
 

@@ -205,7 +205,7 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
       }
       return null;
     },
-    load(id) {
+    async load(id) {
       if (viteCompilerContext && id.endsWith(PAGE_SUFFIX)) {
         const rawId = stripVirtualModulePrefix(id).replace(PAGE_SUFFIX, '');
         const page = viteCompilerContext.getPageById(rawId);
@@ -223,26 +223,25 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
           instantiatePage = viteCompilerContext.loaderMeta.modifyInstantiate(instantiatePage, 'page');
         }
 
-        viteCompilerContext.collectedDeps(this, escapePath(rawId), filter).then((deps) => {
-          const ncObj: Record<string, string> = {};
-          deps.forEach((dep) => {
-            Object.entries(nCompCache.get(dep) || {}).forEach(([key, value]) => {
-              const absPath = value;
-              const ext = path.extname(absPath);
-              const basename = path.basename(absPath, ext);
-              ncObj[key] = path.join(path.dirname(path.relative(path.dirname(rawId), absPath)), basename);
-            });
+        const deps = await viteCompilerContext.collectedDeps(this, escapePath(rawId), filter);
+        const ncObj: Record<string, string> = {};
+        deps.forEach((dep) => {
+          Object.entries(nCompCache.get(dep) || {}).forEach(([key, value]) => {
+            const absPath = value;
+            const ext = path.extname(absPath);
+            const basename = path.basename(absPath, ext);
+            ncObj[key] = path.join(path.dirname(path.relative(path.dirname(rawId), absPath)), basename);
           });
-          if (!page.isNative) {
-            page.config.usingComponents = {
-              ...page.config.usingComponents,
-              ...ncObj,
-            };
-          }
-          const nativeComps = viteCompilerContext.collectNativeComponents(page);
-          nativeComps.forEach((comp) => {
-            viteCompilerContext.generateNativeComponent(this, comp);
-          });
+        });
+        if (!page.isNative) {
+          page.config.usingComponents = {
+            ...page.config.usingComponents,
+            ...ncObj,
+          };
+        }
+        const nativeComps = await viteCompilerContext.collectNativeComponents(page);
+        nativeComps.forEach((comp) => {
+          viteCompilerContext.generateNativeComponent(this, comp);
         });
 
         return [

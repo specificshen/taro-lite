@@ -46,7 +46,7 @@ class App extends React.Component {
   logger = logger;
   filesConfig: IMiniFilesConfig = {};
   configFileList: string[] = [];
-  compilePage!: (pageName: string) => VitePageMeta;
+  compilePage!: (pageName: string) => Promise<VitePageMeta>;
 
   constructor(appPath: string, rawTaroConfig: T) {
     this.cwd = appPath;
@@ -61,6 +61,10 @@ class App extends React.Component {
   }
 
   protected processConfig() {}
+
+  async init(): Promise<void> {
+    this.app = await this.getApp();
+  }
 
   async collectedDeps(
     rollupCtx: Rolldown.PluginContext,
@@ -93,10 +97,10 @@ class App extends React.Component {
     return this.taroConfig.entry.app[0];
   }
 
-  getApp(): ViteAppMeta {
+  async getApp(): Promise<ViteAppMeta> {
     const scriptPath = this.getAppScriptPath();
     const configPath = this.getConfigFilePath(scriptPath);
-    const config: AppConfig = readConfig(configPath, this.taroConfig);
+    const config: AppConfig = await readConfig(configPath, this.taroConfig);
 
     if (isEmptyObject(config)) {
       this.logger.error('缺少 app 全局配置文件，请检查！');
@@ -123,7 +127,7 @@ class App extends React.Component {
     return appMeta;
   }
 
-  getPages(): VitePageMeta[] {
+  async getPages(): Promise<VitePageMeta[]> {
     const appConfig = this.app.config;
 
     if (this.taroConfig.isBuildNativeComp) return [];
@@ -133,32 +137,33 @@ class App extends React.Component {
       process.exit(1);
     }
 
-    const pagesList = appConfig.pages.map<VitePageMeta>((pageName) => this.compilePage(pageName));
+    const pagesList: VitePageMeta[] = [];
+    for (const pageName of appConfig.pages) {
+      pagesList.push(await this.compilePage(pageName));
+    }
 
     const subPackages = appConfig.subPackages || appConfig.subpackages || [];
-    subPackages.forEach((item) => {
+    for (const item of subPackages) {
       // 兼容 pages: [''] 等非法情况
       const pages = (item.pages || []).filter((item) => !!item);
 
       if (pages.length > 0) {
         const root = item.root;
-        pages.forEach((page) => {
+        for (const page of pages) {
           const subPageName = `${root}/${page}`.replace(/\/{2,}/g, '/');
 
-          for (const mainPage of pagesList) {
-            if (mainPage.name === subPageName) return;
-          }
+          if (pagesList.some((mainPage) => mainPage.name === subPageName)) continue;
 
-          const pageMeta = this.compilePage(subPageName);
+          const pageMeta = await this.compilePage(subPageName);
           pagesList.push(pageMeta);
-        });
+        }
       }
-    });
+    }
 
     return pagesList;
   }
 
-  getComponents(): VitePageMeta[] {
+  async getComponents(): Promise<VitePageMeta[]> {
     const appConfig = this.app.config;
 
     if (!appConfig.components?.length) {
@@ -166,7 +171,11 @@ class App extends React.Component {
       process.exit(1);
     }
 
-    return appConfig.components.map<VitePageMeta>((pageName) => this.compilePage(pageName));
+    const components: VitePageMeta[] = [];
+    for (const pageName of appConfig.components) {
+      components.push(await this.compilePage(pageName));
+    }
+    return components;
   }
 
   /** 工具函数 */

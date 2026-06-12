@@ -28,6 +28,7 @@ export default async function (appPath: string, rawTaroConfig: ViteMiniBuildConf
   const totalStartMs = buildProfiler.start();
   const contextStartMs = buildProfiler.start();
   const viteCompilerContext = new TaroCompilerContext(appPath, rawTaroConfig);
+  await viteCompilerContext.init();
   buildProfiler.end('runner context', contextStartMs);
 
   const { taroConfig } = viteCompilerContext;

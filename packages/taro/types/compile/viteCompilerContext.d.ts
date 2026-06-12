@@ -102,12 +102,13 @@ export interface ViteCompilerContext<T> {
   logger
   filesConfig: IMiniFilesConfig
   configFileList: string[]
-  compilePage: (pageName: string) => VitePageMeta
+  init: () => Promise<void>
+  compilePage: (pageName: string) => Promise<VitePageMeta>
   watchConfigFile: (rollupCtx: RollupPluginContext) => void
   collectedDeps: (rollupCtx: RollupPluginContext, id: string, filter, cache: Set<string> = new Set()) => Promise<Set<string>>
   getAppScriptPath: () => string
-  getApp: () => ViteAppMeta
-  getPages: () => VitePageMeta[]
+  getApp: () => Promise<ViteAppMeta>
+  getPages: () => Promise<VitePageMeta[]>
   isApp: (id: string) => boolean
   isPage: (id: string) => boolean
   isComponent: (id: string) => boolean
@@ -124,7 +125,7 @@ export interface ViteMiniCompilerContext extends ViteCompilerContext<ViteMiniBui
   nativeComponents : Map<string, ViteNativeCompMeta>
   getCommonChunks: () => string[]
   resolvePageImportPath: (scriptPath: string, pageName: string) => string
-  collectNativeComponents: (meta: ViteAppMeta | VitePageMeta | ViteNativeCompMeta) => ViteNativeCompMeta[]
+  collectNativeComponents: (meta: ViteAppMeta | VitePageMeta | ViteNativeCompMeta) => Promise<ViteNativeCompMeta[]>
   generateNativeComponent: (rollupCtx: RollupPluginContext, meta: ViteNativeCompMeta) => void
   getScriptPath: (filePath: string) => string
   getTemplatePath: (filePath: string) => string

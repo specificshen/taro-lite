@@ -794,13 +794,13 @@ interface IReadConfigOptions {
   defineConstants?: Record<string, any>;
 }
 
-export function readConfig<T extends IReadConfigOptions>(configPath: string, options: T = {} as T) {
+export async function readConfig<T extends IReadConfigOptions>(configPath: string, options: T = {} as T) {
   let result: any = {};
   if (fs.existsSync(configPath)) {
     if (REG_JSON.test(configPath)) {
       result = fs.readJSONSync(configPath);
     } else {
-      result = loadUserConfigModule(configPath, {
+      result = await loadUserConfigModule(configPath, {
         customConfig: {
           alias: options.alias || {},
           define: {
@@ -821,14 +821,9 @@ export function readConfig<T extends IReadConfigOptions>(configPath: string, opt
               plugins: [],
             },
           },
-          module: {
-            type: 'commonjs',
-          },
         },
       });
     }
-
-    result = getModuleDefaultExport(result);
   } else {
     result = readPageConfig(configPath);
   }

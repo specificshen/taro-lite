@@ -1,7 +1,7 @@
 import { ensure, isFunction } from '@spcsn/taro-shared';
 import { internalInstanceKey } from './constant';
 import { finishEventHandler } from './event';
-import { TaroReconciler } from './reconciler';
+import { flushSync, TaroReconciler } from './reconciler';
 import { ContainerMap, createRoot, render } from './render';
 import type { TaroElement } from '@spcsn/taro-runtime';
 import type { ReactNode } from 'react';
@@ -67,8 +67,6 @@ function createPortal(children: ReactNode, containerInfo: TaroElement, key?: str
     implementation: null,
   };
 }
-
-const flushSync = TaroReconciler.flushSync;
 
 export {
   createPortal,

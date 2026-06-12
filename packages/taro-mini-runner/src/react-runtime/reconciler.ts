@@ -217,6 +217,20 @@ const hostConfig: HostConfig<
 
 const TaroReconciler = Reconciler(hostConfig);
 
+export function flushSync(fn?: () => void) {
+  const reconcilerFlushSync = (TaroReconciler as any).flushSync;
+  if (typeof reconcilerFlushSync === 'function') {
+    return reconcilerFlushSync.call(TaroReconciler, fn);
+  }
+  // react-reconciler >= 0.33.0 不再把 flushSync 挂到 reconciler 实例上，
+  // 但提供了内部的 flushSyncFromReconciler；用它做兜底。
+  const flushSyncFromReconciler = (TaroReconciler as any).flushSyncFromReconciler;
+  if (typeof flushSyncFromReconciler === 'function') {
+    return flushSyncFromReconciler(fn);
+  }
+  return fn?.();
+}
+
 export function runWithPriority<T>(priority, fn: () => T): T {
   const previousPriority = currentUpdatePriority;
   currentUpdatePriority = priority;
