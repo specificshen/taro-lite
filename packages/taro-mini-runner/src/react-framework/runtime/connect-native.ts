@@ -203,9 +203,9 @@ export function createNativePageConfig(
       params: page.$taroParams!,
       path: addLeadingSlash(router),
       $taroPath: page.$taroPath,
-      onReady: getOnReadyEventKey(id),
-      onShow: getOnShowEventKey(id),
-      onHide: getOnHideEventKey(id),
+      onReady: getOnReadyEventKey(page.$taroPath),
+      onShow: getOnShowEventKey(page.$taroPath),
+      onHide: getOnHideEventKey(page.$taroPath),
     };
     if (!isUndefined(page.exitState)) {
       Current.router.exitState = page.exitState;
@@ -287,7 +287,7 @@ export function createNativePageConfig(
         // 触发生命周期
         safeExecute(this.$taroPath, ON_READY);
         // 通过事件触发子组件的生命周期
-        requestAnimationFrame(() => eventCenter.trigger(getOnReadyEventKey(id)));
+        requestAnimationFrame(() => eventCenter.trigger(getOnReadyEventKey(this.$taroPath)));
         this.onReady.called = true;
       });
     },
@@ -301,7 +301,7 @@ export function createNativePageConfig(
         // 触发生命周期
         safeExecute(this.$taroPath, ON_SHOW, options);
         // 通过事件触发子组件的生命周期
-        requestAnimationFrame(() => eventCenter.trigger(getOnShowEventKey(id)));
+        requestAnimationFrame(() => eventCenter.trigger(getOnShowEventKey(this.$taroPath)));
       });
     },
     [ONHIDE]() {
@@ -315,7 +315,7 @@ export function createNativePageConfig(
       // 触发生命周期
       safeExecute(this.$taroPath, ON_HIDE);
       // 通过事件触发子组件的生命周期
-      eventCenter.trigger(getOnHideEventKey(id));
+      eventCenter.trigger(getOnHideEventKey(this.$taroPath));
     },
   };
 
