@@ -1,4 +1,4 @@
-import { afterAll, describe, expect, test, vi } from 'vitest';
+import { afterAll, afterEach, describe, expect, test, vi } from 'vitest';
 import { EVENT_CALLBACK_RESULT } from '../src/constants';
 import { eventHandler } from '../src/dom/event';
 import * as runtime from '../src/index';
@@ -6,9 +6,22 @@ import * as runtime from '../src/index';
 describe('event', () => {
   const document = runtime.document;
 
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   afterAll(() => {
     process.env.FRAMEWORK = '';
   });
+
+  function createMpEvent(type: string, id: string, detail: Record<string, unknown> = {}) {
+    return {
+      type,
+      target: { dataset: {}, id },
+      currentTarget: { dataset: {}, id },
+      detail,
+    };
+  }
 
   test('can addEventListener', () => {
     const div = document.createElement('div');
@@ -630,5 +643,95 @@ describe('event', () => {
     expect(result).toBeUndefined();
 
     Object.assign(runtime.hooks, originalHooks);
+  });
+
+  test('eventHandler flushes delegated child event when parent handles same bubble event', () => {
+    vi.spyOn(runtime.hooks, 'isExist').mockImplementation((name) => name === 'batchedEventUpdates');
+    vi.spyOn(runtime.hooks, 'call').mockImplementation((name, ...args) => {
+      if (name === 'batchedEventUpdates') {
+        args[0]();
+      }
+      if (name === 'isBubbleEvents') {
+        return true;
+      }
+      if (name === 'getSpecialNodes') {
+        return ['view', 'text', 'image'];
+      }
+      if (name === 'dispatchTaroEvent') {
+        args[1].dispatchEvent(args[0]);
+      }
+    });
+
+    const parent = document.createElement('view');
+    const child = document.createElement('view');
+    parent.id = 'delegated-parent';
+    child.id = 'delegated-child';
+    document.body.appendChild(parent);
+    parent.appendChild(child);
+
+    const parentSpy = vi.fn();
+    const childSpy = vi.fn();
+    parent.addEventListener('tap', parentSpy, null);
+    child.addEventListener('tap', childSpy, null);
+
+    expect(eventHandler(createMpEvent('tap', 'delegated-child'))).toBeUndefined();
+    expect(childSpy).not.toHaveBeenCalled();
+
+    eventHandler(createMpEvent('tap', 'delegated-parent'));
+
+    expect(childSpy).toHaveBeenCalledTimes(1);
+    expect(parentSpy).toHaveBeenCalledTimes(1);
+  });
+
+  test('eventHandler keeps delegated batches isolated by event type', () => {
+    vi.spyOn(runtime.hooks, 'isExist').mockImplementation((name) => name === 'batchedEventUpdates');
+    vi.spyOn(runtime.hooks, 'call').mockImplementation((name, ...args) => {
+      if (name === 'batchedEventUpdates') {
+        args[0]();
+      }
+      if (name === 'isBubbleEvents') {
+        return true;
+      }
+      if (name === 'getSpecialNodes') {
+        return ['view', 'text', 'image'];
+      }
+      if (name === 'dispatchTaroEvent') {
+        args[1].dispatchEvent(args[0]);
+      }
+    });
+
+    const parent = document.createElement('view');
+    const child = document.createElement('view');
+    parent.id = 'typed-parent';
+    child.id = 'typed-child';
+    document.body.appendChild(parent);
+    parent.appendChild(child);
+
+    const childTapSpy = vi.fn();
+    const childTouchEndSpy = vi.fn();
+    const parentTapSpy = vi.fn();
+    const parentTouchEndSpy = vi.fn();
+    parent.addEventListener('tap', parentTapSpy, null);
+    parent.addEventListener('touchend', parentTouchEndSpy, null);
+    child.addEventListener('tap', childTapSpy, null);
+    child.addEventListener('touchend', childTouchEndSpy, null);
+
+    eventHandler(createMpEvent('tap', 'typed-child'));
+    eventHandler(createMpEvent('touchend', 'typed-child'));
+
+    expect(childTapSpy).not.toHaveBeenCalled();
+    expect(childTouchEndSpy).not.toHaveBeenCalled();
+
+    eventHandler(createMpEvent('tap', 'typed-parent'));
+
+    expect(childTapSpy).toHaveBeenCalledTimes(1);
+    expect(childTouchEndSpy).not.toHaveBeenCalled();
+    expect(parentTapSpy).toHaveBeenCalledTimes(1);
+    expect(parentTouchEndSpy).not.toHaveBeenCalled();
+
+    eventHandler(createMpEvent('touchend', 'typed-parent'));
+
+    expect(childTouchEndSpy).toHaveBeenCalledTimes(1);
+    expect(parentTouchEndSpy).toHaveBeenCalledTimes(1);
   });
 });

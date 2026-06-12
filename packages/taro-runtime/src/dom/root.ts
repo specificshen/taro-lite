@@ -92,8 +92,10 @@ export class TaroRootElement extends TaroElement {
       const data: Record<string, UpdatePayloadValue | ReturnType<HydratedData>> = Object.create(null);
       const resetPaths = new Set<string>(initRender ? ['root.cn.[0]', 'root.cn[0]'] : []);
 
-      while (this.updatePayloads.length > 0) {
-        const { path, value } = this.updatePayloads.shift()!;
+      const updatePayloads = this.updatePayloads;
+      this.updatePayloads = [];
+      for (let i = 0; i < updatePayloads.length; i++) {
+        const { path, value } = updatePayloads[i];
         if (path.endsWith(Shortcuts.Childnodes)) {
           resetPaths.add(path);
         }
