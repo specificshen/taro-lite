@@ -42,22 +42,22 @@
     "node": ">= 22.15.0"
   },
   "dependencies": {
-    "@spcsn/taro-components": "1.0.1",
-    "@spcsn/taro-helper": "1.0.1",
-    "@spcsn/taro-service": "1.0.1",
-    "@spcsn/taro-shared": "1.0.1",
-    "@spcsn/taro-mini-runner": "1.0.1",
-    "adm-zip": "^0.5.12",
+    "@spcsn/taro-components": "workspace:*",
+    "@spcsn/taro-helper": "workspace:*",
+    "@spcsn/taro-mini-runner": "workspace:*",
+    "@spcsn/taro-service": "workspace:*",
+    "@spcsn/taro-shared": "workspace:*",
+    "adm-zip": "^0.5.17",
     "download-git-repo": "^3.0.2",
-    "inquirer": "^8.2.6",
-    "ora": "^5.4.1"
+    "inquirer": "^14.0.2",
+    "ora": "^9.4.0"
   },
   "devDependencies": {
-    "@spcsn/taro": "1.0.1",
-    "@types/inquirer": "^8.2.1",
-    "@types/node": "^22.19.19",
-    "@vitest/coverage-istanbul": "^3.2.4",
+    "@spcsn/taro": "workspace:*",
+    "@types/inquirer": "^9.0.9",
+    "@types/node": "^25.9.3",
+    "@vitest/coverage-istanbul": "^4.1.8",
     "typescript": "~6.0.3",
-    "vitest": "^3.2.4"
+    "vitest": "^4.1.8"
   }
 }

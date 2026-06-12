@@ -33,12 +33,12 @@
     "node": ">= 22.15.0"
   },
   "dependencies": {
-    "@spcsn/taro-runtime": "1.0.1",
-    "@spcsn/taro-shared": "1.0.1"
+    "@spcsn/taro-runtime": "workspace:*",
+    "@spcsn/taro-shared": "workspace:*"
   },
   "devDependencies": {
-    "@spcsn/taro-components": "1.0.1",
-    "@spcsn/taro-helper": "1.0.1",
+    "@spcsn/taro-components": "workspace:*",
+    "@spcsn/taro-helper": "workspace:*",
     "@spcsn/taro-shared": "1.0.1",
     "rolldown": "^1.1.1"
   },

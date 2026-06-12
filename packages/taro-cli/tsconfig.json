@@ -5,8 +5,7 @@
     "rootDir": "./src",
     "module": "commonjs",
     "sourceMap": true,
-    "declaration": true,
-    "types": []
+    "declaration": true
   },
   "include": ["./src"],
   "exclude": ["./src/__tests__"]

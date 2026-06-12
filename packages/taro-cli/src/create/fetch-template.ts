@@ -110,9 +110,9 @@ export default async function fetchTemplate(
 
       const res: ITemplates[] = files
         .map((name) => {
-          const creatorFile = TEMPLATE_CREATOR_FILES
-            .map((fileName) => path.join(templateRootPath, name, fileName))
-            .find((filePath) => fs.existsSync(filePath));
+          const creatorFile = TEMPLATE_CREATOR_FILES.map((fileName) =>
+            path.join(templateRootPath, name, fileName),
+          ).find((filePath) => fs.existsSync(filePath));
 
           if (!creatorFile) return { name, value: name };
           const { name: displayName, platforms = '', desc = '', isPrivate = false, compiler } = require(creatorFile);
@@ -136,9 +136,9 @@ export default async function fetchTemplate(
 
       let res: ITemplates = { name, value: name, desc: type === 'url' ? templateSource : '' };
 
-      const creatorFile = TEMPLATE_CREATOR_FILES
-        .map((fileName) => path.join(templateRootPath, name, fileName))
-        .find((filePath) => fs.existsSync(filePath));
+      const creatorFile = TEMPLATE_CREATOR_FILES.map((fileName) => path.join(templateRootPath, name, fileName)).find(
+        (filePath) => fs.existsSync(filePath),
+      );
 
       if (creatorFile) {
         const { name: displayName, platforms = '', desc = '', compiler } = require(creatorFile);

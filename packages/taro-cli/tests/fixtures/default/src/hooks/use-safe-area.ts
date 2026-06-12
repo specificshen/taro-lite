@@ -32,9 +32,7 @@ export function useSafeArea(): SafeAreaInfo {
 
   useEffect(() => {
     try {
-      const windowInfo = (Taro as any).getWindowInfo
-        ? (Taro as any).getWindowInfo()
-        : Taro.getSystemInfoSync();
+      const windowInfo = (Taro as any).getWindowInfo ? (Taro as any).getWindowInfo() : Taro.getSystemInfoSync();
 
       let menuButtonInfo = { bottom: 58, top: 24, height: 32, width: 88, left: 280, right: 368 };
       if (typeof wx !== 'undefined' && wx.getMenuButtonBoundingClientRect) {
@@ -45,13 +43,10 @@ export function useSafeArea(): SafeAreaInfo {
         }
       }
 
-      const calcNavBarHeight =
-        (menuButtonInfo.top - windowInfo.statusBarHeight) * 2 + menuButtonInfo.height;
+      const calcNavBarHeight = (menuButtonInfo.top - windowInfo.statusBarHeight) * 2 + menuButtonInfo.height;
 
       const safeAreaBottom =
-        (windowInfo.safeArea?.bottom
-          ? windowInfo.screenHeight - windowInfo.safeArea.bottom
-          : 0) || 0;
+        (windowInfo.safeArea?.bottom ? windowInfo.screenHeight - windowInfo.safeArea.bottom : 0) || 0;
 
       setInfo({
         statusBarHeight: windowInfo.statusBarHeight || 20,

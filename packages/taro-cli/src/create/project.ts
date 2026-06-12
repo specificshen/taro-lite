@@ -10,7 +10,7 @@ import {
   TARO_CONFIG_FOLDER,
 } from '@spcsn/taro-helper';
 import { isArray } from '@spcsn/taro-shared';
-import * as inquirer from 'inquirer';
+import type { default as Inquirer, Question } from 'inquirer';
 import ora from 'ora';
 import { clearConsole, getPkgVersion, getRootPath } from '../util';
 import { TEMPLATE_CREATOR_FILES } from './constants';
@@ -48,7 +48,7 @@ type IProjectConfOptions = CustomPartial<
 >;
 
 interface AskMethods {
-  (conf: IProjectConfOptions, prompts: Record<string, unknown>[], choices?: ITemplates[]): void;
+  (conf: IProjectConfOptions, prompts: Question<IProjectConf>[], choices?: ITemplates[]): void;
 }
 
 const NONE_AVAILABLE_TEMPLATE = '无可用模板';
@@ -99,7 +99,9 @@ export default class Project extends Creator {
   }
 
   async ask() {
-    let prompts: Record<string, unknown>[] = [];
+    const { default: inquirer } = (await import('inquirer')) as { default: typeof Inquirer };
+
+    let prompts: Question<IProjectConf>[] = [];
     const conf = this.conf;
 
     this.askProjectName(conf, prompts);
@@ -414,9 +416,9 @@ export default class Project extends Creator {
     const { projectName, projectDir, template, autoInstall = true, framework, npm } = this.conf as IProjectConf;
     // 引入模板编写者的自定义逻辑
     const templatePath = this.templatePath(template);
-    const handlerPath = TEMPLATE_CREATOR_FILES
-      .map((fileName) => path.join(templatePath, fileName))
-      .find((filePath) => fs.existsSync(filePath));
+    const handlerPath = TEMPLATE_CREATOR_FILES.map((fileName) => path.join(templatePath, fileName)).find((filePath) =>
+      fs.existsSync(filePath),
+    );
     const handler = handlerPath ? require(handlerPath).handler : {};
     createProject(
       {
