@@ -5,7 +5,7 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   test: {
     include: ['tests/**/*.spec.ts?(x)'],
-    setupFiles: [resolve(__dirname, './tests/setup.js')],
+    setupFiles: [resolve(__dirname, './tests/setup.ts')],
     coverage: {
       provider: 'istanbul',
       include: ['src/**/*.ts'],

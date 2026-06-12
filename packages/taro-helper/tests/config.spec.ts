@@ -2,6 +2,9 @@ import * as path from 'node:path';
 import { describe, expect, test, vi } from 'vitest';
 import { readConfig } from '../src/utils';
 
+const fixturesDir = path.join(__dirname, 'fixtures');
+const fixturePath = (filename: string) => path.join(fixturesDir, filename);
+
 describe('readConfig', () => {
   const config = {
     pages: ['pages/index/index'],
@@ -17,34 +20,34 @@ describe('readConfig', () => {
   };
 
   test('read app config without tips', async () => {
-    const result = await readConfig(path.join(__dirname, './__mocks__/app.config.ts'));
+    const result = await readConfig(fixturePath('app.config.ts'));
     expect(result).toEqual(config);
   });
 
   test('read app config with tips', async () => {
-    const result = await readConfig(path.join(__dirname, './__mocks__/app.define.config.ts'));
+    const result = await readConfig(fixturePath('app.define.config.ts'));
     expect(result).toEqual(config);
   });
 
   test('read page config without tips', async () => {
-    const result = await readConfig(path.join(__dirname, './__mocks__/page.config.ts'));
+    const result = await readConfig(fixturePath('page.config.ts'));
     expect(result).toEqual(pageConfig);
   });
 
   test('read page config with tips', async () => {
-    const result = await readConfig(path.join(__dirname, './__mocks__/page.define.config.ts'));
+    const result = await readConfig(fixturePath('page.define.config.ts'));
     expect(result).toEqual(pageConfig);
   });
 
   test('read page config with module.exports', async () => {
-    const result = await readConfig(path.join(__dirname, './__mocks__/page.es5.config.ts'));
+    const result = await readConfig(fixturePath('page.es5.config.ts'));
     expect(result).toEqual(pageConfig);
   });
 
   test('read page config with alias', async () => {
-    const result = await readConfig(path.join(__dirname, './__mocks__/page.alias.config.ts'), {
+    const result = await readConfig(fixturePath('page.alias.config.ts'), {
       alias: {
-        '@/utils': path.resolve(__dirname, './__mocks__/utils'),
+        '@/utils': path.resolve(fixturesDir, 'utils'),
       },
     });
     expect(result).toEqual({
@@ -53,7 +56,7 @@ describe('readConfig', () => {
   });
 
   test('read page config with defineConstants', async () => {
-    const result = await readConfig(path.join(__dirname, './__mocks__/page.define-constants.config.ts'), {
+    const result = await readConfig(fixturePath('page.define-constants.config.ts'), {
       defineConstants: {
         IS_BUILD_COMPONENT: 'true',
       },
@@ -67,19 +70,19 @@ describe('readConfig', () => {
     const logSpy = vi.spyOn(console, 'log');
     logSpy.mockImplementation(() => {});
 
-    const result = await readConfig(path.join(__dirname, './__mocks__/app.import.config.ts'));
+    const result = await readConfig(fixturePath('app.import.config.ts'));
     expect(result).toEqual(config);
 
     logSpy.mockRestore();
   });
 
   test('read config with require', async () => {
-    const result = await readConfig(path.join(__dirname, './__mocks__/app.require.config.ts'));
+    const result = await readConfig(fixturePath('app.require.config.ts'));
     expect(result).toEqual(config);
   });
 
   test('read json config', async () => {
-    const result = await readConfig(path.join(__dirname, './__mocks__/app.json'));
+    const result = await readConfig(fixturePath('app.json'));
     expect(result).toEqual(config);
   });
 });
