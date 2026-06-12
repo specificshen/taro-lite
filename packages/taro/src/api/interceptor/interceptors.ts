@@ -2,7 +2,7 @@ import { isFunction } from '@spcsn/taro-shared';
 import type Chain from './chain';
 
 type AbortablePromise<T> = Promise<T> & {
-  abort?: () => void;
+  abort?: (cb?: () => void) => unknown;
 };
 
 function attachAbort<T>(source: AbortablePromise<T> | undefined, target: Promise<T>): AbortablePromise<T> {
@@ -13,13 +13,14 @@ function attachAbort<T>(source: AbortablePromise<T> | undefined, target: Promise
   return abortableTarget;
 }
 
-export function timeoutInterceptor(chain: Chain) {
+export function timeoutInterceptor<T>(chain: Chain<T>) {
   const requestParams = chain.requestParams;
-  let proceedPromise: AbortablePromise<void> | undefined;
-  const res = new Promise<void>((resolve, reject) => {
+  let proceedPromise: AbortablePromise<T> | undefined;
+  const res = new Promise<T>((resolve, reject) => {
     const timeout: ReturnType<typeof setTimeout> = setTimeout(
       () => {
         clearTimeout(timeout);
+        proceedPromise?.abort?.();
         reject(new Error('网络链接超时,请稍后再试！'));
       },
       (requestParams && requestParams.timeout) || 60000,
@@ -40,7 +41,7 @@ export function timeoutInterceptor(chain: Chain) {
   return attachAbort(proceedPromise, res);
 }
 
-export function logInterceptor(chain: Chain) {
+export function logInterceptor<T>(chain: Chain<T>) {
   const requestParams = chain.requestParams;
   const { method, data, url } = requestParams;
 

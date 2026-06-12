@@ -7,13 +7,60 @@ declare const requirePlugin: () => void;
 
 type IObject = Record<string, any>;
 
+type NativeApiCallback<T = unknown> = (res: T) => void;
+
+interface NativeApiOptions<TSuccess = unknown, TFail = unknown, TComplete = unknown> extends Record<string, any> {
+  success?: NativeApiCallback<TSuccess>;
+  fail?: NativeApiCallback<TFail>;
+  complete?: NativeApiCallback<TComplete>;
+}
+
+interface NativeRequestSuccess<T = unknown> {
+  data: T;
+  statusCode: number;
+  header?: Record<string, unknown>;
+  cookies?: string[];
+  [key: string]: unknown;
+}
+
+interface NativeRequestOptions<TData = unknown, TResponse = unknown>
+  extends NativeApiOptions<NativeRequestSuccess<TResponse>> {
+  url?: string;
+  data?: TData;
+  header?: Record<string, unknown>;
+  method?: string;
+  timeout?: number;
+}
+
+type NativeTaskMethod = (...args: any[]) => unknown;
+
+interface NativeTask {
+  abort?: NativeTaskMethod;
+  onHeadersReceived?: NativeTaskMethod;
+  offHeadersReceived?: NativeTaskMethod;
+  onProgressUpdate?: NativeTaskMethod;
+  offProgressUpdate?: NativeTaskMethod;
+  onChunkReceived?: NativeTaskMethod;
+  offChunkReceived?: NativeTaskMethod;
+}
+
+type NativeTaskPromise<T> = Promise<T> &
+  Omit<Partial<NativeTask>, 'abort'> & {
+    progress?: (cb: NativeTaskMethod) => NativeTaskPromise<T>;
+    abort?: (cb?: () => void) => NativeTaskPromise<T>;
+  };
+
+interface TaroRequestChain {
+  requestParams: NativeRequestOptions | string;
+}
+
 interface IProcessApisIOptions {
   noPromiseApis?: Set<string>;
   needPromiseApis?: Set<string>;
   handleSyncApis?: (key: string, global: IObject, args: any[]) => any;
   transformMeta?: (key: string, options: IObject) => { key: string; options: IObject };
   modifyApis?: (apis: Set<string>) => void;
-  modifyAsyncResult?: (key: string, res) => void;
+  modifyAsyncResult?: (key: string, res: unknown) => void;
   isOnlyPromisify?: boolean;
   [propName: string]: any;
 }
@@ -159,7 +206,7 @@ const needPromiseApis = new Set<string>([
   'writeBLECharacteristicValue',
 ]);
 
-function getCanIUseWebp(taro) {
+function getCanIUseWebp(taro: IObject) {
   return function () {
     const res = taro.getSystemInfoSync?.();
 
@@ -180,46 +227,53 @@ function getCanIUseWebp(taro) {
   };
 }
 
-function getNormalRequest(global) {
-  return function request(options) {
-    options = options ? (isString(options) ? { url: options } : options) : {};
+function normalizeRequestOptions<TData, TResponse>(
+  options?: NativeRequestOptions<TData, TResponse> | string,
+): NativeRequestOptions<TData, TResponse> {
+  if (!options) return {};
+  return isString(options) ? { url: options } : { ...options };
+}
 
-    const originSuccess = options.success;
-    const originFail = options.fail;
-    const originComplete = options.complete;
-    let requestTask;
-    const p: any = new Promise((resolve, reject) => {
-      options.success = (res) => {
-        originSuccess && originSuccess(res);
+function getNormalRequest(global: IObject) {
+  return function request<TData = unknown, TResponse = unknown>(
+    options?: NativeRequestOptions<TData, TResponse> | string,
+  ): NativeTaskPromise<NativeRequestSuccess<TResponse>> {
+    const requestOptions = normalizeRequestOptions(options);
+
+    const originSuccess = requestOptions.success;
+    const originFail = requestOptions.fail;
+    const originComplete = requestOptions.complete;
+    let requestTask: NativeTask | undefined;
+    const p = new Promise<NativeRequestSuccess<TResponse>>((resolve, reject) => {
+      requestOptions.success = (res) => {
+        originSuccess?.(res);
         resolve(res);
       };
-      options.fail = (res) => {
-        originFail && originFail(res);
+      requestOptions.fail = (res) => {
+        originFail?.(res);
         reject(res);
       };
 
-      options.complete = (res) => {
-        originComplete && originComplete(res);
+      requestOptions.complete = (res) => {
+        originComplete?.(res);
       };
 
-      requestTask = global.request(options);
-    });
+      requestTask = global.request(requestOptions);
+    }) as NativeTaskPromise<NativeRequestSuccess<TResponse>>;
 
     equipTaskMethodsIntoPromise(requestTask, p);
 
     p.abort = (cb) => {
-      cb && cb();
-      if (requestTask) {
-        requestTask.abort();
-      }
+      cb?.();
+      requestTask?.abort?.();
       return p;
     };
     return p;
   };
 }
 
-function processApis(taro, global, config: IProcessApisIOptions = {}) {
-  const patchNeedPromiseApis = config.needPromiseApis || [];
+function processApis(taro: IObject, global: IObject, config: IProcessApisIOptions = {}) {
+  const patchNeedPromiseApis = config.needPromiseApis || new Set<string>();
   const _needPromiseApis = new Set<string>([...patchNeedPromiseApis, ...needPromiseApis]);
   const preserved = [
     'getEnv',
@@ -245,7 +299,7 @@ function processApis(taro, global, config: IProcessApisIOptions = {}) {
   apis.forEach((key) => {
     if (_needPromiseApis.has(key)) {
       const originKey = key;
-      taro[originKey] = (options: Record<string, any> | string = {}, ...args) => {
+      taro[originKey] = (options: Record<string, any> | string = {}, ...args: any[]) => {
         let key = originKey;
 
         // 第一个参数 options 为字符串，单独处理
@@ -267,14 +321,14 @@ function processApis(taro, global, config: IProcessApisIOptions = {}) {
           }
         }
 
-        let task: any = null;
-        const obj: Record<string, any> = Object.assign({}, options);
+        let task: NativeTask | null = null;
+        const obj: NativeApiOptions = Object.assign({}, options);
 
         // 为页面跳转相关的 API 设置一个随机数作为路由参数。为了给 runtime 区分页面。
-        setUniqueKeyToRoute(key, options);
+        setUniqueKeyToRoute(key, obj);
 
         // Promise 化
-        const p: any = new Promise((resolve, reject) => {
+        const p = new Promise((resolve, reject) => {
           obj.success = (res) => {
             config.modifyAsyncResult?.(key, res);
             options.success?.(res);
@@ -296,18 +350,18 @@ function processApis(taro, global, config: IProcessApisIOptions = {}) {
           } else {
             task = global[key](obj);
           }
-        });
+        }) as NativeTaskPromise<unknown>;
 
         // 给 promise 对象挂载属性
         if (['uploadFile', 'downloadFile'].includes(key)) {
           equipTaskMethodsIntoPromise(task, p);
           p.progress = (cb) => {
-            task?.onProgressUpdate(cb);
+            task?.onProgressUpdate?.(cb);
             return p;
           };
           p.abort = (cb) => {
             cb?.();
-            task?.abort();
+            task?.abort?.();
             return p;
           };
         }
@@ -327,7 +381,7 @@ function processApis(taro, global, config: IProcessApisIOptions = {}) {
         return;
       }
       if (isFunction(global[key])) {
-        taro[key] = (...args) => {
+        taro[key] = (...args: any[]) => {
           if (config.handleSyncApis) {
             return config.handleSyncApis(key, global, args);
           } else {
@@ -348,7 +402,7 @@ function processApis(taro, global, config: IProcessApisIOptions = {}) {
  * @param taro Taro 对象
  * @param global 小程序全局对象，如微信的 wx，支付宝的 my
  */
-function equipCommonApis(taro, global, apis: Record<string, any> = {}) {
+function equipCommonApis(taro: IObject, global: IObject, apis: Record<string, any> = {}) {
   taro.canIUseWebp = getCanIUseWebp(taro);
   taro.getCurrentPages = getCurrentPages || nonsupport('getCurrentPages');
   taro.getApp = getApp || nonsupport('getApp');
@@ -362,7 +416,7 @@ function equipCommonApis(taro, global, apis: Record<string, any> = {}) {
 
   // request & interceptors
   const request = apis.request || getNormalRequest(global);
-  function taroInterceptor(chain) {
+  function taroInterceptor(chain: TaroRequestChain) {
     return request(chain.requestParams);
   }
   const link = new taro.Link(taroInterceptor);
@@ -386,9 +440,9 @@ function equipCommonApis(taro, global, apis: Record<string, any> = {}) {
  * @param task Task对象 {RequestTask | DownloadTask | UploadTask}
  * @param promise Promise
  */
-function equipTaskMethodsIntoPromise(task, promise) {
+function equipTaskMethodsIntoPromise<TPromise extends Record<string, any>>(task: NativeTask | null | undefined, promise: TPromise) {
   if (!task || !promise) return;
-  const taskMethods = [
+  const taskMethods: Array<keyof NativeTask> = [
     'abort',
     'onHeadersReceived',
     'offHeadersReceived',
@@ -399,17 +453,18 @@ function equipTaskMethodsIntoPromise(task, promise) {
   ];
   task &&
     taskMethods.forEach((method) => {
-      if (method in task) {
-        promise[method] = task[method].bind(task);
+      const taskMethod = task[method];
+      if (taskMethod) {
+        (promise as Record<string, any>)[method] = taskMethod.bind(task);
       }
     });
 }
 
-function delayRef(taro, global, name: string, method: string) {
-  return function (...args) {
+function delayRef(taro: IObject, global: IObject, name: string, method: string) {
+  return function (...args: any[]) {
     const res = global[name](...args);
     const raw = res[method].bind(res);
-    res[method] = function (...methodArgs) {
+    res[method] = function (...methodArgs: any[]) {
       taro.nextTick(() => raw(...methodArgs));
     };
     return res;

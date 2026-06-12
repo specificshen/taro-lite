@@ -1,37 +1,34 @@
 import Chain from './chain';
-import type { IRequestParams, TInterceptor } from './chain';
+import type { ChainPromise, IRequestParams, TInterceptor } from './chain';
 
-export default class Link {
-  taroInterceptor: TInterceptor;
-  chain: Chain;
+export default class Link<T = unknown> {
+  taroInterceptor: TInterceptor<T>;
+  interceptors: TInterceptor<T>[];
 
-  constructor(interceptor: TInterceptor) {
+  constructor(interceptor: TInterceptor<T>) {
     this.taroInterceptor = interceptor;
-    this.chain = new Chain();
+    this.interceptors = [];
   }
 
-  request(requestParams: IRequestParams) {
-    const chain = this.chain;
+  request(requestParams: IRequestParams | string): ChainPromise<T> {
     const taroInterceptor = this.taroInterceptor;
+    const interceptors = this.interceptors.filter((interceptor) => interceptor !== taroInterceptor).concat(taroInterceptor);
+    const chain = new Chain<T>(undefined, interceptors);
 
-    chain.interceptors = chain.interceptors
-      .filter((interceptor) => interceptor !== taroInterceptor)
-      .concat(taroInterceptor);
-
-    return chain.proceed({ ...requestParams });
+    return chain.proceed(typeof requestParams === 'string' ? { url: requestParams } : { ...requestParams });
   }
 
-  addInterceptor(interceptor: TInterceptor) {
-    this.chain.interceptors.push(interceptor);
+  addInterceptor(interceptor: TInterceptor<T>) {
+    this.interceptors.push(interceptor);
   }
 
   cleanInterceptors() {
-    this.chain = new Chain();
+    this.interceptors = [];
   }
 }
 
-export function interceptorify(promisifyApi) {
-  return new Link(function (chain) {
+export function interceptorify<T>(promisifyApi: (requestParams: IRequestParams) => Promise<T>) {
+  return new Link<T>(function (chain) {
     return promisifyApi(chain.requestParams);
   });
 }
