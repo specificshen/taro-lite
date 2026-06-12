@@ -133,10 +133,6 @@ importers:
         version: 4.1.8(@types/node@25.9.3)(@vitest/coverage-istanbul@4.1.8)(terser@5.48.0)
 
   packages/taro-components:
-    dependencies:
-      '@spcsn/taro-shared':
-        specifier: workspace:*
-        version: link:../shared
     devDependencies:
       '@babel/generator':
         specifier: ^7.29.7
@@ -150,12 +146,6 @@ importers:
       '@babel/types':
         specifier: ^7.29.7
         version: 7.29.7
-      '@spcsn/taro-helper':
-        specifier: workspace:*
-        version: link:../taro-helper
-      '@types/lodash':
-        specifier: ^4.17.24
-        version: 4.17.24
       '@types/node':
         specifier: ^25.9.3
         version: 25.9.3
@@ -165,9 +155,6 @@ importers:
       '@vitest/coverage-istanbul':
         specifier: ^4.1.8
         version: 4.1.8(vitest@4.1.8)
-      lodash:
-        specifier: ^4.18.1
-        version: 4.18.1
       miniapp-types:
         specifier: 1.6.0
         version: 1.6.0

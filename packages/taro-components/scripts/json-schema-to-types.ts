@@ -2,8 +2,7 @@ import generator from '@babel/generator';
 import * as parser from '@babel/parser';
 import traverse from '@babel/traverse';
 import * as t from '@babel/types';
-import { fs } from '@spcsn/taro-helper';
-import { isEmpty, isNil, uniq, xorWith } from 'lodash';
+import * as fs from 'node:fs';
 import { MINI_APP_TYPES } from './constants';
 import { camelCase, camelCaseEnhance, getTypeFilePath, getTypesList, paramCase } from './utils';
 
@@ -14,6 +13,29 @@ const eventStart = 'on';
 type AST = t.File;
 type PROP_MAP = Partial<Record<(typeof MINI_APP_TYPES)[number], string[]>>;
 type PROP = Record<string, string[]>;
+
+function isEmpty(value: unknown): boolean {
+  if (value == null) {
+    return true;
+  }
+  if (typeof value === 'string' || Array.isArray(value)) {
+    return value.length === 0;
+  }
+  if (typeof value === 'object') {
+    return Object.keys(value).length === 0;
+  }
+  return false;
+}
+
+function uniq<T>(array: T[]): T[] {
+  return [...new Set(array)];
+}
+
+function xor(array: string[], values: string[]): string[] {
+  const arraySet = new Set(array);
+  const valuesSet = new Set(values);
+  return uniq([...array.filter((item) => !valuesSet.has(item)), ...values.filter((item) => !arraySet.has(item))]);
+}
 
 class GenerateTypes {
   jsonSchemas: Record<string, any> = {};
@@ -56,7 +78,7 @@ class GenerateTypes {
       if (!schema?.properties) {
         return;
       }
-      const filteredList = xorWith(props[key] || [], Object.keys(schema.properties));
+      const filteredList = xor(props[key] || [], Object.keys(schema.properties));
       if (filteredList.length > 0) {
         obj[key] = filteredList.map((item) =>
           item.match(/^bind/) ? camelCase(item.replace(/^bind/, eventStart), { transform: camelCaseEnhance }) : item,
@@ -208,7 +230,7 @@ class GenerateTypes {
                 let commentValue = `* ${propSchema.description?.replace(/\n/g, '\n * ')} \n`;
                 commentValue += `* @supported ${props[prop].join(', ')}\n`;
                 const { defaultValue, type } = propSchema;
-                if (!isNil(defaultValue)) {
+                if (defaultValue != null) {
                   if (defaultValue instanceof Array) {
                     commentValue += `* @default ${defaultValue.join(',')}\n`;
                   } else if (
