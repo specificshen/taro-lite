@@ -4,7 +4,11 @@ import { defineConfig, type UserConfigExport } from '@spcsn/taro-core';
 export default defineConfig<'vite'>(
   () =>
     ({
-      projectName: 'taro-lite-sunshine-lab',
+      projectName: '{{ projectName }}',
+      date: '{{ date }}',
+      designWidth: 750,
+      sourceRoot: 'src',
+      outputRoot: 'dist',
       alias: {
         '@': path.resolve(__dirname, '..', 'src'),
       },
@@ -12,6 +16,13 @@ export default defineConfig<'vite'>(
       compiler: 'vite',
       ...(process.env.TARO_MINIFY === 'true' ? { jsMinimizer: 'oxc' as const } : {}),
       mini: {
+        output: {
+          clean: {
+            keep: ['project.config.json'],
+          },
+          renderer: 'skyline',
+          componentFramework: 'glass-easel',
+        },
         postcss: {
           cssModules: {
             enable: true,

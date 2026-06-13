@@ -1,0 +1,206 @@
+.container {
+  padding: var(--space-4);
+  padding-bottom: var(--space-12);
+  display: flex;
+  flex-direction: column;
+}
+
+.stateHero {
+  padding: var(--space-6);
+  border-radius: var(--radius-xl);
+  background: linear-gradient(135deg, #22c55e 0%, #38bdf8 52%, #a78bfa 100%);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+}
+
+.heroTitle {
+  font-size: 42px;
+  line-height: 1.15;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.heroDesc {
+  margin-top: var(--space-3);
+  font-size: 23px;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.76);
+}
+
+.heroMetricRow {
+  margin-top: var(--space-5);
+  display: flex;
+  gap: var(--space-3);
+}
+
+.heroMetric {
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.13);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  display: flex;
+  flex-direction: column;
+}
+
+.heroMetricValue {
+  font-size: 32px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.heroMetricLabel {
+  margin-top: var(--space-1);
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.sectionSpaced {
+  margin-top: var(--space-5);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: var(--space-3);
+}
+
+.label {
+  margin-bottom: var(--space-2);
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.inputRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.inlineInput {
+  flex: 1;
+  min-width: 0;
+}
+
+.listPreview {
+  margin-top: var(--space-3);
+  display: flex;
+  flex-direction: column;
+}
+
+.listCount {
+  margin-bottom: var(--space-3);
+  font-size: 24px;
+  color: var(--muted-foreground);
+}
+
+.tagCloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.deferredMeta {
+  margin-top: var(--space-2);
+  font-size: 21px;
+  color: var(--muted-foreground);
+}
+
+.deferredGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.deferredCell {
+  flex: 1 1 42%;
+  min-width: 0;
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: linear-gradient(180deg, var(--muted) 0%, #ecfeff 100%);
+  border: 1px solid var(--border);
+}
+
+.deferredCellText {
+  font-size: 21px;
+  line-height: 1.35;
+  color: var(--foreground);
+}
+
+/* Counter */
+.counterDisplay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-6) 0;
+}
+
+.counterNumber {
+  font-size: 80px;
+  font-weight: 800;
+  color: var(--primary);
+  letter-spacing: -2px;
+  text-shadow: 0 4px 20px rgba(249, 115, 22, 0.22);
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.historyRow {
+  margin-top: var(--space-4);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.counterControls {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-4);
+}
+
+/* Batch */
+.batchGrid {
+  display: flex;
+  margin-bottom: var(--space-5);
+  gap: var(--space-4);
+}
+
+.batchItem {
+  flex: 1;
+  background: linear-gradient(180deg, var(--muted) 0%, #ecfeff 100%);
+  border-radius: var(--radius);
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+.batchItem:nth-child(1) {
+  border-top: 3px solid var(--primary);
+}
+
+.batchItem:nth-child(2) {
+  border-top: 3px solid var(--success);
+}
+
+.batchItem:nth-child(3) {
+  border-top: 3px solid var(--warning);
+}
+
+.batchLabel {
+  font-size: 24px;
+  color: var(--muted-foreground);
+  font-weight: 500;
+}
+
+.batchValue {
+  margin-top: var(--space-2);
+  font-size: 44px;
+  font-weight: 700;
+  color: var(--foreground);
+}

@@ -1,0 +1,36 @@
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import type { IPluginContext } from '@spcsn/taro-service';
+
+function getPkgVersion(): string {
+  const packageJsonPath = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../package.json');
+  return JSON.parse(fs.readFileSync(packageJsonPath, 'utf8')).version;
+}
+
+export default (ctx: IPluginContext) => {
+  ctx.registerMethod('generateFrameworkInfo', () => {
+    const { getInstalledNpmPkgVersion, processTypeEnum, printLog, chalk } = ctx.helper;
+    const { nodeModulesPath } = ctx.paths;
+    const { date, outputRoot } = ctx.initialConfig;
+    const frameworkInfoFileName = '.frameworkinfo';
+    const frameworkName = '@spcsn/taro-runtime';
+    const frameworkVersion = getInstalledNpmPkgVersion(frameworkName, nodeModulesPath);
+
+    if (frameworkVersion) {
+      const frameworkinfo = {
+        toolName: 'Taro',
+        toolCliVersion: getPkgVersion(),
+        toolFrameworkVersion: frameworkVersion,
+        createTime: date ? new Date(date).getTime() : Date.now(),
+      };
+      ctx.writeFileToDist({
+        filePath: frameworkInfoFileName,
+        content: JSON.stringify(frameworkinfo, null, 2),
+      });
+      printLog(processTypeEnum.GENERATE, '框架信息', `${outputRoot}/${frameworkInfoFileName}`);
+    } else {
+      printLog(processTypeEnum.WARNING, '依赖安装', chalk.red(`项目依赖 ${frameworkName} 未安装，或安装有误！`));
+    }
+  });
+};

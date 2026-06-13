@@ -1,0 +1,61 @@
+{
+  "name": "@spcsn/taro-core",
+  "version": "1.0.1",
+  "description": "SPCSN Taro Core CLI for React WeApp mini programs (Bun-powered)",
+  "author": "Samuel Ouyang",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "prod": "bun run build",
+    "build": "tsc",
+    "test": "bun test",
+    "typecheck": "tsc --noEmit",
+    "dev": "bun run src/cli.ts",
+    "clean": "bun ../../scripts/clean.ts dist",
+    "prebuild": "bun run clean"
+  },
+  "files": [
+    "bin",
+    "dist",
+    "templates"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/specificshen/taro-lite.git"
+  },
+  "bugs": {
+    "url": "https://github.com/specificshen/taro-lite/issues"
+  },
+  "homepage": "https://github.com/specificshen/taro-lite#readme",
+  "bin": {
+    "taro": "bin/taro"
+  },
+  "keywords": [
+    "taro",
+    "weapp",
+    "bun"
+  ],
+  "engines": {
+    "node": ">= 22.15.0"
+  },
+  "dependencies": {
+    "@spcsn/taro-components": "workspace:*",
+    "@spcsn/taro-helper": "workspace:*",
+    "@spcsn/taro-mini-runner": "workspace:*",
+    "@spcsn/taro-service": "workspace:*",
+    "@spcsn/taro-shared": "workspace:*",
+    "adm-zip": "^0.5.17",
+    "download-git-repo": "^3.0.2",
+    "inquirer": "^14.0.2",
+    "ora": "^9.4.0"
+  },
+  "devDependencies": {
+    "@spcsn/taro": "workspace:*",
+    "@types/adm-zip": "^0.5.8",
+    "@types/inquirer": "^9.0.9",
+    "@types/node": "^25.9.3",
+    "typescript": "~6.0.3"
+  }
+}
