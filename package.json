@@ -42,7 +42,8 @@
     "@types/node": "^25.9.3",
     "chalk": "^5.6.2",
     "concurrently": "^10.0.3",
-    "typescript": "~6.0.3"
+    "typescript": "~6.0.3",
+    "vitest": "^4.1.8"
   },
   "engines": {
     "node": ">= 22.15.0"
