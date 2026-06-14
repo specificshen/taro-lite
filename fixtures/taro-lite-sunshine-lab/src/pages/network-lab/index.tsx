@@ -46,12 +46,12 @@ export default function NetworkPage() {
           add(`[拦截器] 请求: ${params.method || 'GET'} ${params.url}`, 'info');
           return chain
             .proceed(params)
-            .then((res) => {
+            .then((res: { statusCode?: number }) => {
               add(`[拦截器] 响应: ${res.statusCode}`, 'success');
               return res;
             })
-            .catch((err) => {
-              add(`[拦截器] 错误: ${err.message || err}`, 'error');
+            .catch((err: unknown) => {
+              add(`[拦截器] 错误: ${err instanceof Error ? err.message : String(err)}`, 'error');
               throw err;
             });
         });

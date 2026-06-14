@@ -47,9 +47,13 @@ jobs:
         run: pnpm run format:check
       - name: Typecheck
         run: pnpm run typecheck
+      - name: Typecheck fixtures
+        run: pnpm run typecheck:fixtures
       - name: build
         run: pnpm build
         env:
           NODE_OPTIONS: --max_old_space_size=4096
       - name: test
         run: pnpm test
+      - name: Verify fixture build
+        run: pnpm run verify:fixture:weapp

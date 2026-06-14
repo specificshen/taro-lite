@@ -33,6 +33,7 @@
     "format": "biome format --write .",
     "format:check": "biome format .",
     "typecheck": "pnpm -r --aggregate-output --filter=./packages/* exec tsc --noEmit",
+    "typecheck:fixtures": "pnpm --filter @spcsn/fixture-taro-lite-sunshine-lab exec tsc --noEmit -p tsconfig.json",
     "test": "pnpm --filter @spcsn/taro-components test:ci && pnpm --filter @spcsn/taro-cli test:ci -- cli.spec.ts build-config.spec.ts --runInBand",
     "updateSnapshot": "pnpm --if-present -r --aggregate-output --filter=./packages/* updateSnapshot",
     "verify:fixture:weapp": "pnpm -r --workspace-concurrency=1 --aggregate-output --filter @spcsn/taro-cli... --filter @spcsn/taro... run build && pnpm --filter @spcsn/fixture-taro-lite-sunshine-lab run build",
