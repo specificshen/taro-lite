@@ -205,12 +205,12 @@ export class Style {
 
 initStyle(Style, styleProperties);
 
-hooks.tap('injectNewStyleProperties', (newStyleProperties: string[]) => {
-  if (isArray(newStyleProperties)) {
-    initStyle(Style, newStyleProperties);
+hooks.tap('injectNewStyleProperties', (styleProperties: unknown) => {
+  if (isArray(styleProperties)) {
+    initStyle(Style, styleProperties as string[]);
   } else {
-    if (typeof newStyleProperties !== 'string') return;
+    if (typeof styleProperties !== 'string') return;
 
-    initStyle(Style, [newStyleProperties]);
+    initStyle(Style, [styleProperties]);
   }
 });

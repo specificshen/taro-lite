@@ -1,11 +1,11 @@
 import { processApis } from '@spcsn/taro-shared';
 import { needPromiseApis } from './apis-list';
 
-interface WeappNativeApi {
+interface WeappNativeApi extends Record<string, unknown> {
   cloud?: unknown;
 }
 
-interface TaroApiTarget {
+interface TaroApiTarget extends Record<string, unknown> {
   cloud?: unknown;
   getTabBar?: (pageCtx?: { getTabBar?: () => { $taroInstances?: unknown } }) => unknown;
   getRenderer?: () => string;

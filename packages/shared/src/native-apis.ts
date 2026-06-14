@@ -1,15 +1,15 @@
 import { isFunction, isString } from './is';
 import { nonsupport, setUniqueKeyToRoute } from './utils';
 
-declare const getCurrentPages: () => any;
-declare const getApp: () => any;
+declare const getCurrentPages: () => unknown;
+declare const getApp: () => unknown;
 declare const requirePlugin: () => void;
 
-type IObject = Record<string, any>;
+type IObject = Record<string, unknown>;
 
 type NativeApiCallback<T = unknown> = (res: T) => void;
 
-interface NativeApiOptions<TSuccess = unknown, TFail = unknown, TComplete = unknown> extends Record<string, any> {
+interface NativeApiOptions<TSuccess = unknown, TFail = unknown, TComplete = unknown> extends Record<string, unknown> {
   success?: NativeApiCallback<TSuccess>;
   fail?: NativeApiCallback<TFail>;
   complete?: NativeApiCallback<TComplete>;
@@ -32,7 +32,7 @@ interface NativeRequestOptions<TData = unknown, TResponse = unknown>
   timeout?: number;
 }
 
-type NativeTaskMethod = (...args: any[]) => unknown;
+type NativeTaskMethod = (...args: unknown[]) => unknown;
 
 interface NativeTask {
   abort?: NativeTaskMethod;
@@ -48,6 +48,7 @@ type NativeTaskPromise<T> = Promise<T> &
   Omit<Partial<NativeTask>, 'abort'> & {
     progress?: (cb: NativeTaskMethod) => NativeTaskPromise<T>;
     abort?: (cb?: () => void) => NativeTaskPromise<T>;
+    [key: string]: unknown;
   };
 
 interface TaroRequestChain {
@@ -57,12 +58,12 @@ interface TaroRequestChain {
 interface IProcessApisIOptions {
   noPromiseApis?: Set<string>;
   needPromiseApis?: Set<string>;
-  handleSyncApis?: (key: string, global: IObject, args: any[]) => any;
+  handleSyncApis?: (key: string, global: IObject, args: unknown[]) => unknown;
   transformMeta?: (key: string, options: IObject) => { key: string; options: IObject };
   modifyApis?: (apis: Set<string>) => void;
   modifyAsyncResult?: (key: string, res: unknown) => void;
   isOnlyPromisify?: boolean;
-  [propName: string]: any;
+  [propName: string]: unknown;
 }
 
 export interface IApiDiff {
@@ -78,7 +79,7 @@ export interface IApiDiff {
       /** API参数值修改 */
       set?: {
         key: string;
-        value: ((options: Record<string, any>) => unknown) | unknown;
+        value: ((options: Record<string, unknown>) => unknown) | unknown;
       }[];
     };
   };
@@ -208,7 +209,7 @@ const needPromiseApis = new Set<string>([
 
 function getCanIUseWebp(taro: IObject) {
   return function () {
-    const res = taro.getSystemInfoSync?.();
+    const res = (taro.getSystemInfoSync as (() => { platform: string }) | undefined)?.();
 
     if (!res) {
       if (process.env.NODE_ENV !== 'production') {
@@ -258,7 +259,7 @@ function getNormalRequest(global: IObject) {
         originComplete?.(res);
       };
 
-      requestTask = global.request(requestOptions);
+      requestTask = (global.request as (options: NativeRequestOptions<TData, TResponse>) => NativeTask)(requestOptions);
     }) as NativeTaskPromise<NativeRequestSuccess<TResponse>>;
 
     equipTaskMethodsIntoPromise(requestTask, p);
@@ -299,22 +300,22 @@ function processApis(taro: IObject, global: IObject, config: IProcessApisIOption
   apis.forEach((key) => {
     if (_needPromiseApis.has(key)) {
       const originKey = key;
-      taro[originKey] = (options: Record<string, any> | string = {}, ...args: any[]) => {
+      taro[originKey] = (options: Record<string, unknown> | string = {}, ...args: unknown[]) => {
         let key = originKey;
 
         // 第一个参数 options 为字符串，单独处理
         if (typeof options === 'string') {
           if (args.length) {
-            return global[key](options, ...args);
+            return (global[key] as (...args: unknown[]) => unknown)(options, ...args);
           }
-          return global[key](options);
+          return (global[key] as (...args: unknown[]) => unknown)(options);
         }
 
         // 改变 key 或 option 字段，如需要把支付宝标准的字段对齐微信标准的字段
         if (config.transformMeta) {
           const transformResult = config.transformMeta(key, options);
           key = transformResult.key;
-          (options as Record<string, any>) = transformResult.options;
+          options = transformResult.options;
           // 新 key 可能不存在
           if (!global.hasOwnProperty(key)) {
             return nonsupport(key)();
@@ -322,6 +323,7 @@ function processApis(taro: IObject, global: IObject, config: IProcessApisIOption
         }
 
         let task: NativeTask | null = null;
+        const originalOptions = options as NativeApiOptions;
         const obj: NativeApiOptions = Object.assign({}, options);
 
         // 为页面跳转相关的 API 设置一个随机数作为路由参数。为了给 runtime 区分页面。
@@ -331,7 +333,7 @@ function processApis(taro: IObject, global: IObject, config: IProcessApisIOption
         const p = new Promise((resolve, reject) => {
           obj.success = (res) => {
             config.modifyAsyncResult?.(key, res);
-            options.success?.(res);
+            originalOptions.success?.(res);
             if (key === 'connectSocket') {
               resolve(Promise.resolve().then(() => (task ? Object.assign(task, res) : res)));
             } else {
@@ -339,16 +341,16 @@ function processApis(taro: IObject, global: IObject, config: IProcessApisIOption
             }
           };
           obj.fail = (res) => {
-            options.fail?.(res);
+            originalOptions.fail?.(res);
             reject(res);
           };
           obj.complete = (res) => {
-            options.complete?.(res);
+            originalOptions.complete?.(res);
           };
           if (args.length) {
-            task = global[key](obj, ...args);
+            task = (global[key] as (...args: unknown[]) => NativeTask)(obj, ...args);
           } else {
-            task = global[key](obj);
+            task = (global[key] as (...args: unknown[]) => NativeTask)(obj);
           }
         }) as NativeTaskPromise<unknown>;
 
@@ -381,11 +383,11 @@ function processApis(taro: IObject, global: IObject, config: IProcessApisIOption
         return;
       }
       if (isFunction(global[key])) {
-        taro[key] = (...args: any[]) => {
+        taro[key] = (...args: unknown[]) => {
           if (config.handleSyncApis) {
             return config.handleSyncApis(key, global, args);
           } else {
-            return global[platformKey].apply(global, args);
+            return (global[platformKey] as (...args: unknown[]) => unknown).apply(global, args);
           }
         };
       } else {
@@ -402,11 +404,11 @@ function processApis(taro: IObject, global: IObject, config: IProcessApisIOption
  * @param taro Taro 对象
  * @param global 小程序全局对象，如微信的 wx，支付宝的 my
  */
-function equipCommonApis(taro: IObject, global: IObject, apis: Record<string, any> = {}) {
+function equipCommonApis(taro: IObject, global: IObject, apis: Record<string, unknown> = {}) {
   taro.canIUseWebp = getCanIUseWebp(taro);
   taro.getCurrentPages = getCurrentPages || nonsupport('getCurrentPages');
   taro.getApp = getApp || nonsupport('getApp');
-  taro.env = global.env || {};
+  taro.env = (global.env as Record<string, unknown> | undefined) || {};
 
   try {
     taro.requirePlugin = requirePlugin || nonsupport('requirePlugin');
@@ -415,20 +417,28 @@ function equipCommonApis(taro: IObject, global: IObject, apis: Record<string, an
   }
 
   // request & interceptors
-  const request = apis.request || getNormalRequest(global);
+  const request = (apis.request as ReturnType<typeof getNormalRequest> | undefined) || getNormalRequest(global);
   function taroInterceptor(chain: TaroRequestChain) {
     return request(chain.requestParams);
   }
-  const link = new taro.Link(taroInterceptor);
+  const LinkCtor = taro.Link as new (
+    interceptor: (chain: TaroRequestChain) => Promise<unknown>,
+  ) => {
+    request: (params: NativeRequestOptions | string) => Promise<unknown>;
+    addInterceptor: (interceptor: (chain: TaroRequestChain) => Promise<unknown>) => void;
+    cleanInterceptors: () => void;
+  };
+  const link = new LinkCtor(taroInterceptor);
   taro.request = link.request.bind(link);
   taro.addInterceptor = link.addInterceptor.bind(link);
   taro.cleanInterceptors = link.cleanInterceptors.bind(link);
-  taro.miniGlobal = taro.options.miniGlobal = global;
+  (taro.options as Record<string, unknown>).miniGlobal = global;
+  taro.miniGlobal = global;
   taro.getAppInfo = function () {
     return {
       platform: process.env.TARO_PLATFORM || 'MiniProgram',
       taroVersion: process.env.TARO_VERSION || 'unknown',
-      designWidth: taro.config.designWidth,
+      designWidth: (taro.config as Record<string, unknown>).designWidth,
     };
   };
   taro.createSelectorQuery = delayRef(taro, global, 'createSelectorQuery', 'exec');
@@ -440,10 +450,7 @@ function equipCommonApis(taro: IObject, global: IObject, apis: Record<string, an
  * @param task Task对象 {RequestTask | DownloadTask | UploadTask}
  * @param promise Promise
  */
-function equipTaskMethodsIntoPromise<TPromise extends Record<string, any>>(
-  task: NativeTask | null | undefined,
-  promise: TPromise,
-) {
+function equipTaskMethodsIntoPromise(task: NativeTask | null | undefined, promise: Record<string, unknown>) {
   if (!task || !promise) return;
   const taskMethods: Array<keyof NativeTask> = [
     'abort',
@@ -458,17 +465,17 @@ function equipTaskMethodsIntoPromise<TPromise extends Record<string, any>>(
     taskMethods.forEach((method) => {
       const taskMethod = task[method];
       if (taskMethod) {
-        (promise as Record<string, any>)[method] = taskMethod.bind(task);
+        promise[method] = taskMethod.bind(task);
       }
     });
 }
 
 function delayRef(taro: IObject, global: IObject, name: string, method: string) {
-  return function (...args: any[]) {
-    const res = global[name](...args);
-    const raw = res[method].bind(res);
-    res[method] = function (...methodArgs: any[]) {
-      taro.nextTick(() => raw(...methodArgs));
+  return function (...args: unknown[]) {
+    const res = (global[name] as (...args: unknown[]) => unknown)(...args) as Record<string, unknown>;
+    const raw = (res[method] as (...args: unknown[]) => unknown).bind(res);
+    res[method] = function (...methodArgs: unknown[]) {
+      (taro.nextTick as (fn: () => void) => void)(() => raw(...methodArgs));
     };
     return res;
   };

@@ -1,9 +1,10 @@
 import { hooks } from '@spcsn/taro-shared';
 import * as taroHooks from './hooks';
 
-hooks.tap('initNativeApi', function (taro: Record<string, any>) {
+hooks.tap('initNativeApi', function (taro: unknown) {
+  const api = taro as Record<string, unknown>;
   for (const hook in taroHooks) {
-    taro[hook] = (taroHooks as Record<string, any>)[hook];
+    api[hook] = (taroHooks as Record<string, unknown>)[hook];
   }
 });
 

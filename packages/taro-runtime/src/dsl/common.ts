@@ -402,5 +402,5 @@ export function createRecursiveComponentConfig(componentName?: string): Record<s
       ...lifeCycles,
     },
     { isCustomWrapper },
-  );
+  ) as Record<string, unknown>;
 }

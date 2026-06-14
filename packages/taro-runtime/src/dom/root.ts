@@ -6,11 +6,15 @@ import { customWrapperCache, isComment } from '../utils';
 import { TaroElement } from './element';
 import type { HydratedData, MpInstance, TFunc, UpdatePayload, UpdatePayloadValue } from '../interface';
 
+interface SetDataContext {
+  setData: (data: Record<string, unknown>, cb: () => void) => void;
+}
+
 function findCustomWrapper(root: TaroRootElement, dataPathArr: string[]) {
   // ['root', 'cn', '[0]'] remove 'root' => ['cn', '[0]']
   const list = dataPathArr.slice(1);
-  let currentData: any = root;
-  let customWrapper: Record<string, any> | undefined;
+  let currentData: unknown = root;
+  let customWrapper: SetDataContext | undefined;
   let splitedPath = '';
 
   list.some((item, i) => {
@@ -20,7 +24,7 @@ function findCustomWrapper(root: TaroRootElement, dataPathArr: string[]) {
       // 'cn' => 'childNodes'
       .replace(/\bcn\b/g, 'childNodes');
 
-    currentData = currentData[key];
+    currentData = (currentData as Record<string, unknown>)[key];
 
     if (isArray(currentData)) {
       currentData = currentData.filter((el) => !isComment(el));
@@ -28,10 +32,11 @@ function findCustomWrapper(root: TaroRootElement, dataPathArr: string[]) {
 
     if (isUndefined(currentData)) return true;
 
-    if (currentData.nodeName === CUSTOM_WRAPPER) {
-      const res = customWrapperCache.get(currentData.sid);
+    const element = currentData as TaroElement;
+    if (element.nodeName === CUSTOM_WRAPPER) {
+      const res = customWrapperCache.get(element.sid);
       if (res) {
-        customWrapper = res;
+        customWrapper = res as SetDataContext;
         splitedPath = dataPathArr.slice(i + 2).join('.');
       }
     }
@@ -84,7 +89,7 @@ export class TaroRootElement extends TaroElement {
   public performUpdate(initRender = false, prerender?: TFunc) {
     this.pendingUpdate = true;
 
-    const ctx = hooks.call('proxyToRaw', this.ctx)!;
+    const ctx = hooks.call('proxyToRaw', this.ctx)! as unknown as SetDataContext;
 
     this.scheduleTask(() => {
       const setDataMark = `${SET_DATA} 开始时间戳 ${Date.now()}`;
@@ -122,7 +127,7 @@ export class TaroRootElement extends TaroElement {
       // 正常渲染
       this.pendingUpdate = false;
       let normalUpdate: Record<string, UpdatePayloadValue | ReturnType<HydratedData>> = {};
-      const customWrapperMap: Map<Record<any, any>, Record<string, any>> = new Map();
+      const customWrapperMap: Map<SetDataContext, Record<string, unknown>> = new Map();
 
       if (initRender) {
         // 初次渲染，使用页面级别的 setData
@@ -180,7 +185,7 @@ export class TaroRootElement extends TaroElement {
     });
   }
 
-  public enqueueUpdateCallback(cb: TFunc, ctx?: Record<string, any>) {
+  public enqueueUpdateCallback(cb: TFunc, ctx?: Record<string, unknown>) {
     this.updateCallbacks.push(() => {
       ctx ? cb.call(ctx) : cb();
     });

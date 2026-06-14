@@ -1,12 +1,82 @@
 import { isFunction, isNumber } from '@spcsn/taro-shared';
 import { throttle } from '../utils';
 
+interface Rect {
+  top: number;
+  right: number;
+  bottom: number;
+  left: number;
+  width: number;
+  height: number;
+}
+
 interface IntersectionObserverEntryInit {
   time: number;
   target: Element;
-  rootBounds: DOMRectReadOnly | null;
-  boundingClientRect: DOMRectReadOnly;
-  intersectionRect?: DOMRectReadOnly;
+  rootBounds: Rect | null;
+  boundingClientRect: Rect;
+  intersectionRect?: Rect | false | undefined;
+}
+
+interface IntersectionObserverEntryLike {
+  time: number;
+  target: Element;
+  rootBounds: Rect | null;
+  boundingClientRect: Rect;
+  intersectionRect: Rect;
+  isIntersecting: boolean;
+  intersectionRatio: number;
+}
+
+interface ObservationTarget {
+  element: Element;
+  entry: IntersectionObserverEntry | null;
+}
+
+interface RootMargin {
+  value: number;
+  unit: string;
+}
+
+interface IntersectionObserverLike {
+  THROTTLE_TIMEOUT: number;
+  POLL_INTERVAL: number | null;
+  USE_MUTATION_OBSERVER: boolean;
+  _checkForIntersections: () => void;
+  _callback: IntersectionObserverCallback;
+  _observationTargets: ObservationTarget[];
+  _queuedEntries: IntersectionObserverEntry[];
+  _rootMarginValues: RootMargin[];
+  thresholds: number[];
+  root: Element | null;
+  rootMargin: string;
+  _monitoringIntersections?: boolean;
+  _monitoringInterval?: ReturnType<typeof setInterval> | null;
+  _domObserver?: MutationObserver | null;
+  observe(target: Element): void;
+  unobserve(target: Element): void;
+  disconnect(): void;
+  takeRecords(): IntersectionObserverEntry[];
+  _initThresholds(opt_threshold: number | number[] | undefined): number[];
+  _parseRootMargin(opt_rootMargin: string | undefined): RootMargin[];
+  _monitorIntersections(): void;
+  _unmonitorIntersections(): void;
+  _computeTargetAndRootIntersection(target: Element, rootRect: Rect): Rect | false | undefined;
+  _getRootRect(): Rect;
+  _expandRectByRootMargin(rect: Rect): Rect;
+  _hasCrossedThreshold(
+    oldEntry: IntersectionObserverEntry | null | undefined,
+    newEntry: IntersectionObserverEntry,
+  ): boolean | undefined;
+  _rootIsInDom(): boolean;
+  _rootContainsTarget(target: Element): boolean;
+  _registerInstance(): void;
+  _unregisterInstance(): void;
+}
+
+interface LegacyEventTarget extends EventTarget {
+  attachEvent(event: string, fn: (...args: unknown[]) => void): void;
+  detachEvent(event: string, fn: (...args: unknown[]) => void): void;
 }
 
 export function handleIntersectionObserverPolyfill() {
@@ -40,7 +110,7 @@ function handleIntersectionObserverObjectPolyfill() {
    * element. Without this registry, instances without another reference may be
    * garbage collected.
    */
-  const registry: number[] = [];
+  const registry: IntersectionObserverLike[] = [];
 
   /**
    * Creates the global IntersectionObserverEntry constructor.
@@ -48,7 +118,7 @@ function handleIntersectionObserverObjectPolyfill() {
    * @param {Object} entry A dictionary of instance properties.
    * @constructor
    */
-  function IntersectionObserverEntry(this: any, entry: IntersectionObserverEntryInit) {
+  function IntersectionObserverEntry(this: IntersectionObserverEntryLike, entry: IntersectionObserverEntryInit) {
     this.time = entry.time;
     this.target = entry.target;
     this.rootBounds = entry.rootBounds;
@@ -83,7 +153,7 @@ function handleIntersectionObserverObjectPolyfill() {
    * @constructor
    */
   function IntersectionObserver(
-    this: any,
+    this: IntersectionObserverLike,
     callback: IntersectionObserverCallback,
     options: IntersectionObserverInit = {},
   ) {
@@ -106,9 +176,9 @@ function handleIntersectionObserverObjectPolyfill() {
 
     // Public properties.
     this.thresholds = this._initThresholds(options.threshold);
-    this.root = options.root || null;
+    this.root = (options.root as Element | null) || null;
     this.rootMargin = this._rootMarginValues
-      .map(function (margin: { value: number; unit: string }) {
+      .map(function (margin: RootMargin) {
         return margin.value + margin.unit;
       })
       .join(' ');
@@ -138,8 +208,8 @@ function handleIntersectionObserverObjectPolyfill() {
    * the thresholds values.
    * @param {Element} target The DOM element to observe.
    */
-  IntersectionObserver.prototype.observe = function (target: Element) {
-    const isTargetAlreadyObserved = this._observationTargets.some(function (item: any) {
+  IntersectionObserver.prototype.observe = function (this: IntersectionObserverLike, target: Element) {
+    const isTargetAlreadyObserved = this._observationTargets.some(function (item: ObservationTarget) {
       return item.element === target;
     });
 
@@ -159,8 +229,8 @@ function handleIntersectionObserverObjectPolyfill() {
    * Stops observing a target element for intersection changes.
    * @param {Element} target The DOM element to observe.
    */
-  IntersectionObserver.prototype.unobserve = function (target: Element) {
-    this._observationTargets = this._observationTargets.filter(function (item: any) {
+  IntersectionObserver.prototype.unobserve = function (this: IntersectionObserverLike, target: Element) {
+    this._observationTargets = this._observationTargets.filter(function (item: ObservationTarget) {
       return item.element !== target;
     });
     if (!this._observationTargets.length) {
@@ -172,7 +242,7 @@ function handleIntersectionObserverObjectPolyfill() {
   /**
    * Stops observing all target elements for intersection changes.
    */
-  IntersectionObserver.prototype.disconnect = function () {
+  IntersectionObserver.prototype.disconnect = function (this: IntersectionObserverLike) {
     this._observationTargets = [];
     this._unmonitorIntersections();
     this._unregisterInstance();
@@ -184,10 +254,10 @@ function handleIntersectionObserverObjectPolyfill() {
    * callback to obtain the absolute most up-to-date intersection information.
    * @return {Array} The currently queued entries.
    */
-  IntersectionObserver.prototype.takeRecords = function () {
+  IntersectionObserver.prototype.takeRecords = function (this: IntersectionObserverLike): IntersectionObserverEntry[] {
     const records = this._queuedEntries.slice();
     this._queuedEntries = [];
-    return records;
+    return records as IntersectionObserverEntry[];
   };
 
   /**
@@ -199,11 +269,14 @@ function handleIntersectionObserverObjectPolyfill() {
    *     a list of threshold values, defaulting to [0].
    * @return {Array} A sorted list of unique and valid threshold values.
    */
-  IntersectionObserver.prototype._initThresholds = function (opt_threshold: any) {
-    let threshold = opt_threshold || [0];
+  IntersectionObserver.prototype._initThresholds = function (
+    this: IntersectionObserverLike,
+    opt_threshold: number | number[] | undefined,
+  ): number[] {
+    let threshold: number | number[] = opt_threshold || [0];
     if (!Array.isArray(threshold)) threshold = [threshold];
 
-    return threshold.sort().filter(function (t: any, i: number, a: any[]) {
+    return threshold.sort().filter(function (t: number, i: number, a: number[]) {
       if (!isNumber(t) || isNaN(t) || t < 0 || t > 1) {
         throw new Error('threshold must be a number between 0 and 1 inclusively');
       }
@@ -222,9 +295,12 @@ function handleIntersectionObserverObjectPolyfill() {
    * @return {Array<Object>} An array of margin objects with the keys
    *     value and unit.
    */
-  IntersectionObserver.prototype._parseRootMargin = function (opt_rootMargin: string) {
+  IntersectionObserver.prototype._parseRootMargin = function (
+    this: IntersectionObserverLike,
+    opt_rootMargin: string | undefined,
+  ): RootMargin[] {
     const marginString = opt_rootMargin || '0px';
-    const margins = marginString.split(/\s+/).map(function (margin: string) {
+    const margins = marginString.split(/\s+/).map(function (margin: string): RootMargin {
       const parts = /^(-?\d*\.?\d+)(px|%)$/.exec(margin);
       if (!parts) {
         throw new Error('rootMargin must be specified in pixels or percent');
@@ -245,7 +321,7 @@ function handleIntersectionObserverObjectPolyfill() {
    * happening, and if the page's visibility state is visible.
    * @private
    */
-  IntersectionObserver.prototype._monitorIntersections = function () {
+  IntersectionObserver.prototype._monitorIntersections = function (this: IntersectionObserverLike) {
     if (!this._monitoringIntersections) {
       this._monitoringIntersections = true;
 
@@ -274,11 +350,11 @@ function handleIntersectionObserverObjectPolyfill() {
    * Stops polling for intersection changes.
    * @private
    */
-  IntersectionObserver.prototype._unmonitorIntersections = function () {
+  IntersectionObserver.prototype._unmonitorIntersections = function (this: IntersectionObserverLike) {
     if (this._monitoringIntersections) {
       this._monitoringIntersections = false;
 
-      clearInterval(this._monitoringInterval);
+      clearInterval(this._monitoringInterval!);
       this._monitoringInterval = null;
 
       removeEvent(window, 'resize', this._checkForIntersections, true);
@@ -297,11 +373,11 @@ function handleIntersectionObserverObjectPolyfill() {
    * schedules the callback to be invoked.
    * @private
    */
-  IntersectionObserver.prototype._checkForIntersections = function () {
+  IntersectionObserver.prototype._checkForIntersections = function (this: IntersectionObserverLike) {
     const rootIsInDom = this._rootIsInDom();
     const rootRect = rootIsInDom ? this._getRootRect() : getEmptyRect();
 
-    this._observationTargets.forEach((item: any) => {
+    this._observationTargets.forEach((item: ObservationTarget) => {
       const target = item.element;
       const targetRect = getBoundingClientRect(target);
       const rootContainsTarget = this._rootContainsTarget(target);
@@ -309,7 +385,11 @@ function handleIntersectionObserverObjectPolyfill() {
       const intersectionRect =
         rootIsInDom && rootContainsTarget && this._computeTargetAndRootIntersection(target, rootRect);
 
-      const newEntry = (item.entry = new (IntersectionObserverEntry as any)({
+      const newEntry = (item.entry = new (
+        IntersectionObserverEntry as unknown as new (
+          entry: IntersectionObserverEntryInit,
+        ) => IntersectionObserverEntry
+      )({
         time: now(),
         target: target,
         boundingClientRect: targetRect,
@@ -336,7 +416,7 @@ function handleIntersectionObserverObjectPolyfill() {
     });
 
     if (this._queuedEntries.length) {
-      this._callback(this.takeRecords(), this);
+      this._callback(this.takeRecords(), this as unknown as IntersectionObserver);
     }
   };
 
@@ -352,19 +432,23 @@ function handleIntersectionObserverObjectPolyfill() {
    *     intersection is found.
    * @private
    */
-  IntersectionObserver.prototype._computeTargetAndRootIntersection = function (target: Element, rootRect: any) {
+  IntersectionObserver.prototype._computeTargetAndRootIntersection = function (
+    this: IntersectionObserverLike,
+    target: Element,
+    rootRect: Rect,
+  ): Rect | false | undefined {
     // If the element isn't displayed, an intersection can't happen.
     if (window.getComputedStyle(target).display === 'none') return;
 
     const targetRect = getBoundingClientRect(target);
-    let intersectionRect = targetRect;
-    let parent = getParentNode(target);
+    let intersectionRect: Rect | false | undefined = targetRect;
+    let parent: Node | null = getParentNode(target);
     let atRoot = false;
 
     while (!atRoot) {
-      let parentRect = null;
+      let parentRect: Rect | null = null;
       const parentComputedStyle: Partial<CSSStyleDeclaration> =
-        parent.nodeType === 1 ? window.getComputedStyle(parent) : {};
+        (parent as Node).nodeType === 1 ? window.getComputedStyle(parent as Element) : {};
 
       // If the parent isn't displayed, an intersection can't happen.
       if (parentComputedStyle.display === 'none') return;
@@ -382,18 +466,18 @@ function handleIntersectionObserverObjectPolyfill() {
           parent !== document.documentElement &&
           parentComputedStyle.overflow !== 'visible'
         ) {
-          parentRect = getBoundingClientRect(parent);
+          parentRect = getBoundingClientRect(parent as Element);
         }
       }
 
       // If either of the above conditionals set a new parentRect,
       // calculate new intersection data.
       if (parentRect) {
-        intersectionRect = computeRectIntersection(parentRect, intersectionRect);
+        intersectionRect = computeRectIntersection(parentRect, intersectionRect as Rect);
 
         if (!intersectionRect) break;
       }
-      parent = getParentNode(parent);
+      parent = getParentNode(parent as Node);
     }
     return intersectionRect;
   };
@@ -403,8 +487,8 @@ function handleIntersectionObserverObjectPolyfill() {
    * @return {Object} The expanded root rect.
    * @private
    */
-  IntersectionObserver.prototype._getRootRect = function () {
-    let rootRect;
+  IntersectionObserver.prototype._getRootRect = function (this: IntersectionObserverLike): Rect {
+    let rootRect: Rect;
     if (this.root) {
       rootRect = getBoundingClientRect(this.root);
     } else {
@@ -429,16 +513,16 @@ function handleIntersectionObserverObjectPolyfill() {
    * @return {Object} The expanded rect.
    * @private
    */
-  IntersectionObserver.prototype._expandRectByRootMargin = function (rect: any) {
-    const margins = this._rootMarginValues.map(function (margin: any, i: number) {
+  IntersectionObserver.prototype._expandRectByRootMargin = function (this: IntersectionObserverLike, rect: Rect): Rect {
+    const margins = this._rootMarginValues.map(function (margin: RootMargin, i: number) {
       return margin.unit === 'px' ? margin.value : (margin.value * (i % 2 ? rect.width : rect.height)) / 100;
     });
-    const newRect: Record<string, number> = {
+    const newRect = {
       top: rect.top - margins[0],
       right: rect.right + margins[1],
       bottom: rect.bottom + margins[2],
       left: rect.left - margins[3],
-    };
+    } as Rect;
     newRect.width = newRect.right - newRect.left;
     newRect.height = newRect.bottom - newRect.top;
 
@@ -455,7 +539,11 @@ function handleIntersectionObserverObjectPolyfill() {
    * @return {boolean} Returns true if a any threshold has been crossed.
    * @private
    */
-  IntersectionObserver.prototype._hasCrossedThreshold = function (oldEntry: any, newEntry: any) {
+  IntersectionObserver.prototype._hasCrossedThreshold = function (
+    this: IntersectionObserverLike,
+    oldEntry: IntersectionObserverEntry | null | undefined,
+    newEntry: IntersectionObserverEntry,
+  ): boolean | undefined {
     // To make comparing easier, an entry that has a ratio of 0
     // but does not actually intersect is given a value of -1
     const oldRatio = oldEntry && oldEntry.isIntersecting ? oldEntry.intersectionRatio || 0 : -1;
@@ -480,7 +568,7 @@ function handleIntersectionObserverObjectPolyfill() {
    * @return {boolean} True if the root element is an element and is in the DOM.
    * @private
    */
-  IntersectionObserver.prototype._rootIsInDom = function () {
+  IntersectionObserver.prototype._rootIsInDom = function (this: IntersectionObserverLike) {
     return !this.root || containsDeep(document, this.root);
   };
 
@@ -490,7 +578,7 @@ function handleIntersectionObserverObjectPolyfill() {
    * @return {boolean} True if the target element is a child of root.
    * @private
    */
-  IntersectionObserver.prototype._rootContainsTarget = function (target: Element) {
+  IntersectionObserver.prototype._rootContainsTarget = function (this: IntersectionObserverLike, target: Element) {
     return containsDeep(this.root || document, target);
   };
 
@@ -499,7 +587,7 @@ function handleIntersectionObserverObjectPolyfill() {
    * already present.
    * @private
    */
-  IntersectionObserver.prototype._registerInstance = function () {
+  IntersectionObserver.prototype._registerInstance = function (this: IntersectionObserverLike) {
     if (registry.indexOf(this) < 0) {
       registry.push(this);
     }
@@ -509,7 +597,7 @@ function handleIntersectionObserverObjectPolyfill() {
    * Removes the instance from the global IntersectionObserver registry.
    * @private
    */
-  IntersectionObserver.prototype._unregisterInstance = function () {
+  IntersectionObserver.prototype._unregisterInstance = function (this: IntersectionObserverLike) {
     const index = registry.indexOf(this);
     if (index !== -1) registry.splice(index, 1);
   };
@@ -531,11 +619,11 @@ function handleIntersectionObserverObjectPolyfill() {
    * @param {boolean} opt_useCapture Optionally adds the even to the capture
    *     phase. Note: this only works in modern browsers.
    */
-  function addEvent(node: any, event: string, fn: any, opt_useCapture?: boolean) {
+  function addEvent(node: EventTarget, event: string, fn: (...args: unknown[]) => void, opt_useCapture?: boolean) {
     if (isFunction(node.addEventListener)) {
-      node.addEventListener(event, fn, opt_useCapture || false);
-    } else if (isFunction(node.attachEvent)) {
-      node.attachEvent('on' + event, fn);
+      node.addEventListener(event, fn as EventListener, opt_useCapture || false);
+    } else if (isFunction((node as LegacyEventTarget).attachEvent)) {
+      (node as LegacyEventTarget).attachEvent('on' + event, fn);
     }
   }
 
@@ -547,11 +635,11 @@ function handleIntersectionObserverObjectPolyfill() {
    * @param {boolean} opt_useCapture If the event handler was added with this
    *     flag set to true, it should be set to true here in order to remove it.
    */
-  function removeEvent(node: any, event: string, fn: any, opt_useCapture?: boolean) {
+  function removeEvent(node: EventTarget, event: string, fn: (...args: unknown[]) => void, opt_useCapture?: boolean) {
     if (isFunction(node.removeEventListener)) {
-      node.removeEventListener(event, fn, opt_useCapture || false);
-    } else if (isFunction(node.detatchEvent)) {
-      node.detatchEvent('on' + event, fn);
+      node.removeEventListener(event, fn as EventListener, opt_useCapture || false);
+    } else if (isFunction((node as LegacyEventTarget).detachEvent)) {
+      (node as LegacyEventTarget).detachEvent('on' + event, fn);
     }
   }
 
@@ -562,7 +650,7 @@ function handleIntersectionObserverObjectPolyfill() {
    * @return {?Object} The intersection rect or undefined if no intersection
    *     is found.
    */
-  function computeRectIntersection(rect1: any, rect2: any) {
+  function computeRectIntersection(rect1: Rect, rect2: Rect): Rect | false {
     const top = Math.max(rect1.top, rect2.top);
     const bottom = Math.min(rect1.bottom, rect2.bottom);
     const left = Math.max(rect1.left, rect2.left);
@@ -588,8 +676,8 @@ function handleIntersectionObserverObjectPolyfill() {
    * @param {Element} el The element whose bounding rect to get.
    * @return {Object} The (possibly shimmed) rect of the element.
    */
-  function getBoundingClientRect(el: any) {
-    let rect;
+  function getBoundingClientRect(el: Element): Rect {
+    let rect: DOMRect | undefined;
 
     try {
       rect = el.getBoundingClientRect();
@@ -602,7 +690,7 @@ function handleIntersectionObserverObjectPolyfill() {
 
     // Older IE
     if (!(rect.width && rect.height)) {
-      rect = {
+      return {
         top: rect.top,
         right: rect.right,
         bottom: rect.bottom,
@@ -619,7 +707,7 @@ function handleIntersectionObserverObjectPolyfill() {
    * is not in the DOM.
    * @return {Object} The empty rect.
    */
-  function getEmptyRect() {
+  function getEmptyRect(): Rect {
     return {
       top: 0,
       bottom: 0,
@@ -637,8 +725,8 @@ function handleIntersectionObserverObjectPolyfill() {
    * @param {Node} child The child element.
    * @return {boolean} True if the parent node contains the child node.
    */
-  function containsDeep(parent: any, child: any) {
-    let node = child;
+  function containsDeep(parent: Node, child: Node) {
+    let node: Node | null = child;
     while (node) {
       if (node === parent) return true;
 
@@ -653,17 +741,17 @@ function handleIntersectionObserverObjectPolyfill() {
    * @param {Node} node The node whose parent to get.
    * @return {Node|null} The parent node or null if no parent exists.
    */
-  function getParentNode(node: any) {
+  function getParentNode(node: Node): Node | null {
     const parent = node.parentNode;
 
-    if (parent && parent.nodeType === 11 && parent.host) {
+    if (parent && parent.nodeType === 11 && (parent as ShadowRoot).host) {
       // If the parent is a shadow root, return the host element.
-      return parent.host;
+      return (parent as ShadowRoot).host;
     }
 
-    if (parent && parent.assignedSlot) {
+    if (parent && (parent as Element).assignedSlot) {
       // If the parent is distributed in a <slot>, return the parent of a slot.
-      return parent.assignedSlot.parentNode;
+      return ((parent as Element).assignedSlot as HTMLSlotElement).parentNode;
     }
 
     return parent;

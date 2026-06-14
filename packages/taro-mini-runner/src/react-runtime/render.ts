@@ -111,7 +111,9 @@ export function createRoot(domContainer: TaroElement, options: CreateRootOptions
 
   markContainerAsRoot(root?.internalRoot?.current, domContainer);
 
-  hooks.tap('dispatchTaroEvent', (e: TaroEvent, node: TaroElement) => {
+  hooks.tap('dispatchTaroEvent', (event: unknown, element: unknown) => {
+    const e = event as TaroEvent;
+    const node = element as TaroElement;
     const eventPriority = getEventPriority(e.type);
 
     runWithPriority(eventPriority, () => {
@@ -120,7 +122,9 @@ export function createRoot(domContainer: TaroElement, options: CreateRootOptions
   });
 
   // 对比 event.detail.value 和 node.tracker.value，判断 value 值是否有变动，存在变动则塞入队列中
-  hooks.tap('modifyTaroEvent', (e: TaroEvent, node: TaroElement) => {
+  hooks.tap('modifyTaroEvent', (event: unknown, element: unknown) => {
+    const e = event as TaroEvent;
+    const node = element as TaroElement;
     const inst = getTargetInstForInputOrChangeEvent(e, node);
 
     if (!inst) return;

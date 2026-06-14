@@ -4,7 +4,7 @@ import { isFunction } from './is';
 import type { Shortcuts } from './template';
 
 // Note: @spcsn/taro-runtime 不依赖 @spcsn/taro, 所以不能改为从 @spcsn/taro 引入 (可能导致循环依赖)
-type TFunc = (...args: any[]) => any;
+type TFunc = (...args: unknown[]) => unknown;
 
 export enum HOOK_TYPE {
   SINGLE,
@@ -19,7 +19,7 @@ interface Hook {
 
 interface Node {
   next: Node;
-  context?: any;
+  context?: unknown;
   callback?: TFunc;
 }
 
@@ -53,11 +53,6 @@ interface MiniTextData {
 }
 
 type MiniData = MiniElementData | MiniTextData;
-
-interface UpdatePayload {
-  path: string;
-  value: string | boolean | (() => MiniData | MiniData[]);
-}
 
 type Target = Record<string, unknown> & { dataset: Record<string, unknown>; id: string };
 
@@ -101,7 +96,7 @@ export function TaroHook(type: HOOK_TYPE, initial?: TFunc): Hook {
   };
 }
 
-export class TaroHooks<T extends Record<string, TFunc> = any> extends Events {
+export class TaroHooks<T extends Record<string, TFunc> = Record<string, TFunc>> extends Events {
   hooks: Record<keyof T, Hook>;
 
   constructor(hooks: Record<keyof T, Hook>, opts?: { callbacks?: EventCallbacks }) {
@@ -146,18 +141,18 @@ export class TaroHooks<T extends Record<string, TFunc> = any> extends Events {
     if (list) {
       const tail = list.tail;
       let node: Node = list.next;
-      let args = rest;
-      let res;
+      let args: unknown[] = rest;
+      let res: unknown;
 
       while (node !== tail) {
         res = node.callback?.apply(node.context || this, args);
         if (type === HOOK_TYPE.WATERFALL) {
-          const params: any = [res];
+          const params: unknown[] = [res];
           args = params;
         }
         node = node.next;
       }
-      return res;
+      return res as ReturnType<T[K]> | undefined;
     }
   }
 
@@ -168,102 +163,101 @@ export class TaroHooks<T extends Record<string, TFunc> = any> extends Events {
 
 type ITaroHooks = {
   /** 小程序端 App、Page 构造对象的生命周期方法名称 */
-  getMiniLifecycle: (defaultConfig: MiniLifecycle) => MiniLifecycle;
+  getMiniLifecycle: (defaultConfig: unknown) => MiniLifecycle;
   getMiniLifecycleImpl: () => MiniLifecycle;
   /** 解决 React 生命周期名称的兼容问题 */
-  getLifecycle: (instance: any, lifecyle: string) => TFunc | Array<TFunc> | undefined;
+  getLifecycle: (instance: unknown, lifecyle: unknown) => TFunc | Array<TFunc> | undefined;
   /** 提供Hook，为不同平台提供修改生命周期配置 */
-  modifyRecursiveComponentConfig: (defaultConfig: MiniLifecycle, options: any) => any;
+  modifyRecursiveComponentConfig: (defaultConfig: unknown, options: unknown) => unknown;
   /** 解决百度小程序的模版语法问题 */
-  getPathIndex: (indexOfNode: number) => string;
+  getPathIndex: (indexOfNode: unknown) => string;
   /** 解决支付宝小程序分包时全局作用域不一致的问题 */
-  getEventCenter: (EventsClass: typeof Events) => Events;
-  isBubbleEvents: (eventName: string) => boolean;
+  getEventCenter: (EventsClass: unknown) => Events;
+  isBubbleEvents: (eventName: unknown) => boolean;
   getSpecialNodes: () => string[];
-  onRemoveAttribute: (element: any, qualifiedName: string) => boolean;
+  onRemoveAttribute: (element: unknown, qualifiedName: unknown) => boolean;
   /** 用于把 React 同一事件回调中的所有 setState 合并到同一个更新处理中 */
-  batchedEventUpdates: (cb: TFunc) => void;
+  batchedEventUpdates: (cb: unknown) => void;
   /** 用于处理 React 中的小程序生命周期 hooks */
-  mergePageInstance: (prev: any, next: any) => void;
+  mergePageInstance: (prev: unknown, next: unknown) => void;
   /** 用于修改传递给小程序 Page 构造器的对象 */
-  modifyPageObject: (config: Record<any, any>) => void;
+  modifyPageObject: (config: unknown) => void;
   /** 下拉刷新 wrapper */
-  createPullDownComponent: (el: any, path: string, framework: any, customWrapper?: any, stampId?: string) => void;
+  createPullDownComponent: (
+    el: unknown,
+    path: unknown,
+    framework: unknown,
+    customWrapper?: unknown,
+    stampId?: unknown,
+  ) => void;
   /** 获取原生 DOM 对象 */
-  getDOMNode: (instance: any) => any;
+  getDOMNode: (instance: unknown) => unknown;
   /**
    * @todo: multi
    * 修改 Taro DOM 序列化数据
    **/
-  modifyHydrateData: (data: Record<string, any>, node: any) => void;
+  modifyHydrateData: (data: unknown, node: unknown) => void;
   /**
    * 自定义处理 Taro DOM 序列化数据，如使其脱离 data 树
    */
-  transferHydrateData: (data: Record<string, any>, element: any, componentsAlias: Record<string, any>) => void;
+  transferHydrateData: (data: unknown, element: unknown, componentsAlias: unknown) => void;
   /**
    * @todo: multi
    * 修改 Taro DOM 序列化数据
    **/
-  modifySetAttrPayload: (
-    element: any,
-    key: string,
-    payload: UpdatePayload,
-    componentsAlias: Record<string, any>,
-  ) => void;
+  modifySetAttrPayload: (element: unknown, key: unknown, payload: unknown, componentsAlias: unknown) => void;
   /**
    * @todo: multi
    * 修改 Taro DOM 序列化数据
    **/
-  modifyRmAttrPayload: (
-    element: any,
-    key: string,
-    payload: UpdatePayload,
-    componentsAlias: Record<string, any>,
-  ) => void;
+  modifyRmAttrPayload: (element: unknown, key: unknown, payload: unknown, componentsAlias: unknown) => void;
   /**
    * @todo: multi
    * 调用 addEventListener 时触发
    **/
-  onAddEvent: (type: string, handler: any, options: any, node: any) => void;
+  onAddEvent: (type: unknown, handler: unknown, options: unknown, node: unknown) => void;
   /** 用于修改小程序原生事件对象 */
-  modifyMpEvent: (event: MpEvent) => void;
-  modifyMpEventImpl: (event: MpEvent) => void;
+  modifyMpEvent: (event: unknown) => void;
+  modifyMpEventImpl: (event: unknown) => void;
   /** 用于修改 Taro DOM 事件对象 */
-  modifyTaroEvent: (event: any, element: any) => void;
+  modifyTaroEvent: (event: unknown, element: unknown) => void;
 
-  dispatchTaroEvent: (event: any, element: any) => void;
-  dispatchTaroEventFinish: (event: any, element: any) => void;
-  modifyTaroEventReturn: (node: any, event: any, returnVal: any) => any;
+  dispatchTaroEvent: (event: unknown, element: unknown) => void;
+  dispatchTaroEventFinish: (event: unknown, element: unknown) => void;
+  modifyTaroEventReturn: (node: unknown, event: unknown, returnVal: unknown) => unknown;
 
-  modifyDispatchEvent: (event: any, element: any) => void;
-  injectNewStyleProperties: (styleProperties: string[]) => void;
-  initNativeApi: (taro: Record<string, any>) => void;
-  patchElement: (node: any) => void;
+  modifyDispatchEvent: (event: unknown, element: unknown) => void;
+  injectNewStyleProperties: (styleProperties: unknown) => void;
+  initNativeApi: (taro: unknown) => void;
+  patchElement: (node: unknown) => void;
 
   /** 解 Proxy */
-  proxyToRaw: (proxyObj: any) => Record<any, any>;
+  proxyToRaw: (proxyObj: unknown) => Record<string, unknown>;
   /** 元素增加事件监听钩子 */
-  modifyAddEventListener: (element: any, sideEffect: boolean, getComponentsAlias: () => Record<string, any>) => void;
+  modifyAddEventListener: (element: unknown, sideEffect: unknown, getComponentsAlias: unknown) => void;
   /** 元素删除事件监听钩子 */
-  modifyRemoveEventListener: (element: any, sideEffect: boolean, getComponentsAlias: () => Record<string, any>) => void;
+  modifyRemoveEventListener: (element: unknown, sideEffect: unknown, getComponentsAlias: unknown) => void;
   /** 鸿蒙用于监听 memory 等级的钩子 */
-  getMemoryLevel: (level: { level: number }) => void;
+  getMemoryLevel: (level: unknown) => void;
 };
 
 export const hooks = new TaroHooks<ITaroHooks>({
-  getMiniLifecycle: TaroHook(HOOK_TYPE.SINGLE, (defaultConfig) => defaultConfig),
+  getMiniLifecycle: TaroHook(HOOK_TYPE.SINGLE, (defaultConfig) => defaultConfig as MiniLifecycle),
 
   getMiniLifecycleImpl: TaroHook(HOOK_TYPE.SINGLE, function (this: TaroHooks<ITaroHooks>) {
     return this.call('getMiniLifecycle', defaultMiniLifecycle);
   }),
 
-  getLifecycle: TaroHook(HOOK_TYPE.SINGLE, (instance, lifecycle) => instance[lifecycle]),
+  getLifecycle: TaroHook(
+    HOOK_TYPE.SINGLE,
+    (instance, lifecycle) => (instance as Record<string, TFunc>)[lifecycle as string],
+  ),
 
   modifyRecursiveComponentConfig: TaroHook(HOOK_TYPE.SINGLE, (defaultConfig) => defaultConfig),
 
-  getPathIndex: TaroHook(HOOK_TYPE.SINGLE, (indexOfNode) => `[${indexOfNode}]`),
+  getPathIndex: TaroHook(HOOK_TYPE.SINGLE, (indexOfNode) => `[${indexOfNode as number}]`),
 
-  getEventCenter: TaroHook(HOOK_TYPE.SINGLE, (Events) => new Events()),
+  getEventCenter: TaroHook(HOOK_TYPE.SINGLE, (Events) => new (Events as new () => Events)()),
 
   isBubbleEvents: TaroHook(HOOK_TYPE.SINGLE, (eventName) => {
     /**
@@ -285,7 +279,7 @@ export const hooks = new TaroHooks<ITaroHooks>({
       'animationend',
     ]);
 
-    return BUBBLE_EVENTS.has(eventName);
+    return BUBBLE_EVENTS.has(eventName as string);
   }),
 
   getSpecialNodes: TaroHook(HOOK_TYPE.SINGLE, () => ['view', 'text', 'image']),
@@ -313,15 +307,15 @@ export const hooks = new TaroHooks<ITaroHooks>({
   onAddEvent: TaroHook(HOOK_TYPE.SINGLE),
 
   proxyToRaw: TaroHook(HOOK_TYPE.SINGLE, function (proxyObj) {
-    return proxyObj;
+    return proxyObj as Record<string, unknown>;
   }),
 
   modifyMpEvent: TaroHook(HOOK_TYPE.MULTI),
 
-  modifyMpEventImpl: TaroHook(HOOK_TYPE.SINGLE, function (this: TaroHooks<ITaroHooks>, e: MpEvent) {
+  modifyMpEventImpl: TaroHook(HOOK_TYPE.SINGLE, function (this: TaroHooks<ITaroHooks>, e: unknown) {
     try {
       // 有些小程序的事件对象的某些属性只读
-      this.call('modifyMpEvent', e);
+      this.call('modifyMpEvent', e as MpEvent);
     } catch (error) {
       console.warn('[Taro modifyMpEvent hook Error]: ' + (error instanceof Error ? error.message : String(error)));
     }
@@ -332,7 +326,7 @@ export const hooks = new TaroHooks<ITaroHooks>({
   modifyTaroEvent: TaroHook(HOOK_TYPE.MULTI),
 
   dispatchTaroEvent: TaroHook(HOOK_TYPE.SINGLE, (e, node) => {
-    node.dispatchEvent(e);
+    (node as { dispatchEvent: (event: unknown) => void }).dispatchEvent(e);
   }),
 
   dispatchTaroEventFinish: TaroHook(HOOK_TYPE.MULTI),

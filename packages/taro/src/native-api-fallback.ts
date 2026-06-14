@@ -46,7 +46,8 @@ function initWeappNativeApiFallback(taro: Record<string, any>): void {
     },
     transformMeta(api, options) {
       if (api === 'showShareMenu') {
-        options.menus = options.showShareItems?.map((item: string) =>
+        const showShareItems = options.showShareItems as string[] | undefined;
+        options.menus = showShareItems?.map((item) =>
           item === 'wechatFriends' ? 'shareAppMessage' : item === 'wechatMoment' ? 'shareTimeline' : item,
         );
       }

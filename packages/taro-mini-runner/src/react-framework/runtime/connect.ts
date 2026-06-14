@@ -46,33 +46,37 @@ let ReactDOM: ReactDOMRenderer;
 const pageKeyId = incrementId();
 
 export function setReconciler(ReactDOM?: ReactDOMRenderer) {
-  hooks.tap('getLifecycle', function (instance: Instance, lifecycle: string) {
-    lifecycle = lifecycle.replace(/^on(Show|Hide)$/, 'componentDid$1');
-    return instance[lifecycle] as LifecycleCallback | LifecycleCallback[] | undefined;
+  hooks.tap('getLifecycle', function (instance: unknown, lifecycle: unknown) {
+    const inst = instance as Instance;
+    const name = String(lifecycle).replace(/^on(Show|Hide)$/, 'componentDid$1');
+    return inst[name] as LifecycleCallback | LifecycleCallback[] | undefined;
   });
 
-  hooks.tap('modifyMpEvent', function (event: MpEvent) {
-    Object.defineProperty(event, 'type', {
-      value: event.type.replace(/-/g, ''),
+  hooks.tap('modifyMpEvent', function (event: unknown) {
+    const ev = event as MpEvent;
+    Object.defineProperty(ev, 'type', {
+      value: ev.type.replace(/-/g, ''),
     });
   });
 
-  hooks.tap('batchedEventUpdates', function (cb: () => void) {
-    ReactDOM?.unstable_batchedUpdates(cb);
+  hooks.tap('batchedEventUpdates', function (cb: unknown) {
+    ReactDOM?.unstable_batchedUpdates(cb as () => void);
   });
 
-  hooks.tap('mergePageInstance', function (prev: Instance | undefined, next: Instance | undefined) {
-    if (!prev || !next) return;
+  hooks.tap('mergePageInstance', function (prev: unknown, next: unknown) {
+    const prevInst = prev as Instance | undefined;
+    const nextInst = next as Instance | undefined;
+    if (!prevInst || !nextInst) return;
 
     // 子组件使用 lifecycle hooks 注册了生命周期后，会存在 prev，里面是注册的生命周期回调。
 
     // prev 使用 Object.create(null) 创建，需排除 fast-refresh 等场景下意外产生的 prev
-    if ('constructor' in prev) return;
+    if ('constructor' in prevInst) return;
 
-    Object.keys(prev).forEach((item) => {
-      const prevList = ensureIsArray<LifecycleCallback>(prev[item] as LifecycleCallback | LifecycleCallback[]);
-      const nextList = ensureIsArray<LifecycleCallback>(next[item] as LifecycleCallback | LifecycleCallback[]);
-      (next as Record<string, LifecycleCallback[]>)[item] = nextList.concat(prevList);
+    Object.keys(prevInst).forEach((item) => {
+      const prevList = ensureIsArray<LifecycleCallback>(prevInst[item] as LifecycleCallback | LifecycleCallback[]);
+      const nextList = ensureIsArray<LifecycleCallback>(nextInst[item] as LifecycleCallback | LifecycleCallback[]);
+      (nextInst as Record<string, LifecycleCallback[]>)[item] = nextList.concat(prevList);
     });
   });
 }

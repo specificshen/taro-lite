@@ -1,3 +1,5 @@
+import type postcss from 'postcss';
+
 type DesignWidthOption = number | ((input: string) => number);
 
 type RootValueOption = number | ((input: string, match?: string, pixelValue?: string) => number);
@@ -70,23 +72,25 @@ const processed = Symbol('processed');
 
 let targetUnit: string;
 
-const pxRegex = (units: any[] = ['px']) =>
+const pxRegex = (units: string[] = ['px']) =>
   new RegExp(`"[^"]+"|'[^']+'|url\\([^\\)]+\\)|(\\d*\\.?\\d+)(${units.join('|')})`, 'g');
 
-const filterPropList = {
-  exact: (list: any[]) => list.filter((item: any) => item.match(/^[^\*!]+$/)),
-  contain: (list: any[]) =>
-    list.filter((item: any) => item.match(/^\*.+\*$/)).map((item: any) => item.substr(1, item.length - 2)),
-  endWith: (list: any[]) => list.filter((item: any) => item.match(/^\*[^\*]+$/)).map((item: any) => item.substr(1)),
-  startWith: (list: any[]) =>
-    list.filter((item: any) => item.match(/^[^\*!]+\*$/)).map((item: any) => item.substr(0, item.length - 1)),
-  notExact: (list: any[]) => list.filter((item: any) => item.match(/^\![^\*].*$/)).map((item: any) => item.substr(1)),
-  notContain: (list: any[]) =>
-    list.filter((item: any) => item.match(/^\!\*.+\*$/)).map((item: any) => item.substr(2, item.length - 3)),
-  notEndWith: (list: any[]) =>
-    list.filter((item: any) => item.match(/^\!\*[^\*]+$/)).map((item: any) => item.substr(2)),
-  notStartWith: (list: any[]) =>
-    list.filter((item: any) => item.match(/^\![^\*]+\*$/)).map((item: any) => item.substr(1, item.length - 2)),
+const filterPropList: Record<string, (list: string[]) => string[]> = {
+  exact: (list: string[]) => list.filter((item: string) => item.match(/^[^\*!]+$/)),
+  contain: (list: string[]) =>
+    list.filter((item: string) => item.match(/^\*.+\*$/)).map((item: string) => item.substr(1, item.length - 2)),
+  endWith: (list: string[]) =>
+    list.filter((item: string) => item.match(/^\*[^\*]+$/)).map((item: string) => item.substr(1)),
+  startWith: (list: string[]) =>
+    list.filter((item: string) => item.match(/^[^\*!]+\*$/)).map((item: string) => item.substr(0, item.length - 1)),
+  notExact: (list: string[]) =>
+    list.filter((item: string) => item.match(/^\![^\*].*$/)).map((item: string) => item.substr(1)),
+  notContain: (list: string[]) =>
+    list.filter((item: string) => item.match(/^\!\*.+\*$/)).map((item: string) => item.substr(2, item.length - 3)),
+  notEndWith: (list: string[]) =>
+    list.filter((item: string) => item.match(/^\!\*[^\*]+$/)).map((item: string) => item.substr(2)),
+  notStartWith: (list: string[]) =>
+    list.filter((item: string) => item.match(/^\![^\*]+\*$/)).map((item: string) => item.substr(1, item.length - 2)),
 };
 
 const postcssPxTransform = (options: PxTransformOptions = {}) => {
@@ -116,17 +120,19 @@ const postcssPxTransform = (options: PxTransformOptions = {}) => {
   const onePxTransform = typeof resolvedOptions.onePxTransform === 'undefined' ? true : resolvedOptions.onePxTransform;
   const pxRgx = pxRegex(transUnits);
 
-  const satisfyPropList = createPropListMatcher(opts.propList);
+  const satisfyPropList = createPropListMatcher(opts.propList as string[]);
+
+  type ProcessedDecl = postcss.Declaration & Record<typeof processed, boolean>;
 
   return {
     postcssPlugin: 'postcss-pxtransform',
-    prepare(result: any) {
+    prepare(result: postcss.Result) {
       const pxReplace = createPxReplace(
-        opts.rootValue,
-        opts.unitPrecision,
-        opts.minPixelValue,
+        opts.rootValue as unknown as (input: postcss.Input, match: string, pixelValue: string) => number,
+        opts.unitPrecision as number,
+        opts.minPixelValue as number,
         onePxTransform,
-      )(result.root.source.input);
+      )(result.root.source!.input);
 
       let skip = false;
 
@@ -135,7 +141,7 @@ const postcssPxTransform = (options: PxTransformOptions = {}) => {
       }
 
       return {
-        Comment(comment: any) {
+        Comment(comment: postcss.Comment) {
           if (comment.text === 'postcss-pxtransform disable') {
             skip = true;
             return;
@@ -148,7 +154,7 @@ const postcssPxTransform = (options: PxTransformOptions = {}) => {
             if (wordList.indexOf(resolvedOptions.platform) === -1) {
               let next = comment.next();
               while (next) {
-                if (next.type === 'comment' && next.text.trim() === '#endif') {
+                if (next.type === 'comment' && (next as postcss.Comment).text.trim() === '#endif') {
                   break;
                 }
                 const temp = next.next();
@@ -162,7 +168,7 @@ const postcssPxTransform = (options: PxTransformOptions = {}) => {
             if (wordList.indexOf(resolvedOptions.platform) > -1) {
               let next = comment.next();
               while (next) {
-                if (next.type === 'comment' && next.text.trim() === '#endif') {
+                if (next.type === 'comment' && (next as postcss.Comment).text.trim() === '#endif') {
                   break;
                 }
                 const temp = next.next();
@@ -172,22 +178,25 @@ const postcssPxTransform = (options: PxTransformOptions = {}) => {
             }
           }
         },
-        Declaration(decl: any) {
+        Declaration(decl: postcss.Declaration) {
           if (skip) return;
           if (!opts.methods.includes('size')) return;
 
-          if (decl[processed]) return;
+          if ((decl as ProcessedDecl)[processed]) return;
 
-          decl[processed] = true;
+          (decl as ProcessedDecl)[processed] = true;
 
           if (!/px/i.test(decl.value)) return;
 
           if (!satisfyPropList(decl.prop)) return;
 
-          const isBlacklisted = blacklistedSelector(opts.selectorBlackList, decl.parent.selector);
+          const isBlacklisted = blacklistedSelector(
+            opts.selectorBlackList as Array<string | RegExp>,
+            (decl.parent as postcss.Rule).selector,
+          );
           if (isBlacklisted) return;
           const value = decl.value.replace(pxRgx, pxReplace);
-          if (declarationExists(decl.parent, decl.prop, value)) return;
+          if (declarationExists(decl.parent as postcss.Container, decl.prop, value)) return;
           if (opts.replace) {
             decl.value = value;
           } else {
@@ -195,7 +204,7 @@ const postcssPxTransform = (options: PxTransformOptions = {}) => {
           }
         },
         AtRule: {
-          media: (rule: any) => {
+          media: (rule: postcss.AtRule) => {
             if (opts.mediaQuery) {
               if (skip) return;
               if (!opts.methods.includes('size')) return;
@@ -210,28 +219,35 @@ const postcssPxTransform = (options: PxTransformOptions = {}) => {
   };
 };
 
-function convertLegacyOptions(options: any) {
+function convertLegacyOptions(options: PxTransformOptions) {
   if (typeof options !== 'object') return;
   if (
     ((typeof options.prop_white_list !== 'undefined' && options.prop_white_list.length === 0) ||
       (typeof options.propWhiteList !== 'undefined' && options.propWhiteList.length === 0)) &&
     typeof options.propList === 'undefined'
   ) {
-    options.propList = ['*'];
+    (options as Record<string, unknown>).propList = ['*'];
     delete options.prop_white_list;
     delete options.propWhiteList;
   }
   Object.keys(legacyOptions).forEach(function (key) {
     if (options.hasOwnProperty(key)) {
-      options[(legacyOptions as Record<string, any>)[key]] = options[key];
-      delete options[key];
+      (options as Record<string, unknown>)[(legacyOptions as Record<string, string>)[key]] = (
+        options as Record<string, unknown>
+      )[key];
+      delete (options as Record<string, unknown>)[key];
     }
   });
 }
 
-function createPxReplace(rootValue: any, unitPrecision: any, minPixelValue: any, onePxTransform: any) {
-  return function (input: any) {
-    return function (match: any, pixelValue: any) {
+function createPxReplace(
+  rootValue: (input: postcss.Input, match: string, pixelValue: string) => number,
+  unitPrecision: number,
+  minPixelValue: number,
+  onePxTransform: boolean,
+) {
+  return function (input: postcss.Input) {
+    return function (match: string, pixelValue: string) {
       if (!pixelValue) return match;
 
       if (!onePxTransform && parseInt(pixelValue, 10) === 1) {
@@ -251,27 +267,27 @@ function createPxReplace(rootValue: any, unitPrecision: any, minPixelValue: any,
   };
 }
 
-function toFixed(number: any, precision: any) {
+function toFixed(number: number, precision: number) {
   const multiplier = Math.pow(10, precision + 1);
   const wholeNumber = Math.floor(number * multiplier);
   return (Math.round(wholeNumber / 10) * 10) / multiplier;
 }
 
-function declarationExists(decls: any, prop: any, value: any) {
-  return decls.some(function (decl: any) {
-    return decl.prop === prop && decl.value === value;
+function declarationExists(decls: postcss.Container, prop: string, value: string) {
+  return decls.some(function (decl) {
+    return (decl as postcss.Declaration).prop === prop && (decl as postcss.Declaration).value === value;
   });
 }
 
-function blacklistedSelector(blacklist: any, selector: any) {
+function blacklistedSelector(blacklist: Array<string | RegExp>, selector: string) {
   if (typeof selector !== 'string') return;
-  return blacklist.some(function (regex: any) {
+  return blacklist.some(function (regex: string | RegExp) {
     if (typeof regex === 'string') return selector.indexOf(regex) !== -1;
-    return selector.match(regex);
+    return selector.match(regex) !== null;
   });
 }
 
-function createPropListMatcher(propList: any) {
+function createPropListMatcher(propList: string[]) {
   const hasWild = propList.indexOf('*') > -1;
   const matchAll = hasWild && propList.length === 1;
   const lists = {
@@ -284,29 +300,29 @@ function createPropListMatcher(propList: any) {
     notStartWith: filterPropList.notStartWith(propList),
     notEndWith: filterPropList.notEndWith(propList),
   };
-  return function (prop: any) {
+  return function (prop: string) {
     if (matchAll) return true;
     return (
       (hasWild ||
         lists.exact.indexOf(prop) > -1 ||
-        lists.contain.some(function (match: any) {
+        lists.contain.some(function (match: string) {
           return prop.indexOf(match) > -1;
         }) ||
-        lists.startWith.some(function (match: any) {
+        lists.startWith.some(function (match: string) {
           return prop.indexOf(match) === 0;
         }) ||
-        lists.endWith.some(function (match: any) {
+        lists.endWith.some(function (match: string) {
           return prop.indexOf(match) === prop.length - match.length;
         })) &&
       !(
         lists.notExact.indexOf(prop) > -1 ||
-        lists.notContain.some(function (match: any) {
+        lists.notContain.some(function (match: string) {
           return prop.indexOf(match) > -1;
         }) ||
-        lists.notStartWith.some(function (match: any) {
+        lists.notStartWith.some(function (match: string) {
           return prop.indexOf(match) === 0;
         }) ||
-        lists.notEndWith.some(function (match: any) {
+        lists.notEndWith.some(function (match: string) {
           return prop.indexOf(match) === prop.length - match.length;
         })
       )
