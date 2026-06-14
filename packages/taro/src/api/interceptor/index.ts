@@ -12,7 +12,9 @@ export default class Link<T = unknown> {
 
   request(requestParams: IRequestParams | string): ChainPromise<T> {
     const taroInterceptor = this.taroInterceptor;
-    const interceptors = this.interceptors.filter((interceptor) => interceptor !== taroInterceptor).concat(taroInterceptor);
+    const interceptors = this.interceptors
+      .filter((interceptor) => interceptor !== taroInterceptor)
+      .concat(taroInterceptor);
     const chain = new Chain<T>(undefined, interceptors);
 
     return chain.proceed(typeof requestParams === 'string' ? { url: requestParams } : { ...requestParams });

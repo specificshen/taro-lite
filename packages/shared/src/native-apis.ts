@@ -440,7 +440,10 @@ function equipCommonApis(taro: IObject, global: IObject, apis: Record<string, an
  * @param task Task对象 {RequestTask | DownloadTask | UploadTask}
  * @param promise Promise
  */
-function equipTaskMethodsIntoPromise<TPromise extends Record<string, any>>(task: NativeTask | null | undefined, promise: TPromise) {
+function equipTaskMethodsIntoPromise<TPromise extends Record<string, any>>(
+  task: NativeTask | null | undefined,
+  promise: TPromise,
+) {
   if (!task || !promise) return;
   const taskMethods: Array<keyof NativeTask> = [
     'abort',
