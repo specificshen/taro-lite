@@ -12,8 +12,6 @@ interface MapProps extends StandardProps {
   /** 缩放级别，取值范围为 3-20
    * @default 16
    * @supported weapp
-   * @swan 取值范围为4-21
-   * @alipay 取值范围为5-18
    */
   scale?: number;
   /** 最小缩放级别 3-20
@@ -565,7 +563,6 @@ declare namespace MapProps {
  *   }
  * }
  * ```
- * @example_vue
  * ```html
  * <template>
  *   <map

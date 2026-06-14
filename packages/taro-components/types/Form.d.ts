@@ -66,7 +66,6 @@ declare namespace FormProps {
  *   }
  * }
  * ```
- * @example_vue
  * ```html
  * <template>
  *   <form `@submit="formSubmit" `@reset="formReset" >

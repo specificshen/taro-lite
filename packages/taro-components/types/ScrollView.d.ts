@@ -4,13 +4,11 @@ interface ScrollViewProps extends StandardProps {
   /** 允许横向滚动
    * @default false
    * @supported weapp
-   * @rn 二选一
    */
   scrollX?: boolean;
   /** 允许纵向滚动
    * @default false
    * @supported weapp
-   * @rn 二选一
    */
   scrollY?: boolean;
   /** 距顶部/左边多远时（单位px），触发 scrolltoupper 事件
@@ -303,7 +301,6 @@ declare namespace ScrollViewProps {
  *   }
  * }
  * ```
- * @example_vue
  * ```html
  * <template>
  *   <view class="container">

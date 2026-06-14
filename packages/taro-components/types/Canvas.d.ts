@@ -60,7 +60,6 @@ declare namespace CanvasProps {
  *   }
  * }
  * ```
- * @example_vue
  * ```html
  * <template>
  *   <!-- 如果是支付宝小程序，则要加上 id 属性，值和canvasId一致 -->

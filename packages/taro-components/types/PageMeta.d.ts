@@ -112,7 +112,6 @@ declare namespace PageMetaProps {
  *   )
  * }
  * ```
- * @example_vue
  * ```html
  * <!-- page.config.ts -->
  * <!-- export default definePageConfig({ enablePageMeta: true, ... }) -->

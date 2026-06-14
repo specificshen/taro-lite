@@ -51,7 +51,6 @@ interface CoverImageProps extends StandardProps {
  *   transform: translate(-50%, -50%);
  * }
  * ```
- * @example_vue
  * ```html
  * <template>
  *   <view class="container">

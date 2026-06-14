@@ -125,7 +125,6 @@ declare namespace PickerViewProps {
  *   }
  * }
  * ```
- * @example_vue
  * ```html
  * <template>
  *   <view class="taro-example">

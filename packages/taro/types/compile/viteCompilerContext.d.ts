@@ -60,8 +60,8 @@ export interface CommonBuildConfig extends IProjectConfig<'vite'> {
     app: string | string[]
   }
   mode: 'production' | 'development' | 'none'
-  buildAdapter: string // weapp | swan | alipay | tt | qq | jd | h5
-  platformType: string // mini | web
+  buildAdapter: string // weapp
+  platformType: string // mini
   /** special mode */
   isBuildNativeComp?: boolean
   /** hooks */

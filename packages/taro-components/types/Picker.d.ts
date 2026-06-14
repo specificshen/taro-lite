@@ -334,7 +334,6 @@ declare namespace PickerRegionProps {
  *   }
  * }
  * ```
- * @example_vue
  * ```html
  * <template>
  *   <view class="page-body">

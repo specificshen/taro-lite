@@ -22,7 +22,6 @@ interface MovableAreaProps extends StandardProps {
  *   }
  * }
  * ```
- * @example_vue
  * ```html
  *   <movable-area style='height: 200px; width: 200px; background: red;'>
  *     <movable-view style='height: 50px; width: 50px; background: blue;' direction='all'>在路上</movable-view>

@@ -8,7 +8,6 @@ interface ImageProps extends StandardProps {
   /** 图片裁剪、缩放的模式
    * @default "scaleToFill"
    * @supported weapp
-   * @rn 部分支持 scaleToFill, aspectFit, aspectFill, widthFix
    * @harmony 部分支持 scaleToFill, aspectFit, aspectFill, widthFix, heightFix
    */
   mode?: keyof ImageProps.Mode;
@@ -112,7 +111,6 @@ declare namespace ImageProps {
  *   }
  * }
  * ```
- * @example_vue
  * ```html
  * <template>
  *   <view class="components-page">

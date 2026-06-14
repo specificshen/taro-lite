@@ -196,7 +196,6 @@ declare namespace TextareaProps {
  *   }
  * }
  * ```
- * @example_vue
  * ```html
  * <template>
  *   <view class="components-page">

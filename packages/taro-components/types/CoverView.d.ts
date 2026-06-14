@@ -41,7 +41,6 @@ interface CoverViewProps extends ViewProps {
  *   transform: translate(-50%, -50%);
  * }
  * ```
- * @example_vue
  * ```html
  * <template>
  *   <view class="container">

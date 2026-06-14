@@ -47,7 +47,6 @@ declare namespace WebViewProps {
  *   }
  * }
  * ```
- * @example_vue
  * ```html
  * <template>
  *   <web-view src='https://mp.weixin.qq.com/' `@message="handleMessage" />

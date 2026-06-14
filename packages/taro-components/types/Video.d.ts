@@ -410,7 +410,6 @@ declare namespace VideoProps {
  *   }
  * }
  * ```
- * @example_vue
  * ```html
  * <template>
  *   <video

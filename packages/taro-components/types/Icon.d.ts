@@ -71,7 +71,6 @@ declare namespace IconProps {
  *   }
  * }
  * ```
- * @example_vue
  * <template>
  *   <view class="components-page">
  *     <icon size="60" type="success" />

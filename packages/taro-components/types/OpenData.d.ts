@@ -70,7 +70,6 @@ declare namespace OpenDataProps {
  *   }
  * }
  * ```
- * @example_vue
  * ```html
  * <template>
  *   <open-data type="userAvatarUrl" />

@@ -60,7 +60,6 @@ interface InputProps extends StandardProps, FormItemProps {
    */
   focus?: boolean;
   /** 设置键盘右下角按钮的文字，仅在type='text'时生效
-   * @alipay confirm-type 与 enableNative 属性冲突，若希望 confirm-type 生效，enableNative 不能设定为 false，而且不能设定 always-system
    * @default done
    * @supported weapp
    */
@@ -249,7 +248,6 @@ declare namespace InputProps {
  *   }
  * }
  * ```
- * @example_vue
  * ```html
  * <template>
  *   <view class="example-body">

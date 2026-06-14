@@ -120,7 +120,6 @@ declare namespace AdProps {
  *   }
  * }
  * ```
- * @example_vue
  * ```html
  * <template>
  *   <ad

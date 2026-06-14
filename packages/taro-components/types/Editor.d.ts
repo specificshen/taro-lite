@@ -95,7 +95,6 @@ declare namespace EditorProps {
  *   }
  * }
  * ```
- * @example_vue
  * ```html
  * <template>
  *   <view class="container">

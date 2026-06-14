@@ -59,7 +59,6 @@ declare namespace SwitchProps {
  *   }
  * }
  * ```
- * @example_vue
  * ```html
  * <template>
  *   <view class='components-page'>

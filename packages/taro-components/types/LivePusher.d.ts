@@ -348,7 +348,6 @@ declare namespace LivePusherProps {
  *   }
  * }
  * ```
- * @example_vue
  * ```html
  * <template>
  *   <live-pusher url="url" mode="RTC" :autopush="true"  />

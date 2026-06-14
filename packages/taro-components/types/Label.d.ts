@@ -31,7 +31,6 @@ interface LabelProps extends StandardProps {
  *   }
  * }
  * ```
- * @example_vue
  * ```html
  * <template>
  *   <radio-group>

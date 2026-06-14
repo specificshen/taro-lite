@@ -83,7 +83,6 @@ interface CheckboxProps extends StandardProps {
  *   }
  * }
  * ```
- * @example_vue
  * ```html
  * <template>
  *   <view class="container">

@@ -37,7 +37,6 @@ interface ButtonProps extends StandardProps {
   /** 指定按下去的样式类。当 `hover-class="none"` 时，没有点击态效果
    * @default button-hover
    * @supported weapp
-   * @rn 支持 hoverStyle 属性，但框架未支持 hoverClass
    */
   hoverClass?: string;
   /** 指定是否阻止本节点的祖先节点出现点击态
@@ -379,7 +378,6 @@ declare namespace ButtonProps {
  *   }
  * }
  * ```
- * @example_vue
  * ```html
  * <template>
  *   <view class="container">

@@ -18,7 +18,6 @@ interface TextProps extends StandardProps {
   /** 是否解码
    * @default false
    * @supported weapp
-   * @h5 默认解码，不支持设置
    */
   decode?: boolean;
   /** 限制文本最大行数
@@ -93,7 +92,6 @@ declare namespace TextProps {
  *   }
  * }
  * ```
- * @example_vue
  * ``` html
  * <template>
  *   <view class="container">

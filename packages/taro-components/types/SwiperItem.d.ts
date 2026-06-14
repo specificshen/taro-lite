@@ -42,7 +42,6 @@ interface SwiperItemProps extends StandardProps {
  *   }
  * }
  * ```
- * @example_vue
  * ```html
  * <template>
  *   <swiper

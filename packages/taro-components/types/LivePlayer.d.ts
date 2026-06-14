@@ -229,7 +229,6 @@ declare namespace LivePlayerProps {
  *   }
  * }
  * ```
- * @example_vue
  * ```html
  * <template>
  *   <live-player src="url" mode="live" :autoplay="true"  />

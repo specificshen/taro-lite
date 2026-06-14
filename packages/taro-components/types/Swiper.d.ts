@@ -170,7 +170,6 @@ declare namespace SwiperProps {
  *   }
  * }
  * ```
- * @example_vue
  * ```html
  * <template>
  *   <swiper
