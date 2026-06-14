@@ -2,7 +2,7 @@ import * as child_process from 'node:child_process';
 import { createHash } from 'node:crypto';
 import * as os from 'node:os';
 import * as path from 'node:path';
-import * as babel from '@babel/core';
+import { parseSync } from '@swc/core';
 import * as nativeFs from 'node:fs';
 import {
   CSS_EXT,
@@ -693,15 +693,16 @@ export function removeHeadSlash(str: string) {
   return str.replace(/^(\/|\\)/, '');
 }
 
-// converts ast nodes to js object
-function exprToObject(node: any) {
-  const types = ['BooleanLiteral', 'StringLiteral', 'NumericLiteral'];
+// converts swc ast nodes to js object
+function swcExprToObject(node: any) {
+  if (!node) return undefined;
 
-  if (types.includes(node.type)) {
+  const literalTypes = ['BooleanLiteral', 'StringLiteral', 'NumericLiteral'];
+  if (literalTypes.includes(node.type)) {
     return node.value;
   }
 
-  if (node.name === 'undefined' && !node.value) {
+  if (node.type === 'Identifier' && node.value === 'undefined') {
     return undefined;
   }
 
@@ -710,39 +711,67 @@ function exprToObject(node: any) {
   }
 
   if (node.type === 'ObjectExpression') {
-    return genProps(node.properties);
+    return swcGenProps(node.properties);
   }
 
   if (node.type === 'ArrayExpression') {
-    return node.elements.reduce(
-      (acc: any, el: any) => [
-        ...acc,
-        ...(el!.type === 'SpreadElement' ? exprToObject(el.argument) : [exprToObject(el)]),
-      ],
-      [],
-    );
+    return node.elements.reduce((acc: any[], el: any) => {
+      if (!el) return acc;
+      if (el.spread) {
+        return [...acc, ...(swcExprToObject(el.expression) || [])];
+      }
+      return [...acc, swcExprToObject(el.expression)];
+    }, []);
   }
+
+  return undefined;
 }
 
-// converts ObjectExpressions to js object
-function genProps(props: any[]) {
+// converts swc ObjectExpressions to js object
+function swcGenProps(props: any[]) {
   return props.reduce((acc, prop) => {
     if (prop.type === 'SpreadElement') {
       return {
         ...acc,
-        ...exprToObject(prop.argument),
+        ...swcExprToObject(prop.arguments),
       };
-    } else if (prop.type !== 'ObjectMethod') {
-      const v = exprToObject(prop.value);
-      if (v !== undefined) {
-        return {
-          ...acc,
-          [prop.key.name || prop.key.value]: v,
-        };
+    }
+
+    if (prop.type === 'KeyValueProperty') {
+      const key = prop.key.value;
+      const value = swcExprToObject(prop.value);
+      if (value !== undefined && key !== undefined) {
+        return { ...acc, [key]: value };
       }
     }
+
     return acc;
   }, {});
+}
+
+function findSwcCallExpressions(node: any, calleeName: string, results: any[] = []) {
+  if (!node || typeof node !== 'object') return results;
+
+  if (node.type === 'CallExpression') {
+    const callee = node.callee;
+    if (callee?.type === 'Identifier' && callee.value === calleeName) {
+      results.push(node);
+    }
+  }
+
+  for (const value of Object.values(node)) {
+    if (value && typeof value === 'object') {
+      if (Array.isArray(value)) {
+        for (const item of value) {
+          findSwcCallExpressions(item, calleeName, results);
+        }
+      } else {
+        findSwcCallExpressions(value, calleeName, results);
+      }
+    }
+  }
+
+  return results;
 }
 
 // read page config from a sfc file instead of the regular config file
@@ -756,19 +785,13 @@ function readSFCPageConfig(configPath: string) {
   let result: any = {};
 
   if (matches && matches.length === 1) {
-    const callExprHandler = (p: any) => {
-      const { callee } = p.node;
-      if (!callee.name) return;
-      if (callee.name && callee.name !== 'definePageConfig') return;
-
-      const configNode = p.node.arguments[0];
-      result = exprToObject(configNode);
-      p.stop();
-    };
     const configSource = matches[0];
-    const program = babel.parse(configSource, { filename: '' })?.program;
-
-    program && babel.traverse(program as any, { CallExpression: callExprHandler });
+    const ast = parseSync(configSource, { syntax: 'typescript', tsx: true });
+    const calls = findSwcCallExpressions(ast, 'definePageConfig');
+    if (calls.length === 1) {
+      const configNode = calls[0].arguments[0]?.expression;
+      result = swcExprToObject(configNode);
+    }
   }
 
   return result;
