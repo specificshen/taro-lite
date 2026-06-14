@@ -12,9 +12,6 @@ export default defineConfig<'vite'>(
       compiler: 'vite',
       ...(process.env.TARO_MINIFY === 'true' ? { jsMinimizer: 'oxc' as const } : {}),
       mini: {
-        minifyXML: {
-          collapseWhitespace: true,
-        },
         postcss: {
           cssModules: {
             enable: true,
