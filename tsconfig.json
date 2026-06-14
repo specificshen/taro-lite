@@ -1,19 +1,19 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "experimentalDecorators": true,
+    "target": "ES2022",
     "module": "ESNext",
-    "noImplicitAny": false,
+    "moduleResolution": "bundler",
+    "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "removeComments": false,
+    "esModuleInterop": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "strictNullChecks": true,
-    "target": "ES2022",
+    "removeComments": false,
+    "experimentalDecorators": true,
     "types": ["node"]
   },
   "include": ["scripts/**/*.ts", "packages/*/scripts/**/*.ts", "vitest.config.ts"],
-  "exclude": ["node_modules", "archive", "fixtures"]
+  "exclude": ["node_modules", "fixtures"]
 }

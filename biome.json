@@ -11,12 +11,8 @@
       "**",
       "!dist",
       "!coverage",
-      "!archive",
       "!node_modules",
-      "!oh_modules",
       "!**/*.d.ts",
-      "!**/*.ets",
-      "!packages/taro-cli/src/__tests__/fixtures",
       "!packages/taro-cli/templates",
       "!packages/taro-helper/swc"
     ]

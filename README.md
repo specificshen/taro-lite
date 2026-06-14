@@ -79,6 +79,20 @@ pnpm --filter @spcsn/taro-cli run build
 node packages/taro-cli/bin/taro --version
 ```
 
+## 常用脚本
+
+```bash
+pnpm run lint            # biome lint
+pnpm run format:check    # biome format 检查
+pnpm run format          # biome format 自动修复
+pnpm run typecheck       # 所有 packages 的 TypeScript 检查
+pnpm run typecheck:fixtures  # 示例工程的 TypeScript 检查
+pnpm run build           # 构建所有 packages
+pnpm run test            # 运行 packages 测试
+pnpm run verify:fixture:weapp  # 构建示例小程序
+pnpm run release:check   # 发布前检查
+```
+
 ## 业务接入示例
 
 业务工程配置示例：
