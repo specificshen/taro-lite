@@ -27,12 +27,12 @@ declare module './index' {
     onHide?(): void
   }
   interface AppInstance extends Show {
-    mount?(component: React.ComponentClass<any>, id: string, cb: (...args: any[]) => void): void
+    mount?(component: React.ComponentClass<any>, id: string, cb: (...args: unknown[]) => void): void
     mount?(
       component: React.ComponentClass<any>,
       id: string,
-      getCtx: (...args: any[]) => void,
-      cb: (...args: any[]) => void,
+      getCtx: (...args: unknown[]) => void,
+      cb: (...args: unknown[]) => void,
     ): void
     componentDidShow?(options?: Record<string, unknown>): void
     onShow?(options?: Record<string, unknown>): void
@@ -156,6 +156,7 @@ declare module './index' {
     clearAnimatedStyle?(selector: string, styleIds: Array<Number>, callback?: TaroGeneral.TFunc): void
   }
   interface PageInstance extends PageLifeCycle, ComponentInstance {
+    [key: string]: unknown
     /** 页面配置 */
     config?: PageConfig
     /** 页面的初始数据 */
@@ -165,6 +166,6 @@ declare module './index' {
     /** 页面的组件选项 */
     options?: Record<string, unknown>
     /** 获得一个 EventChannel 对象，用于页面间通讯 */
-    getOpenerEventChannel?(): Record<string, any>
+    getOpenerEventChannel?(): Record<string, unknown>
   }
 }

@@ -36,7 +36,8 @@ class TaroHistory extends Events {
 
     this.#location.on(
       '__record_history__',
-      (href: string) => {
+      (...args: unknown[]) => {
+        const href = args[0] as string;
         this.#cur++;
         this.#stack = this.#stack.slice(0, this.#cur);
         this.#stack.push({
@@ -50,8 +51,8 @@ class TaroHistory extends Events {
 
     this.#location.on(
       '__reset_history__',
-      (href: string) => {
-        this.#reset(href);
+      (...args: unknown[]) => {
+        this.#reset(args[0] as string);
       },
       null,
     );
@@ -68,8 +69,8 @@ class TaroHistory extends Events {
 
     this.on(
       CONTEXT_ACTIONS.RESTORE,
-      (pageId: string) => {
-        cache.set(pageId, {
+      (...args: unknown[]) => {
+        cache.set(args[0] as string, {
           location: this.#location,
           stack: this.#stack.slice(),
           cur: this.#cur,
@@ -80,7 +81,8 @@ class TaroHistory extends Events {
 
     this.on(
       CONTEXT_ACTIONS.RECOVER,
-      (pageId: string) => {
+      (...args: unknown[]) => {
+        const pageId = args[0] as string;
         if (cache.has(pageId)) {
           const ctx = cache.get(pageId)!;
           this.#location = ctx.location;
@@ -93,8 +95,8 @@ class TaroHistory extends Events {
 
     this.on(
       CONTEXT_ACTIONS.DESTROY,
-      (pageId: string) => {
-        cache.delete(pageId);
+      (...args: unknown[]) => {
+        cache.delete(args[0] as string);
       },
       null,
     );

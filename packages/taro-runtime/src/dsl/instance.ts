@@ -2,7 +2,7 @@ import type { Component, ComponentClass } from 'react';
 import type { TaroElement } from '../dom/element';
 import type { KeyFrame, MpEvent, ScrollTimelineOption, TFunc } from '../interface';
 
-export interface Instance<T = Record<string, any>> extends Component<T>, Show, PageInstance {
+export interface Instance<T = Record<string, unknown>> extends Component<T>, Show, PageInstance {
   tid?: string;
   node?: TaroElement;
   $forceUpdate?(): void;
@@ -49,7 +49,7 @@ export interface PageLifeCycle extends Show {
 }
 
 export interface PageInstance extends PageLifeCycle {
-  [key: string]: any;
+  [key: string]: unknown;
   /** 页面的初始数据 */
   data?: Record<string, unknown>;
   /** 页面路径 */
@@ -59,7 +59,7 @@ export interface PageInstance extends PageLifeCycle {
   /** 页面渲染引擎类型 */
   renderer?: 'webview' | 'skyline';
   /** 获得一个 EventChannel 对象，用于页面间通讯 */
-  getOpenerEventChannel?(): Record<string, any>;
+  getOpenerEventChannel?(): Record<string, unknown>;
   /** 执行关键帧动画，详见[动画](https://developers.weixin.qq.com/miniprogram/dev/framework/view/animation.html) */
   animate?(selector: string, keyFrames: KeyFrame[], duration: number, callback: () => void): void;
   /** 滚动驱动的动画，详见[动画](https://developers.weixin.qq.com/miniprogram/dev/framework/view/animation.html) */
@@ -75,20 +75,20 @@ interface Show {
 
 export interface AppInstance extends Show {
   componentDidShow?(options?: Record<string, unknown>): void;
-  mount?(component: React.ComponentClass, id: string, cb: (...args: any[]) => void): void;
+  mount?(component: React.ComponentClass, id: string, cb: (...args: unknown[]) => void): void;
   mount?(
     component: React.ComponentClass,
     id: string,
-    getCtx: (...args: any[]) => void,
-    cb: (...args: any[]) => void,
+    getCtx: (...args: unknown[]) => void,
+    cb: (...args: unknown[]) => void,
   ): void;
   onError?(error: string): void;
   onLaunch?(options?: Record<string, unknown>): void;
-  onPageNotFound?(res: any): void;
-  onUnhandledRejection?(error: any): void;
+  onPageNotFound?(res: unknown): void;
+  onUnhandledRejection?(error: unknown): void;
   onShow?(options?: Record<string, unknown>): void;
   onHide?(options?: Record<string, unknown>): void;
   unmount?(id: string, cb?: () => void): void;
-  taroGlobalData?: Record<any, any>;
-  config?: Record<any, any>;
+  taroGlobalData?: Record<string, unknown>;
+  config?: Record<string, unknown>;
 }

@@ -32,7 +32,8 @@ class TaroLocation extends Events {
 
     this.on(
       '__set_href_without_history__',
-      (href: string) => {
+      (...args: unknown[]) => {
+        const href = args[0] as string;
         this.#noCheckUrl = true;
 
         const lastHash = this.#url.hash;
@@ -58,8 +59,8 @@ class TaroLocation extends Events {
 
     this.on(
       CONTEXT_ACTIONS.RESTORE,
-      (pageId: string) => {
-        cache.set(pageId, {
+      (...args: unknown[]) => {
+        cache.set(args[0] as string, {
           lastHref: this.href,
         });
       },
@@ -68,7 +69,8 @@ class TaroLocation extends Events {
 
     this.on(
       CONTEXT_ACTIONS.RECOVER,
-      (pageId: string) => {
+      (...args: unknown[]) => {
+        const pageId = args[0] as string;
         // 数据恢复时，不需要执行跳转
         if (cache.has(pageId)) {
           const ctx = cache.get(pageId)!;
@@ -82,8 +84,8 @@ class TaroLocation extends Events {
 
     this.on(
       CONTEXT_ACTIONS.DESTROY,
-      (pageId: string) => {
-        cache.delete(pageId);
+      (...args: unknown[]) => {
+        cache.delete(args[0] as string);
       },
       null,
     );
