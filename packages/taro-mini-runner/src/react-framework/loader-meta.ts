@@ -104,8 +104,6 @@ class App extends React.Component {
     creator: 'createReactApp',
     creatorLocation: path.join(__dirname, 'runtime'),
     importFrameworkName: 'React',
-    extraImportForWeb: '',
-    execBeforeCreateWebApp: '',
     modifyConfig(config, source) {
       Object.assign(config, addConfig(source));
     },

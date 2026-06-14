@@ -39,8 +39,6 @@ class App extends React.Component {
     creator: 'createReactApp',
     creatorLocation: path.resolve(__dirname, '../../react-framework/runtime'),
     importFrameworkName: 'React',
-    extraImportForWeb: '',
-    execBeforeCreateWebApp: '',
   };
 
   logger = logger;

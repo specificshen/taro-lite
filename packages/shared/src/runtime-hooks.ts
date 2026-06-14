@@ -187,9 +187,9 @@ type ITaroHooks = {
   mergePageInstance: (prev: any, next: any) => void;
   /** 用于修改传递给小程序 Page 构造器的对象 */
   modifyPageObject: (config: Record<any, any>) => void;
-  /** H5 下拉刷新 wrapper */
+  /** 下拉刷新 wrapper */
   createPullDownComponent: (el: any, path: string, framework: any, customWrapper?: any, stampId?: string) => void;
-  /** H5 获取原生 DOM 对象 */
+  /** 获取原生 DOM 对象 */
   getDOMNode: (instance: any) => any;
   /**
    * @todo: multi

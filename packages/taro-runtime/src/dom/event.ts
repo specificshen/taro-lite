@@ -68,10 +68,7 @@ export class TaroEvent {
     if (!cacheTarget) {
       const target = Object.create(this.mpEvent?.target || null);
       const currentEle = env.document.getElementById(target.dataset?.sid || target.id || null);
-      // Note：优先判断冒泡场景alipay的targetDataset的sid, 不然冒泡场景target属性吐出不对，其余拿取当前绑定id
-      const element = env.document.getElementById(
-        target.targetDataset?.sid || target.dataset?.sid || target.id || null,
-      );
+      const element = env.document.getElementById(target.dataset?.sid || target.id || null);
 
       target.dataset = {
         ...(currentEle !== null ? currentEle.dataset : EMPTY_OBJ),
@@ -122,12 +119,7 @@ export class TaroEvent {
   }
 }
 
-export function createEvent(event: MpEvent | string, node?: TaroElement) {
-  if (typeof event === 'string') {
-    // For Vue3 using document.createEvent
-    return new TaroEvent(event, { bubbles: true, cancelable: true });
-  }
-
+export function createEvent(event: MpEvent, node?: TaroElement) {
   const domEv = new TaroEvent(event.type, { bubbles: true, cancelable: true }, event);
 
   for (const key in event) {

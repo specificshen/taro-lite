@@ -428,11 +428,6 @@ const WebView = {
 
 const Block = {};
 
-// For Vue，因为 slot 标签被 vue 占用了
-const SlotView = {
-  name: NO_DEFAULT_VALUE,
-};
-
 // For React
 // Slot 和 SlotView 最终都会编译成 <view slot={{ i.name }} />
 // 因为 <slot name="{{ i.name }}" /> 适用性没有前者高（无法添加类和样式）
@@ -486,7 +481,6 @@ export const internalComponents: Record<string, Record<string, string>> = {
   Block,
   Map: MapComp,
   Slot,
-  SlotView,
   NativeSlot,
   Script,
 };
@@ -530,7 +524,6 @@ export const nestElements = new Map([
   ['text', -1],
   ['static-text', 6],
   ['slot', 8],
-  ['slot-view', 8],
   ['label', 6],
   ['form', 4],
   ['scroll-view', 4],

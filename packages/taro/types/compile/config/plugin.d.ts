@@ -28,8 +28,6 @@ export interface ILoaderMeta {
   importFrameworkName: string
   creator: string
   creatorLocation: string
-  extraImportForWeb: string
-  execBeforeCreateWebApp: string
   frameworkArgs: string
   isNeedRawLoader?: boolean
   mockAppStatement: string

@@ -1,6 +1,5 @@
 import autoprefixerPlugin from 'autoprefixer';
 import type { Func, IPostcssOption } from '@spcsn/taro/types/compile';
-import postcssHtmlTransform from '../style-transforms/html-transform';
 import postcssPxTransform from '../style-transforms/px-transform';
 
 export const getDefaultPostcssConfig = function ({
@@ -12,7 +11,7 @@ export const getDefaultPostcssConfig = function ({
   deviceRatio: any;
   postcssOption?: IPostcssOption<'mini'>;
 }): [string, any, Func?][] {
-  const { autoprefixer, pxtransform = {}, htmltransform, ...options } = postcssOption;
+  const { autoprefixer, pxtransform = {}, ...options } = postcssOption;
 
   if (designWidth) {
     pxtransform.config!.designWidth = designWidth;
@@ -25,7 +24,6 @@ export const getDefaultPostcssConfig = function ({
   return [
     ['autoprefixer', autoprefixer, autoprefixerPlugin],
     ['postcss-pxtransform', pxtransform, postcssPxTransform],
-    ['postcss-html-transform', htmltransform, postcssHtmlTransform],
     ...Object.entries(options),
   ];
 };

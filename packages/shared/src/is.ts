@@ -36,5 +36,3 @@ export function isObjectStringLiteral(o: unknown): o is string {
 }
 
 export const isArray = Array.isArray;
-
-export const isWebPlatform = () => process.env.TARO_ENV === 'h5' || process.env.TARO_PLATFORM === 'web';

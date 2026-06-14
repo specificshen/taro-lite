@@ -132,11 +132,6 @@ export class TaroElement extends TaroNode {
     };
   }
 
-  // 兼容 Vue3，详情请见：https://github.com/NervJS/taro/issues/10579
-  public set focus(value: any) {
-    this.setAttribute(FOCUS, value);
-  }
-
   public blur() {
     this.setAttribute(FOCUS, false);
   }

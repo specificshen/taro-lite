@@ -25,17 +25,6 @@ export namespace PostcssOption {
   export type url = TogglableOptions<PostcssUrlOption>
 }
 
-export interface IHtmlTransformOption {
-  /** 是否启用内置 HTML 选择器转换 */
-  enable?: boolean
-  config?: {
-    /** 当前编译平台，内部根据编译平台自行生成，无需传入 */
-    readonly platform?: 'weapp'
-    /** 设置是否去除 cursor 相关样式 */
-    removeCursorStyle: boolean
-  }
-}
-
 export interface IPxTransformOption {
   /** 设置 1px 是否需要被转换 */
   onePxTransform?: boolean
@@ -69,8 +58,6 @@ interface IBasePostcssOption {
   autoprefixer?: TogglableOptions
   pxtransform?: TogglableOptions<IPxTransformOption>
   cssModules?: PostcssOption.cssModules
-  /** 内置 HTML 选择器转换配置 */
-  htmltransform?: IHtmlTransformOption
   [key: string]: any
 }
 

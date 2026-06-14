@@ -224,7 +224,7 @@ export class BaseTemplate {
           }
         }
 
-        if (compName === 'slot' || compName === 'slot-view') {
+        if (compName === 'slot') {
           result[compName] = {
             slot: newComp?.name,
             ...styles,
@@ -429,7 +429,6 @@ export class BaseTemplate {
     let nodeName = '';
     switch (comp.nodeName) {
       case 'slot':
-      case 'slot-view':
       case 'catch-view':
       case 'static-view':
       case 'pure-view':

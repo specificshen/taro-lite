@@ -1,42 +1,6 @@
-export enum PLATFORM_TYPE {
-  MINI = 'mini',
-  WEB = 'web',
-}
-
 export const COMPILE_MODE_IDENTIFIER_PREFIX = 'f';
 
 export const COMPILE_MODE_SUB_RENDER_FN = 'subRenderFn';
-
-export const PLATFORM_CONFIG_MAP = {
-  h5: {
-    type: PLATFORM_TYPE.WEB,
-  },
-  mini: {
-    type: PLATFORM_TYPE.MINI,
-  },
-};
-
-export const TT_SPECIFIC_COMPONENTS = new Set([
-  'page-container',
-  'slot',
-  'custom-wrapper',
-  'clue-order-form',
-  'aweme-group',
-  'pay-button',
-  'address-area',
-  'consume-card',
-  'aweme-data',
-  'rate-button',
-  'store-area',
-  'inline-payment-panel',
-  'aweme-user-card',
-  'aweme-live-book',
-  'draw-ad',
-  'lynx-view',
-  'flow-ad',
-  'ai-agent-chat',
-  'component',
-]);
 
 export const DEFAULT_COMPONENTS = new Set<string>([
   'view',

@@ -1,7 +1,6 @@
 import { EventEmitter } from 'node:events';
 import * as path from 'node:path';
 import * as helper from '@spcsn/taro-helper';
-import { getPlatformType } from '@spcsn/taro-shared';
 import Joi from 'joi';
 import { merge } from 'lodash';
 import { AsyncSeriesWaterfallHook } from 'tapable';
@@ -334,7 +333,7 @@ export default class Kernel extends EventEmitter {
     }
     const config = this.platforms.get(platform)!;
     const withNameConfig = this.config.getConfigWithNamed(config.name, config.useConfigName as string);
-    process.env.TARO_PLATFORM = getPlatformType(config.name, config.useConfigName);
+    process.env.TARO_PLATFORM = 'mini';
     return withNameConfig;
   }
 

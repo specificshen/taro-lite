@@ -1,4 +1,3 @@
-import { PLATFORM_TYPE } from '@spcsn/taro-shared';
 import type { Func } from '@spcsn/taro/types/compile';
 import type { IPluginContext, TConfig } from '../utils/types';
 
@@ -40,7 +39,7 @@ export default abstract class TaroPlatform<T extends TConfig = TConfig> {
   protected helper: IPluginContext['helper'];
   protected compiler: string;
 
-  abstract platformType: PLATFORM_TYPE;
+  abstract platformType: 'mini';
   abstract platform: string;
   abstract runtimePath: string | string[];
 

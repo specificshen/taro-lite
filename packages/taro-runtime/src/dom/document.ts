@@ -1,7 +1,6 @@
 import { controlledComponent, isUndefined, toCamelCase } from '@spcsn/taro-shared';
 import { A, COMMENT, DOCUMENT_ELEMENT_NAME, ROOT_STR } from '../constants';
 import { TaroElement } from '../dom/element';
-import { createEvent } from '../dom/event';
 import { eventSource } from '../dom/event-source';
 import { FormElement } from '../dom/form';
 import { NodeType } from '../dom/node-types';
@@ -15,7 +14,6 @@ export class TaroDocument extends TaroElement {
   public documentElement!: TaroElement;
   public head!: TaroElement;
   public body!: TaroElement;
-  public createEvent = createEvent;
   cookie?: string;
 
   public constructor() {

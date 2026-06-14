@@ -772,7 +772,7 @@ function readSFCPageConfig(configPath: string) {
 
 export function readPageConfig(configPath: string) {
   let result: any = {};
-  const extNames = ['.js', '.jsx', '.ts', '.tsx', '.vue'];
+  const extNames = ['.js', '.jsx', '.ts', '.tsx'];
 
   // check source file extension
   extNames.some((ext) => {

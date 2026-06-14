@@ -1,7 +1,7 @@
 import { existsSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { recursiveMerge, taroJsMiniComponentsPath } from '@spcsn/taro-helper';
-import { isObject, PLATFORM_TYPE } from '@spcsn/taro-shared';
+import { isObject } from '@spcsn/taro-shared';
 import { getPkgVersion } from '../utils/package';
 import { serviceProfiler } from '../utils/profile.js';
 import TaroPlatform from './platform';
@@ -23,7 +23,7 @@ interface BuildProgressController {
 }
 
 export abstract class TaroPlatformBase<T extends TConfig = TConfig> extends TaroPlatform<T> {
-  platformType = PLATFORM_TYPE.MINI;
+  platformType = 'mini' as const;
 
   abstract globalObject: string;
   abstract fileType: IFileType;
