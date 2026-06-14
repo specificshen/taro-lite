@@ -27,6 +27,9 @@
     "url": "https://github.com/specificshen/taro-lite/issues"
   },
   "homepage": "https://github.com/specificshen/taro-lite#readme",
+  "engines": {
+    "node": ">= 22.15.0"
+  },
   "files": [
     "dist"
   ],
