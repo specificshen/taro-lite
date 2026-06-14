@@ -1,4 +1,4 @@
-import { UnRecursiveTemplate } from '@spcsn/taro-shared/dist/template.js';
+import { UnRecursiveTemplate } from '@spcsn/taro-shared/template';
 
 type MiniComponents = Record<string, Record<string, string>>;
 

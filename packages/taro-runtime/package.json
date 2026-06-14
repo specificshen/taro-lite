@@ -4,10 +4,18 @@
   "description": "SPCSN Taro runtime for mini apps.",
   "author": "Samuel Ouyang",
   "license": "MIT",
+  "type": "module",
   "browser": "dist/index.js",
-  "main": "dist/runtime.esm.js",
-  "module": "dist/runtime.esm.js",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
   "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
   "files": [
     "dist"
   ],

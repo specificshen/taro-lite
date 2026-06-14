@@ -25,7 +25,7 @@ export default defineConfig([
     },
     output: {
       ...baseOutput,
-      file: 'dist/index.cjs.js',
+      file: 'dist/index.cjs',
       format: 'cjs',
     },
   },
@@ -48,6 +48,17 @@ export default defineConfig([
     output: {
       ...baseOutput,
       file: 'dist/template.js',
+      format: 'es',
+    },
+  },
+  {
+    input: 'src/template.ts',
+    transform: {
+      target: 'es2015',
+    },
+    output: {
+      ...baseOutput,
+      file: 'dist/template.cjs',
       format: 'cjs',
     },
   },

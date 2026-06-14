@@ -33,6 +33,7 @@ export { MutationObserver } from './dom-external/mutation-observer';
 export { env };
 export * from './constants';
 export { Current, getCurrentInstance, setCurrentApp, whenAppReady } from './current';
+export type { Router } from './current';
 export { eventSource } from './dom/event-source';
 export {
   createComponentConfig,

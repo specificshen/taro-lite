@@ -31,7 +31,7 @@ export default defineConfig([
     },
     output: {
       ...baseOutput,
-      file: 'dist/index.cjs.js',
+      file: 'dist/index.cjs',
       format: 'cjs',
       codeSplitting: false,
     },

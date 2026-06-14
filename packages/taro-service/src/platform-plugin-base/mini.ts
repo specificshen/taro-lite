@@ -5,7 +5,7 @@ import { isObject, PLATFORM_TYPE } from '@spcsn/taro-shared';
 import { getPkgVersion } from '../utils/package';
 import { serviceProfiler } from '../utils/profile.js';
 import TaroPlatform from './platform';
-import type { RecursiveTemplate, UnRecursiveTemplate } from '@spcsn/taro-shared/dist/template';
+import type { RecursiveTemplate, UnRecursiveTemplate } from '@spcsn/taro-shared/template';
 import type { TConfig } from '../utils/types';
 
 interface IFileType {
