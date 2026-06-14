@@ -24,7 +24,7 @@ if (ENABLE_SIZE_APIS) {
 if (ENABLE_TEMPLATE_CONTENT) {
   TaroElement.extend('content', {
     get() {
-      return getTemplateContent(this as TaroElement);
+      return getTemplateContent(this as unknown as TaroElement);
     },
   });
 }

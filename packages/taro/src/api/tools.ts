@@ -1,11 +1,23 @@
 import { isFunction, isObject } from '@spcsn/taro-shared';
 
-export function Behavior(options: any): any {
+interface TaroApi {
+  config?: PxTransformConfig;
+}
+
+interface PxTransformConfig {
+  designWidth?: number | ((size: number) => number);
+  deviceRatio?: Record<number, number>;
+  baseFontSize?: number;
+  targetUnit?: string;
+  unitPrecision?: number;
+}
+
+export function Behavior(options: Record<string, unknown>): Record<string, unknown> {
   return options;
 }
 
-export function getPreload(current: any) {
-  return function (key: any, val: unknown) {
+export function getPreload(current: { preloadData?: unknown }) {
+  return function (key: string | Record<string, unknown>, val: unknown) {
     current.preloadData = isObject(key)
       ? key
       : {
@@ -24,8 +36,8 @@ const defaultBaseFontSize = 20;
 const defaultUnitPrecision = 5;
 const defaultTargetUnit = 'rpx';
 
-export function getInitPxTransform(taro: any) {
-  return function (config: any) {
+export function getInitPxTransform(taro: TaroApi) {
+  return function (config: PxTransformConfig) {
     const {
       designWidth = defaultDesignWidth,
       deviceRatio = defaultDesignRatio,
@@ -33,16 +45,16 @@ export function getInitPxTransform(taro: any) {
       targetUnit = defaultTargetUnit,
       unitPrecision = defaultUnitPrecision,
     } = config;
-    taro.config = taro.config || {};
-    taro.config.designWidth = designWidth;
-    taro.config.deviceRatio = deviceRatio;
-    taro.config.baseFontSize = baseFontSize;
-    taro.config.targetUnit = targetUnit;
-    taro.config.unitPrecision = unitPrecision;
+    const taroConfig = (taro.config ||= {});
+    taroConfig.designWidth = designWidth;
+    taroConfig.deviceRatio = deviceRatio;
+    taroConfig.baseFontSize = baseFontSize;
+    taroConfig.targetUnit = targetUnit;
+    taroConfig.unitPrecision = unitPrecision;
   };
 }
 
-export function getPxTransform(taro: any) {
+export function getPxTransform(taro: TaroApi) {
   return function (size: number) {
     const config = taro.config || {};
     const baseFontSize = config.baseFontSize;
@@ -58,7 +70,7 @@ export function getPxTransform(taro: any) {
     let rootValue = 1 / deviceRatio[designWidth];
     switch (targetUnit) {
       case 'rem':
-        rootValue *= baseFontSize * 2;
+        rootValue *= (baseFontSize || defaultBaseFontSize) * 2;
         break;
       case 'px':
         rootValue *= 2;

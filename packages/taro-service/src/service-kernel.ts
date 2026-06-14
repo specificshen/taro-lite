@@ -39,7 +39,7 @@ export default class Kernel extends EventEmitter {
   cliCommandsPath!: string;
   commands: Map<string, ICommand>;
   platforms: Map<string, IPlatform>;
-  helper: any;
+  helper!: Record<string, unknown>;
   runnerUtils: any;
   runOpts: any;
   debugger: any;

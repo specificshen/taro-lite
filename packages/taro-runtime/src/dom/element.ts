@@ -32,11 +32,18 @@ import { TaroNode } from './node';
 import { NodeType } from './node-types';
 import { Style } from './style';
 import { treeToArray } from './tree';
-import type { AddEventListenerOptions, Attributes, EventHandler, TFunc } from '../interface';
+import type {
+  AddEventListenerOptions,
+  Attributes,
+  EventHandler,
+  MiniData,
+  TFunc,
+  UpdatePayloadValue,
+} from '../interface';
 import type { TaroEvent } from './event';
 
 export class TaroElement extends TaroNode {
-  public ctx?: any;
+  public ctx?: unknown;
   public tagName!: string;
   public props: Record<string, any> = {};
   public style: Style;
@@ -136,7 +143,7 @@ export class TaroElement extends TaroNode {
     this.setAttribute(FOCUS, false);
   }
 
-  public setAttribute(qualifiedName: string, value: any): void {
+  public setAttribute(qualifiedName: string, value: unknown): void {
     process.env.NODE_ENV !== 'production' &&
       warn(
         isString(value) && value.length > PROPERTY_THRESHOLD,
@@ -158,16 +165,17 @@ export class TaroElement extends TaroNode {
       case STYLE:
         this.style.cssText = value as string;
         break;
-      case ID:
+      case ID: {
         if (this.uid !== this.sid) {
           // eventSource[sid] 永远保留，直到组件卸载
           // eventSource[uid] 可变
           eventSource.delete(this.uid);
         }
-        value = String(value);
-        this.props[qualifiedName] = this.uid = value;
-        eventSource.set(value, this);
+        const id = String(value);
+        this.props[qualifiedName] = this.uid = id;
+        eventSource.set(id, this);
         break;
+      }
       default:
         this.props[qualifiedName] = value as string;
 
@@ -196,7 +204,7 @@ export class TaroElement extends TaroNode {
     const qualifiedNameInCamelCase = toCamelCase(qualifiedName);
     const payload = {
       path: `${_path}.${qualifiedNameInCamelCase}`,
-      value: isFunction(value) ? () => value : value,
+      value: isFunction(value) ? () => value as unknown as MiniData | MiniData[] : (value as UpdatePayloadValue),
     };
 
     hooks.call('modifySetAttrPayload', this, qualifiedName, payload, componentsAlias);
@@ -214,7 +222,7 @@ export class TaroElement extends TaroNode {
         // catchMove = false: view or click-view or static-view
         this.enqueueUpdate({
           path: `${_path}.${Shortcuts.NodeName}`,
-          value: value
+          value: (value as boolean)
             ? catchViewAlias
             : this.isOnlyClickBinded() && !isHasExtractProp(this)
               ? clickViewAlias
@@ -353,7 +361,7 @@ export class TaroElement extends TaroNode {
       if (!isUndefined(result) && event.mpEvent) {
         const res = hooks.call('modifyTaroEventReturn', this, event, result);
         if (res) {
-          (event.mpEvent as any)[EVENT_CALLBACK_RESULT] = result;
+          (event.mpEvent as Record<string, unknown>)[EVENT_CALLBACK_RESULT] = result;
         }
       }
 
@@ -374,7 +382,7 @@ export class TaroElement extends TaroNode {
     const SPECIAL_NODES = hooks.call('getSpecialNodes')!;
 
     let sideEffect = true;
-    if (isObject<Record<string, any>>(options) && options.sideEffect === false) {
+    if (isObject<Record<string, unknown>>(options) && options.sideEffect === false) {
       sideEffect = false;
       delete options.sideEffect;
     }
@@ -412,7 +420,7 @@ export class TaroElement extends TaroNode {
     }
   }
 
-  static extend(methodName: string, options: TFunc | Record<string, any>) {
+  static extend(methodName: string, options: TFunc | Record<string, unknown>) {
     extend(TaroElement, methodName, options);
   }
 }

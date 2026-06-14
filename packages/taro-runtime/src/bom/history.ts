@@ -3,15 +3,16 @@ import { CONTEXT_ACTIONS } from '../constants';
 import { Events } from '../emitter/emitter';
 import { RuntimeCache } from '../utils/cache';
 import type { TaroLocation } from './location';
+import type { TaroWindow } from './window';
 
 export interface HistoryState {
-  state: Record<string, any> | null;
+  state: unknown;
   title: string;
   url: string;
 }
 
 type Options = {
-  window: any;
+  window: TaroWindow;
 };
 type HistoryContext = {
   location: TaroLocation;
@@ -26,7 +27,7 @@ class TaroHistory extends Events {
   #stack: HistoryState[] = [];
   #cur = 0;
 
-  #window: any;
+  #window: TaroWindow;
 
   constructor(location: TaroLocation, options: Options) {
     super();
@@ -145,7 +146,7 @@ class TaroHistory extends Events {
     this.go(1);
   }
 
-  pushState(state: any, title: string, url: string) {
+  pushState(state: unknown, title: string, url: string) {
     if (!url || !isString(url)) return;
     this.#stack = this.#stack.slice(0, this.#cur + 1);
     this.#stack.push({
@@ -158,7 +159,7 @@ class TaroHistory extends Events {
     this.#location.trigger('__set_href_without_history__', url);
   }
 
-  replaceState(state: any, title: string, url: string) {
+  replaceState(state: unknown, title: string, url: string) {
     if (!url || !isString(url)) return;
     this.#stack[this.#cur] = {
       state,
