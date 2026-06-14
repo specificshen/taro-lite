@@ -3,7 +3,7 @@ import * as path from 'node:path';
 import { type MockInstance, afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { run } from './utils';
 
-const runBuild = run('build', ['commands/build', path.resolve(__dirname, '../src/platform-weapp')]);
+const runBuild = run('build', ['commands/build', path.resolve(__dirname, '../dist/platform-weapp')]);
 
 const APP_PATH = path.join(__dirname, 'fixtures/default');
 const OUTPUT_PATH = path.join(__dirname, 'fixtures/default/dist');

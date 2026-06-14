@@ -1,4 +1,3 @@
-// For React.createElement's type
 export const View = 'view';
 export const Block = 'block';
 export const CustomWrapper = 'custom-wrapper';

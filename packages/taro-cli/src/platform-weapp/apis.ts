@@ -14,11 +14,10 @@ interface TaroApiTarget {
 
 declare const wx: WeappNativeApi;
 
-export function initNativeApi(taro: TaroApiTarget) {
+export function initNativeApi(taro: TaroApiTarget): void {
   processApis(taro, wx, {
     needPromiseApis,
     modifyApis(apis) {
-      // fix https://github.com/NervJS/taro/issues/9899
       apis.delete('lanDebug');
     },
     transformMeta(api: string, options: Record<string, unknown>) {
@@ -35,6 +34,7 @@ export function initNativeApi(taro: TaroApiTarget) {
       };
     },
   });
+
   taro.cloud = wx.cloud;
   taro.getTabBar = function (pageCtx) {
     if (typeof pageCtx?.getTabBar === 'function') {

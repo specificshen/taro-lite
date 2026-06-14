@@ -1,6 +1,6 @@
 import * as path from 'node:path';
 import { fs } from '@spcsn/taro-helper';
-import { getRootPath } from '../util';
+import { getRootPath } from '../util/index';
 
 export default class Creator {
   protected _rootPath!: string;
@@ -11,9 +11,9 @@ export default class Creator {
     this.init();
   }
 
-  init() {}
+  init(): void {}
 
-  sourceRoot(rootPath?: string) {
+  sourceRoot(rootPath?: string): string {
     if (typeof rootPath === 'string') {
       this._rootPath = path.resolve(rootPath);
     }
@@ -24,12 +24,12 @@ export default class Creator {
   }
 
   templatePath(...args: string[]): string {
-    let filepath = path.join.apply(path, args);
+    let filepath = path.join(...args);
     if (!path.isAbsolute(filepath)) {
       filepath = path.join(this._rootPath, 'templates', filepath);
     }
     return filepath;
   }
 
-  write() {}
+  write(): void {}
 }

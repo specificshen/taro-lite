@@ -1,13 +1,13 @@
 import * as path from 'node:path';
 
 export default () => {
+  const presetsDir = __dirname;
   return {
     plugins: [
-      // hooks
-      path.resolve(__dirname, 'hooks', 'build.js'),
-      path.resolve(__dirname, 'files', 'write-file-to-dist.js'),
-      path.resolve(__dirname, 'files', 'generate-project-config.js'),
-      path.resolve(__dirname, 'files', 'generate-framework-info.js'),
+      path.join(presetsDir, 'hooks', 'build.js'),
+      path.join(presetsDir, 'files', 'write-file-to-dist.js'),
+      path.join(presetsDir, 'files', 'generate-project-config.js'),
+      path.join(presetsDir, 'files', 'generate-framework-info.js'),
     ],
   };
 };

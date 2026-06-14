@@ -2,19 +2,15 @@ import * as fs from 'node:fs';
 import * as os from 'node:os';
 import * as path from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import {
-  CompilerType,
-  createProject,
-  CSSType,
-  FrameworkType,
-  NpmType,
-  PeriodType,
-} from '../src/create/template-creator';
+import { createProject, NpmType } from '../src/create/template-creator';
 
 const packageRoot = path.resolve(__dirname, '..');
-const templateCreator = require('../templates/default/template-creator.cjs') as {
-  handler: Parameters<typeof createProject>[1];
+const templateCreatorModule = (await import('../templates/default/template-creator.cjs')) as {
+  default: {
+    handler: Parameters<typeof createProject>[1];
+  };
 };
+const templateCreator = templateCreatorModule.default;
 
 let temporaryRoot = '';
 
@@ -37,16 +33,11 @@ describe('createProject', () => {
         projectName: 'demo-app',
         template: 'default',
         npm: NpmType.Pnpm,
-        framework: FrameworkType.React,
-        css: CSSType.None,
         autoInstall: false,
         templateRoot: packageRoot,
         version: '1.0.0',
-        typescript: false,
         date: '2026-06-06',
         description: 'Demo app',
-        compiler: CompilerType.Vite,
-        period: PeriodType.CreateAPP,
       },
       templateCreator.handler,
     );
@@ -70,7 +61,6 @@ describe('createProject', () => {
     expect(fs.existsSync(path.join(projectRoot, '.env.development'))).toBe(true);
     expect(fs.existsSync(path.join(projectRoot, '_gitignore'))).toBe(false);
     expect(fs.existsSync(path.join(projectRoot, 'template-creator.cjs'))).toBe(false);
-    expect(fs.existsSync(path.join(projectRoot, 'template_creator.js'))).toBe(false);
     expect(pageSource).toContain('export default function IndexPage');
     expect(pageSource).toContain('<PageWrapper title="Taro Lite">');
   });

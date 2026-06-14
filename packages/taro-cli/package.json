@@ -8,6 +8,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "prod": "pnpm run build",
+    "pretest": "pnpm run build",
     "test": "vitest run",
     "test:ci": "vitest run --coverage",
     "test:dev": "vitest",
@@ -15,6 +16,7 @@
     "updateSnapshot": "vitest run --update",
     "prebuild": "pnpm run clean",
     "build": "tsc",
+    "typecheck": "tsc --noEmit",
     "dev": "tsc -w",
     "clean": "bun ../../scripts/clean.ts dist"
   },

@@ -39,9 +39,9 @@ importers:
         specifier: ^19.2.7
         version: 19.2.7
     devDependencies:
-      '@spcsn/taro-core':
-        specifier: link:../../packages/taro-core
-        version: link:../../packages/taro-core
+      '@spcsn/taro-cli':
+        specifier: link:../../packages/taro-cli
+        version: link:../../packages/taro-cli
       '@types/react':
         specifier: ^19.2.17
         version: 19.2.17
@@ -167,55 +167,6 @@ importers:
       vitest:
         specifier: ^4.1.8
         version: 4.1.8(@types/node@25.9.3)(@vitest/coverage-istanbul@4.1.8)(terser@5.48.0)
-
-  packages/taro-core:
-    dependencies:
-      '@spcsn/taro-components':
-        specifier: workspace:*
-        version: link:../taro-components
-      '@spcsn/taro-helper':
-        specifier: workspace:*
-        version: link:../taro-helper
-      '@spcsn/taro-mini-runner':
-        specifier: workspace:*
-        version: link:../taro-mini-runner
-      '@spcsn/taro-service':
-        specifier: workspace:*
-        version: link:../taro-service
-      '@spcsn/taro-shared':
-        specifier: workspace:*
-        version: link:../shared
-      adm-zip:
-        specifier: ^0.5.17
-        version: 0.5.17
-      download-git-repo:
-        specifier: ^3.0.2
-        version: 3.0.2
-      inquirer:
-        specifier: ^14.0.2
-        version: 14.0.2(@types/node@25.9.3)
-      ora:
-        specifier: ^9.4.0
-        version: 9.4.0
-    devDependencies:
-      '@spcsn/taro':
-        specifier: workspace:*
-        version: link:../taro
-      '@types/adm-zip':
-        specifier: ^0.5.8
-        version: 0.5.8
-      '@types/bun':
-        specifier: ^1.3.14
-        version: 1.3.14
-      '@types/inquirer':
-        specifier: ^9.0.9
-        version: 9.0.9
-      '@types/node':
-        specifier: ^25.9.3
-        version: 25.9.3
-      typescript:
-        specifier: ~6.0.3
-        version: 6.0.3
 
   packages/taro-helper:
     dependencies:
@@ -1069,9 +1020,6 @@ packages:
   '@types/babel__traverse@7.28.0':
     resolution: {integrity: sha512-8PvcXf70gTDZBgt9ptxJ8elBeBjcLOAcOtoO/mPJjtji1+CdGbHgm77om1GrsPxsiE+uXIpNSK64UYaIwQXd4Q==}
 
-  '@types/bun@1.3.14':
-    resolution: {integrity: sha512-h1hFqFVcvAvD9j9K7ZW7vd82aSA+rTdznZa+5bwvCwqSB1jmmfLcbIWhOLx1/+boy/xmjgCs/OMUL8hRJSmnPw==}
-
   '@types/chai@5.2.3':
     resolution: {integrity: sha512-Mw558oeA9fFbv65/y4mHtXDs9bPnFMZAL/jxdPFUpOHHIXX91mcgEHbS5Lahr+pwZFR8A7GQleRWeI6cGFC2UA==}
 
@@ -1280,9 +1228,6 @@ packages:
 
   buffer@5.7.1:
     resolution: {integrity: sha512-EHcyIPBQ4BSGlvjB16k5KgAJ27CIsHY/2JBmCRReo48y9rQ3MaUzWX3KVlBa4U7MyX02HdVj0K7C3WaB3ju7FQ==}
-
-  bun-types@1.3.14:
-    resolution: {integrity: sha512-4N0ig0fEomHt5R0KCFWjovxow98rIoRwKolrYdCcknNwMekCXRnWEUvgu5soYV8QXtVsrUD8B95MBOZGPvr6KQ==}
 
   cacheable-request@2.1.4:
     resolution: {integrity: sha512-vag0O2LKZ/najSoUwDbVlnlCFvhBE/7mGTY2B5FgCBDcRD+oVV1HYTOwM6JZfMg/hIcM6IwnTZ1uQQL5/X3xIQ==}
@@ -3051,10 +2996,6 @@ snapshots:
     dependencies:
       '@babel/types': 7.29.7
 
-  '@types/bun@1.3.14':
-    dependencies:
-      bun-types: 1.3.14
-
   '@types/chai@5.2.3':
     dependencies:
       '@types/deep-eql': 4.0.2
@@ -3279,10 +3220,6 @@ snapshots:
     dependencies:
       base64-js: 1.5.1
       ieee754: 1.2.1
-
-  bun-types@1.3.14:
-    dependencies:
-      '@types/node': 25.9.3
 
   cacheable-request@2.1.4:
     dependencies:

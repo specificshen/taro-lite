@@ -1,17 +1,13 @@
-const path = require('node:path');
-const { TaroPlatformBase } = require('@spcsn/taro-service');
-const { components } = require('./components');
-const { Template } = require('./template');
-
-interface WeappPluginOptions {
-  enablekeyboardAccessory?: boolean;
-}
+import * as path from 'node:path';
+import { TaroPlatformBase, type IPluginContext } from '@spcsn/taro-service';
+import { components } from './components';
+import { Template } from './template';
 
 class Weapp extends TaroPlatformBase {
-  template: InstanceType<typeof Template>;
+  template: Template;
   platform = 'weapp';
   globalObject = 'wx';
-  projectConfigJson: string = this.config.projectConfigName || 'project.config.json';
+  projectConfigJson: string;
   runtimePath: string;
   taroComponentsPath: string;
   fileType = {
@@ -22,21 +18,14 @@ class Weapp extends TaroPlatformBase {
     xs: '.wxs',
   };
 
-  /**
-   * 1. setupTransaction - init
-   * 2. setup
-   * 3. setupTransaction - close
-   * 4. buildTransaction - init
-   * 5. build
-   * 6. buildTransaction - close
-   */
-  constructor(ctx, config, pluginOptions?: WeappPluginOptions) {
+  constructor(ctx: IPluginContext, config: any) {
     super(ctx, config);
-    const platformDirectory = path.dirname(ctx.path);
+    const platformDirectory = path.dirname(ctx.path ?? __filename);
     this.runtimePath = path.join(platformDirectory, 'runtime');
     this.taroComponentsPath = path.join(platformDirectory, 'components-react');
-    this.template = new Template(pluginOptions);
-    // Skyline / glass-easel 默认配置（用户可在 project config 中覆盖）
+    this.template = new Template();
+    this.projectConfigJson = this.config.projectConfigName || 'project.config.json';
+
     this.config = {
       renderer: 'skyline',
       componentFramework: 'glass-easel',
@@ -44,27 +33,18 @@ class Weapp extends TaroPlatformBase {
       style: 'v2',
       ...this.config,
     };
+
     this.setupTransaction.addWrapper({
-      close: () => {
-        this.modifyTemplate(pluginOptions);
-      },
+      close: () => this.modifyTemplate(),
     });
   }
 
-  /**
-   * 增加组件或修改组件属性
-   */
-  modifyTemplate(pluginOptions?: WeappPluginOptions) {
-    const template = this.template;
-    template.mergeComponents(this.ctx, components);
-    template.voidElements.add('voip-room');
-    template.voidElements.add('native-slot');
-    template.focusComponents.add('editor');
-    if (pluginOptions?.enablekeyboardAccessory) {
-      template.voidElements.delete('input');
-      template.voidElements.delete('textarea');
-    }
+  modifyTemplate(): void {
+    this.template.mergeComponents(this.ctx, components);
+    this.template.voidElements.add('voip-room');
+    this.template.voidElements.add('native-slot');
+    this.template.focusComponents.add('editor');
   }
 }
 
-module.exports.default = Weapp;
+export default Weapp;

@@ -1,7 +1,7 @@
 import { type MockedClass, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Kernel } from '@spcsn/taro-service';
 import CLI from '../src/cli';
-import { getPkgVersion } from '../src/util';
+import { getPkgVersion } from '../src/util/index';
 
 vi.mock('@spcsn/taro-service');
 const MockedKernel = Kernel as unknown as MockedClass<typeof Kernel>;
@@ -37,7 +37,7 @@ describe('cli', () => {
       _: ['build'],
       options: {
         args: expect.any(Object),
-        platform: undefined,
+        platform: 'weapp',
         isWatch: false,
         withoutBuild: false,
         env: undefined,
@@ -51,14 +51,12 @@ describe('cli', () => {
     };
 
     it('should make configs with default weapp platform', async () => {
-      const platform = 'weapp';
       setProcessArgv('taro build --watch --port 8080');
       await cli.run();
       const ins = MockedKernel.mock.instances[0];
 
       const opts = Object.assign({}, baseOpts);
       opts.options = Object.assign({}, baseOpts.options, {
-        platform,
         isWatch: true,
         port: 8080,
         deviceType: undefined,
@@ -84,7 +82,6 @@ describe('cli', () => {
       const projectName = 'temp';
       const templateSource = 'https://url';
       const template = 'mobx';
-      const css = 'none';
       setProcessArgv('taro init temp --template-source=https://url --clone --template mobx --css none');
       await cli.run();
       const ins = MockedKernel.mock.instances[0];
@@ -95,12 +92,10 @@ describe('cli', () => {
           options: {
             appPath: APP_PATH,
             projectName,
-            typescript: undefined,
             templateSource,
             description: undefined,
             clone: true,
             template,
-            css,
           },
           isHelp: false,
         },
@@ -119,12 +114,10 @@ describe('cli', () => {
           options: {
             appPath: APP_PATH,
             projectName,
-            typescript: undefined,
             templateSource: undefined,
             description: undefined,
             clone: false,
             template: undefined,
-            css: undefined,
           },
           isHelp: false,
         },
@@ -165,7 +158,7 @@ describe('cli', () => {
 
       setProcessArgv('taro -v');
       await cli.run();
-      expect(spy).toBeCalledWith(getPkgVersion());
+      expect(spy).toHaveBeenCalledWith(getPkgVersion());
 
       spy.mockRestore();
     });

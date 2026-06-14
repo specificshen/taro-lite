@@ -5,18 +5,15 @@ import {
   DEFAULT_TEMPLATE_SRC_GITEE,
   fs,
   getUserHomeDir,
-  SOURCE_DIR,
   TARO_BASE_CONFIG,
   TARO_CONFIG_FOLDER,
 } from '@spcsn/taro-helper';
-import { isArray } from '@spcsn/taro-shared';
 import type { default as Inquirer, Question } from 'inquirer';
-import ora from 'ora';
-import { clearConsole, getPkgVersion, getRootPath } from '../util';
+import { clearConsole, getPkgVersion, getRootPath } from '../util/index';
 import { TEMPLATE_CREATOR_FILES } from './constants';
 import Creator from './creator';
 import fetchTemplate from './fetch-template';
-import { CompilerType, createProject, CSSType, FrameworkType, NpmType, PeriodType } from './template-creator';
+import { createProject, NpmType, type ProjectConfig, type TemplateHandlers } from './template-creator';
 import type { ITemplates } from './fetch-template';
 
 export interface IProjectConf {
@@ -27,33 +24,15 @@ export interface IProjectConf {
   clone?: boolean;
   template: string;
   description?: string;
-  typescript?: boolean;
-  css: CSSType;
   date?: string;
   src?: string;
   sourceRoot?: string;
-  env?: string;
   autoInstall?: boolean;
-  hideDefaultTemplate?: boolean;
-  framework: FrameworkType;
-  compiler?: CompilerType;
-  ask?: (config: object) => Promise<void> | void;
 }
 
-type CustomPartial<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
-
-type IProjectConfOptions = CustomPartial<
-  IProjectConf,
-  'projectName' | 'projectDir' | 'template' | 'css' | 'npm' | 'framework' | 'templateSource'
->;
-
-interface AskMethods {
-  (conf: IProjectConfOptions, prompts: Question<IProjectConf>[], choices?: ITemplates[]): void;
-}
+type IProjectConfOptions = Partial<IProjectConf>;
 
 const NONE_AVAILABLE_TEMPLATE = '无可用模板';
-const SUPPORTED_FRAMEWORK = FrameworkType.React;
-const SUPPORTED_COMPILER = CompilerType.Vite;
 
 export default class Project extends Creator {
   public rootPath: string;
@@ -61,213 +40,103 @@ export default class Project extends Creator {
 
   constructor(options: IProjectConfOptions) {
     super(options.sourceRoot);
-    const nodeMajorVersion = Number(process.versions.node.split('.')[0]);
-    if (nodeMajorVersion < 18) {
-      throw new Error('Node.js 版本过低，推荐升级 Node.js 至 v18.0.0+');
-    }
     this.rootPath = this._rootPath;
-
-    this.conf = Object.assign(
-      {
-        projectName: '',
-        projectDir: '',
-        template: '',
-        description: '',
-        npm: '',
-      },
-      options,
-    );
+    this.conf = {
+      projectName: '',
+      projectDir: '',
+      template: '',
+      description: '',
+      npm: NpmType.Pnpm,
+      ...options,
+    };
   }
 
-  init() {
+  init(): void {
     clearConsole();
-    console.log(chalk.green('Taro 即将创建一个新项目!'));
+    console.log(chalk.green('Taro Core 即将创建一个新项目!'));
     console.log(`Need help? Go and open issue: ${chalk.blueBright('https://tls.jd.com/taro-issue-helper')}`);
     console.log();
   }
 
-  async create() {
+  async create(): Promise<void> {
     try {
       const answers = await this.ask();
       const date = new Date();
-      this.conf = Object.assign(this.conf, answers);
-      this.conf.date = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
-      this.write();
+      this.conf = { ...this.conf, ...answers, date: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}` };
+      await this.write();
     } catch (error) {
       console.log(chalk.red('创建项目失败: ', error));
     }
   }
 
-  async ask() {
+  async ask(): Promise<IProjectConfOptions> {
     const { default: inquirer } = (await import('inquirer')) as { default: typeof Inquirer };
+    const prompts: Question<IProjectConf>[] = [];
 
-    let prompts: Question<IProjectConf>[] = [];
-    const conf = this.conf;
-
-    this.askProjectName(conf, prompts);
-    this.askDescription(conf, prompts);
-    this.askNpm(conf, prompts);
-    const answers = await inquirer.prompt<IProjectConf>(prompts);
-    answers.typescript = true;
-
-    if (conf.framework && conf.framework !== SUPPORTED_FRAMEWORK) {
-      console.log(chalk.yellow('当前 Fork 仅支持 React 模板，将自动切换为 React。'));
-    }
-    if (conf.compiler && conf.compiler !== SUPPORTED_COMPILER) {
-      console.log(chalk.yellow('当前 Fork 仅支持 Vite 编译，将自动切换为 Vite。'));
-    }
-    answers.framework = SUPPORTED_FRAMEWORK;
-    answers.compiler = SUPPORTED_COMPILER;
-
-    prompts = [];
-    await this.askTemplateSource(conf, prompts);
-    const compilerAndTemplateSourceAnswer = await inquirer.prompt<IProjectConf>(prompts);
-    compilerAndTemplateSourceAnswer.compiler = SUPPORTED_COMPILER;
-
-    prompts = [];
-    const templates = await this.fetchTemplates(Object.assign({}, answers, compilerAndTemplateSourceAnswer));
-    await this.askTemplate(conf, prompts, templates);
-    const templateChoiceAnswer = await inquirer.prompt<IProjectConf>(prompts);
-
-    // 导航步骤扩展
-    try {
-      if (typeof conf.ask === 'function') {
-        const { ask, ...other } = conf;
-        await ask({ ...other, templatePath: this.templatePath(templateChoiceAnswer.template) });
-      }
-    } catch (e) {
-      console.error(e);
-    }
-
-    return {
-      ...answers,
-      ...compilerAndTemplateSourceAnswer,
-      ...templateChoiceAnswer,
-    };
-  }
-
-  askProjectName: AskMethods = function (conf, prompts) {
-    if (typeof conf.projectName !== 'string') {
+    if (typeof this.conf.projectName !== 'string') {
       prompts.push({
         type: 'input',
         name: 'projectName',
         message: '请输入项目名称！',
         validate(input) {
-          if (!input) {
-            return '项目名不能为空！';
-          }
-          if (fs.existsSync(input)) {
-            return '当前目录已经存在同名项目，请换一个项目名！';
-          }
-          return true;
-        },
-      });
-    } else if (fs.existsSync(conf.projectName!)) {
-      prompts.push({
-        type: 'input',
-        name: 'projectName',
-        message: '当前目录已经存在同名项目，请换一个项目名！',
-        validate(input) {
-          if (!input) {
-            return '项目名不能为空！';
-          }
-          if (fs.existsSync(input)) {
-            return '项目名依然重复！';
-          }
+          if (!input) return '项目名不能为空！';
+          if (fs.existsSync(input)) return '当前目录已经存在同名项目，请换一个项目名！';
           return true;
         },
       });
     }
-  };
 
-  askDescription: AskMethods = function (conf, prompts) {
-    if (typeof conf.description !== 'string') {
+    if (typeof this.conf.description !== 'string') {
       prompts.push({
         type: 'input',
         name: 'description',
         message: '请输入项目介绍',
       });
     }
-  };
 
-  askCompiler: AskMethods = function (conf, prompts) {
-    const compilerChoices = [
-      {
-        name: 'Vite',
-        value: CompilerType.Vite,
-      },
-    ];
-
-    if (typeof conf.compiler !== 'string') {
+    if (typeof this.conf.npm !== 'string') {
       prompts.push({
         type: 'list',
-        name: 'compiler',
-        message: '请选择编译工具',
-        choices: compilerChoices,
+        name: 'npm',
+        message: '请选择包管理工具',
+        choices: [
+          { name: 'pnpm', value: NpmType.Pnpm },
+          { name: 'yarn', value: NpmType.Yarn },
+          { name: 'npm', value: NpmType.Npm },
+        ],
+        default: NpmType.Pnpm,
       });
     }
-  };
 
-  askFramework: AskMethods = function (conf, prompts) {
-    const frameworks = [
-      {
-        name: 'React',
-        value: FrameworkType.React,
-      },
-    ];
+    const answers = await inquirer.prompt<IProjectConf>(prompts);
+    const sourceAnswer = await this.askTemplateSource(inquirer);
+    const templates = await this.fetchTemplates(sourceAnswer.templateSource);
+    const templateAnswer = await this.askTemplate(inquirer, templates);
 
-    if (typeof conf.framework !== 'string') {
-      prompts.push({
-        type: 'list',
-        name: 'framework',
-        message: '请选择框架',
-        choices: frameworks,
-      });
-    }
-  };
+    return { ...answers, ...sourceAnswer, ...templateAnswer };
+  }
 
-  askTemplateSource: AskMethods = async function (conf, prompts) {
-    if (conf.template === 'default' || conf.templateSource) return;
+  async askTemplateSource(inquirer: typeof Inquirer): Promise<Pick<IProjectConf, 'templateSource'>> {
+    if (this.conf.templateSource) return { templateSource: this.conf.templateSource };
 
     const homedir = getUserHomeDir();
     const taroConfigPath = path.join(homedir, TARO_CONFIG_FOLDER);
     const taroConfig = path.join(taroConfigPath, TARO_BASE_CONFIG);
+    let localTemplateSource: string | undefined;
 
-    let localTemplateSource: string;
-
-    // 检查本地配置
     if (fs.existsSync(taroConfig)) {
-      // 存在则把模板源读出来
-      const config = await fs.readJSON(taroConfig);
-      localTemplateSource = config?.templateSource;
+      localTemplateSource = (await fs.readJSON(taroConfig))?.templateSource;
     } else {
-      // 不存在则创建配置
       await fs.createFile(taroConfig);
       await fs.writeJSON(taroConfig, { templateSource: DEFAULT_TEMPLATE_SRC });
       localTemplateSource = DEFAULT_TEMPLATE_SRC;
     }
 
     const choices = [
-      {
-        name: 'Gitee（最快）',
-        value: DEFAULT_TEMPLATE_SRC_GITEE,
-      },
-      {
-        name: 'Github（最新）',
-        value: DEFAULT_TEMPLATE_SRC,
-      },
-      {
-        name: 'CLI 内置默认模板',
-        value: 'default-template',
-      },
-      {
-        name: '自定义',
-        value: 'self-input',
-      },
-      {
-        name: '社区优质模板源',
-        value: 'open-source',
-      },
+      { name: 'Gitee（最快）', value: DEFAULT_TEMPLATE_SRC_GITEE },
+      { name: 'Github（最新）', value: DEFAULT_TEMPLATE_SRC },
+      { name: 'CLI 内置默认模板', value: 'default-template' },
+      { name: '自定义', value: 'self-input' },
     ];
 
     if (
@@ -275,198 +144,79 @@ export default class Project extends Creator {
       localTemplateSource !== DEFAULT_TEMPLATE_SRC &&
       localTemplateSource !== DEFAULT_TEMPLATE_SRC_GITEE
     ) {
-      choices.unshift({
-        name: `本地模板源：${localTemplateSource}`,
-        value: localTemplateSource,
-      });
+      choices.unshift({ name: `本地模板源：${localTemplateSource}`, value: localTemplateSource });
     }
 
-    prompts.push(
-      {
-        type: 'list',
-        name: 'templateSource',
-        message: '请选择模板源',
-        choices,
-      },
+    const answer = await inquirer.prompt<IProjectConf>([
+      { type: 'list', name: 'templateSource', message: '请选择模板源', choices },
       {
         type: 'input',
         name: 'templateSource',
         message: '请输入模板源！',
         askAnswered: true,
-        when(answers) {
-          return answers.templateSource === 'self-input';
-        },
+        when: (a) => a.templateSource === 'self-input',
       },
-      {
-        type: 'list',
-        name: 'templateSource',
-        message: '请选择社区模板源',
-        async choices(answers) {
-          const choices = await getOpenSourceTemplates(answers.framework);
-          return choices;
-        },
-        askAnswered: true,
-        when(answers) {
-          return answers.templateSource === 'open-source';
-        },
-      },
-    );
-  };
+    ]);
 
-  askTemplate: AskMethods = function (conf, prompts, list = []) {
-    const choices = list.map((item) => ({
-      name: item.desc ? `${item.name}（${item.desc}）` : item.name,
-      value: item.value || item.name,
-    }));
-
-    if (!conf.hideDefaultTemplate) {
-      choices.unshift({
-        name: '默认模板',
-        value: 'default',
-      });
-    }
-
-    if ((typeof conf.template as 'string' | undefined) !== 'string') {
-      prompts.push({
-        type: 'list',
-        name: 'template',
-        message: '请选择模板',
-        choices,
-      });
-    }
-  };
-
-  askNpm: AskMethods = function (conf, prompts) {
-    const packages = [
-      {
-        name: 'yarn',
-        value: NpmType.Yarn,
-      },
-      {
-        name: 'pnpm',
-        value: NpmType.Pnpm,
-      },
-      {
-        name: 'npm',
-        value: NpmType.Npm,
-      },
-      {
-        name: 'cnpm',
-        value: NpmType.Cnpm,
-      },
-    ];
-
-    if ((typeof conf.npm as string | undefined) !== 'string') {
-      prompts.push({
-        type: 'list',
-        name: 'npm',
-        message: '请选择包管理工具',
-        choices: packages,
-      });
-    }
-  };
-
-  async fetchTemplates(answers: IProjectConf): Promise<ITemplates[]> {
-    const { templateSource, framework, compiler } = answers;
-    this.conf.framework = this.conf.framework || framework || '';
-    this.conf.templateSource = this.conf.templateSource || templateSource;
-
-    // 使用默认模版
-    if (answers.templateSource === 'default-template') {
-      this.conf.template = 'default';
-      answers.templateSource = DEFAULT_TEMPLATE_SRC_GITEE;
-    }
-    if (this.conf.template === 'default' || answers.templateSource === NONE_AVAILABLE_TEMPLATE)
-      return Promise.resolve([]);
-
-    // 从模板源下载模板
-    const isClone = /gitee/.test(this.conf.templateSource) || this.conf.clone;
-    const templateChoices = await fetchTemplate(this.conf.templateSource, this.templatePath(''), isClone);
-
-    const filterFramework = (_framework) => {
-      const current = this.conf.framework?.toLowerCase();
-
-      if (typeof _framework === 'string' && _framework) {
-        return current === _framework.toLowerCase();
-      } else if (isArray(_framework)) {
-        return _framework?.map((name) => name.toLowerCase()).includes(current);
-      } else {
-        return true;
-      }
-    };
-
-    const filterCompiler = (_compiler) => {
-      if (_compiler && isArray(_compiler)) {
-        return _compiler?.includes(compiler);
-      }
-      return true;
-    };
-
-    // 根据用户选择的框架筛选模板
-    const newTemplateChoices: ITemplates[] = templateChoices.filter((templateChoice) => {
-      const { platforms, compiler } = templateChoice;
-      return filterFramework(platforms) && filterCompiler(compiler);
-    });
-
-    return newTemplateChoices;
+    return { templateSource: answer.templateSource };
   }
 
-  write(cb?: () => void) {
-    this.conf.src = SOURCE_DIR;
-    const { projectName, projectDir, template, autoInstall = true, framework, npm } = this.conf as IProjectConf;
-    // 引入模板编写者的自定义逻辑
+  async askTemplate(inquirer: typeof Inquirer, templates: ITemplates[]): Promise<Pick<IProjectConf, 'template'>> {
+    if (this.conf.template) return { template: this.conf.template };
+
+    const choices = [
+      { name: '默认模板', value: 'default' },
+      ...templates.map((item) => ({
+        name: item.desc ? `${item.name}（${item.desc}）` : item.name,
+        value: item.value || item.name,
+      })),
+    ];
+
+    const answer = await inquirer.prompt<IProjectConf>([
+      { type: 'list', name: 'template', message: '请选择模板', choices },
+    ]);
+
+    return { template: answer.template };
+  }
+
+  async fetchTemplates(templateSource?: string): Promise<ITemplates[]> {
+    if (!templateSource || templateSource === NONE_AVAILABLE_TEMPLATE) return [];
+    if (templateSource === 'default-template') {
+      this.conf.template = 'default';
+      return [];
+    }
+
+    const isClone = /gitee/.test(templateSource) || this.conf.clone;
+    const choices = await fetchTemplate(templateSource, this.templatePath(''), isClone);
+    return choices.filter((choice) => {
+      const platforms = choice.platforms;
+      if (typeof platforms === 'string') return platforms.toLowerCase() === 'react';
+      if (Array.isArray(platforms)) return platforms.map((p) => p.toLowerCase()).includes('react');
+      return true;
+    });
+  }
+
+  async write(): Promise<void> {
+    const { projectName, projectDir, template, autoInstall = true, npm } = this.conf as IProjectConf;
     const templatePath = this.templatePath(template);
     const handlerPath = TEMPLATE_CREATOR_FILES.map((fileName) => path.join(templatePath, fileName)).find((filePath) =>
       fs.existsSync(filePath),
     );
-    const handler = handlerPath ? require(handlerPath).handler : {};
-    createProject(
+    const handler = handlerPath ? ((await import(handlerPath)) as { handler: TemplateHandlers }).handler : {};
+
+    await createProject(
       {
         projectRoot: projectDir,
         projectName,
         template,
         npm,
-        framework,
-        css: CSSType.None,
-        autoInstall: autoInstall,
+        autoInstall,
         templateRoot: getRootPath(),
         version: getPkgVersion(),
-        typescript: this.conf.typescript,
-        date: this.conf.date,
         description: this.conf.description,
-        compiler: this.conf.compiler,
-        period: PeriodType.CreateAPP,
-      },
+        date: this.conf.date,
+      } satisfies ProjectConfig,
       handler,
-    ).then(() => {
-      cb && cb();
-    });
-  }
-}
-
-interface OpenSourceTemplateCollection {
-  react?: unknown;
-}
-
-async function getOpenSourceTemplates(platform: string) {
-  const spinner = ora({ text: '正在拉取开源模板列表...', discardStdin: false }).start();
-
-  try {
-    const response = await fetch('https://gitee.com/NervJS/awesome-taro/raw/next/index.json');
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status} ${response.statusText}`);
-    }
-
-    spinner.succeed(`${chalk.grey('拉取开源模板列表成功！')}`);
-    const collection = (await response.json()) as OpenSourceTemplateCollection;
-    switch (platform.toLowerCase()) {
-      case 'react':
-        return collection.react;
-      default:
-        return [NONE_AVAILABLE_TEMPLATE];
-    }
-  } catch {
-    spinner.fail(chalk.red('拉取开源模板列表失败！'));
-    throw new Error();
+    );
   }
 }

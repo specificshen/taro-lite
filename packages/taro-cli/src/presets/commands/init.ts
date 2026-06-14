@@ -1,4 +1,5 @@
 import type { IPluginContext } from '@spcsn/taro-service';
+import { NpmType } from '../../create/template-creator';
 
 export default (ctx: IPluginContext) => {
   ctx.registerCommand({
@@ -8,52 +9,31 @@ export default (ctx: IPluginContext) => {
       '--description [description]': '项目介绍',
       '--npm [npm]': '包管理工具',
       '--template-source [templateSource]': '项目模板源',
-      '--clone [clone]': '拉取远程模板时使用git clone',
+      '--clone [clone]': '拉取远程模板时使用 git clone',
       '--template [template]': '项目模板',
-      '--css [css]': 'CSS 预处理器选项已收敛，仅支持 none',
       '--autoInstall': '自动安装依赖',
       '-h, --help': 'output usage information',
     },
     async fn(opts) {
-      // init project
       const { appPath } = ctx.paths;
-      const {
-        projectName,
-        templateSource,
-        clone,
-        template,
-        description,
-        typescript,
-        css,
-        npm,
-        framework,
-        compiler,
-        hideDefaultTemplate,
-        sourceRoot,
-        autoInstall,
-        ask,
-      } = opts.options;
+      const { projectName, templateSource, clone, template, description, npm, autoInstall } = opts.options as Record<
+        string,
+        unknown
+      >;
 
-      const Project = require('../../create/project').default;
+      const { default: Project } = await import('../../create/project.js');
       const project = new Project({
-        sourceRoot,
-        projectName,
         projectDir: appPath,
-        npm,
-        templateSource,
-        clone,
-        template,
-        description,
-        typescript,
-        framework,
-        compiler,
-        hideDefaultTemplate,
-        autoInstall,
-        css,
-        ask,
+        projectName: projectName as string | undefined,
+        description: description as string | undefined,
+        npm: npm as NpmType | undefined,
+        templateSource: templateSource as string | undefined,
+        clone: clone as boolean | undefined,
+        template: template as string | undefined,
+        autoInstall: autoInstall as boolean | undefined,
       });
 
-      project.create();
+      await project.create();
     },
   });
 };

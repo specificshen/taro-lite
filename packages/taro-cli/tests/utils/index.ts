@@ -30,7 +30,7 @@ export function run(name: string, presets: string[] = []): IRun {
       appPath: appPath,
       presets: [
         path.resolve(__dirname, '../fixtures/test-preset/index.ts'),
-        ...presets.map((e) => (path.isAbsolute(e) ? e : path.resolve(__dirname, '../../src/presets', `${e}.ts`))),
+        ...presets.map((e) => (path.isAbsolute(e) ? e : path.resolve(__dirname, '../../dist/presets', `${e}.js`))),
       ],
       plugins: [],
       config,
@@ -40,9 +40,9 @@ export function run(name: string, presets: string[] = []): IRun {
     const type = options.type;
     if (typeof type === 'string' && !presets.some((e) => e.includes(type))) {
       if (type === 'weapp') {
-        kernel.optsPlugins.push(path.resolve(__dirname, '../../src/platform-weapp'));
+        kernel.optsPlugins.push(path.resolve(__dirname, '../../dist/platform-weapp'));
       } else {
-        kernel.optsPlugins.push(require.resolve(`@spcsn/taro-plugin-platform-${options.type}`));
+        throw new Error(`当前 Fork 仅支持微信小程序（weapp），不支持 ${type} 平台。`);
       }
     }
 

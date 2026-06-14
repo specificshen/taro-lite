@@ -1,8 +1,8 @@
-import * as hooks from '../constant/hooks.js';
 import type { IPluginContext } from '@spcsn/taro-service';
+import * as hooks from '../constant/hooks';
 
 export default (ctx: IPluginContext) => {
-  [
+  const methods = [
     hooks.MODIFY_APP_CONFIG,
     hooks.MODIFY_VITE_CONFIG,
     hooks.MODIFY_BUILD_ASSETS,
@@ -13,7 +13,9 @@ export default (ctx: IPluginContext) => {
     hooks.ON_BUILD_FINISH,
     hooks.ON_BUILD_COMPLETE,
     hooks.MODIFY_RUNNER_OPTS,
-  ].forEach((methodName) => {
+  ];
+
+  for (const methodName of methods) {
     ctx.registerMethod(methodName);
-  });
+  }
 };

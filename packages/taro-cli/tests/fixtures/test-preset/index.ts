@@ -7,10 +7,10 @@ const cliRoot = path.resolve(__dirname, '../../..');
 export default () => {
   return {
     plugins: [
-      path.join(cliRoot, 'src/presets/hooks/build.ts'),
-      path.join(cliRoot, 'src/presets/files/write-file-to-dist.ts'),
-      path.join(cliRoot, 'src/presets/files/generate-project-config.ts'),
-      path.join(cliRoot, 'src/presets/files/generate-framework-info.ts'),
+      path.join(cliRoot, 'dist/presets/hooks/build.js'),
+      path.join(cliRoot, 'dist/presets/files/write-file-to-dist.js'),
+      path.join(cliRoot, 'dist/presets/files/generate-project-config.js'),
+      path.join(cliRoot, 'dist/presets/files/generate-framework-info.js'),
     ],
   };
 };

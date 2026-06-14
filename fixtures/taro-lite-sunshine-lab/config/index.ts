@@ -1,5 +1,5 @@
 import path from 'node:path';
-import { defineConfig, type UserConfigExport } from '@spcsn/taro-core';
+import { defineConfig, type UserConfigExport } from '@spcsn/taro-cli';
 
 export default defineConfig<'vite'>(
   () =>

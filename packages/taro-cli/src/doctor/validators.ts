@@ -1,29 +1,29 @@
-export const MessageKind = {
-  Error: 'error',
-  Warning: 'warning',
-  Success: 'success',
-  Manual: 'manual',
-} as const;
+import type { IProjectConfig } from '@spcsn/taro/types/compile';
 
-export type MessageKind = (typeof MessageKind)[keyof typeof MessageKind];
+export enum MessageKind {
+  Error = 'error',
+  Warning = 'warning',
+  Success = 'success',
+}
 
-export interface ValidateMessage {
+export interface ValidationMessage {
   kind: MessageKind;
   content: string;
 }
 
-export interface ValidateResult {
+export interface ValidationResult {
   isValid: boolean;
-  messages: ValidateMessage[];
+  messages: ValidationMessage[];
 }
 
-const validResult = (): ValidateResult => ({
-  isValid: true,
-  messages: [],
-});
+export function validateConfig(projectConfig: IProjectConfig): ValidationResult {
+  const messages: ValidationMessage[] = [];
 
-export const validateConfig = async (..._args: unknown[]): Promise<ValidateResult> => validResult();
-export const validateEnv = async (..._args: unknown[]): Promise<ValidateResult> => validResult();
-export const validatePackage = async (..._args: unknown[]): Promise<ValidateResult> => validResult();
-export const validateRecommend = async (..._args: unknown[]): Promise<ValidateResult> => validResult();
-export const validateEslint = async (..._args: unknown[]): Promise<ValidateResult> => validResult();
+  if (!projectConfig) {
+    messages.push({ kind: MessageKind.Error, content: '缺少项目配置' });
+    return { isValid: false, messages };
+  }
+
+  messages.push({ kind: MessageKind.Success, content: '项目配置检查通过' });
+  return { isValid: true, messages };
+}

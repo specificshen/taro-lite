@@ -15,7 +15,7 @@
     "react": "^19.2.7"
   },
   "devDependencies": {
-    "@spcsn/taro-core": "link:../../packages/taro-core",
+    "@spcsn/taro-cli": "link:../../packages/taro-cli",
     "@types/react": "^19.2.17"
   }
 }

@@ -1,33 +1,25 @@
 import type { IPluginContext } from '@spcsn/taro-service';
-import { isString } from '@spcsn/taro-shared';
-import type { AppConfig } from '@spcsn/taro';
 
-/**
- * 按需编译功能，只编译指定的页面或组件
- * @param appConfig
- * @param args
- */
 export function extractCompileEntry(
-  appConfig: AppConfig,
-  args: { _: string[]; [key: string]: any },
+  appConfig: Record<string, unknown>,
+  args: Record<string, unknown>,
   ctx: IPluginContext,
 ): void {
-  const { chalk } = ctx.helper;
+  const pages = args.pages as string | undefined;
+  const components = args.components as string | undefined;
+  const { sourcePath } = ctx.paths;
 
-  const extractArgs = args || {};
-  const extractType = isString(extractArgs.pages) ? 'pages' : isString(extractArgs.components) ? 'components' : '';
-  if (!extractType) return;
+  if (!pages && !components) return;
 
-  const entries = extractArgs[extractType]
-    .split(',')
-    .map((item) => item.trim())
-    .filter(Boolean);
-  if (!entries.length) {
-    console.log(chalk.yellow(`按需编译开启失败，请指定要编译的${extractType}`));
-    return;
+  if (pages) {
+    const pageList = pages.split(',').map((page) => page.trim());
+    appConfig.pages = pageList;
   }
 
-  appConfig[extractType] = entries;
-  appConfig.subPackages = [];
-  console.log(chalk.green(`已开启按需编译，仅编译以下${extractType}: ${appConfig[extractType]}`));
+  if (components) {
+    const componentList = components.split(',').map((component) => component.trim());
+    appConfig.components = componentList;
+  }
+
+  void sourcePath;
 }

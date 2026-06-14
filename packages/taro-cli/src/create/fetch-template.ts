@@ -1,9 +1,9 @@
 import * as path from 'node:path';
 import { chalk, fs } from '@spcsn/taro-helper';
-import AdmZip = require('adm-zip');
-import download = require('download-git-repo');
+import AdmZip from 'adm-zip';
+import download from 'download-git-repo';
 import ora from 'ora';
-import { getTemplateSourceType, readDirWithFileTypes } from '../util';
+import { getTemplateSourceType, readDirWithFileTypes } from '../util/index';
 import { TEMPLATE_CREATOR_FILES } from './constants';
 
 export interface ITemplates {
@@ -23,14 +23,13 @@ export default async function fetchTemplate(
 ): Promise<ITemplates[]> {
   const type = getTemplateSourceType(templateSource);
   const tempPath = path.join(templateRootPath, TEMP_DOWNLOAD_FOLDER);
-  let name: string;
+  let name = '';
 
-  // 下载文件的缓存目录
   if (fs.existsSync(tempPath)) await fs.remove(tempPath);
   await fs.mkdirp(templateRootPath);
   await fs.mkdir(tempPath);
 
-  return new Promise<void>((resolve) => {
+  await new Promise<void>((resolve) => {
     const spinner = ora(`正在从 ${templateSource} 拉取远程模板...`).start();
 
     if (type === 'git') {
@@ -41,23 +40,23 @@ export default async function fetchTemplate(
           spinner.color = 'red';
           spinner.fail(chalk.red('拉取远程模板仓库失败！'));
           await fs.remove(tempPath);
-          return resolve();
+          resolve();
+          return;
         }
         spinner.color = 'green';
         spinner.succeed(`${chalk.grey('拉取远程模板仓库成功！')}`);
         resolve();
       });
-    } else if (type === 'url') {
-      // url 模板源，因为不知道来源名称，临时取名方便后续开发者从列表中选择
+    } else {
       name = 'from-remote-url';
-      const zipPath = path.join(tempPath, name + '.zip');
+      const zipPath = path.join(tempPath, `${name}.zip`);
       const unZipPath = path.join(tempPath, name);
+
       fetch(templateSource)
         .then(async (response) => {
           if (!response.ok) {
             throw new Error(`HTTP ${response.status} ${response.statusText}`);
           }
-
           await fs.writeFile(zipPath, Buffer.from(await response.arrayBuffer()));
           const zip = new AdmZip(zipPath);
           zip.extractAllTo(unZipPath, true);
@@ -68,10 +67,10 @@ export default async function fetchTemplate(
           if (files.length !== 1) {
             spinner.color = 'red';
             spinner.fail(chalk.red(`拉取远程模板仓库失败！\n${new Error('远程模板源组织格式错误')}`));
-            return resolve();
+            resolve();
+            return;
           }
           name = path.join(name, files[0].name);
-
           spinner.color = 'green';
           spinner.succeed(`${chalk.grey('拉取远程模板仓库成功！')}`);
           resolve();
@@ -80,79 +79,75 @@ export default async function fetchTemplate(
           spinner.color = 'red';
           spinner.fail(chalk.red(`拉取远程模板仓库失败！\n${error}`));
           await fs.remove(tempPath);
-          return resolve();
+          resolve();
         });
     }
-  }).then(async () => {
-    const templateFolder = name ? path.join(tempPath, name) : '';
-
-    // 下载失败，只显示默认模板
-    if (!fs.existsSync(templateFolder)) return Promise.resolve([]);
-
-    const isTemplateGroup = !(
-      fs.existsSync(path.join(templateFolder, 'package.json')) ||
-      fs.existsSync(path.join(templateFolder, 'package.json.tmpl'))
-    );
-
-    if (isTemplateGroup) {
-      // 模板组
-      const files = readDirWithFileTypes(templateFolder)
-        .filter((file) => !file.name.startsWith('.') && file.isDirectory && file.name !== '__MACOSX')
-        .map((file) => file.name);
-      await Promise.all(
-        files.map((file) => {
-          const src = path.join(templateFolder, file);
-          const dest = path.join(templateRootPath, file);
-          return fs.move(src, dest, { overwrite: true });
-        }),
-      );
-      await fs.remove(tempPath);
-
-      const res: ITemplates[] = files
-        .map((name) => {
-          const creatorFile = TEMPLATE_CREATOR_FILES.map((fileName) =>
-            path.join(templateRootPath, name, fileName),
-          ).find((filePath) => fs.existsSync(filePath));
-
-          if (!creatorFile) return { name, value: name };
-          const { name: displayName, platforms = '', desc = '', isPrivate = false, compiler } = require(creatorFile);
-          if (isPrivate) return null;
-
-          return {
-            name: displayName || name,
-            value: name,
-            platforms,
-            compiler,
-            desc,
-          };
-        })
-        .filter(Boolean) as ITemplates[];
-
-      return Promise.resolve(res);
-    } else {
-      // 单模板
-      await fs.move(templateFolder, path.join(templateRootPath, name), { overwrite: true });
-      await fs.remove(tempPath);
-
-      let res: ITemplates = { name, value: name, desc: type === 'url' ? templateSource : '' };
-
-      const creatorFile = TEMPLATE_CREATOR_FILES.map((fileName) => path.join(templateRootPath, name, fileName)).find(
-        (filePath) => fs.existsSync(filePath),
-      );
-
-      if (creatorFile) {
-        const { name: displayName, platforms = '', desc = '', compiler } = require(creatorFile);
-
-        res = {
-          name: displayName || name,
-          value: name,
-          platforms,
-          compiler,
-          desc: desc || templateSource,
-        };
-      }
-
-      return Promise.resolve([res]);
-    }
   });
+
+  const templateFolder = name ? path.join(tempPath, name) : '';
+  if (!templateFolder || !fs.existsSync(templateFolder)) return [];
+
+  const isTemplateGroup = !(
+    fs.existsSync(path.join(templateFolder, 'package.json')) ||
+    fs.existsSync(path.join(templateFolder, 'package.json.tmpl'))
+  );
+
+  if (isTemplateGroup) {
+    const files = readDirWithFileTypes(templateFolder)
+      .filter((file) => !file.name.startsWith('.') && file.isDirectory && file.name !== '__MACOSX')
+      .map((file) => file.name);
+
+    await Promise.all(
+      files.map(async (file) => {
+        const src = path.join(templateFolder, file);
+        const dest = path.join(templateRootPath, file);
+        return fs.move(src, dest, { overwrite: true });
+      }),
+    );
+    await fs.remove(tempPath);
+
+    const results = await Promise.all(
+      files.map(async (fileName) => {
+        const creatorFile = TEMPLATE_CREATOR_FILES.map((creatorName) =>
+          path.join(templateRootPath, fileName, creatorName),
+        ).find((filePath) => fs.existsSync(filePath));
+
+        if (!creatorFile) return { name: fileName, value: fileName };
+        const creatorModule = await import(creatorFile);
+        const meta = creatorModule.default ?? creatorModule;
+        if (meta.isPrivate) return null;
+
+        return {
+          name: meta.name || fileName,
+          value: fileName,
+          platforms: meta.platforms || '',
+          compiler: meta.compiler,
+          desc: meta.desc,
+        };
+      }),
+    );
+    return results.filter(Boolean) as ITemplates[];
+  }
+
+  await fs.move(templateFolder, path.join(templateRootPath, name), { overwrite: true });
+  await fs.remove(tempPath);
+
+  let result: ITemplates = { name, value: name, desc: type === 'url' ? templateSource : '' };
+  const creatorFile = TEMPLATE_CREATOR_FILES.map((creatorName) => path.join(templateRootPath, name, creatorName)).find(
+    (filePath) => fs.existsSync(filePath),
+  );
+
+  if (creatorFile) {
+    const creatorModule = await import(creatorFile);
+    const meta = creatorModule.default ?? creatorModule;
+    result = {
+      name: meta.name || name,
+      value: name,
+      platforms: meta.platforms || '',
+      compiler: meta.compiler,
+      desc: meta.desc || templateSource,
+    };
+  }
+
+  return [result];
 }
