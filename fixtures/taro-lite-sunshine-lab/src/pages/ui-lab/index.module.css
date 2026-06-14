@@ -51,7 +51,7 @@
 }
 
 .metricGrid {
-  margin: var(--space-4) 0 0 calc(-1 * var(--space-2));
+  margin: var(--space-4) 0 0 calc(0px - var(--space-2));
   display: flex;
   align-items: stretch;
 }
@@ -114,42 +114,26 @@
   display: flex;
   align-items: center;
   gap: var(--space-4);
-  margin-left: 0;
-}
-
-.cardActions > * {
-  margin-left: 0;
 }
 
 .rowWrap {
   display: flex;
   flex-wrap: wrap;
-  margin-left: calc(-1 * var(--space-2));
+  gap: var(--space-2);
   align-items: center;
-}
-.rowWrap > * {
-  margin: var(--space-2) 0 0 var(--space-2);
 }
 
 .badgeRow {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  margin: calc(-1 * var(--space-3)) 0 0 calc(-1 * var(--space-3));
-}
-
-.badgeItem {
-  margin: var(--space-3) 0 0 var(--space-3);
+  gap: var(--space-3);
 }
 
 .buttonStack {
   display: flex;
   flex-direction: column;
-  margin-top: calc(-1 * var(--space-3));
-}
-
-.buttonBlock {
-  margin-top: var(--space-3);
+  gap: var(--space-3);
 }
 
 .buttonSizeRow {
@@ -168,36 +152,20 @@
 .colGap {
   display: flex;
   flex-direction: column;
-  margin-top: calc(-1 * var(--space-4));
-}
-
-.colGap > * {
-  margin-top: var(--space-4);
+  gap: var(--space-4);
 }
 
 .rowGap {
   display: flex;
-  margin-left: calc(-1 * var(--space-2));
   align-items: center;
   flex-wrap: wrap;
-}
-
-.rowGap > * {
-  margin: var(--space-2) 0 0 var(--space-2);
+  gap: var(--space-2);
 }
 
 .rowCenter {
   display: flex;
   align-items: center;
-  margin-left: calc(-1 * var(--space-3));
-}
-
-.colGap > .rowGap {
-  margin-top: var(--space-4);
-}
-
-.rowCenter > * {
-  margin-left: var(--space-3);
+  gap: var(--space-3);
 }
 
 .inputValue {
@@ -209,11 +177,7 @@
 .inputStack {
   display: flex;
   flex-direction: column;
-  margin-top: calc(-1 * var(--space-3));
-}
-
-.inputControl {
-  margin-top: var(--space-3);
+  gap: var(--space-3);
 }
 
 .mutedText {
@@ -223,7 +187,7 @@
 }
 
 .swatchGrid {
-  margin: var(--space-4) 0 0 calc(-1 * var(--space-3));
+  margin: var(--space-4) 0 0 calc(0px - var(--space-3));
   display: flex;
   align-items: stretch;
   flex-wrap: wrap;
@@ -274,6 +238,7 @@
 .skeletonArea {
   display: flex;
   flex-direction: column;
+  gap: var(--space-3);
   margin-top: var(--space-1);
   padding: var(--space-4);
   background-color: var(--card);
@@ -281,14 +246,9 @@
   border: 1px solid var(--border);
 }
 
-.skeletonArea > * {
-  margin-top: var(--space-3);
-}
-
 .skeletonTitle {
   height: 36px;
   width: 60%;
-  margin-bottom: var(--space-1);
 }
 
 .skeletonLine {
@@ -305,25 +265,23 @@
   font-size: 32px;
   font-weight: 700;
   color: var(--foreground);
-  margin-bottom: var(--space-1);
 }
 
 .skeletonRealLine {
   font-size: 28px;
   color: var(--foreground);
-  margin-bottom: var(--space-1);
 }
 
 .drawerTriggerGrid {
   display: flex;
   flex-wrap: wrap;
-  margin: var(--space-1) 0 0 calc(-1 * var(--space-4));
+  gap: var(--space-4);
+  margin: var(--space-1) 0 0 0;
 }
 
 .drawerTriggerButton {
-  width: calc(50% - var(--space-4));
+  width: calc(50% - var(--space-2));
   box-sizing: border-box;
-  margin: var(--space-4) 0 0 var(--space-4);
 }
 
 .drawerBody {
