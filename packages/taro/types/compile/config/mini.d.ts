@@ -27,13 +27,7 @@ export interface IMiniAppConfig<T extends CompilerTypes = CompilerViteTypes> {
   /** 是否跳过第三方依赖 usingComponent 的处理，默认为自动处理第三方依赖的自定义组件 */
   skipProcessUsingComponents?: boolean
 
-  /** 压缩小程序 xml 文件的相关配置 */
-  minifyXML?: {
-    /** 是否合并 xml 文件中的空格 (默认false) */
-    collapseWhitespace?: boolean
-  }
-
-  /** 模板渲染基础层级，控制 base.wxml 的嵌套展开深度，默认 8 */
+  /** 模板渲染基础层级，控制 base.wxml 的嵌套展开深度，默认 16 */
   baseLevel?: number
 
   /** Vite 小程序输出配置，目前仅适配 chunkFileNames。 */
