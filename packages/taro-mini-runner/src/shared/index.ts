@@ -141,17 +141,18 @@ export async function getPostcssPlugins(
 
     const resolvedPluginName = !isNpmPkg(pluginName) ? path.join(appPath, pluginName) : pluginName;
 
+    const pluginPath = resolveSync(resolvedPluginName, { basedir: appPath });
+    if (!pluginPath) {
+      logger.info(`缺少 postcss 插件 "${pluginName}", 已忽略`);
+      continue;
+    }
+
     try {
-      const pluginPath = resolveSync(resolvedPluginName, { basedir: appPath }) || '';
       const pluginModule = await import(pluginPath);
       plugins.push(pluginModule.default(pluginOption.config || {}));
     } catch (e) {
       const error = e as NodeJS.ErrnoException;
-      const msg =
-        error.code === 'MODULE_NOT_FOUND'
-          ? `缺少 postcss 插件 "${pluginName}", 已忽略`
-          : error.message || String(error);
-      logger.info(msg);
+      logger.info(error.message || String(error));
     }
   }
 

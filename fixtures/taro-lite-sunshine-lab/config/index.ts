@@ -12,6 +12,7 @@ export default defineConfig<'vite'>(
       compiler: 'vite',
       ...(process.env.TARO_MINIFY === 'true' ? { jsMinimizer: 'oxc' as const } : {}),
       mini: {
+        baseLevel: 10,
         postcss: {
           cssModules: {
             enable: true,

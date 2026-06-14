@@ -37,13 +37,6 @@ const defaultConfig: Partial<ViteMiniBuildConfig> = {
         platform,
       },
     },
-    htmltransform: {
-      enable: true,
-      config: {
-        platform,
-        removeCursorStyle: false,
-      },
-    },
   },
 };
 

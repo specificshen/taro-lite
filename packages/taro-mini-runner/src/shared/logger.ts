@@ -142,18 +142,12 @@ export function createDevBuildSummaryLogger(outputRoot: string): Logger {
 
 export const logger = {
   info(msg: string) {
-    viteLogger.info(msg, {
-      timestamp: true,
-    });
+    viteLogger.info(msg, { timestamp: true });
   },
   warn(msg: string) {
-    viteLogger.warn(msg, {
-      timestamp: true,
-    });
+    viteLogger.warn(msg, { timestamp: true });
   },
   error(msg: string) {
-    viteLogger.error(msg, {
-      timestamp: true,
-    });
+    viteLogger.error(msg, { timestamp: true });
   },
 };

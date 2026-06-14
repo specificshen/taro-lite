@@ -11,7 +11,13 @@ export const getDefaultPostcssConfig = function ({
   deviceRatio: any;
   postcssOption?: IPostcssOption<'mini'>;
 }): [string, any, Func?][] {
-  const { autoprefixer, pxtransform = {}, ...options } = postcssOption;
+  const {
+    autoprefixer,
+    pxtransform = {},
+    cssModules: _cssModules,
+    htmltransform: _htmltransform,
+    ...options
+  } = postcssOption;
 
   if (designWidth) {
     pxtransform.config!.designWidth = designWidth;

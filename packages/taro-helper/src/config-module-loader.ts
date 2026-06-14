@@ -150,6 +150,11 @@ export async function loadUserConfigModule(
   const resolvedId = path.isAbsolute(id) ? id : path.resolve(cwd, id);
 
   const resolveHook: ResolveHookSync = (request, context, nextResolve) => {
+    if (!request) {
+      const stack = new Error(`Empty resolve request`).stack;
+      console.error('[taro] Empty resolve request in config-module-loader:\n', stack);
+      return nextResolve(request, context);
+    }
     const aliasPath = resolveAlias(request, customConfig.alias);
     const resolvedRequest = aliasPath || request;
 

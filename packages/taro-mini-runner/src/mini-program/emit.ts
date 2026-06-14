@@ -31,7 +31,9 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
               const chunk = bundle[chunkName];
               if (chunk?.type === 'chunk' && chunk.moduleIds.includes(id)) {
                 const module = chunk.modules[id];
-                module.renderedExports.forEach((item) => componentConfig.includes.add(toDashed(item)));
+                (module as any).renderedExports?.forEach((item: string) =>
+                  componentConfig.includes.add(toDashed(item)),
+                );
                 isFound = true;
                 return true;
               }

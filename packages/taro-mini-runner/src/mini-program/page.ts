@@ -1,8 +1,10 @@
 import path from 'node:path';
 import { resolveMainFilePath, swc } from '@spcsn/taro-helper';
+import { internalComponents, toDashed } from '@spcsn/taro-shared';
 import { appendVirtualModulePrefix, escapePath, prettyPrintJson, stripVirtualModulePrefix } from '../shared';
 import { createFilterWithCompileOptions } from '../shared/create-filter';
 import { UniqueKeyMap } from '../shared/map';
+import { componentConfig, resetComponentConfigIncludes } from '../shared/component';
 import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
 import type { PluginOption, ResolvedConfig } from 'vite';
 
@@ -11,6 +13,41 @@ const nativeComponentMapCache = new WeakMap<ResolvedConfig, Map<string, Record<s
 const nativeUniqueKeyMap = new WeakMap<ResolvedConfig, UniqueKeyMap<string>>();
 const importNativeComponentName = 'importNativeComponent';
 const defineConfigNames = new Set(['defineAppConfig', 'definePageConfig']);
+const internalComponentNames = new Set(Object.keys(internalComponents));
+
+function getJsxElementName(node: SwcNode): string | undefined {
+  // SWC represents JSX identifiers as plain Identifier nodes.
+  if (node.type === 'Identifier') {
+    return typeof node.value === 'string' ? node.value : undefined;
+  }
+  if (node.type === 'JSXMemberExpression') {
+    // Only collect the root object for namespaced usage (e.g. <Custom.View />).
+    // This skips collecting non-component nodes while keeping common patterns working.
+    return getJsxElementName(node.object as SwcNode);
+  }
+  return undefined;
+}
+
+function collectUsedComponents(node: unknown, usedComponents: Set<string>) {
+  if (Array.isArray(node)) {
+    node.forEach((item) => collectUsedComponents(item, usedComponents));
+    return;
+  }
+  if (!isSwcNode(node)) return;
+
+  if (node.type === 'JSXElement' || node.type === 'JSXOpeningElement') {
+    const nameNode = (node.name || (node as any).opening?.name) as SwcNode | undefined;
+    const tagName = nameNode ? getJsxElementName(nameNode) : undefined;
+    if (tagName && internalComponentNames.has(tagName)) {
+      usedComponents.add(toDashed(tagName));
+    }
+  }
+
+  for (const [key, value] of Object.entries(node)) {
+    if (key === 'span') continue;
+    collectUsedComponents(value, usedComponents);
+  }
+}
 
 interface SourceSpan {
   start: number;
@@ -32,6 +69,7 @@ interface SourceEdit {
 interface NativeComponentTransformResult {
   code: string;
   enableImportComponent: boolean;
+  usedComponents?: Set<string>;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -117,10 +155,14 @@ function transformNativeComponents(
     tsx: true,
   }) as unknown as SwcNode;
 
+  const usedComponents = new Set<string>();
+  collectUsedComponents(ast, usedComponents);
+
   if (hasLocalImportNativeComponent(ast)) {
     return {
       code,
       enableImportComponent: false,
+      usedComponents,
     };
   }
 
@@ -170,12 +212,17 @@ function transformNativeComponents(
   return {
     code: transformedCode,
     enableImportComponent: true,
+    usedComponents,
   };
 }
 
 export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOption {
   const { taroConfig, sourceDir } = viteCompilerContext;
-  const filter = createFilterWithCompileOptions(taroConfig.compile, [sourceDir, /(?<=node_modules[\\/]).*taro/], []);
+  const filter = createFilterWithCompileOptions(
+    taroConfig.compile,
+    [`${sourceDir}/**/*`, /(?<=node_modules[\\/]).*taro/],
+    [],
+  );
 
   let viteConfig: ResolvedConfig;
   let nCompCache: Map<string, Record<string, string>>;
@@ -188,6 +235,8 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
       viteConfig = config;
     },
     buildStart() {
+      resetComponentConfigIncludes();
+
       if (nativeComponentMapCache.has(viteConfig)) {
         nCompCache = nativeComponentMapCache.get(viteConfig)!;
         nCompUniqueKeyMap = nativeUniqueKeyMap.get(viteConfig)!;
@@ -259,6 +308,12 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
 
       const scopeNativeComp = new Map<string, string>();
       const result = transformNativeComponents(code, id, viteCompilerContext, nCompUniqueKeyMap, scopeNativeComp);
+
+      if (result.usedComponents?.size) {
+        for (const componentName of result.usedComponents) {
+          componentConfig.includes.add(componentName);
+        }
+      }
 
       if (!result.enableImportComponent) return;
 
