@@ -4,7 +4,7 @@
 > 目标读者：负责改造 fork 后 Taro monorepo 的 AI / 工程师。
 > 核心目标：把 Taro 从“多框架、多平台、多历史编译器兼容”的通用框架，收敛为“React 19 开发微信小程序/Skyline 优先”的现代小程序构建与运行框架。
 
-## 0. 当前同步状态（2026-06-05）
+## 0. 当前同步状态（2026-06-14）
 
 当前仓库已经不再只是早期方案阶段，`1.0.0` 稳定线已按 React 19 开发 WeApp + Skyline / glass-easel 主链路推进。
 
@@ -20,6 +20,7 @@
 - PostCSS / Babel 历史插件包已从公开接入面移除，相关历史包已从 `pnpm-workspace.yaml` 排除。
 - 已建立 `fixtures/taro-lite-sunshine-lab`，用于验证 React 19 开发 WeApp + Skyline / glass-easel 构建链路。
 - `scripts/check-release-readiness.ts` 已作为发布前防回退检查，覆盖公开包版本、发布面和业务可见类型注释边界。
+- 临时包 `@spcsn/taro-core` 已合并回 `@spcsn/taro-cli`：`taro-core` 的现代 ESM-first 源码和模板成为 `taro-cli` 的实现，`taro-core` 包本身已删除，业务侧仍只依赖 `@spcsn/taro-cli`。
 
 仍处于过渡态：
 

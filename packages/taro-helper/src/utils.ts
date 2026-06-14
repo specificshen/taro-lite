@@ -317,7 +317,7 @@ export function getTaroPath(): string {
 export function getConfig(): Record<string, any> {
   const configPath = path.join(getTaroPath(), 'config.json');
   if (fs.existsSync(configPath)) {
-    return require(configPath);
+    return fs.readJSONSync(configPath);
   }
   return {};
 }

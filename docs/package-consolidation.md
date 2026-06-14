@@ -30,6 +30,7 @@
 - `@spcsn/taro-api` 已并入 `@spcsn/taro`，不再作为公开发布包。
 - `@spcsn/taro-react` 已并入 `@spcsn/taro-mini-runner`，不再作为公开发布包。
 - `@spcsn/taro-runner-utils` 已并入 `@spcsn/taro-service` 与 `@spcsn/taro-mini-runner`，不再作为公开发布包。
+- 临时现代化 CLI 包 `@spcsn/taro-core` 已合并回 `@spcsn/taro-cli`，`taro-core` 不再作为独立包存在。
 - 已收敛的历史 private 包已从仓库删除，不再位于活跃 `packages/` 目录，也不参与 workspace 安装和递归构建。
 
 必须保留的公开入口：

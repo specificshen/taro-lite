@@ -421,7 +421,7 @@ function checkBusinessVisibleTypeContract() {
       message: 'business-visible mini config types must default to Vite.',
     },
     {
-      path: 'packages/taro-cli/src/util/defineConfig.ts',
+      path: 'packages/taro-cli/src/util/define-config.ts',
       pattern: /CompilerWebpackTypes/g,
       message: 'defineConfig public helper must default to Vite.',
     },
