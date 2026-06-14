@@ -43,6 +43,10 @@ jobs:
         run: echo "PUPPETEER_EXECUTABLE_PATH=$(which chrome)" >> $GITHUB_ENV
       - name: Lint
         run: pnpm lint
+      - name: Format check
+        run: pnpm run format:check
+      - name: Typecheck
+        run: pnpm run typecheck
       - name: build
         run: pnpm build
         env:
