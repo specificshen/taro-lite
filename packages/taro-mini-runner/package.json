@@ -52,7 +52,6 @@
     "react-reconciler": "0.33.0",
     "regenerator-runtime": "~0.14.1",
     "sax": "1.6.0",
-    "terser": "^5.48.0",
     "vite": "^8.0.16",
     "vite-plugin-static-copy": "^4.1.1"
   },
