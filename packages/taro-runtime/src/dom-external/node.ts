@@ -2,7 +2,13 @@ import { DATASET, PROPS, STYLE } from '../constants';
 import { NodeType } from '../dom/node-types';
 import type { TaroElement } from '../dom/element';
 import type { TaroNode } from '../dom/node';
+import type { Style } from '../dom/style';
 import type { TaroText } from '../dom/text';
+
+interface TaroNodeImpl extends TaroNode {
+  cloneNode(deep?: boolean): TaroNode;
+  contains(node: TaroNode & { id?: string }): boolean;
+}
 
 export function cloneNode(this: TaroNode, isDeep = false): TaroNode | undefined {
   const document = this.ownerDocument;
@@ -15,19 +21,21 @@ export function cloneNode(this: TaroNode, isDeep = false): TaroNode | undefined 
   }
 
   for (const key in this) {
-    const value: any = (this as any)[key];
+    const value: unknown = (this as unknown as Record<string, unknown>)[key];
     if ([PROPS, DATASET].includes(key) && typeof value === 'object') {
-      (newNode as any)[key] = { ...value };
+      (newNode as unknown as Record<string, unknown>)[key] = { ...(value as Record<string, unknown>) };
     } else if (key === '_value') {
-      (newNode as any)[key] = value;
+      (newNode as TaroText)._value = value as string;
     } else if (key === STYLE) {
-      (newNode as any).style._value = { ...value._value };
-      (newNode as any).style._usedStyleProp = new Set(Array.from(value._usedStyleProp));
+      (newNode as TaroElement).style._value = { ...((value as Style)._value as Record<string, unknown>) };
+      (newNode as TaroElement).style._usedStyleProp = new Set(Array.from((value as Style)._usedStyleProp));
     }
   }
 
   if (isDeep) {
-    (newNode as any).childNodes = this.childNodes.map((node) => (node as any).cloneNode(true));
+    (newNode as TaroNode).childNodes = this.childNodes.map((node) =>
+      (node as TaroNodeImpl).cloneNode(true),
+    ) as TaroNode[];
   }
 
   return newNode;
@@ -37,7 +45,7 @@ export function contains(this: TaroNode, node: TaroNode & { id?: string }): bool
   let isContains = false;
   this.childNodes.some((childNode) => {
     const { uid } = childNode;
-    if (uid === node.uid || uid === node.id || (childNode as any).contains(node)) {
+    if (uid === node.uid || uid === node.id || (childNode as TaroNodeImpl).contains(node)) {
       isContains = true;
       return true;
     }

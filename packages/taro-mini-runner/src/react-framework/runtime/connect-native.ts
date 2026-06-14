@@ -27,7 +27,6 @@ import { reactMeta } from './react-meta';
 import { isClassComponent } from './utils';
 import type { Instance, MpInstance, TaroRootElement } from '@spcsn/taro-runtime';
 import type { AppInstance, PageInstance } from '@spcsn/taro';
-import type { Func } from '@spcsn/taro/types/compile';
 import type React from 'react';
 import type TReactDOM from 'react-dom';
 import type TReactDOMClient from 'react-dom/client';
@@ -36,6 +35,37 @@ type ReactDOMRenderer = typeof TReactDOM &
   typeof TReactDOMClient & {
     render: (element: React.ReactElement, container: unknown) => void;
   };
+
+interface NativeComponentConfig {
+  isNewBlended?: boolean;
+  [key: string]: unknown;
+}
+
+interface EventTargetLike {
+  id?: string;
+  dataset?: Record<string, unknown>;
+}
+
+interface EventLike {
+  target?: EventTargetLike;
+  [key: string]: unknown;
+}
+
+interface NativeComponentObject {
+  options: NativeComponentConfig;
+  properties: Record<string, unknown>;
+  created: (this: MpInstance) => void;
+  attached: (this: MpInstance) => void;
+  ready: (this: MpInstance) => void;
+  detached: (this: MpInstance) => void;
+  pageLifetimes: {
+    show: (this: MpInstance, options: Record<string, unknown>) => void;
+    hide: (this: MpInstance) => void;
+    [key: string]: unknown;
+  };
+  methods: Record<string, unknown>;
+  [key: string]: unknown;
+}
 
 declare const getCurrentPages: () => PageInstance[];
 
@@ -46,7 +76,7 @@ let nativeComponentApp: AppInstance;
 interface InitNativeComponentEntryParams {
   R: typeof React;
   ReactDOM: ReactDOMRenderer;
-  cb?: Func;
+  cb?: () => void;
   // 是否使用默认的 DOM 入口 - app；默认为true，false的时候，会创建一个新的dom并且把它挂载在 app 下面
   isDefaultEntryDom?: boolean;
 }
@@ -62,11 +92,11 @@ function initNativeComponentEntry(params: InitNativeComponentEntryParams) {
 
   interface IWrapperProps {
     compId: string;
-    getCtx: () => any;
-    renderComponent: (ctx: any) => React.ReactElement;
+    getCtx: () => MpInstance;
+    renderComponent: (ctx: MpInstance) => React.ReactElement;
   }
 
-  class NativeComponentWrapper extends R.Component<IWrapperProps, Record<any, any>> {
+  class NativeComponentWrapper extends R.Component<IWrapperProps, Record<string, unknown>> {
     root = R.createRef<TaroRootElement>();
     ctx = this.props.getCtx();
 
@@ -89,21 +119,21 @@ function initNativeComponentEntry(params: InitNativeComponentEntryParams) {
     }
   }
 
-  class Entry extends R.Component<Record<any, any>, IEntryState> {
+  class Entry extends R.Component<Record<string, unknown>, IEntryState> {
     state: IEntryState = {
       components: [],
     };
 
     componentDidMount() {
       if (isDefaultEntryDom) {
-        setCurrentApp(this);
+        setCurrentApp(this as unknown as AppInstance);
       } else {
-        nativeComponentApp = this;
+        nativeComponentApp = this as unknown as AppInstance;
       }
       cb && cb();
     }
 
-    mount(Component: any, compId: any, getCtx: any, cb?: any) {
+    mount(Component: any, compId: string, getCtx: () => MpInstance, cb?: () => void) {
       const isReactComponent = isClassComponent(R, Component);
       const inject = (node?: Instance) => node && injectPageInstance(node, compId);
       const refs = isReactComponent
@@ -142,7 +172,7 @@ function initNativeComponentEntry(params: InitNativeComponentEntryParams) {
       );
     }
 
-    unmount(compId: any, cb?: any) {
+    unmount(compId: string, cb?: () => void) {
       const components = this.state.components;
       const index = components.findIndex((item) => item.compId === compId);
       const next = [...components.slice(0, index), ...components.slice(index + 1)];
@@ -183,7 +213,7 @@ export function createNativePageConfig(
   data: Record<string, unknown>,
   react: typeof React,
   reactDOM: typeof ReactDOM,
-  pageConfig: any,
+  pageConfig: Record<string, unknown>,
 ) {
   reactMeta.R = react;
   h = react.createElement;
@@ -212,13 +242,13 @@ export function createNativePageConfig(
     }
   }
 
-  const pageObj: Record<string, any> = {
+  const pageObj: Record<string, unknown> = {
     options: pageConfig,
-    [ONLOAD](this: MpInstance, options: Readonly<Record<string, unknown>> = {}, cb?: TaroGeneral.TFunc) {
+    [ONLOAD](this: MpInstance, options: Readonly<Record<string, unknown>> = {}, cb?: () => void) {
       hasLoaded = new Promise((resolve) => {
         loadResolver = resolve;
       });
-      Current.page = this as any;
+      Current.page = this as unknown as PageInstance;
       this.config = pageConfig || {};
       // this.$taroPath 是页面唯一标识
       const uniqueOptions = Object.assign({}, options, { $taroTimestamp: Date.now() });
@@ -261,7 +291,7 @@ export function createNativePageConfig(
         mount();
       }
     },
-    [ONUNLOAD]() {
+    [ONUNLOAD](this: MpInstance) {
       const $taroPath = this.$taroPath;
       // 销毁当前页面的上下文信息
       window.trigger(CONTEXT_ACTIONS.DESTROY, $taroPath);
@@ -282,7 +312,7 @@ export function createNativePageConfig(
         }
       });
     },
-    [ONREADY]() {
+    [ONREADY](this: MpInstance) {
       hasLoaded.then(() => {
         // 触发生命周期
         safeExecute(this.$taroPath, ON_READY);
@@ -291,10 +321,10 @@ export function createNativePageConfig(
         this.onReady.called = true;
       });
     },
-    [ONSHOW](this: MpInstance, options = {}) {
+    [ONSHOW](this: MpInstance, options: Record<string, unknown> = {}) {
       hasLoaded.then(() => {
         // 设置 Current 的 page 和 router
-        Current.page = this as any;
+        Current.page = this as unknown as PageInstance;
         setCurrentRouter(this);
         // 恢复上下文信息
         window.trigger(CONTEXT_ACTIONS.RECOVER, this.$taroPath);
@@ -304,7 +334,7 @@ export function createNativePageConfig(
         requestAnimationFrame(() => eventCenter.trigger(getOnShowEventKey(this.$taroPath)));
       });
     },
-    [ONHIDE]() {
+    [ONHIDE](this: MpInstance) {
       // 缓存当前页面上下文信息
       window.trigger(CONTEXT_ACTIONS.RESTORE, this.$taroPath);
       // 设置 Current 的 page 和 router
@@ -326,16 +356,16 @@ export function createNativePageConfig(
   }
 
   LIFECYCLES.forEach((lifecycle) => {
-    pageObj[lifecycle] = function () {
-      return safeExecute(this.$taroPath, lifecycle, ...arguments);
+    pageObj[lifecycle] = function (this: MpInstance, ...args: unknown[]) {
+      return safeExecute(this.$taroPath, lifecycle, ...args);
     };
   });
 
   // onShareAppMessage 和 onShareTimeline 一样，会影响小程序右上方按钮的选项，因此不能默认注册。
   SIDE_EFFECT_LIFECYCLES.forEach((lifecycle) => {
     if (Component[lifecycle] || Component.prototype?.[lifecycle] || Component[lifecycle.replace(/^on/, 'enable')]) {
-      pageObj[lifecycle] = function (...args: any[]) {
-        const target = args[0]?.target;
+      pageObj[lifecycle] = function (this: MpInstance, ...args: unknown[]) {
+        const target = (args[0] as EventLike | undefined)?.target;
         if (target?.id) {
           const id = target.id;
           const element = document.getElementById(id);
@@ -359,14 +389,19 @@ export function createNativePageConfig(
   return pageObj;
 }
 
-export function createNativeComponentConfig(Component: any, react: typeof React, reactDOM: any, componentConfig: any) {
+export function createNativeComponentConfig(
+  Component: any,
+  react: typeof React,
+  reactDOM: typeof ReactDOM,
+  componentConfig: NativeComponentConfig,
+) {
   reactMeta.R = react;
   h = react.createElement;
   ReactDOM = reactDOM;
   setReconciler(ReactDOM);
   const { isNewBlended } = componentConfig;
 
-  const componentObj: Record<string, any> = {
+  const componentObj: NativeComponentObject = {
     options: componentConfig,
     properties: {
       props: {
@@ -377,7 +412,7 @@ export function createNativeComponentConfig(Component: any, react: typeof React,
         },
       },
     },
-    created() {
+    created(this: MpInstance) {
       const app = isNewBlended ? nativeComponentApp : Current.app;
       if (!app) {
         initNativeComponentEntry({
@@ -387,7 +422,7 @@ export function createNativeComponentConfig(Component: any, react: typeof React,
         });
       }
     },
-    attached() {
+    attached(this: MpInstance) {
       const compId = (this.compId = getNativeCompId());
       setCurrent(compId);
       this.config = componentConfig;
@@ -409,28 +444,28 @@ export function createNativeComponentConfig(Component: any, react: typeof React,
         },
       );
     },
-    ready() {
+    ready(this: MpInstance) {
       safeExecute(this.compId, 'onReady');
     },
-    detached() {
+    detached(this: MpInstance) {
       resetCurrent();
       const app = isNewBlended ? nativeComponentApp : Current.app;
       app!.unmount!(this.compId);
     },
     pageLifetimes: {
-      show(options: any) {
+      show(this: MpInstance, options: Record<string, unknown>) {
         safeExecute(this.compId, 'onShow', options);
       },
-      hide() {
+      hide(this: MpInstance) {
         safeExecute(this.compId, 'onHide');
       },
     },
     methods: {
       eh: eventHandler,
-      onLoad(options: any) {
+      onLoad(this: MpInstance, options: Record<string, unknown>) {
         safeExecute(this.compId, 'onLoad', options);
       },
-      onUnload() {
+      onUnload(this: MpInstance) {
         safeExecute(this.compId, 'onUnload');
       },
     },
@@ -444,20 +479,20 @@ export function createNativeComponentConfig(Component: any, react: typeof React,
 
   // onShareAppMessage 和 onShareTimeline 一样，会影响小程序右上方按钮的选项，因此不能默认注册。
   if (Component.onShareAppMessage || Component.prototype?.onShareAppMessage || Component.enableShareAppMessage) {
-    componentObj.methods.onShareAppMessage = function (options: any) {
+    componentObj.methods.onShareAppMessage = function (this: MpInstance, options: EventLike) {
       const target = options?.target;
       if (target) {
         const id = target.id;
         const element = document.getElementById(id);
         if (element) {
-          target!.dataset = element.dataset;
+          target.dataset = element.dataset;
         }
       }
       return safeExecute(this.compId, 'onShareAppMessage', options);
     };
   }
   if (Component.onShareTimeline || Component.prototype?.onShareTimeline || Component.enableShareTimeline) {
-    componentObj.methods.onShareTimeline = function () {
+    componentObj.methods.onShareTimeline = function (this: MpInstance) {
       return safeExecute(this.compId, 'onShareTimeline');
     };
   }
@@ -474,7 +509,7 @@ function setCurrent(compId: string) {
 
   Current.page = currentPage;
 
-  const route = (currentPage as any).route || (currentPage as any).__route__;
+  const route = (currentPage as unknown as MpInstance).route || (currentPage as unknown as MpInstance).__route__;
   const router = {
     params: currentPage.options || {},
     path: addLeadingSlash(route),
@@ -490,11 +525,11 @@ function setCurrent(compId: string) {
     Object.defineProperty(currentPage, 'options', {
       enumerable: true,
       configurable: true,
-      get() {
-        return this._optionsValue;
+      get(): Record<string, unknown> {
+        return this._optionsValue as Record<string, unknown>;
       },
-      set(value) {
-        router.params = value;
+      set(value: unknown) {
+        router.params = value as Record<string, unknown>;
         this._optionsValue = value;
       },
     });

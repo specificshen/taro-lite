@@ -32,6 +32,7 @@ import env from '../env';
 import { perf } from '../perf';
 import { customWrapperCache, incrementId } from '../utils';
 import { addLeadingSlash } from '../utils/router';
+import type { ComponentClass } from 'react';
 import type { TaroRootElement } from '../dom/root';
 import type { MpInstance, PageConfig, TFunc } from '../interface';
 import type { Instance, PageInstance, PageProps } from './instance';
@@ -52,7 +53,7 @@ export function removePageInstance(id: string) {
   instances.delete(id);
 }
 
-export function safeExecute(path: string, lifecycle: string, ...args: unknown[]) {
+export function safeExecute(path: string, lifecycle: string, ...args: unknown[]): unknown {
   const instance = instances.get(path);
 
   if (instance == null) {
@@ -103,7 +104,7 @@ export function getOnHideEventKey(path: string) {
 }
 
 export function createPageConfig(
-  component: any,
+  component: ComponentClass,
   pageName?: string,
   data?: Record<string, unknown>,
   pageConfig?: PageConfig,
@@ -140,7 +141,7 @@ export function createPageConfig(
 
       perf.start(PAGE_INIT);
 
-      Current.page = this as any;
+      Current.page = this as PageInstance;
       this.config = pageConfig || {};
 
       // this.$taroPath 是页面唯一标识
@@ -206,10 +207,10 @@ export function createPageConfig(
         (this[ONREADY] as TFunc & { called?: boolean }).called = true;
       });
     },
-    [ONSHOW](this: MpInstance, options = {}) {
+    [ONSHOW](this: MpInstance, options: Record<string, unknown> = {}) {
       hasLoaded.then(() => {
         // 设置 Current 的 page 和 router
-        Current.page = this as any;
+        Current.page = this as PageInstance;
         setCurrentRouter(this);
         // 恢复上下文信息
         taroWindowProvider.trigger(CONTEXT_ACTIONS.RECOVER, this.$taroPath);
@@ -249,7 +250,7 @@ export function createPageConfig(
       return;
     }
 
-    config[lifecycle] = function (this: MpInstance, ...args: any[]) {
+    config[lifecycle] = function (this: MpInstance, ...args: unknown[]) {
       const exec = () => safeExecute(this.$taroPath, lifecycle, ...args);
       if (isDefer) {
         hasLoaded.then(exec);
@@ -261,15 +262,16 @@ export function createPageConfig(
 
   // onShareAppMessage 和 onShareTimeline 一样，会影响小程序右上方按钮的选项，因此不能默认注册。
   SIDE_EFFECT_LIFECYCLES.forEach((lifecycle) => {
+    const comp = component as unknown as Record<string, unknown>;
     if (
-      component[lifecycle] ||
-      component.prototype?.[lifecycle] ||
-      component[lifecycle.replace(/^on/, 'enable')] ||
+      comp[lifecycle] ||
+      (comp.prototype as Record<string, unknown> | undefined)?.[lifecycle] ||
+      comp[lifecycle.replace(/^on/, 'enable')] ||
       pageConfig?.[lifecycle.replace(/^on/, 'enable')]
     ) {
-      config[lifecycle] = function (this: MpInstance, ...args: any[]) {
-        const target = args[0]?.target;
-        if (target?.id) {
+      config[lifecycle] = function (this: MpInstance, ...args: unknown[]) {
+        const target = (args[0] as Record<string, unknown> | undefined)?.target as Record<string, unknown> | undefined;
+        if (target != null && isString(target.id)) {
           const id = target.id;
           const element = env.document.getElementById(id);
           if (element) {
@@ -293,7 +295,7 @@ export function createPageConfig(
 }
 
 export function createComponentConfig(
-  component: React.ComponentClass,
+  component: ComponentClass,
   componentName?: string,
   data?: Record<string, unknown>,
 ) {
@@ -301,8 +303,8 @@ export function createComponentConfig(
   let componentElement: TaroRootElement | null = null;
   const [ATTACHED, DETACHED] = hooks.call('getMiniLifecycleImpl')!.component;
 
-  const config: any = {
-    [ATTACHED]() {
+  const config: Record<string, unknown> = {
+    [ATTACHED](this: MpInstance) {
       perf.start(PAGE_INIT);
       this.pageIdCache = this.getPageId?.() || pageId();
 
@@ -319,7 +321,7 @@ export function createComponentConfig(
         }),
       );
     },
-    [DETACHED]() {
+    [DETACHED](this: MpInstance) {
       const path = getPath(id, { id: this.pageIdCache });
 
       whenAppReady((app) =>
@@ -341,19 +343,19 @@ export function createComponentConfig(
   }
 
   [OPTIONS, EXTERNAL_CLASSES, BEHAVIORS].forEach((key) => {
-    (config as any)[key] = (component as any)[key] ?? EMPTY_OBJ;
+    config[key] = (component as unknown as Record<string, unknown>)[key] ?? EMPTY_OBJ;
   });
 
   return config;
 }
 
-export function createRecursiveComponentConfig(componentName?: string) {
+export function createRecursiveComponentConfig(componentName?: string): Record<string, unknown> {
   const isCustomWrapper = componentName === CUSTOM_WRAPPER;
   const [ATTACHED, DETACHED] = hooks.call('getMiniLifecycleImpl')!.component;
 
   const lifeCycles = isCustomWrapper
     ? {
-        [ATTACHED](this: any) {
+        [ATTACHED](this: MpInstance) {
           const componentId = this.data.i?.sid || this.props.i?.sid;
           if (isString(componentId)) {
             customWrapperCache.set(componentId, this);
@@ -363,7 +365,7 @@ export function createRecursiveComponentConfig(componentName?: string) {
             }
           }
         },
-        [DETACHED](this: any) {
+        [DETACHED](this: MpInstance) {
           const componentId = this.data.i?.sid || this.props.i?.sid;
           if (isString(componentId)) {
             customWrapperCache.delete(componentId);

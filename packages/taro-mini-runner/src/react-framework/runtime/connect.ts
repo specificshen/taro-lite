@@ -15,6 +15,7 @@ import { ensureIsArray, HOOKS_APP_ID, isClassComponent, setDefaultDescriptor, se
 import type {
   AppInstance,
   Instance,
+  MpEvent,
   PageLifeCycle,
   PageProps,
   ReactAppInstance,
@@ -37,29 +38,30 @@ type ReactDOMRenderer = typeof TReactDOM &
   typeof TReactDOMClient & {
     render?: (element: React.ReactElement, container: unknown) => void;
   };
+type LifecycleCallback = (...args: unknown[]) => unknown;
 
 let h: typeof React.createElement;
 let ReactDOM: ReactDOMRenderer;
 
 const pageKeyId = incrementId();
 
-export function setReconciler(ReactDOM?: any) {
-  hooks.tap('getLifecycle', function (instance, lifecycle: string) {
+export function setReconciler(ReactDOM?: ReactDOMRenderer) {
+  hooks.tap('getLifecycle', function (instance: Instance, lifecycle: string) {
     lifecycle = lifecycle.replace(/^on(Show|Hide)$/, 'componentDid$1');
-    return instance[lifecycle];
+    return instance[lifecycle] as LifecycleCallback | LifecycleCallback[] | undefined;
   });
 
-  hooks.tap('modifyMpEvent', function (event) {
+  hooks.tap('modifyMpEvent', function (event: MpEvent) {
     Object.defineProperty(event, 'type', {
       value: event.type.replace(/-/g, ''),
     });
   });
 
-  hooks.tap('batchedEventUpdates', function (cb) {
+  hooks.tap('batchedEventUpdates', function (cb: () => void) {
     ReactDOM?.unstable_batchedUpdates(cb);
   });
 
-  hooks.tap('mergePageInstance', function (prev, next) {
+  hooks.tap('mergePageInstance', function (prev: Instance | undefined, next: Instance | undefined) {
     if (!prev || !next) return;
 
     // 子组件使用 lifecycle hooks 注册了生命周期后，会存在 prev，里面是注册的生命周期回调。
@@ -68,9 +70,9 @@ export function setReconciler(ReactDOM?: any) {
     if ('constructor' in prev) return;
 
     Object.keys(prev).forEach((item) => {
-      const prevList = prev[item];
-      const nextList = ensureIsArray<() => any>(next[item]);
-      next[item] = nextList.concat(prevList);
+      const prevList = ensureIsArray<LifecycleCallback>(prev[item] as LifecycleCallback | LifecycleCallback[]);
+      const nextList = ensureIsArray<LifecycleCallback>(next[item] as LifecycleCallback | LifecycleCallback[]);
+      (next as Record<string, LifecycleCallback[]>)[item] = nextList.concat(prevList);
     });
   });
 }
@@ -141,7 +143,12 @@ export function connectReactPage(R: typeof React, id: string) {
  * @param config 入口组件配置 app.config.js 的内容
  * @returns 传递给 App 构造器的对象 obj ：App(obj)
  */
-export function createReactApp(App: React.ComponentClass, react: typeof React, dom: any, config: AppConfig) {
+export function createReactApp(
+  App: React.ComponentClass,
+  react: typeof React,
+  dom: ReactDOMRenderer,
+  config: AppConfig,
+) {
   if (process.env.NODE_ENV !== 'production') {
     ensure(!!dom, "构建 React 项目时未能找到 ReactDOM，请确认 process.env.FRAMEWORK 设置为 'react'");
   }
@@ -192,7 +199,7 @@ export function createReactApp(App: React.ComponentClass, react: typeof React, d
     private pages: Array<() => PageComponent> = [];
     private elements: Array<PageComponent> = [];
 
-    constructor(props: any) {
+    constructor(props: Record<string, unknown>) {
       super(props);
       appWrapper = this;
       appWrapperResolver(this);
@@ -267,7 +274,7 @@ export function createReactApp(App: React.ComponentClass, react: typeof React, d
       }),
 
       [ONLAUNCH]: setDefaultDescriptor({
-        value(options: any) {
+        value(options: Record<string, unknown>) {
           setRouterParams(options);
 
           const onLaunch = () => {
@@ -306,7 +313,7 @@ export function createReactApp(App: React.ComponentClass, react: typeof React, d
       }),
 
       [ONSHOW]: setDefaultDescriptor({
-        value(options: any) {
+        value(options: Record<string, unknown>) {
           setRouterParams(options);
 
           const onShow = () => {
@@ -384,7 +391,7 @@ export function createReactApp(App: React.ComponentClass, react: typeof React, d
     },
   );
 
-  function triggerAppHook(lifecycle: keyof PageLifeCycle | keyof AppInstance, ...option: any[]) {
+  function triggerAppHook(lifecycle: keyof PageLifeCycle | keyof AppInstance, ...option: unknown[]) {
     const instance = getPageInstance(HOOKS_APP_ID);
     if (instance) {
       const app = getAppInstance();
