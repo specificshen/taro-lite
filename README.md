@@ -25,12 +25,12 @@
 ```json
 {
   "dependencies": {
-    "@spcsn/taro": "1.0.1",
-    "@spcsn/taro-components": "1.0.1",
+    "@spcsn/taro": "1.1.0",
+    "@spcsn/taro-components": "1.1.0",
     "react": "^19.2.0"
   },
   "devDependencies": {
-    "@spcsn/taro-cli": "1.0.1"
+    "@spcsn/taro-cli": "1.1.0"
   }
 }
 ```
@@ -114,7 +114,7 @@ npm run build
 构建输出应显示当前 `@spcsn/taro-cli` 版本，例如：
 
 ```text
-SPCSN Taro v1.0.1
+SPCSN Taro v1.1.0
 ```
 
 ## 发版前检查
@@ -174,11 +174,11 @@ pnpm -r --filter './packages/*' publish --access public --tag latest
 ```json
 {
   "dependencies": {
-    "@spcsn/taro": "1.0.1",
-    "@spcsn/taro-components": "1.0.1"
+    "@spcsn/taro": "1.1.0",
+    "@spcsn/taro-components": "1.1.0"
   },
   "devDependencies": {
-    "@spcsn/taro-cli": "1.0.1"
+    "@spcsn/taro-cli": "1.1.0"
   }
 }
 ```
