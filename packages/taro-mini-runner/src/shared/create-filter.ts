@@ -8,21 +8,23 @@ import path from 'node:path';
 import { isArray, isFunction } from '@spcsn/taro-shared';
 import pm from 'picomatch';
 
-function ensureArray(thing: any): any[] {
+type FilterPattern = ReadonlyArray<string | RegExp> | string | RegExp | null | undefined;
+
+function ensureArray<T>(thing: T | readonly T[] | null | undefined): T[] {
   if (isArray(thing)) {
-    return thing;
+    return thing as T[];
   }
   if (thing == null) {
     return [];
   }
-  return [thing];
+  return [thing as T];
 }
 
 const normalizePath = function normalizePath(filename: string): string {
   return filename.split(path.win32.sep).join(path.posix.sep);
 };
 
-function getMatcherString(id: any, resolutionBase: any): string {
+function getMatcherString(id: string, resolutionBase: string | false): string {
   if (resolutionBase === false || path.isAbsolute(id) || id.startsWith('*')) {
     return normalizePath(id);
   }
@@ -37,15 +39,19 @@ function getMatcherString(id: any, resolutionBase: any): string {
   return path.posix.join(basePath, normalizePath(id));
 }
 
-export default function createFilter(include: any, exclude: any, options?: { resolve?: any }) {
+export default function createFilter(
+  include: FilterPattern,
+  exclude: FilterPattern,
+  options?: { resolve?: string | false },
+) {
   const resolutionBase = options && options.resolve;
-  const getMatcher = (id: any) =>
+  const getMatcher = (id: string | RegExp) =>
     id instanceof RegExp
       ? id
       : {
-          test: (what: any) => {
+          test: (what: string) => {
             // this refactor is a tad overly verbose but makes for easy debugging
-            const pattern = getMatcherString(id, resolutionBase);
+            const pattern = getMatcherString(id, resolutionBase ?? '');
             const fn = pm(pattern, { dot: true });
             const result = fn(what);
             return result;
@@ -53,7 +59,7 @@ export default function createFilter(include: any, exclude: any, options?: { res
         };
   const includeMatchers = ensureArray(include).map(getMatcher);
   const excludeMatchers = ensureArray(exclude).map(getMatcher);
-  return function result(id: any) {
+  return function result(id: unknown) {
     if (typeof id !== 'string') {
       return false;
     }
@@ -79,13 +85,13 @@ export default function createFilter(include: any, exclude: any, options?: { res
 
 export function createFilterWithCompileOptions(
   compile: {
-    exclude?: any[];
-    include?: any[];
+    exclude?: (string | RegExp)[];
+    include?: (string | RegExp)[];
     /** 对应 Vite 小程序编译链路的文件过滤配置。 */
     filter?: (filename: string) => boolean;
   } = {},
-  defaultInclude: any[] = [],
-  defaultExclude: any[] = [],
+  defaultInclude: (string | RegExp)[] = [],
+  defaultExclude: (string | RegExp)[] = [],
 ) {
   if (isFunction(compile.filter)) {
     return compile.filter;

@@ -3,7 +3,7 @@ import { hooks } from './runtime-hooks';
 
 export const EMPTY_OBJ: any = {};
 
-export const EMPTY_ARR: any[] = [];
+export const EMPTY_ARR: unknown[] = [];
 
 export const noop = (..._: unknown[]) => {};
 
@@ -62,7 +62,7 @@ export function capitalize(s: string) {
 
 const hasOwnProperty = Object.prototype.hasOwnProperty;
 
-export const hasOwn = (val: Record<any, any>, key: string | symbol) => hasOwnProperty.call(val, key);
+export const hasOwn = (val: Record<string, unknown>, key: string) => hasOwnProperty.call(val, key);
 
 /**
  * ensure takes a condition and throw a error if the condition fails,
@@ -84,13 +84,13 @@ export function warn(condition: boolean, msg: string) {
   }
 }
 
-export function queryToJson(str: string): Record<string, any> {
+export function queryToJson(str: string): Record<string, string | string[]> {
   const dec = decodeURIComponent;
   const qp = str.split('&');
-  const ret: Record<string, any> = {};
+  const ret: Record<string, string | string[]> = {};
   let name: string;
   let val: string;
-  for (let i = 0, l = qp.length, item; i < l; ++i) {
+  for (let i = 0, l = qp.length, item: string; i < l; ++i) {
     item = qp[i];
     if (item.length) {
       const s = item.indexOf('=');
@@ -101,13 +101,15 @@ export function queryToJson(str: string): Record<string, any> {
         name = dec(item.slice(0, s));
         val = dec(item.slice(s + 1));
       }
-      if (typeof ret[name] === 'string') {
+      const prev = ret[name];
+      if (typeof prev === 'string') {
         // inline'd type check
-        ret[name] = [ret[name]];
+        ret[name] = [prev];
       }
 
-      if (Array.isArray(ret[name])) {
-        ret[name].push(val);
+      const current = ret[name];
+      if (Array.isArray(current)) {
+        current.push(val);
       } else {
         ret[name] = val;
       }
@@ -123,9 +125,9 @@ export function getUniqueKey() {
   return _loadTime + _uniqueId++;
 }
 
-const cacheData: Record<string, any> = {};
+const cacheData: Record<string, unknown> = {};
 
-export function cacheDataSet(key: string, val: any) {
+export function cacheDataSet(key: string, val: unknown) {
   cacheData[key] = val;
 }
 
@@ -208,12 +210,13 @@ export function nonsupport(api: string) {
   };
 }
 
-export function setUniqueKeyToRoute(key: string, obj: any) {
+export function setUniqueKeyToRoute(key: string, obj: Record<string, unknown>) {
   const routerParamsPrivateKey = '__key_';
   const useDataCacheApis = ['navigateTo', 'redirectTo', 'reLaunch', 'switchTab'];
 
   if (useDataCacheApis.indexOf(key) > -1) {
-    const url = (obj.url = obj.url || '');
+    const url = String(obj.url || '');
+    obj.url = url;
     const hasMark = url.indexOf('?') > -1;
     const cacheKey = getUniqueKey();
     obj.url += (hasMark ? '&' : '?') + `${routerParamsPrivateKey}=${cacheKey}`;

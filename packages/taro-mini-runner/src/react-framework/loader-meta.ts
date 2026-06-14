@@ -1,6 +1,7 @@
 import path from 'node:path';
 import * as acorn from 'acorn';
 import * as walk from 'acorn-walk';
+import type { Node } from 'acorn';
 import type { Frameworks } from './index';
 import type { ILoaderMeta } from '@spcsn/taro/types/compile/config/plugin';
 
@@ -14,7 +15,7 @@ function addConfig(source: string) {
     sourceType: 'module',
   });
 
-  const additionConfig: Record<string, any> = {};
+  const additionConfig: Record<string, boolean> = {};
 
   function check(name: string) {
     Object.keys(configsMap).forEach((configName) => {
@@ -26,16 +27,17 @@ function addConfig(source: string) {
   }
 
   walk.simple(ast, {
-    FunctionExpression(node: any) {
-      if (!node.id || !node.id.name) return;
-      check(node.id.name);
+    FunctionExpression(node: Node) {
+      const n = node as unknown as acorn.FunctionExpression;
+      if (n.id?.name) check(n.id.name);
     },
-    FunctionDeclaration(node: any) {
-      if (!node.id || !node.id.name) return;
-      check(node.id.name);
+    FunctionDeclaration(node: Node) {
+      const n = node as unknown as acorn.FunctionDeclaration;
+      if (n.id?.name) check(n.id.name);
     },
-    CallExpression(node: any) {
-      const { callee } = node;
+    CallExpression(node: Node) {
+      const n = node as unknown as acorn.CallExpression;
+      const { callee } = n;
       if (callee.type === 'Identifier') {
         check(callee.name);
       } else if (callee.type === 'MemberExpression') {
@@ -45,44 +47,34 @@ function addConfig(source: string) {
           check(callee.property.value);
         }
       }
-      node.arguments.forEach((item: any) => {
-        if (item.type === 'Literal' && item.value) {
+      n.arguments.forEach((item) => {
+        if (item.type === 'Literal' && item.value && typeof item.value === 'string') {
           check(item.value);
         }
       });
     },
-    ClassDeclaration(node: any) {
-      // 类声明: class Foo {}
-      if (node.id && node.id.name) {
-        check(node.id.name);
-      }
-      // 类体方法: class Foo { bar() {} }
-      node.body.body.forEach((method: any) => {
-        if (method.type === 'MethodDefinition') {
-          if (method.key.type === 'Identifier') {
-            check(method.key.name);
-          } else if (method.key.type === 'Literal' && typeof method.key.value === 'string') {
-            check(method.key.value);
-          }
-        }
-      });
+    ClassDeclaration(node: Node) {
+      checkClassNode(node as unknown as acorn.ClassDeclaration);
     },
-    ClassExpression(node: any) {
-      // 类表达式: const A = class B {}
-      if (node.id && node.id.name) {
-        check(node.id.name);
-      }
-      node.body.body.forEach((method: any) => {
-        if (method.type === 'MethodDefinition') {
-          if (method.key.type === 'Identifier') {
-            check(method.key.name);
-          } else if (method.key.type === 'Literal' && typeof method.key.value === 'string') {
-            check(method.key.value);
-          }
-        }
-      });
+    ClassExpression(node: Node) {
+      checkClassNode(node as unknown as acorn.ClassExpression);
     },
   });
+
+  function checkClassNode(node: acorn.ClassDeclaration | acorn.ClassExpression) {
+    if (node.id && node.id.name) {
+      check(node.id.name);
+    }
+    node.body.body.forEach((method) => {
+      if (method.type === 'MethodDefinition') {
+        if (method.key.type === 'Identifier') {
+          check(method.key.name);
+        } else if (method.key.type === 'Literal' && typeof method.key.value === 'string') {
+          check(method.key.value);
+        }
+      }
+    });
+  }
 
   return additionConfig;
 }

@@ -2,27 +2,27 @@ import { Events } from './event-emitter';
 
 interface ExeListItem {
   eventName: string;
-  data: Record<string, any>;
+  data: Record<string, unknown>;
 }
 
 interface RouteEvt extends Events {
-  addEvents: (events: any) => void;
-  emit?: (events: any, data: any) => void;
+  addEvents: (events: Record<string, (...args: any[]) => void>) => void;
+  emit?: (events: string, data: Record<string, unknown>) => void;
 }
 
 interface PageEvt extends Events {
-  exeList: any[];
-  emit?: (events: any, data: any) => void;
+  exeList: ExeListItem[];
+  emit?: (events: string, data: Record<string, unknown>) => void;
 }
 
 let routeChannel: RouteEvt;
 
 class PageEvts extends Events {
-  exeList = [];
+  exeList: ExeListItem[] = [];
 
   on(eventName: string, callback: (...args: any[]) => void) {
     super.on(eventName, callback, this);
-    this.exeList = this.exeList.reduce((prev: any, item: ExeListItem) => {
+    this.exeList = this.exeList.reduce<ExeListItem[]>((prev, item) => {
       if (item.eventName === eventName) {
         super.trigger(item.eventName, item.data);
       } else {
@@ -33,7 +33,7 @@ class PageEvts extends Events {
     return this;
   }
 
-  emit(events: string, data: any) {
+  emit(events: string, data: Record<string, unknown>) {
     routeChannel.trigger(events, data);
   }
 }
@@ -41,7 +41,7 @@ class PageEvts extends Events {
 const pageChannel: PageEvt = new PageEvts();
 
 class RouteEvts extends Events {
-  emit(events: string, data: any) {
+  emit(events: string, data: Record<string, unknown>) {
     pageChannel.off(events);
     pageChannel.exeList.push({
       eventName: events,

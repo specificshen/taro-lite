@@ -1,11 +1,11 @@
-export function throttle(
-  fn: (...args: any[]) => void,
+export function throttle<TArgs extends unknown[]>(
+  fn: (...args: TArgs) => void,
   threshold = 250,
-  scope?: any,
-): (this: any, ...args: any[]) => void {
+  scope?: unknown,
+): (this: unknown, ...args: TArgs) => void {
   let lastTime = 0;
   let deferTimer: ReturnType<typeof setTimeout>;
-  return function (this: any, ...args: any[]) {
+  return function (this: unknown, ...args: TArgs) {
     const context = scope || this;
     const now = Date.now();
     if (now - lastTime > threshold) {
@@ -21,10 +21,14 @@ export function throttle(
   };
 }
 
-export function debounce(fn: (...args: any[]) => void, ms = 250, scope?: any): (this: any, ...args: any[]) => void {
+export function debounce<TArgs extends unknown[]>(
+  fn: (...args: TArgs) => void,
+  ms = 250,
+  scope?: unknown,
+): (this: unknown, ...args: TArgs) => void {
   let timer: ReturnType<typeof setTimeout>;
 
-  return function (this: any, ...args: any[]) {
+  return function (this: unknown, ...args: TArgs) {
     const context = scope || this;
     clearTimeout(timer);
     timer = setTimeout(function () {

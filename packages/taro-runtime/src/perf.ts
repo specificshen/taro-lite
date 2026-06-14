@@ -31,7 +31,7 @@ class Performance {
       return;
     }
 
-    return debounce((now = Date.now(), cb?: TFunc) => {
+    return debounce<[number?, TFunc?]>((now = Date.now(), cb?: TFunc) => {
       this.stop(id, now);
       cb?.();
     }, delay);

@@ -28,7 +28,7 @@ const hooksMap: Record<string, string> = {
 };
 
 function createHook(lifecycle: string) {
-  return (fn: (...args: any[]) => void) => {
+  return (fn: (...args: unknown[]) => void) => {
     const router = Current.router;
     const id = router?.$taroPath || router?.path || 'taro-app';
     const instRef = React.useRef<Instance | undefined>(undefined);
@@ -42,22 +42,22 @@ function createHook(lifecycle: string) {
         injectPageInstance(inst, id);
       }
 
-      const callback = (...args: any[]) => fnRef.current(...args);
-      if (typeof (inst as any)[lifecycle] === 'function') {
-        (inst as any)[lifecycle] = [(inst as any)[lifecycle], callback];
+      const callback = (...args: unknown[]) => fnRef.current(...args);
+      if (typeof inst[lifecycle] === 'function') {
+        inst[lifecycle] = [inst[lifecycle], callback];
       } else {
-        (inst as any)[lifecycle] = [...((inst as any)[lifecycle] || []), callback];
+        inst[lifecycle] = [...((inst[lifecycle] as unknown[]) || []), callback];
       }
 
       return () => {
         const inst = instRef.current;
         if (!inst) return;
 
-        const list = (inst as any)[lifecycle];
+        const list = inst[lifecycle];
         if (list === callback) {
-          (inst as any)[lifecycle] = undefined;
+          inst[lifecycle] = undefined;
         } else if (Array.isArray(list)) {
-          (inst as any)[lifecycle] = list.filter((item) => item !== callback);
+          inst[lifecycle] = list.filter((item: unknown) => item !== callback);
         }
         instRef.current = undefined;
       };
@@ -65,7 +65,7 @@ function createHook(lifecycle: string) {
   };
 }
 
-function initReactHooksFallback(taro: Record<string, any>): void {
+function initReactHooksFallback(taro: Record<string, unknown>): void {
   if (typeof taro.useShareAppMessage === 'function') return;
 
   Object.keys(hooksMap).forEach((key) => {

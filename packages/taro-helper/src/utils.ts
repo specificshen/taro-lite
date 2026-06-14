@@ -22,7 +22,7 @@ import type TResolve from 'resolve';
 
 const execSync = child_process.execSync;
 
-function isPlainObject(value: unknown): value is Record<string, any> {
+function isPlainObject(value: unknown): value is Record<string, unknown> {
   if (value === null || typeof value !== 'object') {
     return false;
   }
@@ -36,8 +36,8 @@ function toCamelCase(value: string): string {
     .replace(/[-_\s]+(.)?/g, (_, character: string = '') => character.toUpperCase());
 }
 
-function normalizeVisitor(value: unknown): Record<string, any> {
-  return typeof value === 'function' ? { enter: value } : (value as Record<string, any>);
+function normalizeVisitor(value: unknown): Record<string, unknown> {
+  return typeof value === 'function' ? { enter: value } : (value as Record<string, unknown>);
 }
 
 interface NativeFsCompat {
@@ -153,7 +153,7 @@ export function isQuickAppPkg(name: string): boolean {
   return /^@(system|service)\.[a-zA-Z]{1,}/.test(name);
 }
 
-export function isAliasPath(name: string, pathAlias: Record<string, any> = {}): boolean {
+export function isAliasPath(name: string, pathAlias: Record<string, string> = {}): boolean {
   const prefixes = Object.keys(pathAlias);
   if (prefixes.length === 0) {
     return false;
@@ -161,7 +161,7 @@ export function isAliasPath(name: string, pathAlias: Record<string, any> = {}): 
   return prefixes.includes(name) || new RegExp(`^(${prefixes.join('|')})/`).test(name);
 }
 
-export function replaceAliasPath(filePath: string, name: string, pathAlias: Record<string, any> = {}) {
+export function replaceAliasPath(filePath: string, name: string, pathAlias: Record<string, string> = {}) {
   // 后续的 path.join 在遇到符号链接时将会解析为真实路径，如果
   // 这里的 filePath 没有做同样的处理，可能会导致 import 指向
   // 源代码文件，导致文件被意外修改
@@ -314,7 +314,7 @@ export function getTaroPath(): string {
   return taroPath;
 }
 
-export function getConfig(): Record<string, any> {
+export function getConfig(): Record<string, unknown> {
   const configPath = path.join(getTaroPath(), 'config.json');
   if (fs.existsSync(configPath)) {
     return fs.readJSONSync(configPath);
@@ -350,12 +350,12 @@ export function shouldUseCnpm(): boolean {
   }
 }
 
-export function isEmptyObject(obj: any): boolean {
+export function isEmptyObject(obj: object | null | undefined): boolean {
   if (obj == null) {
     return true;
   }
   for (const key in obj) {
-    if (obj.hasOwnProperty(key)) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
       return false;
     }
   }
@@ -418,8 +418,8 @@ export function resolveScriptPath(p: string): string {
   return resolveMainFilePath(p);
 }
 
-export function generateEnvList(env: Record<string, any>): Record<string, any> {
-  const res: Record<string, any> = {};
+export function generateEnvList(env: Record<string, string>): Record<string, string> {
+  const res: Record<string, string> = {};
   if (env && !isEmptyObject(env)) {
     for (const key in env) {
       try {
@@ -471,18 +471,21 @@ export function getNpmPackageAbsolutePath(npmPath: string, defaultFile = 'index'
   }
 }
 
-export function generateConstantsList(constants: Record<string, any>): Record<string, any> {
-  const res: Record<string, any> = {};
+export function generateConstantsList(constants: Record<string, unknown>): Record<string, unknown> {
+  const res: Record<string, unknown> = {};
   if (constants && !isEmptyObject(constants)) {
     for (const key in constants) {
-      if (isPlainObject(constants[key])) {
-        res[key] = generateConstantsList(constants[key]);
-      } else {
+      const value = constants[key];
+      if (isPlainObject(value)) {
+        res[key] = generateConstantsList(value);
+      } else if (typeof value === 'string') {
         try {
-          res[key] = JSON.parse(constants[key]);
+          res[key] = JSON.parse(value);
         } catch (err) {
-          res[key] = constants[key];
+          res[key] = value;
         }
+      } else {
+        res[key] = value;
       }
     }
   }
@@ -565,7 +568,7 @@ export function getInstalledNpmPkgVersion(pkgName: string, basedir: string): str
   return fs.readJSONSync(pkgPath).version;
 }
 
-export const recursiveMerge = <T = any>(src: Partial<T>, ...args: (Partial<T> | undefined)[]): T => {
+export const recursiveMerge = <T = unknown>(src: Partial<T>, ...args: (Partial<T> | undefined)[]): T => {
   for (const arg of args) {
     if (!arg) continue;
 
@@ -683,7 +686,8 @@ export function addPlatforms(platform: string) {
   PLATFORMS[upperPlatform] = platform;
 }
 
-export const getModuleDefaultExport = (exports: any) => (exports.__esModule ? exports.default : exports);
+export const getModuleDefaultExport = (exports: { __esModule?: boolean; default?: unknown }) =>
+  exports?.__esModule ? exports.default : exports;
 
 export function removeHeadSlash(str: string) {
   return str.replace(/^(\/|\\)/, '');
