@@ -33,6 +33,9 @@ export interface IMiniAppConfig<T extends CompilerTypes = CompilerViteTypes> {
     collapseWhitespace?: boolean
   }
 
+  /** 模板渲染基础层级，控制 base.wxml 的嵌套展开深度，默认 8 */
+  baseLevel?: number
+
   /** Vite 小程序输出配置，目前仅适配 chunkFileNames。 */
   output?: Pick<ViteOutputOptions, 'chunkFileNames'> & OutputExt
 
