@@ -345,7 +345,7 @@ export abstract class TaroPlatformBase<T extends TConfig = TConfig> extends Taro
   /**
    * 递归替换对象的 key 值
    */
-  protected recursiveReplaceObjectKeys(obj, keyMap) {
+  protected recursiveReplaceObjectKeys(obj: Record<string, any>, keyMap: Record<string, any>) {
     Object.keys(obj).forEach((key) => {
       if (keyMap[key]) {
         obj[keyMap[key]] = obj[key];

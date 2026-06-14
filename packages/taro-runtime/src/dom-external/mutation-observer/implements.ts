@@ -29,8 +29,8 @@ const observers: MutationObserverImpl[] = [];
  */
 export class MutationObserverImpl {
   public callback: MutationCallback;
-  public target: TaroNode | null;
-  public options: MutationObserverInit;
+  public target!: TaroNode | null;
+  public options!: MutationObserverInit;
   public records: MutationRecord[] = [];
 
   constructor(callback: MutationCallback) {

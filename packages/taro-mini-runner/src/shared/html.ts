@@ -1,6 +1,6 @@
 import { normalizePath } from '@spcsn/taro-helper';
 
-export function getHtmlScript(entryScript: string, pxtransformOption): string {
+export function getHtmlScript(entryScript: string, pxtransformOption: any): string {
   let htmlScript = '';
   const options = pxtransformOption?.config || {};
   const max = options?.maxRootSize ?? 40;

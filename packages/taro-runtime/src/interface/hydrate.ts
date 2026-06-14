@@ -2,6 +2,7 @@ import type { Shortcuts } from '@spcsn/taro-shared';
 import type { PageConfig } from './utils';
 
 export interface MpInstance {
+  [key: string]: any;
   config: PageConfig;
   setData: (data: unknown, cb: () => void) => void;
   route?: string;

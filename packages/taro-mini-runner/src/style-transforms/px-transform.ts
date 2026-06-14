@@ -68,21 +68,25 @@ const DEFAULT_WEAPP_OPTIONS = {
 
 const processed = Symbol('processed');
 
-let targetUnit;
+let targetUnit: string;
 
-const pxRegex = (units = ['px']) =>
+const pxRegex = (units: any[] = ['px']) =>
   new RegExp(`"[^"]+"|'[^']+'|url\\([^\\)]+\\)|(\\d*\\.?\\d+)(${units.join('|')})`, 'g');
 
 const filterPropList = {
-  exact: (list) => list.filter((item) => item.match(/^[^\*!]+$/)),
-  contain: (list) => list.filter((item) => item.match(/^\*.+\*$/)).map((item) => item.substr(1, item.length - 2)),
-  endWith: (list) => list.filter((item) => item.match(/^\*[^\*]+$/)).map((item) => item.substr(1)),
-  startWith: (list) => list.filter((item) => item.match(/^[^\*!]+\*$/)).map((item) => item.substr(0, item.length - 1)),
-  notExact: (list) => list.filter((item) => item.match(/^\![^\*].*$/)).map((item) => item.substr(1)),
-  notContain: (list) => list.filter((item) => item.match(/^\!\*.+\*$/)).map((item) => item.substr(2, item.length - 3)),
-  notEndWith: (list) => list.filter((item) => item.match(/^\!\*[^\*]+$/)).map((item) => item.substr(2)),
-  notStartWith: (list) =>
-    list.filter((item) => item.match(/^\![^\*]+\*$/)).map((item) => item.substr(1, item.length - 2)),
+  exact: (list: any[]) => list.filter((item: any) => item.match(/^[^\*!]+$/)),
+  contain: (list: any[]) =>
+    list.filter((item: any) => item.match(/^\*.+\*$/)).map((item: any) => item.substr(1, item.length - 2)),
+  endWith: (list: any[]) => list.filter((item: any) => item.match(/^\*[^\*]+$/)).map((item: any) => item.substr(1)),
+  startWith: (list: any[]) =>
+    list.filter((item: any) => item.match(/^[^\*!]+\*$/)).map((item: any) => item.substr(0, item.length - 1)),
+  notExact: (list: any[]) => list.filter((item: any) => item.match(/^\![^\*].*$/)).map((item: any) => item.substr(1)),
+  notContain: (list: any[]) =>
+    list.filter((item: any) => item.match(/^\!\*.+\*$/)).map((item: any) => item.substr(2, item.length - 3)),
+  notEndWith: (list: any[]) =>
+    list.filter((item: any) => item.match(/^\!\*[^\*]+$/)).map((item: any) => item.substr(2)),
+  notStartWith: (list: any[]) =>
+    list.filter((item: any) => item.match(/^\![^\*]+\*$/)).map((item: any) => item.substr(1, item.length - 2)),
 };
 
 const postcssPxTransform = (options: PxTransformOptions = {}) => {
@@ -116,7 +120,7 @@ const postcssPxTransform = (options: PxTransformOptions = {}) => {
 
   return {
     postcssPlugin: 'postcss-pxtransform',
-    prepare(result) {
+    prepare(result: any) {
       const pxReplace = createPxReplace(
         opts.rootValue,
         opts.unitPrecision,
@@ -131,7 +135,7 @@ const postcssPxTransform = (options: PxTransformOptions = {}) => {
       }
 
       return {
-        Comment(comment) {
+        Comment(comment: any) {
           if (comment.text === 'postcss-pxtransform disable') {
             skip = true;
             return;
@@ -168,7 +172,7 @@ const postcssPxTransform = (options: PxTransformOptions = {}) => {
             }
           }
         },
-        Declaration(decl) {
+        Declaration(decl: any) {
           if (skip) return;
           if (!opts.methods.includes('size')) return;
 
@@ -191,7 +195,7 @@ const postcssPxTransform = (options: PxTransformOptions = {}) => {
           }
         },
         AtRule: {
-          media: (rule) => {
+          media: (rule: any) => {
             if (opts.mediaQuery) {
               if (skip) return;
               if (!opts.methods.includes('size')) return;
@@ -206,7 +210,7 @@ const postcssPxTransform = (options: PxTransformOptions = {}) => {
   };
 };
 
-function convertLegacyOptions(options) {
+function convertLegacyOptions(options: any) {
   if (typeof options !== 'object') return;
   if (
     ((typeof options.prop_white_list !== 'undefined' && options.prop_white_list.length === 0) ||
@@ -219,15 +223,15 @@ function convertLegacyOptions(options) {
   }
   Object.keys(legacyOptions).forEach(function (key) {
     if (options.hasOwnProperty(key)) {
-      options[legacyOptions[key]] = options[key];
+      options[(legacyOptions as Record<string, any>)[key]] = options[key];
       delete options[key];
     }
   });
 }
 
-function createPxReplace(rootValue, unitPrecision, minPixelValue, onePxTransform) {
-  return function (input) {
-    return function (match, pixelValue) {
+function createPxReplace(rootValue: any, unitPrecision: any, minPixelValue: any, onePxTransform: any) {
+  return function (input: any) {
+    return function (match: any, pixelValue: any) {
       if (!pixelValue) return match;
 
       if (!onePxTransform && parseInt(pixelValue, 10) === 1) {
@@ -247,27 +251,27 @@ function createPxReplace(rootValue, unitPrecision, minPixelValue, onePxTransform
   };
 }
 
-function toFixed(number, precision) {
+function toFixed(number: any, precision: any) {
   const multiplier = Math.pow(10, precision + 1);
   const wholeNumber = Math.floor(number * multiplier);
   return (Math.round(wholeNumber / 10) * 10) / multiplier;
 }
 
-function declarationExists(decls, prop, value) {
-  return decls.some(function (decl) {
+function declarationExists(decls: any, prop: any, value: any) {
+  return decls.some(function (decl: any) {
     return decl.prop === prop && decl.value === value;
   });
 }
 
-function blacklistedSelector(blacklist, selector) {
+function blacklistedSelector(blacklist: any, selector: any) {
   if (typeof selector !== 'string') return;
-  return blacklist.some(function (regex) {
+  return blacklist.some(function (regex: any) {
     if (typeof regex === 'string') return selector.indexOf(regex) !== -1;
     return selector.match(regex);
   });
 }
 
-function createPropListMatcher(propList) {
+function createPropListMatcher(propList: any) {
   const hasWild = propList.indexOf('*') > -1;
   const matchAll = hasWild && propList.length === 1;
   const lists = {
@@ -280,29 +284,29 @@ function createPropListMatcher(propList) {
     notStartWith: filterPropList.notStartWith(propList),
     notEndWith: filterPropList.notEndWith(propList),
   };
-  return function (prop) {
+  return function (prop: any) {
     if (matchAll) return true;
     return (
       (hasWild ||
         lists.exact.indexOf(prop) > -1 ||
-        lists.contain.some(function (match) {
+        lists.contain.some(function (match: any) {
           return prop.indexOf(match) > -1;
         }) ||
-        lists.startWith.some(function (match) {
+        lists.startWith.some(function (match: any) {
           return prop.indexOf(match) === 0;
         }) ||
-        lists.endWith.some(function (match) {
+        lists.endWith.some(function (match: any) {
           return prop.indexOf(match) === prop.length - match.length;
         })) &&
       !(
         lists.notExact.indexOf(prop) > -1 ||
-        lists.notContain.some(function (match) {
+        lists.notContain.some(function (match: any) {
           return prop.indexOf(match) > -1;
         }) ||
-        lists.notStartWith.some(function (match) {
+        lists.notStartWith.some(function (match: any) {
           return prop.indexOf(match) === 0;
         }) ||
-        lists.notEndWith.some(function (match) {
+        lists.notEndWith.some(function (match: any) {
           return prop.indexOf(match) === prop.length - match.length;
         })
       )

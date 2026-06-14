@@ -45,6 +45,8 @@ export default class Kernel extends EventEmitter {
   runOpts: any;
   debugger: any;
 
+  [key: string]: any;
+
   constructor(options: IKernelOptions) {
     super();
     this.debugger = process.env.DEBUG === 'Taro:Kernel' ? helper.createDebug('Taro:Kernel') : function () {};
@@ -212,7 +214,7 @@ export default class Kernel extends EventEmitter {
     }
   }
 
-  checkPluginOpts(pluginCtx, opts) {
+  checkPluginOpts(pluginCtx: any, opts: any) {
     if (typeof pluginCtx.optsSchema !== 'function') {
       return;
     }
@@ -257,11 +259,11 @@ export default class Kernel extends EventEmitter {
       }
     });
     return new Proxy(pluginCtx, {
-      get: (target, name: string) => {
+      get: (target: any, name: string) => {
         if (this.methods.has(name)) {
           const method = this.methods.get(name);
           if (Array.isArray(method)) {
-            return (...arg) => {
+            return (...arg: any[]) => {
               method.forEach((item) => {
                 item.apply(this, arg);
               });
@@ -280,7 +282,7 @@ export default class Kernel extends EventEmitter {
   async applyPlugins(args: string | { name: string; initialVal?: any; opts?: any }) {
     let name;
     let initialVal;
-    let opts;
+    let opts: any;
     if (typeof args === 'string') {
       name = args;
     } else {
@@ -326,17 +328,17 @@ export default class Kernel extends EventEmitter {
     return await waterfall.promise(initialVal);
   }
 
-  runWithPlatform(platform) {
+  runWithPlatform(platform: string) {
     if (!this.platforms.has(platform)) {
       throw new Error(`不存在编译平台 ${platform}`);
     }
     const config = this.platforms.get(platform)!;
-    const withNameConfig = this.config.getConfigWithNamed(config.name, config.useConfigName);
+    const withNameConfig = this.config.getConfigWithNamed(config.name, config.useConfigName as string);
     process.env.TARO_PLATFORM = getPlatformType(config.name, config.useConfigName);
     return withNameConfig;
   }
 
-  setRunOpts(opts) {
+  setRunOpts(opts: any) {
     this.runOpts = opts;
   }
 
@@ -354,7 +356,7 @@ export default class Kernel extends EventEmitter {
 
   async run(args: string | { name: string; opts?: any }) {
     let name;
-    let opts;
+    let opts: any;
     if (typeof args === 'string') {
       name = args;
     } else {

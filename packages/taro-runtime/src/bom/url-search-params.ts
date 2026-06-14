@@ -2,7 +2,7 @@ import { isArray } from '@spcsn/taro-shared';
 
 const findReg = /[!'()~]|%20|%00/g;
 const plusReg = /\+/g;
-const replaceCharMap = {
+const replaceCharMap: Record<string, string> = {
   '!': '%21',
   "'": '%27',
   '(': '%28',
@@ -31,9 +31,9 @@ function encode(str: string) {
 }
 
 export class URLSearchParams {
-  #dict = Object.create(null);
+  #dict: Record<string, string[]> = Object.create(null);
 
-  constructor(query) {
+  constructor(query?: any) {
     query ??= '';
 
     const dict = this.#dict;
@@ -105,7 +105,7 @@ export class URLSearchParams {
     this.#dict[name] = ['' + value];
   }
 
-  forEach(callback, thisArg) {
+  forEach(callback: (value: string, name: string, searchParams: URLSearchParams) => void, thisArg?: any) {
     const dict = this.#dict;
     const searchParams = this;
     Object.getOwnPropertyNames(dict).forEach((name) => {

@@ -69,7 +69,7 @@ class App extends React.Component {
   async collectedDeps(
     rollupCtx: Rolldown.PluginContext,
     id: string,
-    filter,
+    filter: (id: string) => boolean,
     cache = new Set<string>(),
   ): Promise<Set<string>> {
     if (!/\.m?[jt]sx?$/.test(id) || !filter(id) || cache.has(id)) return cache;

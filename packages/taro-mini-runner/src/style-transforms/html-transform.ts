@@ -1,4 +1,4 @@
-import { Rule } from 'postcss';
+import { Rule, Declaration } from 'postcss';
 
 const htmlTags = [
   'html',
@@ -121,7 +121,7 @@ const postcssHtmlTransform = (options: Options = {}) => {
         walkRules(rule);
       }
     },
-    Declaration(decl) {
+    Declaration(decl: Declaration) {
       if (options?.removeCursorStyle && decl.prop === 'cursor') {
         decl.remove();
       }

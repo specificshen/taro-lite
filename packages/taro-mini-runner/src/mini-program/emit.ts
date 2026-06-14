@@ -162,7 +162,8 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
               },
             };
             if (!template.isSupportRecursive) {
-              customWrapperConfig.config.usingComponents[baseCompName] = `./${baseCompName}`;
+              (customWrapperConfig.config.usingComponents as Record<string, string>)[baseCompName] =
+                `./${baseCompName}`;
             }
             generateConfigFile(this, viteCompilerContext, {
               filePath: customWrapperName,
@@ -190,7 +191,7 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
         if (viteCompilerContext) {
           const { taroConfig } = viteCompilerContext;
           if (isFunction(taroConfig.modifyBuildAssets)) {
-            const assets = {};
+            const assets: Record<string, any> = {};
             for (const name in bundle) {
               const chunk = bundle[name];
               const source = chunk.type === 'asset' ? chunk.source : chunk.code;
@@ -236,7 +237,7 @@ function generateConfigFile(
   const fileName = viteCompilerContext.getConfigPath(getComponentName(viteCompilerContext, filePath));
   const unOfficialConfigs = ['enableShareAppMessage', 'enableShareTimeline', 'components'];
   unOfficialConfigs.forEach((item) => {
-    delete config[item];
+    delete (config as Record<string, any>)[item];
   });
   const source = prettyPrintJson(config);
   ctx.emitFile({

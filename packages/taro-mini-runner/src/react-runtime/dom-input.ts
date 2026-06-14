@@ -18,7 +18,7 @@ function updateInputWrapper(element: TaroElement, oldValue: RestoreType, props: 
 }
 
 // react 中原本处理 type=radio 的逻辑；mini 运行时保留 no-op 兼容分支。
-function updateNamedCousins(rootNode, props) {
+function updateNamedCousins(rootNode: any, props: Props) {
   const name = props.name;
 
   if (props.type === 'radio' && name != null) {
@@ -32,7 +32,7 @@ export function getToStringValue(value: any) {
   return isEmptyType ? '' : value;
 }
 
-export function toString(value): string {
+export function toString(value: any): string {
   return '' + value;
 }
 
@@ -61,7 +61,7 @@ function hasDifferentNumericValue(oldValue: RestoreType, value: unknown): boolea
   return String(oldValue) !== String(value);
 }
 
-export function setNodeValue(node: FormElement, oldValue: RestoreType, value, type = 'string') {
+export function setNodeValue(node: FormElement, oldValue: RestoreType, value: any, type = 'string') {
   if (value != null) {
     if (type === 'number') {
       if ((value === 0 && node.value === '') || hasDifferentNumericValue(oldValue, value)) {

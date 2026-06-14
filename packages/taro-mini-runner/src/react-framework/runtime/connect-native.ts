@@ -103,7 +103,7 @@ function initNativeComponentEntry(params: InitNativeComponentEntryParams) {
       cb && cb();
     }
 
-    mount(Component, compId, getCtx, cb?) {
+    mount(Component: any, compId: any, getCtx: any, cb?: any) {
       const isReactComponent = isClassComponent(R, Component);
       const inject = (node?: Instance) => node && injectPageInstance(node, compId);
       const refs = isReactComponent
@@ -142,7 +142,7 @@ function initNativeComponentEntry(params: InitNativeComponentEntryParams) {
       );
     }
 
-    unmount(compId, cb?) {
+    unmount(compId: any, cb?: any) {
       const components = this.state.components;
       const index = components.findIndex((item) => item.compId === compId);
       const next = [...components.slice(0, index), ...components.slice(index + 1)];
@@ -178,12 +178,12 @@ function initNativeComponentEntry(params: InitNativeComponentEntryParams) {
 }
 
 export function createNativePageConfig(
-  Component,
+  Component: any,
   pageName: string,
   data: Record<string, unknown>,
   react: typeof React,
   reactDOM: typeof ReactDOM,
-  pageConfig,
+  pageConfig: any,
 ) {
   reactMeta.R = react;
   h = react.createElement;
@@ -334,7 +334,7 @@ export function createNativePageConfig(
   // onShareAppMessage 和 onShareTimeline 一样，会影响小程序右上方按钮的选项，因此不能默认注册。
   SIDE_EFFECT_LIFECYCLES.forEach((lifecycle) => {
     if (Component[lifecycle] || Component.prototype?.[lifecycle] || Component[lifecycle.replace(/^on/, 'enable')]) {
-      pageObj[lifecycle] = function (...args) {
+      pageObj[lifecycle] = function (...args: any[]) {
         const target = args[0]?.target;
         if (target?.id) {
           const id = target.id;
@@ -359,7 +359,7 @@ export function createNativePageConfig(
   return pageObj;
 }
 
-export function createNativeComponentConfig(Component, react: typeof React, reactDOM, componentConfig) {
+export function createNativeComponentConfig(Component: any, react: typeof React, reactDOM: any, componentConfig: any) {
   reactMeta.R = react;
   h = react.createElement;
   ReactDOM = reactDOM;
@@ -418,7 +418,7 @@ export function createNativeComponentConfig(Component, react: typeof React, reac
       app!.unmount!(this.compId);
     },
     pageLifetimes: {
-      show(options) {
+      show(options: any) {
         safeExecute(this.compId, 'onShow', options);
       },
       hide() {
@@ -427,7 +427,7 @@ export function createNativeComponentConfig(Component, react: typeof React, reac
     },
     methods: {
       eh: eventHandler,
-      onLoad(options) {
+      onLoad(options: any) {
         safeExecute(this.compId, 'onLoad', options);
       },
       onUnload() {
@@ -444,7 +444,7 @@ export function createNativeComponentConfig(Component, react: typeof React, reac
 
   // onShareAppMessage 和 onShareTimeline 一样，会影响小程序右上方按钮的选项，因此不能默认注册。
   if (Component.onShareAppMessage || Component.prototype?.onShareAppMessage || Component.enableShareAppMessage) {
-    componentObj.methods.onShareAppMessage = function (options) {
+    componentObj.methods.onShareAppMessage = function (options: any) {
       const target = options?.target;
       if (target) {
         const id = target.id;

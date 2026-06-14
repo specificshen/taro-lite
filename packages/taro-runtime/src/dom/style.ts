@@ -58,12 +58,12 @@ function setStyle(this: Style, newVal: string, styleKey: string) {
 }
 
 function initStyle(ctor: typeof Style, styleProperties: string[]) {
-  const properties = {};
+  const properties: Record<string, PropertyDescriptor> = {};
 
   for (let i = 0; i < styleProperties.length; i++) {
     const styleKey = styleProperties[i];
 
-    if (ctor[styleKey]) return;
+    if ((ctor as any)[styleKey]) return;
 
     properties[styleKey] = {
       get(this: Style) {
@@ -79,16 +79,18 @@ function initStyle(ctor: typeof Style, styleProperties: string[]) {
   Object.defineProperties(ctor.prototype, properties);
 }
 
-function isCssVariable(propertyName) {
+function isCssVariable(propertyName: string) {
   return /^--/.test(propertyName);
 }
 
 export class Style {
-  public _pending: boolean;
+  [key: string]: any;
+
+  public _pending!: boolean;
 
   public _usedStyleProp: Set<string>;
 
-  public _value: Partial<CSSStyleDeclaration>;
+  public _value: Record<string, any>;
 
   public _element: TaroElement;
 

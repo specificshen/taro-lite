@@ -1,10 +1,12 @@
 import { DATASET, PROPS, STYLE } from '../constants';
 import { NodeType } from '../dom/node-types';
+import type { TaroElement } from '../dom/element';
 import type { TaroNode } from '../dom/node';
+import type { TaroText } from '../dom/text';
 
-export function cloneNode(this: TaroNode, isDeep = false) {
+export function cloneNode(this: TaroNode, isDeep = false): TaroNode | undefined {
   const document = this.ownerDocument;
-  let newNode;
+  let newNode: TaroElement | TaroText | undefined;
 
   if (this.nodeType === NodeType.ELEMENT_NODE) {
     newNode = document.createElement(this.nodeName);
@@ -13,19 +15,19 @@ export function cloneNode(this: TaroNode, isDeep = false) {
   }
 
   for (const key in this) {
-    const value: any = this[key];
+    const value: any = (this as any)[key];
     if ([PROPS, DATASET].includes(key) && typeof value === 'object') {
-      newNode[key] = { ...value };
+      (newNode as any)[key] = { ...value };
     } else if (key === '_value') {
-      newNode[key] = value;
+      (newNode as any)[key] = value;
     } else if (key === STYLE) {
-      newNode.style._value = { ...value._value };
-      newNode.style._usedStyleProp = new Set(Array.from(value._usedStyleProp));
+      (newNode as any).style._value = { ...value._value };
+      (newNode as any).style._usedStyleProp = new Set(Array.from(value._usedStyleProp));
     }
   }
 
   if (isDeep) {
-    newNode.childNodes = this.childNodes.map((node) => (node as any).cloneNode(true));
+    (newNode as any).childNodes = this.childNodes.map((node) => (node as any).cloneNode(true));
   }
 
   return newNode;

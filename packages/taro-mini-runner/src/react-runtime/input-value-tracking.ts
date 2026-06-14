@@ -7,11 +7,11 @@ function isCheckable(elem: FormElement) {
   return nodeName && nodeName.toLowerCase() === 'input' && (type === 'checkbox' || type === 'radio');
 }
 
-function getTracker(node) {
+function getTracker(node: any) {
   return node._valueTracker;
 }
 
-function detachTracker(node) {
+function detachTracker(node: any) {
   node._valueTracker = null;
 }
 
@@ -52,7 +52,7 @@ function trackValueOnNode(node: any) {
     getValue() {
       return currentValue;
     },
-    setValue(value) {
+    setValue(value: any) {
       currentValue = '' + value;
     },
     stopTracking() {
@@ -63,7 +63,7 @@ function trackValueOnNode(node: any) {
   return tracker;
 }
 
-export function track(node) {
+export function track(node: any) {
   if (getTracker(node)) {
     return;
   }
@@ -71,7 +71,7 @@ export function track(node) {
   node._valueTracker = trackValueOnNode(node);
 }
 
-export function updateValueIfChanged(node, nextValue: string) {
+export function updateValueIfChanged(node: any, nextValue: string) {
   if (!node) {
     return false;
   }
@@ -91,7 +91,7 @@ export function updateValueIfChanged(node, nextValue: string) {
   return false;
 }
 
-export function stopTracking(node) {
+export function stopTracking(node: any) {
   const tracker = getTracker(node);
   if (tracker) {
     tracker.stopTracking();

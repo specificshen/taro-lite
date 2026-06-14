@@ -119,7 +119,7 @@ function setEvent(dom: TaroElement, name: string, value: unknown, oldValue?: unk
   if (isEventHandler(value)) {
     if (isEventHandler(oldValue)) {
       dom.removeEventListener(eventName, oldValue, false);
-      dom.addEventListener(eventName, value, { isCapture, sideEffect: false });
+      dom.addEventListener(eventName, value, { capture: isCapture, sideEffect: false });
     } else {
       dom.addEventListener(eventName, value, isCapture);
     }
@@ -138,7 +138,7 @@ function setStyle(style: Style, key: string, value: unknown) {
     return;
   }
 
-  style[key] =
+  (style as Record<string, any>)[key] =
     isNumber(value) && IS_NON_DIMENSIONAL.test(key) === false ? convertNumber2PX(value) : value === null ? '' : value;
 }
 

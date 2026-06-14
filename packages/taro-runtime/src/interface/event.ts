@@ -5,7 +5,7 @@ export interface EventOptions {
 
 type Target = Record<string, unknown> & { dataset: Record<string, unknown>; id: string };
 
-export interface MpEvent {
+export interface MpEvent extends Record<string, any> {
   type: string;
   detail: Record<string, unknown>;
   target: Target;

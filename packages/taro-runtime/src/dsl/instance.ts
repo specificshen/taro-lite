@@ -49,6 +49,7 @@ export interface PageLifeCycle extends Show {
 }
 
 export interface PageInstance extends PageLifeCycle {
+  [key: string]: any;
   /** 页面的初始数据 */
   data?: Record<string, unknown>;
   /** 页面路径 */

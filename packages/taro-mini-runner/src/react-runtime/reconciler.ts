@@ -231,7 +231,7 @@ export function flushSync(fn?: () => void) {
   return fn?.();
 }
 
-export function runWithPriority<T>(priority, fn: () => T): T {
+export function runWithPriority<T>(priority: any, fn: () => T): T {
   const previousPriority = currentUpdatePriority;
   currentUpdatePriority = priority;
   try {

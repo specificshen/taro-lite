@@ -7,6 +7,10 @@ export const getDefaultPostcssConfig = function ({
   designWidth,
   deviceRatio,
   postcssOption = {} as IPostcssOption<'mini'>,
+}: {
+  designWidth: any;
+  deviceRatio: any;
+  postcssOption?: IPostcssOption<'mini'>;
 }): [string, any, Func?][] {
   const { autoprefixer, pxtransform = {}, htmltransform, ...options } = postcssOption;
 

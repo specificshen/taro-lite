@@ -5,6 +5,7 @@ export interface EventListenerOptions {
 export interface AddEventListenerOptions extends EventListenerOptions {
   once?: boolean;
   passive?: boolean;
+  sideEffect?: boolean;
 }
 
 export interface EventHandler<T = any, R = void> {

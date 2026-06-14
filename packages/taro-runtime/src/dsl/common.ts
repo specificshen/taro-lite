@@ -59,7 +59,7 @@ export function safeExecute(path: string, lifecycle: string, ...args: unknown[])
     return;
   }
 
-  const func = hooks.call('getLifecycle', instance, lifecycle as keyof PageInstance);
+  const func = hooks.call('getLifecycle', instance, lifecycle as string);
 
   if (isArray(func)) {
     const res = func.map((fn) => fn.apply(instance, args));
@@ -249,7 +249,7 @@ export function createPageConfig(
       return;
     }
 
-    config[lifecycle] = function (this: MpInstance, ...args) {
+    config[lifecycle] = function (this: MpInstance, ...args: any[]) {
       const exec = () => safeExecute(this.$taroPath, lifecycle, ...args);
       if (isDefer) {
         hasLoaded.then(exec);
@@ -267,7 +267,7 @@ export function createPageConfig(
       component[lifecycle.replace(/^on/, 'enable')] ||
       pageConfig?.[lifecycle.replace(/^on/, 'enable')]
     ) {
-      config[lifecycle] = function (this: MpInstance, ...args) {
+      config[lifecycle] = function (this: MpInstance, ...args: any[]) {
         const target = args[0]?.target;
         if (target?.id) {
           const id = target.id;
@@ -341,7 +341,7 @@ export function createComponentConfig(
   }
 
   [OPTIONS, EXTERNAL_CLASSES, BEHAVIORS].forEach((key) => {
-    config[key] = component[key] ?? EMPTY_OBJ;
+    (config as any)[key] = (component as any)[key] ?? EMPTY_OBJ;
   });
 
   return config;

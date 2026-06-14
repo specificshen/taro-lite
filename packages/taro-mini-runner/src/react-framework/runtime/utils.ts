@@ -4,7 +4,7 @@ import type * as React from 'react';
 
 export const HOOKS_APP_ID = 'taro-app';
 
-export function isClassComponent(R: typeof React, component): boolean {
+export function isClassComponent(R: typeof React, component: any): boolean {
   const prototype = component.prototype;
 
   // For React Redux
@@ -36,7 +36,7 @@ export function setDefaultDescriptor(obj: Record<string, any>) {
  * 设置入口的路由参数
  * @param options 小程序传入的参数
  */
-export function setRouterParams(options) {
+export function setRouterParams(options: any) {
   Current.router = {
     params: options?.query,
     ...options,

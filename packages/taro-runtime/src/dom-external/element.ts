@@ -8,7 +8,7 @@ export function getBoundingClientRectImpl(this: TaroElement): Promise<null> {
     const query = options.miniGlobal.createSelectorQuery();
     query
       .select(`#${this.uid}`)
-      .boundingClientRect((res) => {
+      .boundingClientRect((res: any) => {
         resolve(res);
       })
       .exec();

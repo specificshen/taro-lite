@@ -130,7 +130,7 @@ export function getPostcssPlugins(
 ) {
   const plugins: any[] = [];
 
-  option.forEach(([pluginName, pluginOption, pluginPkg]) => {
+  option.forEach(([pluginName, pluginOption, pluginPkg]: [string, any, any]) => {
     if (!pluginOption || excludePluginNames.includes(pluginName)) return;
     if (Object.hasOwnProperty.call(pluginOption, 'enable') && !pluginOption.enable) return;
 

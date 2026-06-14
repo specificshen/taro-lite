@@ -51,7 +51,7 @@ export class AnchorElement extends TaroElement {
 
   public setAttribute(qualifiedName: string, value: any): void {
     if (qualifiedName === AnchorElementAttrs.HREF) {
-      const willSetAttr = parseUrl(value);
+      const willSetAttr = parseUrl(value) as Record<string, string>;
       for (const k in willSetAttr) {
         super.setAttribute(k, willSetAttr[k]);
       }

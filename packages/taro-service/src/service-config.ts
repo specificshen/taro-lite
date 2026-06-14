@@ -95,7 +95,7 @@ export default class Config {
     }
   }
 
-  getConfigWithNamed(platform, configName) {
+  getConfigWithNamed(platform: string, configName: string) {
     const initialConfig = this.initialConfig;
     const sourceDirName = initialConfig.sourceRoot || SOURCE_DIR;
     const outputDirName = initialConfig.outputRoot || OUTPUT_DIR;

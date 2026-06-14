@@ -9,14 +9,14 @@ const createTaroHook = (lifecycle: keyof PageLifeCycle | keyof AppInstance) => {
   return (fn: Func) => {
     const { R: React, PageContext } = reactMeta;
     const id = React.useContext(PageContext) || HOOKS_APP_ID;
-    const instRef = React.useRef<Instance<PageProps> | undefined>(undefined);
+    const instRef = React.useRef<Record<string, any> | undefined>(undefined);
 
     // hold fn ref and keep up to date
     const fnRef = React.useRef(fn);
     if (fnRef.current !== fn) fnRef.current = fn;
 
     React.useLayoutEffect(() => {
-      let inst = getPageInstance(id) as Instance<PageProps> | undefined;
+      let inst = getPageInstance(id) as Record<string, any> | undefined;
       instRef.current = inst;
       let first = false;
       if (!inst) {
@@ -35,7 +35,7 @@ const createTaroHook = (lifecycle: keyof PageLifeCycle | keyof AppInstance) => {
       }
 
       if (first) {
-        injectPageInstance(inst, id);
+        injectPageInstance(inst as Instance<PageProps>, id);
       }
       return () => {
         const inst = instRef.current;

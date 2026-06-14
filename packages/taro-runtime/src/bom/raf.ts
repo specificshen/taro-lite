@@ -2,7 +2,7 @@
 export let now: () => number;
 
 (function () {
-  let loadTime;
+  let loadTime: number;
   if (typeof performance !== 'undefined' && performance !== null && performance.now) {
     now = () => performance.now();
   } else if (Date.now) {
@@ -18,7 +18,7 @@ let lastTime = 0;
 
 // https://gist.github.com/paulirish/1579671
 // https://gist.github.com/jalbam/5fe05443270fa6d8136238ec72accbc0
-const _raf = function (callback) {
+const _raf = function (callback: (time: number) => void) {
   const _now = now();
   const nextTime = Math.max(lastTime + 16, _now); // First time will execute it immediately but barely noticeable and performance is gained.
   return setTimeout(function () {
@@ -26,7 +26,7 @@ const _raf = function (callback) {
   }, nextTime - _now);
 };
 
-const _caf = function (seed) {
+const _caf = function (seed: number) {
   // fix https://github.com/NervJS/taro/issues/7749
   clearTimeout(seed);
 };

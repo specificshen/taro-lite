@@ -18,7 +18,7 @@ export const supportedInputTypes: { [key: string]: boolean } = {
   week: true,
 };
 
-export function getEventPriority(domEventName) {
+export function getEventPriority(domEventName: string) {
   switch (domEventName) {
     case 'cancel':
     case 'click':

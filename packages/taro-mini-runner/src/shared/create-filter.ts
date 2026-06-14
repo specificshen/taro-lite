@@ -8,7 +8,7 @@ import path from 'node:path';
 import { isArray, isFunction } from '@spcsn/taro-shared';
 import pm from 'picomatch';
 
-function ensureArray(thing) {
+function ensureArray(thing: any): any[] {
   if (isArray(thing)) {
     return thing;
   }
@@ -18,11 +18,11 @@ function ensureArray(thing) {
   return [thing];
 }
 
-const normalizePath = function normalizePath(filename) {
+const normalizePath = function normalizePath(filename: string): string {
   return filename.split(path.win32.sep).join(path.posix.sep);
 };
 
-function getMatcherString(id, resolutionBase) {
+function getMatcherString(id: any, resolutionBase: any): string {
   if (resolutionBase === false || path.isAbsolute(id) || id.startsWith('*')) {
     return normalizePath(id);
   }
@@ -37,13 +37,13 @@ function getMatcherString(id, resolutionBase) {
   return path.posix.join(basePath, normalizePath(id));
 }
 
-export default function createFilter(include, exclude, options?) {
+export default function createFilter(include: any, exclude: any, options?: { resolve?: any }) {
   const resolutionBase = options && options.resolve;
-  const getMatcher = (id) =>
+  const getMatcher = (id: any) =>
     id instanceof RegExp
       ? id
       : {
-          test: (what) => {
+          test: (what: any) => {
             // this refactor is a tad overly verbose but makes for easy debugging
             const pattern = getMatcherString(id, resolutionBase);
             const fn = pm(pattern, { dot: true });
@@ -53,7 +53,7 @@ export default function createFilter(include, exclude, options?) {
         };
   const includeMatchers = ensureArray(include).map(getMatcher);
   const excludeMatchers = ensureArray(exclude).map(getMatcher);
-  return function result(id) {
+  return function result(id: any) {
     if (typeof id !== 'string') {
       return false;
     }

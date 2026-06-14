@@ -121,7 +121,7 @@ export class TaroRootElement extends TaroElement {
 
       // 正常渲染
       this.pendingUpdate = false;
-      let normalUpdate = {};
+      let normalUpdate: Record<string, UpdatePayloadValue | ReturnType<HydratedData>> = {};
       const customWrapperMap: Map<Record<any, any>, Record<string, any>> = new Map();
 
       if (initRender) {

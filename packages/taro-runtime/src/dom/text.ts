@@ -8,7 +8,7 @@ export class TaroText extends TaroNode {
   public nodeType = NodeType.TEXT_NODE;
   public nodeName = '#text';
 
-  constructor(value) {
+  constructor(value: string) {
     super();
     this._value = value;
   }

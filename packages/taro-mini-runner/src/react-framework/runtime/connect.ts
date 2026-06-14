@@ -43,7 +43,7 @@ let ReactDOM: ReactDOMRenderer;
 
 const pageKeyId = incrementId();
 
-export function setReconciler(ReactDOM?) {
+export function setReconciler(ReactDOM?: any) {
   hooks.tap('getLifecycle', function (instance, lifecycle: string) {
     lifecycle = lifecycle.replace(/^on(Show|Hide)$/, 'componentDid$1');
     return instance[lifecycle];
@@ -141,7 +141,7 @@ export function connectReactPage(R: typeof React, id: string) {
  * @param config 入口组件配置 app.config.js 的内容
  * @returns 传递给 App 构造器的对象 obj ：App(obj)
  */
-export function createReactApp(App: React.ComponentClass, react: typeof React, dom, config: AppConfig) {
+export function createReactApp(App: React.ComponentClass, react: typeof React, dom: any, config: AppConfig) {
   if (process.env.NODE_ENV !== 'production') {
     ensure(!!dom, "构建 React 项目时未能找到 ReactDOM，请确认 process.env.FRAMEWORK 设置为 'react'");
   }
@@ -192,7 +192,7 @@ export function createReactApp(App: React.ComponentClass, react: typeof React, d
     private pages: Array<() => PageComponent> = [];
     private elements: Array<PageComponent> = [];
 
-    constructor(props) {
+    constructor(props: any) {
       super(props);
       appWrapper = this;
       appWrapperResolver(this);
@@ -267,7 +267,7 @@ export function createReactApp(App: React.ComponentClass, react: typeof React, d
       }),
 
       [ONLAUNCH]: setDefaultDescriptor({
-        value(options) {
+        value(options: any) {
           setRouterParams(options);
 
           const onLaunch = () => {
@@ -306,7 +306,7 @@ export function createReactApp(App: React.ComponentClass, react: typeof React, d
       }),
 
       [ONSHOW]: setDefaultDescriptor({
-        value(options) {
+        value(options: any) {
           setRouterParams(options);
 
           const onShow = () => {
@@ -384,7 +384,7 @@ export function createReactApp(App: React.ComponentClass, react: typeof React, d
     },
   );
 
-  function triggerAppHook(lifecycle: keyof PageLifeCycle | keyof AppInstance, ...option) {
+  function triggerAppHook(lifecycle: keyof PageLifeCycle | keyof AppInstance, ...option: any[]) {
     const instance = getPageInstance(HOOKS_APP_ID);
     if (instance) {
       const app = getAppInstance();

@@ -32,16 +32,16 @@ import { TaroNode } from './node';
 import { NodeType } from './node-types';
 import { Style } from './style';
 import { treeToArray } from './tree';
-import type { Attributes, TFunc } from '../interface';
+import type { AddEventListenerOptions, Attributes, EventHandler, TFunc } from '../interface';
 import type { TaroEvent } from './event';
 
 export class TaroElement extends TaroNode {
-  public ctx?;
-  public tagName: string;
+  public ctx?: any;
+  public tagName!: string;
   public props: Record<string, any> = {};
   public style: Style;
   public dataset: Record<string, unknown> = EMPTY_OBJ;
-  public innerHTML: string;
+  public innerHTML!: string;
 
   public constructor() {
     super();
@@ -127,13 +127,13 @@ export class TaroElement extends TaroNode {
   }
 
   public get focus() {
-    return function () {
+    return () => {
       this.setAttribute(FOCUS, true);
     };
   }
 
   // 兼容 Vue3，详情请见：https://github.com/NervJS/taro/issues/10579
-  public set focus(value) {
+  public set focus(value: any) {
     this.setAttribute(FOCUS, value);
   }
 
@@ -358,7 +358,7 @@ export class TaroElement extends TaroNode {
       if (!isUndefined(result) && event.mpEvent) {
         const res = hooks.call('modifyTaroEventReturn', this, event, result);
         if (res) {
-          event.mpEvent[EVENT_CALLBACK_RESULT] = result;
+          (event.mpEvent as any)[EVENT_CALLBACK_RESULT] = result;
         }
       }
 
@@ -374,7 +374,7 @@ export class TaroElement extends TaroNode {
     return listeners != null;
   }
 
-  public addEventListener(type, handler, options) {
+  public addEventListener(type: string, handler: EventHandler, options?: boolean | AddEventListenerOptions) {
     const name = this.nodeName;
     const SPECIAL_NODES = hooks.call('getSpecialNodes')!;
 
@@ -398,7 +398,7 @@ export class TaroElement extends TaroNode {
     super.addEventListener(type, handler, options);
   }
 
-  public removeEventListener(type, handler, sideEffect = true) {
+  public removeEventListener(type: string, handler: EventHandler, sideEffect = true) {
     super.removeEventListener(type, handler);
 
     const name = this.nodeName;

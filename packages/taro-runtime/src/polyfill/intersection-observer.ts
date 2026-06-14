@@ -48,7 +48,7 @@ function handleIntersectionObserverObjectPolyfill () {
    * @param {Object} entry A dictionary of instance properties.
    * @constructor
    */
-  function IntersectionObserverEntry (entry: IntersectionObserverEntryInit) {
+  function IntersectionObserverEntry (this: any, entry: IntersectionObserverEntryInit) {
     this.time = entry.time
     this.target = entry.target
     this.rootBounds = entry.rootBounds
@@ -82,7 +82,7 @@ function handleIntersectionObserverObjectPolyfill () {
    * @param {Object=} opt_options Optional configuration options.
    * @constructor
    */
-  function IntersectionObserver (callback: IntersectionObserverCallback, options: IntersectionObserverInit = {}) {
+  function IntersectionObserver (this: any, callback: IntersectionObserverCallback, options: IntersectionObserverInit = {}) {
     if (!isFunction(callback)) {
       throw new Error('callback must be a function')
     }
@@ -104,7 +104,7 @@ function handleIntersectionObserverObjectPolyfill () {
     // Public properties.
     this.thresholds = this._initThresholds(options.threshold)
     this.root = options.root || null
-    this.rootMargin = this._rootMarginValues.map(function (margin) {
+    this.rootMargin = this._rootMarginValues.map(function (margin: { value: number; unit: string }) {
       return margin.value + margin.unit
     }).join(' ')
   }
@@ -133,8 +133,8 @@ function handleIntersectionObserverObjectPolyfill () {
    * the thresholds values.
    * @param {Element} target The DOM element to observe.
    */
-  IntersectionObserver.prototype.observe = function (target) {
-    const isTargetAlreadyObserved = this._observationTargets.some(function (item) {
+  IntersectionObserver.prototype.observe = function (target: Element) {
+    const isTargetAlreadyObserved = this._observationTargets.some(function (item: any) {
       return item.element === target
     })
 
@@ -154,9 +154,9 @@ function handleIntersectionObserverObjectPolyfill () {
    * Stops observing a target element for intersection changes.
    * @param {Element} target The DOM element to observe.
    */
-  IntersectionObserver.prototype.unobserve = function (target) {
+  IntersectionObserver.prototype.unobserve = function (target: Element) {
     this._observationTargets =
-    this._observationTargets.filter(function (item) {
+    this._observationTargets.filter(function (item: any) {
       return item.element !== target
     })
     if (!this._observationTargets.length) {
@@ -195,11 +195,11 @@ function handleIntersectionObserverObjectPolyfill () {
    *     a list of threshold values, defaulting to [0].
    * @return {Array} A sorted list of unique and valid threshold values.
    */
-  IntersectionObserver.prototype._initThresholds = function (opt_threshold) {
+  IntersectionObserver.prototype._initThresholds = function (opt_threshold: any) {
     let threshold = opt_threshold || [0]
     if (!Array.isArray(threshold)) threshold = [threshold]
 
-    return threshold.sort().filter(function (t, i, a) {
+    return threshold.sort().filter(function (t: any, i: number, a: any[]) {
       if (!isNumber(t) || isNaN(t) || t < 0 || t > 1) {
         throw new Error('threshold must be a number between 0 and 1 inclusively')
       }
@@ -218,9 +218,9 @@ function handleIntersectionObserverObjectPolyfill () {
    * @return {Array<Object>} An array of margin objects with the keys
    *     value and unit.
    */
-  IntersectionObserver.prototype._parseRootMargin = function (opt_rootMargin) {
+  IntersectionObserver.prototype._parseRootMargin = function (opt_rootMargin: string) {
     const marginString = opt_rootMargin || '0px'
-    const margins = marginString.split(/\s+/).map(function (margin) {
+    const margins = marginString.split(/\s+/).map(function (margin: string) {
       const parts = /^(-?\d*\.?\d+)(px|%)$/.exec(margin)
       if (!parts) {
         throw new Error('rootMargin must be specified in pixels or percent')
@@ -297,7 +297,7 @@ function handleIntersectionObserverObjectPolyfill () {
     const rootIsInDom = this._rootIsInDom()
     const rootRect = rootIsInDom ? this._getRootRect() : getEmptyRect()
 
-    this._observationTargets.forEach(function (item) {
+    this._observationTargets.forEach((item: any) => {
       const target = item.element
       const targetRect = getBoundingClientRect(target)
       const rootContainsTarget = this._rootContainsTarget(target)
@@ -305,7 +305,7 @@ function handleIntersectionObserverObjectPolyfill () {
       const intersectionRect = rootIsInDom && rootContainsTarget &&
       this._computeTargetAndRootIntersection(target, rootRect)
 
-      const newEntry = item.entry = new IntersectionObserverEntry({
+      const newEntry = item.entry = new (IntersectionObserverEntry as any)({
         time: now(),
         target: target,
         boundingClientRect: targetRect,
@@ -329,7 +329,7 @@ function handleIntersectionObserverObjectPolyfill () {
           this._queuedEntries.push(newEntry)
         }
       }
-    }, this)
+    })
 
     if (this._queuedEntries.length) {
       this._callback(this.takeRecords(), this)
@@ -348,7 +348,7 @@ function handleIntersectionObserverObjectPolyfill () {
    *     intersection is found.
    * @private
    */
-  IntersectionObserver.prototype._computeTargetAndRootIntersection = function (target, rootRect) {
+  IntersectionObserver.prototype._computeTargetAndRootIntersection = function (target: Element, rootRect: any) {
     // If the element isn't displayed, an intersection can't happen.
     if (window.getComputedStyle(target).display === 'none') return
 
@@ -424,8 +424,8 @@ function handleIntersectionObserverObjectPolyfill () {
    * @return {Object} The expanded rect.
    * @private
    */
-  IntersectionObserver.prototype._expandRectByRootMargin = function (rect) {
-    const margins = this._rootMarginValues.map(function (margin, i) {
+  IntersectionObserver.prototype._expandRectByRootMargin = function (rect: any) {
+    const margins = this._rootMarginValues.map(function (margin: any, i: number) {
       return margin.unit === 'px' ? margin.value :
         margin.value * (i % 2 ? rect.width : rect.height) / 100
     })
@@ -452,7 +452,7 @@ function handleIntersectionObserverObjectPolyfill () {
    * @private
    */
   IntersectionObserver.prototype._hasCrossedThreshold =
-  function (oldEntry, newEntry) {
+  function (oldEntry: any, newEntry: any) {
     // To make comparing easier, an entry that has a ratio of 0
     // but does not actually intersect is given a value of -1
     const oldRatio = oldEntry && oldEntry.isIntersecting ? oldEntry.intersectionRatio || 0 : -1
@@ -488,7 +488,7 @@ function handleIntersectionObserverObjectPolyfill () {
    * @return {boolean} True if the target element is a child of root.
    * @private
    */
-  IntersectionObserver.prototype._rootContainsTarget = function (target) {
+  IntersectionObserver.prototype._rootContainsTarget = function (target: Element) {
     return containsDeep(this.root || document, target)
   }
 
@@ -529,7 +529,7 @@ function handleIntersectionObserverObjectPolyfill () {
    * @param {boolean} opt_useCapture Optionally adds the even to the capture
    *     phase. Note: this only works in modern browsers.
    */
-  function addEvent (node, event, fn, opt_useCapture) {
+  function addEvent (node: any, event: string, fn: any, opt_useCapture?: boolean) {
     if (isFunction(node.addEventListener)) {
       node.addEventListener(event, fn, opt_useCapture || false)
     } else if (isFunction(node.attachEvent)) {

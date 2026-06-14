@@ -3,7 +3,7 @@ import { isFunction } from '@spcsn/taro-shared'
 export function handleArrayFindPolyfill () {
   if (!isFunction(Array.prototype.find)) {
     Object.defineProperty(Array.prototype, 'find', {
-      value (predicate) {
+      value (predicate: (value: any, index: number, obj: any) => boolean) {
         if (this == null) {
           throw new TypeError('"this" is null or not defined')
         }
@@ -30,7 +30,7 @@ export function handleArrayFindPolyfill () {
 export function handleArrayIncludesPolyfill () {
   if (!isFunction(Array.prototype.includes)) {
     Object.defineProperty(Array.prototype, 'includes', {
-      value (searchElement, fromIndex) {
+      value (searchElement: any, fromIndex: number) {
         if (this == null) {
           throw new TypeError('"this" is null or not defined')
         }

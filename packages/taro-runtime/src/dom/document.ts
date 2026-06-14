@@ -12,9 +12,9 @@ import { AnchorElement } from './anchor-element';
 import { TransferElement } from './transfer';
 
 export class TaroDocument extends TaroElement {
-  public documentElement: TaroElement;
-  public head: TaroElement;
-  public body: TaroElement;
+  public documentElement!: TaroElement;
+  public head!: TaroElement;
+  public body!: TaroElement;
   public createEvent = createEvent;
   cookie?: string;
 

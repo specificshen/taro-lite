@@ -133,13 +133,13 @@ export function resolvePresetsOrPlugins(
   return resolvedPresetsOrPlugins;
 }
 
-function supplementBlank(length) {
+function supplementBlank(length: number) {
   return Array(length)
     .map(() => '')
     .join(' ');
 }
 
-export function printHelpLog(command, optionsList: Map<string, string>, synopsisList?: Set<string>) {
+export function printHelpLog(command: string, optionsList: Map<string, string>, synopsisList?: Set<string>) {
   console.log(`Usage: taro ${command} [options]`);
   console.log();
   console.log('Options:');

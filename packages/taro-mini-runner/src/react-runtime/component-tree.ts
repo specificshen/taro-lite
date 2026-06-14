@@ -10,19 +10,19 @@ import type { Fiber } from 'react-reconciler';
 import type { Props } from './props';
 
 export function precacheFiberNode(hostInst: Fiber, node: TaroElement | TaroText): void {
-  node[internalInstanceKey] = hostInst;
+  (node as Record<string, any>)[internalInstanceKey] = hostInst;
 }
 
 export function markContainerAsRoot(hostRoot: Fiber, node: TaroElement | TaroText): void {
-  node[internalContainerInstanceKey] = hostRoot;
+  (node as Record<string, any>)[internalContainerInstanceKey] = hostRoot;
 }
 
 export function unmarkContainerAsRoot(node: TaroElement | TaroText): void {
-  node[internalContainerInstanceKey] = null;
+  (node as Record<string, any>)[internalContainerInstanceKey] = null;
 }
 
 export function isContainerMarkedAsRoot(node: TaroElement | TaroText): boolean {
-  return !!node[internalContainerInstanceKey];
+  return !!(node as Record<string, any>)[internalContainerInstanceKey];
 }
 
 /**
@@ -30,7 +30,8 @@ export function isContainerMarkedAsRoot(node: TaroElement | TaroText): boolean {
  * instance, or null if the node was not rendered by this React.
  */
 export function getInstanceFromNode(node: TaroElement | TaroText): Fiber | null {
-  const inst = node[internalInstanceKey] || node[internalContainerInstanceKey];
+  const inst =
+    (node as Record<string, any>)[internalInstanceKey] || (node as Record<string, any>)[internalContainerInstanceKey];
 
   if (inst) {
     if (
@@ -60,9 +61,9 @@ export function getNodeFromInstance(inst: Fiber) {
 }
 
 export function getFiberCurrentPropsFromNode(node: TaroElement | TaroText): Props {
-  return node[internalPropsKey] || null;
+  return (node as Record<string, any>)[internalPropsKey] || null;
 }
 
 export function updateFiberProps(node: TaroElement | TaroText, props: Props): void {
-  node[internalPropsKey] = props;
+  (node as Record<string, any>)[internalPropsKey] = props;
 }
