@@ -1,12 +1,15 @@
-import { registerHooks } from 'node:module';
+import { createRequire } from 'node:module';
 import * as fs from 'node:fs';
 import path from 'node:path';
+import vm from 'node:vm';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { transformSync } from '@swc/core';
 import type { Config } from '@swc/core';
 
 function getModuleDefaultExport(exports: any) {
-  return exports?.__esModule ? exports.default : exports;
+  if (exports?.__esModule) return exports.default;
+  if (exports?.default !== undefined) return exports.default;
+  return exports;
 }
 
 interface UserConfigModuleLoaderOptions {
@@ -19,9 +22,6 @@ interface UserConfigModuleLoaderOptions {
 }
 
 const SCRIPT_EXTENSIONS = ['.js', '.jsx', '.ts', '.tsx'];
-
-type LoadHookSync = NonNullable<Parameters<typeof registerHooks>[0]['load']>;
-type ResolveHookSync = NonNullable<Parameters<typeof registerHooks>[0]['resolve']>;
 
 function escapeRegExp(value: string) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -55,6 +55,18 @@ function resolveAlias(request: string, alias: Record<string, string> = {}) {
   }
 }
 
+/** 在源码层面对 import / require 的别名路径进行解析，兼容 Vitest 等不经过 loader hooks 的环境 */
+function resolveAliasesInSource(source: string, alias: Record<string, string> = {}) {
+  if (Object.keys(alias).length === 0) return source;
+  return source.replace(
+    /((?:import|export)\s+(?:[^'"]*?)\s*from\s*|import\s*\(\s*|require\s*\(\s*)(['"])([^'"]+)\2/g,
+    (_match, prefix, quote, spec) => {
+      const resolved = resolveAlias(spec, alias);
+      return resolved ? `${prefix}${quote}${resolved}${quote}` : _match;
+    },
+  );
+}
+
 function createSwcConfig(customSwcConfig: Config = {}): Config {
   const defaultSwcConfig: Config = {
     jsc: {
@@ -83,9 +95,54 @@ function transformConfigModule(
   customSwcConfig: Config,
 ) {
   const source = fs.readFileSync(filename, 'utf-8');
-  const macroSource = applyDefineConfigMacros(source);
+  const aliasSource = resolveAliasesInSource(source, customConfig?.alias);
+  const macroSource = applyDefineConfigMacros(aliasSource);
   const definedSource = applyDefineConstants(macroSource, customConfig?.define);
   return transformSync(definedSource, createSwcConfig(customSwcConfig)).code || '';
+}
+
+function createConfigRequire(
+  parentFilename: string,
+  customConfig: UserConfigModuleLoaderOptions['customConfig'],
+  customSwcConfig: Config,
+) {
+  const nativeRequire = createRequire(parentFilename);
+  return function require(id: string) {
+    const request = resolveAlias(id, customConfig?.alias) || id;
+    if (!path.isAbsolute(request) && !request.startsWith('.')) {
+      return nativeRequire(request);
+    }
+    const resolved = resolveExistingScriptPath(
+      request,
+      pathToFileURL(parentFilename).href,
+      path.dirname(parentFilename),
+    );
+    if (!resolved) {
+      throw new Error(`Cannot find module '${id}' from '${parentFilename}'`);
+    }
+    return runConfigModule(resolved, customConfig, customSwcConfig);
+  };
+}
+
+function runConfigModule(
+  filename: string,
+  customConfig: UserConfigModuleLoaderOptions['customConfig'],
+  customSwcConfig: Config,
+) {
+  const code = transformConfigModule(filename, customConfig, customSwcConfig);
+  const module = { exports: {} as any };
+  const wrapper = `(function(exports, require, module, __filename, __dirname, global, process){${code}\n})`;
+  const fn = vm.runInThisContext(wrapper, { filename });
+  fn(
+    module.exports,
+    createConfigRequire(filename, customConfig, customSwcConfig),
+    module,
+    filename,
+    path.dirname(filename),
+    global,
+    process,
+  );
+  return module.exports;
 }
 
 function getParentDirectory(parentURL: string | undefined, cwd: string) {
@@ -130,71 +187,11 @@ function resolveExistingScriptPath(request: string, parentURL: string | undefine
   }
 }
 
-function filePathFromURL(url: string) {
-  const { pathname } = new URL(url);
-  if (process.platform === 'win32' && pathname.length >= 3 && pathname[2] === ':') {
-    return pathname.slice(1).replace(/\//g, path.sep);
-  }
-  return pathname;
-}
-
-function isScriptModuleURL(url: string) {
-  if (!url.startsWith('file:')) return false;
-  return SCRIPT_EXTENSIONS.includes(path.extname(filePathFromURL(url)));
-}
-
 export async function loadUserConfigModule(
   id: string,
   { customConfig = {}, customSwcConfig = {}, cwd = process.cwd() }: UserConfigModuleLoaderOptions = {},
 ) {
   const resolvedId = path.isAbsolute(id) ? id : path.resolve(cwd, id);
-
-  const resolveHook: ResolveHookSync = (request, context, nextResolve) => {
-    if (!request) {
-      const stack = new Error(`Empty resolve request`).stack;
-      console.error('[taro] Empty resolve request in config-module-loader:\n', stack);
-      return nextResolve(request, context);
-    }
-    const aliasPath = resolveAlias(request, customConfig.alias);
-    const resolvedRequest = aliasPath || request;
-
-    try {
-      return nextResolve(resolvedRequest, context);
-    } catch (error) {
-      const candidate = resolveExistingScriptPath(resolvedRequest, context.parentURL, cwd);
-      if (candidate) {
-        return {
-          shortCircuit: true,
-          url: pathToFileURL(candidate).href,
-        };
-      }
-      throw error;
-    }
-  };
-
-  const loadHook: LoadHookSync = (url, context, nextLoad) => {
-    if (!isScriptModuleURL(url)) {
-      return nextLoad(url, context);
-    }
-
-    const filename = filePathFromURL(url);
-    return {
-      format: 'commonjs',
-      shortCircuit: true,
-      source: transformConfigModule(filename, customConfig, customSwcConfig),
-    };
-  };
-
-  const hooks = registerHooks({
-    resolve: resolveHook,
-    load: loadHook,
-  });
-
-  try {
-    const fileURL = `${pathToFileURL(resolvedId).href}?t=${Date.now()}`;
-    const mod = await import(fileURL);
-    return getModuleDefaultExport(mod);
-  } finally {
-    hooks.deregister();
-  }
+  const exports = runConfigModule(resolvedId, customConfig, customSwcConfig);
+  return getModuleDefaultExport(exports);
 }
