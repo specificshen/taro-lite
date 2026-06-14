@@ -10,7 +10,6 @@
     ".": {
       "types": "./types/index.d.ts",
       "require": "./dist/index.js",
-      "import": "./dist/index.js",
       "default": "./dist/index.js"
     },
     "./types/compile": {
@@ -64,7 +63,6 @@
   },
   "devDependencies": {
     "@spcsn/taro-components": "workspace:*",
-    "@spcsn/taro-shared": "workspace:*",
     "rolldown": "^1.1.1"
   },
   "peerDependencies": {

@@ -1,5 +1,4 @@
 import React from 'react'
-import Vue from 'vue'
 import Taro from './index'
 
 declare module './index' {
@@ -28,7 +27,13 @@ declare module './index' {
     onHide?(): void
   }
   interface AppInstance extends Show {
-    mount(component: React.Component | Vue.ComponentOptions<typeof Vue>, id: string, cb: (...args: any[]) => void): void
+    mount?(component: React.ComponentClass<any>, id: string, cb: (...args: any[]) => void): void
+    mount?(
+      component: React.ComponentClass<any>,
+      id: string,
+      getCtx: (...args: any[]) => void,
+      cb: (...args: any[]) => void,
+    ): void
     componentDidShow?(options?: Record<string, unknown>): void
     onShow?(options?: Record<string, unknown>): void
     unmount(id: string, cb?: () => void): void

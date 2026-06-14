@@ -101,7 +101,7 @@ describe('package support boundary', () => {
     expect(packageJson.main).toBe('dist/index.js');
     expect(packageJson.module).toBeUndefined();
     expect(packageJson.types).toBe('types/index.d.ts');
-    expect(packageJson.exports['.'].import).toBe('./dist/index.js');
+    expect(packageJson.exports['.'].import).toBeUndefined();
     expect(packageJson.exports['.'].require).toBe('./dist/index.js');
     expect(packageJson.exports['.'].default).toBe('./dist/index.js');
     expect(packageJson.exports['./mini']).toBeUndefined();
