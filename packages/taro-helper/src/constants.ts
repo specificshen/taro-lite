@@ -144,11 +144,7 @@ export enum META_TYPE {
 
 export const taroJsMiniComponentsPath = '@spcsn/taro-components';
 export const taroJsComponents = '@spcsn/taro-components';
-export const taroJsQuickAppComponents = '@spcsn/taro-components-qa';
 export const taroJsFramework = '@spcsn/taro';
-export const taroJsRedux = '@spcsn/taro-redux';
-export const taroJsMobx = '@spcsn/taro-mobx';
-export const taroJsMobxCommon = '@spcsn/taro-mobx-common';
 
 export const DEVICE_RATIO_NAME = 'deviceRatio';
 export const isWindows = os.platform() === 'win32';
