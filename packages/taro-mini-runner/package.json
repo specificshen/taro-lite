@@ -7,13 +7,15 @@
     ".": {
       "types": "./dist/index.d.ts",
       "require": "./dist/index.js",
+      "import": "./dist/index.js",
       "default": "./dist/index.js"
     },
     "./framework-react": {
       "types": "./dist/react-framework/index.d.ts",
       "require": "./dist/react-framework/index.js",
-      "default": "./dist/react-framework/index.js"
-    }
+      "import": "./dist/react-framework/index.js"
+    },
+    "./package.json": "./package.json"
   },
   "author": "Samuel Ouyang",
   "license": "MIT",

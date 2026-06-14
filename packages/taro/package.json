@@ -6,6 +6,31 @@
   "license": "MIT",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "require": "./dist/index.js",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./types/compile": {
+      "types": "./types/compile/index.d.ts"
+    },
+    "./types/compile/compiler": {
+      "types": "./types/compile/compiler.d.ts"
+    },
+    "./types/compile/config/plugin": {
+      "types": "./types/compile/config/plugin.d.ts"
+    },
+    "./types/compile/hooks": {
+      "types": "./types/compile/hooks.d.ts"
+    },
+    "./types/compile/viteCompilerContext": {
+      "types": "./types/compile/viteCompilerContext.d.ts"
+    },
+    "./types/*": "./types/*",
+    "./package.json": "./package.json"
+  },
   "files": [
     "dist",
     "types"
