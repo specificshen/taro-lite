@@ -1,6 +1,13 @@
 type EventName = string | symbol;
 export type EventCallbacks = Record<EventName, Record<'next' | 'tail', unknown>>;
 
+interface CallbackNode {
+  next?: CallbackNode | Record<string, never>;
+  tail?: CallbackNode | Record<string, never>;
+  context?: unknown;
+  callback?: (...args: unknown[]) => void;
+}
+
 export class Events {
   protected callbacks?: EventCallbacks;
   static eventSplitter = ','; // Note: Harmony ACE API 8 开发板不支持使用正则 split 字符串 /\s+/
@@ -9,8 +16,8 @@ export class Events {
     this.callbacks = opts?.callbacks ?? {};
   }
 
-  on(eventName: EventName, callback: (...args: any[]) => void, context?: any): this {
-    let event: EventName | undefined, tail, _eventName: EventName[];
+  on(eventName: EventName, callback: (...args: unknown[]) => void, context?: unknown): this {
+    let event: EventName | undefined, tail: Record<string, never>, _eventName: EventName[];
     if (!callback) {
       return this;
     }
@@ -22,21 +29,21 @@ export class Events {
     this.callbacks ||= {};
     const calls = this.callbacks;
     while ((event = _eventName.shift())) {
-      const list = calls[event];
-      const node: any = list ? list.tail : {};
+      const list = calls[event] as unknown as CallbackNode | undefined;
+      const node: CallbackNode = list ? (list.tail as CallbackNode) : {};
       node.next = tail = {};
       node.context = context;
       node.callback = callback;
       calls[event] = {
         tail,
         next: list ? list.next : node,
-      };
+      } as unknown as Record<'next' | 'tail', unknown>;
     }
     return this;
   }
 
-  once(events: EventName, callback: (...r: any[]) => void, context?: any): this {
-    const wrapper = (...args: any[]) => {
+  once(events: EventName, callback: (...r: unknown[]) => void, context?: unknown): this {
+    const wrapper = (...args: unknown[]) => {
       callback.apply(this, args);
       this.off(events, wrapper, context);
     };
@@ -46,7 +53,7 @@ export class Events {
     return this;
   }
 
-  off(events?: EventName, callback?: (...args: any[]) => void, context?: any) {
+  off(events?: EventName, callback?: (...args: unknown[]) => void, context?: unknown) {
     let event: EventName | undefined, calls: EventCallbacks | undefined, _events: EventName[];
     if (!(calls = this.callbacks)) {
       return this;
@@ -61,25 +68,28 @@ export class Events {
       _events = events ? events.split(Events.eventSplitter) : Object.keys(calls);
     }
     while ((event = _events.shift())) {
-      let node: any = calls[event];
+      let node: CallbackNode | undefined = calls[event] as unknown as CallbackNode | undefined;
       delete calls[event];
       if (!node || !(callback || context)) {
         continue;
       }
-      const tail = node.tail;
-      while ((node = node.next) !== tail) {
+      const tail = (node.tail as CallbackNode | undefined) ?? (node.next as CallbackNode | undefined)?.tail ?? {};
+      while ((node = node.next as CallbackNode | undefined) && node !== tail) {
         const cb = node.callback;
         const ctx = node.context;
         if ((callback && cb !== callback) || (context && ctx !== context)) {
-          this.on(event, cb, ctx);
+          this.on(event, cb as (...args: unknown[]) => void, ctx);
         }
       }
     }
     return this;
   }
 
-  trigger(events: EventName, ...args: any[]) {
-    let event: EventName | undefined, node: any, calls: EventCallbacks | undefined, _events: EventName[];
+  trigger(events: EventName, ...args: unknown[]) {
+    let event: EventName | undefined,
+      node: CallbackNode | undefined,
+      calls: EventCallbacks | undefined,
+      _events: EventName[];
     if (!(calls = this.callbacks)) {
       return this;
     }
@@ -89,10 +99,10 @@ export class Events {
       _events = events.split(Events.eventSplitter);
     }
     while ((event = _events.shift())) {
-      if ((node = calls[event])) {
-        const tail = node.tail;
-        while ((node = node.next) !== tail) {
-          node.callback.apply(node.context || this, args);
+      if ((node = calls[event] as unknown as CallbackNode | undefined)) {
+        const tail = (node.tail as CallbackNode | undefined) ?? (node.next as CallbackNode | undefined)?.tail ?? {};
+        while ((node = node.next as CallbackNode | undefined) && node !== tail) {
+          node.callback?.apply(node.context || this, args);
         }
       }
     }
