@@ -1,7 +1,7 @@
-const { Current, getPageInstance, injectPageInstance } = require('@spcsn/taro-runtime');
-const React = require('react');
+import { Current, getPageInstance, injectPageInstance } from '@spcsn/taro-runtime';
+import React from 'react';
 
-const hooksMap = {
+const hooksMap: Record<string, string> = {
   useAddToFavorites: 'onAddToFavorites',
   useDidHide: 'componentDidHide',
   useDidShow: 'componentDidShow',
@@ -26,11 +26,11 @@ const hooksMap = {
   useUnload: 'onUnload',
 };
 
-function createHook(lifecycle) {
-  return (fn) => {
+function createHook(lifecycle: string) {
+  return (fn: (...args: any[]) => any) => {
     const router = Current.router;
     const id = router?.$taroPath || router?.path || 'taro-app';
-    const instRef = React.useRef();
+    const instRef = React.useRef<any>(undefined);
     const fnRef = React.useRef(fn);
     if (fnRef.current !== fn) fnRef.current = fn;
 
@@ -38,25 +38,25 @@ function createHook(lifecycle) {
       let inst = (instRef.current = getPageInstance(id));
       if (!inst) {
         inst = instRef.current = Object.create(null);
-        injectPageInstance(inst, id);
+        injectPageInstance(inst as any, id);
       }
 
-      const callback = (...args) => fnRef.current(...args);
-      if (typeof inst[lifecycle] === 'function') {
-        inst[lifecycle] = [inst[lifecycle], callback];
+      const callback = (...args: any[]) => fnRef.current(...args);
+      if (typeof (inst as any)[lifecycle] === 'function') {
+        (inst as any)[lifecycle] = [(inst as any)[lifecycle], callback];
       } else {
-        inst[lifecycle] = [...(inst[lifecycle] || []), callback];
+        (inst as any)[lifecycle] = [...((inst as any)[lifecycle] || []), callback];
       }
 
       return () => {
         const inst = instRef.current;
         if (!inst) return;
 
-        const list = inst[lifecycle];
+        const list = (inst as any)[lifecycle];
         if (list === callback) {
-          inst[lifecycle] = undefined;
+          (inst as any)[lifecycle] = undefined;
         } else if (Array.isArray(list)) {
-          inst[lifecycle] = list.filter((item) => item !== callback);
+          (inst as any)[lifecycle] = list.filter((item) => item !== callback);
         }
         instRef.current = undefined;
       };
@@ -64,7 +64,7 @@ function createHook(lifecycle) {
   };
 }
 
-function initReactHooksFallback(taro) {
+function initReactHooksFallback(taro: Record<string, any>): void {
   if (typeof taro.useShareAppMessage === 'function') return;
 
   Object.keys(hooksMap).forEach((key) => {
@@ -81,6 +81,4 @@ function initReactHooksFallback(taro) {
   };
 }
 
-module.exports = {
-  initReactHooksFallback,
-};
+export { initReactHooksFallback };

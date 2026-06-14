@@ -1,3 +1,7 @@
+declare const wx: any;
+
+import { processApis } from '@spcsn/taro-shared';
+
 const needPromiseApis = new Set([
   'addFileToFavorites',
   'addVideoToFavorites',
@@ -32,10 +36,8 @@ const needPromiseApis = new Set([
   'startFacialRecognitionVerify',
 ]);
 
-function initWeappNativeApiFallback(taro) {
+function initWeappNativeApiFallback(taro: Record<string, any>): void {
   if (typeof wx === 'undefined' || typeof taro.addInterceptor === 'function') return;
-
-  const { processApis } = require('@spcsn/taro-shared');
 
   processApis(taro, wx, {
     needPromiseApis,
@@ -44,7 +46,7 @@ function initWeappNativeApiFallback(taro) {
     },
     transformMeta(api, options) {
       if (api === 'showShareMenu') {
-        options.menus = options.showShareItems?.map((item) =>
+        options.menus = options.showShareItems?.map((item: string) =>
           item === 'wechatFriends' ? 'shareAppMessage' : item === 'wechatMoment' ? 'shareTimeline' : item,
         );
       }
@@ -57,7 +59,7 @@ function initWeappNativeApiFallback(taro) {
   });
 
   taro.cloud = wx.cloud;
-  taro.getTabBar = function (pageCtx) {
+  taro.getTabBar = function (pageCtx: any) {
     if (typeof pageCtx?.getTabBar === 'function') {
       return pageCtx.getTabBar()?.$taroInstances;
     }
@@ -67,6 +69,4 @@ function initWeappNativeApiFallback(taro) {
   };
 }
 
-module.exports = {
-  initWeappNativeApiFallback,
-};
+export { initWeappNativeApiFallback };

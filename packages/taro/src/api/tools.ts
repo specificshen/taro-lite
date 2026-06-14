@@ -1,10 +1,10 @@
 import { isFunction, isObject } from '@spcsn/taro-shared';
 
-export function Behavior(options) {
+export function Behavior(options: any): any {
   return options;
 }
 
-export function getPreload(current) {
+export function getPreload(current: any) {
   return function (key: any, val: unknown) {
     current.preloadData = isObject(key)
       ? key
@@ -15,7 +15,7 @@ export function getPreload(current) {
 }
 
 const defaultDesignWidth = 750;
-const defaultDesignRatio = {
+const defaultDesignRatio: Record<number, number> = {
   640: 2.34 / 2,
   750: 1,
   828: 1.81 / 2,
@@ -24,8 +24,8 @@ const defaultBaseFontSize = 20;
 const defaultUnitPrecision = 5;
 const defaultTargetUnit = 'rpx';
 
-export function getInitPxTransform(taro) {
-  return function (config) {
+export function getInitPxTransform(taro: any) {
+  return function (config: any) {
     const {
       designWidth = defaultDesignWidth,
       deviceRatio = defaultDesignRatio,
@@ -42,8 +42,8 @@ export function getInitPxTransform(taro) {
   };
 }
 
-export function getPxTransform(taro) {
-  return function (size) {
+export function getPxTransform(taro: any) {
+  return function (size: number) {
     const config = taro.config || {};
     const baseFontSize = config.baseFontSize;
     const deviceRatio = config.deviceRatio || defaultDesignRatio;

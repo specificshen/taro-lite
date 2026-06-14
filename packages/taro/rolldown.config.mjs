@@ -4,7 +4,7 @@ const externalPackages = ['@spcsn/taro-runtime', '@spcsn/taro-shared', 'react'];
 const external = (id) => externalPackages.some((pkg) => id === pkg || id.startsWith(`${pkg}/`));
 
 export default defineConfig({
-  input: 'src/index.js',
+  input: 'src/index.ts',
   external,
   output: {
     file: 'dist/index.js',
