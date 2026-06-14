@@ -1,12 +1,11 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "../tsconfig.base.json",
   "compilerOptions": {
     "declaration": true,
-    "esModuleInterop": true,
     "lib": ["ESNext"],
+    "module": "commonjs",
     "outDir": "dist",
     "rootDir": "./src",
-    "module": "commonjs",
     "preserveConstEnums": true,
     "sourceMap": true
   },
