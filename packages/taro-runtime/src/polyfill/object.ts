@@ -3,7 +3,7 @@ import { isFunction, isObject, isUndefined } from '@spcsn/taro-shared'
 export function handleObjectAssignPolyfill () {
   if (!isFunction(Object.assign)) {
     // Must be writable: true, enumerable: false, configurable: true
-    Object.assign = function (target) { // .length of function is 2
+    Object.assign = function (target: any) { // .length of function is 2
       if (target == null) { // TypeError if undefined or null
         throw new TypeError('Cannot convert undefined or null to object')
       }
@@ -30,7 +30,7 @@ export function handleObjectAssignPolyfill () {
 export function handleObjectEntriesPolyfill () {
   if (!isFunction(Object.entries)) {
     // Must be writable: true, enumerable: false, configurable: true
-    Object.entries = function (obj) { // .length of function is 2
+    Object.entries = function (obj: any) { // .length of function is 2
       if (obj == null) { // TypeError if undefined or null
         throw new TypeError('Cannot convert undefined or null to object')
       }
@@ -54,7 +54,7 @@ export function handleObjectDefinePropertyPolyfill () {
   if (!isFunction(Object.defineProperties)) {
     Object.defineProperties = function (obj, properties: Record<PropertyKey, Record<PropertyKey, unknown>>) {
       function convertToDescriptor (desc: Record<string, unknown>) {
-        function hasProperty (obj, prop) {
+        function hasProperty (obj: any, prop: PropertyKey) {
           return Object.prototype.hasOwnProperty.call(obj, prop)
         }
 

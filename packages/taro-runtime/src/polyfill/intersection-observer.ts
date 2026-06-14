@@ -1,6 +1,14 @@
 import { isFunction, isNumber } from '@spcsn/taro-shared'
 import { throttle } from '../utils'
 
+interface IntersectionObserverEntryInit {
+  time: number
+  target: Element
+  rootBounds: DOMRectReadOnly | null
+  boundingClientRect: DOMRectReadOnly
+  intersectionRect?: DOMRectReadOnly
+}
+
 export function handleIntersectionObserverPolyfill () {
   // Exit early if all IntersectionObserver and IntersectionObserverEntry
   // features are natively supported.
@@ -303,8 +311,6 @@ function handleIntersectionObserverObjectPolyfill () {
         boundingClientRect: targetRect,
         rootBounds: rootRect,
         intersectionRect: intersectionRect,
-        intersectionRatio: -1,
-        isIntersecting: false,
       })
 
       if (!oldEntry) {
@@ -539,7 +545,7 @@ function handleIntersectionObserverObjectPolyfill () {
    * @param {boolean} opt_useCapture If the event handler was added with this
    *     flag set to true, it should be set to true here in order to remove it.
    */
-  function removeEvent (node, event, fn, opt_useCapture) {
+  function removeEvent (node: any, event: string, fn: any, opt_useCapture?: boolean) {
     if (isFunction(node.removeEventListener)) {
       node.removeEventListener(event, fn, opt_useCapture || false)
     }
@@ -555,7 +561,7 @@ function handleIntersectionObserverObjectPolyfill () {
    * @return {?Object} The intersection rect or undefined if no intersection
    *     is found.
    */
-  function computeRectIntersection (rect1, rect2) {
+  function computeRectIntersection (rect1: any, rect2: any) {
     const top = Math.max(rect1.top, rect2.top)
     const bottom = Math.min(rect1.bottom, rect2.bottom)
     const left = Math.max(rect1.left, rect2.left)
@@ -578,7 +584,7 @@ function handleIntersectionObserverObjectPolyfill () {
    * @param {Element} el The element whose bounding rect to get.
    * @return {Object} The (possibly shimmed) rect of the element.
    */
-  function getBoundingClientRect (el) {
+  function getBoundingClientRect (el: any) {
     let rect
 
     try {
@@ -627,7 +633,7 @@ function handleIntersectionObserverObjectPolyfill () {
    * @param {Node} child The child element.
    * @return {boolean} True if the parent node contains the child node.
    */
-  function containsDeep (parent, child) {
+  function containsDeep (parent: any, child: any) {
     let node = child
     while (node) {
       if (node === parent) return true
@@ -643,7 +649,7 @@ function handleIntersectionObserverObjectPolyfill () {
    * @param {Node} node The node whose parent to get.
    * @return {Node|null} The parent node or null if no parent exists.
    */
-  function getParentNode (node) {
+  function getParentNode (node: any) {
     const parent = node.parentNode
 
     if (parent && parent.nodeType === 11 && parent.host) {

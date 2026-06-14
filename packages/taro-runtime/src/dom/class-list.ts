@@ -21,7 +21,7 @@ export class ClassList {
     return this.tokenList.length;
   }
 
-  add() {
+  add(..._tokens: string[]) {
     let index = 0;
     let updated = false;
 
@@ -44,7 +44,7 @@ export class ClassList {
     }
   }
 
-  remove() {
+  remove(..._tokens: string[]) {
     let i = 0;
     let updated = false;
 

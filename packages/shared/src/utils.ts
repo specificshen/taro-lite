@@ -4,7 +4,7 @@ import { hooks } from './runtime-hooks';
 
 export const EMPTY_OBJ: any = {};
 
-export const EMPTY_ARR = [];
+export const EMPTY_ARR: any[] = [];
 
 export const noop = (..._: unknown[]) => {};
 
@@ -53,7 +53,7 @@ export function toCamelCase(s: string) {
   return camel;
 }
 
-export const toKebabCase = function (string) {
+export const toKebabCase = function (string: string) {
   return string.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 };
 
@@ -85,12 +85,12 @@ export function warn(condition: boolean, msg: string) {
   }
 }
 
-export function queryToJson(str) {
+export function queryToJson(str: string): Record<string, any> {
   const dec = decodeURIComponent;
   const qp = str.split('&');
-  const ret = {};
-  let name;
-  let val;
+  const ret: Record<string, any> = {};
+  let name: string;
+  let val: string;
   for (let i = 0, l = qp.length, item; i < l; ++i) {
     item = qp[i];
     if (item.length) {
@@ -124,23 +124,23 @@ export function getUniqueKey() {
   return _loadTime + _uniqueId++;
 }
 
-const cacheData = {};
+const cacheData: Record<string, any> = {};
 
-export function cacheDataSet(key, val) {
+export function cacheDataSet(key: string, val: any) {
   cacheData[key] = val;
 }
 
-export function cacheDataGet(key, delelteAfterGet?) {
+export function cacheDataGet(key: string, delelteAfterGet?: boolean) {
   const temp = cacheData[key];
   delelteAfterGet && delete cacheData[key];
   return temp;
 }
 
-export function cacheDataHas(key) {
+export function cacheDataHas(key: string) {
   return key in cacheData;
 }
 
-export function mergeInternalComponents(components) {
+export function mergeInternalComponents(components: Record<string, any>) {
   Object.keys(components).forEach((name) => {
     if (name in internalComponents) {
       Object.assign(internalComponents[name], components[name]);
@@ -152,9 +152,9 @@ export function mergeInternalComponents(components) {
 }
 
 export function getComponentsAlias(origin: typeof internalComponents) {
-  const mapping = {};
+  const mapping: Record<string, Record<string, string>> = {};
   const viewAttrs = origin.View;
-  const extraList = {
+  const extraList: Record<string, Record<string, string>> = {
     '#text': {},
     StaticView: viewAttrs,
     StaticImage: origin.Image,
@@ -180,7 +180,7 @@ export function getComponentsAlias(origin: typeof internalComponents) {
       }
     })
     .forEach((key, num) => {
-      const obj = {
+      const obj: Record<string, string> = {
         _num: String(num),
       };
       Object.keys(origin[key])
@@ -199,11 +199,11 @@ export function getPlatformType(platform = 'weapp', configNameOrType: string = P
   if (Object.keys(PLATFORM_CONFIG_MAP).includes(platform)) {
     configNameOrType = platform;
   }
-  const param = PLATFORM_CONFIG_MAP[configNameOrType] || {};
-  return param.type || configNameOrType;
+  const param = (PLATFORM_CONFIG_MAP as Record<string, { type?: PLATFORM_TYPE }>)[configNameOrType] || {};
+  return param.type || (configNameOrType as PLATFORM_TYPE);
 }
 
-export function mergeReconciler(hostConfig, hooksForTest?) {
+export function mergeReconciler(hostConfig: Record<string, any>, hooksForTest?: any) {
   const obj = hooksForTest || hooks;
   const keys = Object.keys(hostConfig);
   keys.forEach((key) => {
@@ -211,13 +211,13 @@ export function mergeReconciler(hostConfig, hooksForTest?) {
   });
 }
 
-export function nonsupport(api) {
+export function nonsupport(api: string) {
   return function () {
     console.warn(`小程序暂不支持 ${api}`);
   };
 }
 
-export function setUniqueKeyToRoute(key: string, obj) {
+export function setUniqueKeyToRoute(key: string, obj: any) {
   const routerParamsPrivateKey = '__key_';
   const useDataCacheApis = ['navigateTo', 'redirectTo', 'reLaunch', 'switchTab'];
 

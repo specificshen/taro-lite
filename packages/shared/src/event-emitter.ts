@@ -1,11 +1,11 @@
 type EventName = string | symbol;
-type EventCallbacks = Record<EventName, Record<'next' | 'tail', unknown>>;
+export type EventCallbacks = Record<EventName, Record<'next' | 'tail', unknown>>;
 
 export class Events {
   protected callbacks?: EventCallbacks;
   static eventSplitter = ','; // Note: Harmony ACE API 8 开发板不支持使用正则 split 字符串 /\s+/
 
-  constructor(opts?) {
+  constructor(opts?: { callbacks?: EventCallbacks }) {
     this.callbacks = opts?.callbacks ?? {};
   }
 
@@ -79,7 +79,7 @@ export class Events {
   }
 
   trigger(events: EventName, ...args: any[]) {
-    let event: EventName | undefined, node, calls: EventCallbacks | undefined, _events: EventName[];
+    let event: EventName | undefined, node: any, calls: EventCallbacks | undefined, _events: EventName[];
     if (!(calls = this.callbacks)) {
       return this;
     }

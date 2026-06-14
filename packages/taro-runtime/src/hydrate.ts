@@ -76,7 +76,9 @@ export function hydrate(node: TaroElement | TaroText): MiniData {
   }
 
   // Children
-  data[Shortcuts.Childnodes] = node.childNodes.filter((node) => !isComment(node)).map(hydrate);
+  data[Shortcuts.Childnodes] = node.childNodes
+    .filter((node) => !isComment(node))
+    .map((node) => hydrate(node as TaroElement | TaroText));
 
   if (node.className !== '') {
     data[Shortcuts.Class] = node.className;

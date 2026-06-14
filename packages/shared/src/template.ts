@@ -94,7 +94,7 @@ export class BaseTemplate {
   public voidElements: Set<string> = voidElements;
   /** 可以递归调用自身的组件 */
   public nestElements: Map<string, number> = nestElements;
-  public componentsAlias;
+  public componentsAlias: Record<string, Record<string, string>> = {};
 
   set baseLevel(lv) {
     this._baseLevel = lv;
@@ -129,7 +129,12 @@ export class BaseTemplate {
       .join('');
   }
 
-  protected replacePropName(name: string, value: string, _componentName?: string, _componentAlias?) {
+  protected replacePropName(
+    name: string,
+    value: string,
+    _componentName?: string,
+    _componentAlias?: Record<string, string>,
+  ) {
     if (value === 'eh') return name.toLowerCase();
     return name;
   }
@@ -598,7 +603,7 @@ ${this.buildXsImportTemplate()}<template is="{{'tmpl_0_' + item.${Shortcuts.Node
 }`;
   };
 
-  public mergeComponents(ctx, patch: Record<string, Record<string, string>>) {
+  public mergeComponents(ctx: any, patch: Record<string, Record<string, string>>) {
     ctx.helper.recursiveMerge(this.internalComponents, patch);
   }
 

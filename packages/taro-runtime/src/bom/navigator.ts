@@ -4,18 +4,18 @@ const engine = 'AppleWebKit/534.36 (KHTML, like Gecko) NodeJS/v4.1.0 Chrome/76.0
 
 const msg = '(' + machine + '; ' + arch + ') ' + engine;
 
-export const nav: typeof window.navigator = {
+export const nav = {
   appCodeName: 'Mozilla',
   appName: 'Netscape',
   appVersion: '5.0 ' + msg,
   cookieEnabled: true,
-  mimeTypes: [],
+  mimeTypes: [] as any,
   onLine: true,
   platform: 'MacIntel',
-  plugins: [],
+  plugins: [] as any,
   product: 'Taro',
   productSub: '20030107',
   userAgent: 'Mozilla/5.0 ' + msg,
   vendor: 'Joyent',
   vendorSub: '',
-};
+} as any;

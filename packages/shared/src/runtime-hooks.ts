@@ -1,4 +1,5 @@
 import { Events } from './event-emitter';
+import type { EventCallbacks } from './event-emitter';
 import { isFunction } from './is';
 import type { Shortcuts } from './template';
 
@@ -103,7 +104,7 @@ export function TaroHook(type: HOOK_TYPE, initial?: TFunc): Hook {
 export class TaroHooks<T extends Record<string, TFunc> = any> extends Events {
   hooks: Record<keyof T, Hook>;
 
-  constructor(hooks: Record<keyof T, Hook>, opts?) {
+  constructor(hooks: Record<keyof T, Hook>, opts?: { callbacks?: EventCallbacks }) {
     super(opts);
     this.hooks = hooks;
     for (const hookName in hooks) {
@@ -170,7 +171,7 @@ type ITaroHooks = {
   getMiniLifecycle: (defaultConfig: MiniLifecycle) => MiniLifecycle;
   getMiniLifecycleImpl: () => MiniLifecycle;
   /** 解决 React 生命周期名称的兼容问题 */
-  getLifecycle: (instance, lifecyle) => TFunc | Array<TFunc> | undefined;
+  getLifecycle: (instance: any, lifecyle: string) => TFunc | Array<TFunc> | undefined;
   /** 提供Hook，为不同平台提供修改生命周期配置 */
   modifyRecursiveComponentConfig: (defaultConfig: MiniLifecycle, options: any) => any;
   /** 解决百度小程序的模版语法问题 */
@@ -179,62 +180,72 @@ type ITaroHooks = {
   getEventCenter: (EventsClass: typeof Events) => Events;
   isBubbleEvents: (eventName: string) => boolean;
   getSpecialNodes: () => string[];
-  onRemoveAttribute: (element, qualifiedName: string) => boolean;
+  onRemoveAttribute: (element: any, qualifiedName: string) => boolean;
   /** 用于把 React 同一事件回调中的所有 setState 合并到同一个更新处理中 */
   batchedEventUpdates: (cb: TFunc) => void;
   /** 用于处理 React 中的小程序生命周期 hooks */
-  mergePageInstance: (prev, next) => void;
+  mergePageInstance: (prev: any, next: any) => void;
   /** 用于修改传递给小程序 Page 构造器的对象 */
   modifyPageObject: (config: Record<any, any>) => void;
   /** H5 下拉刷新 wrapper */
-  createPullDownComponent: (el, path: string, framework, customWrapper?: any, stampId?: string) => void;
+  createPullDownComponent: (el: any, path: string, framework: any, customWrapper?: any, stampId?: string) => void;
   /** H5 获取原生 DOM 对象 */
-  getDOMNode: (instance) => any;
+  getDOMNode: (instance: any) => any;
   /**
    * @todo: multi
    * 修改 Taro DOM 序列化数据
    **/
-  modifyHydrateData: (data: Record<string, any>, node) => void;
+  modifyHydrateData: (data: Record<string, any>, node: any) => void;
   /**
    * 自定义处理 Taro DOM 序列化数据，如使其脱离 data 树
    */
-  transferHydrateData: (data: Record<string, any>, element, componentsAlias: Record<string, any>) => void;
+  transferHydrateData: (data: Record<string, any>, element: any, componentsAlias: Record<string, any>) => void;
   /**
    * @todo: multi
    * 修改 Taro DOM 序列化数据
    **/
-  modifySetAttrPayload: (element, key: string, payload: UpdatePayload, componentsAlias: Record<string, any>) => void;
+  modifySetAttrPayload: (
+    element: any,
+    key: string,
+    payload: UpdatePayload,
+    componentsAlias: Record<string, any>,
+  ) => void;
   /**
    * @todo: multi
    * 修改 Taro DOM 序列化数据
    **/
-  modifyRmAttrPayload: (element, key: string, payload: UpdatePayload, componentsAlias: Record<string, any>) => void;
+  modifyRmAttrPayload: (
+    element: any,
+    key: string,
+    payload: UpdatePayload,
+    componentsAlias: Record<string, any>,
+  ) => void;
   /**
    * @todo: multi
    * 调用 addEventListener 时触发
    **/
-  onAddEvent: (type: string, handler, options: any, node) => void;
+  onAddEvent: (type: string, handler: any, options: any, node: any) => void;
   /** 用于修改小程序原生事件对象 */
   modifyMpEvent: (event: MpEvent) => void;
   modifyMpEventImpl: (event: MpEvent) => void;
   /** 用于修改 Taro DOM 事件对象 */
-  modifyTaroEvent: (event, element) => void;
+  modifyTaroEvent: (event: any, element: any) => void;
 
-  dispatchTaroEvent: (event, element) => void;
-  dispatchTaroEventFinish: (event, element) => void;
-  modifyTaroEventReturn: (node, event, returnVal) => any;
+  dispatchTaroEvent: (event: any, element: any) => void;
+  dispatchTaroEventFinish: (event: any, element: any) => void;
+  modifyTaroEventReturn: (node: any, event: any, returnVal: any) => any;
 
-  modifyDispatchEvent: (event, element) => void;
+  modifyDispatchEvent: (event: any, element: any) => void;
   injectNewStyleProperties: (styleProperties: string[]) => void;
   initNativeApi: (taro: Record<string, any>) => void;
-  patchElement: (node) => void;
+  patchElement: (node: any) => void;
 
   /** 解 Proxy */
-  proxyToRaw: (proxyObj) => Record<any, any>;
+  proxyToRaw: (proxyObj: any) => Record<any, any>;
   /** 元素增加事件监听钩子 */
-  modifyAddEventListener: (element, sideEffect: boolean, getComponentsAlias: () => Record<string, any>) => void;
+  modifyAddEventListener: (element: any, sideEffect: boolean, getComponentsAlias: () => Record<string, any>) => void;
   /** 元素删除事件监听钩子 */
-  modifyRemoveEventListener: (element, sideEffect: boolean, getComponentsAlias: () => Record<string, any>) => void;
+  modifyRemoveEventListener: (element: any, sideEffect: boolean, getComponentsAlias: () => Record<string, any>) => void;
   /** 鸿蒙用于监听 memory 等级的钩子 */
   getMemoryLevel: (level: { level: number }) => void;
 };

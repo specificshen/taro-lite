@@ -20,7 +20,7 @@ let routeChannel: RouteEvt;
 class PageEvts extends Events {
   exeList = [];
 
-  on(eventName, callback) {
+  on(eventName: string, callback: (...args: any[]) => void) {
     super.on(eventName, callback, this);
     this.exeList = this.exeList.reduce((prev: any, item: ExeListItem) => {
       if (item.eventName === eventName) {
@@ -33,7 +33,7 @@ class PageEvts extends Events {
     return this;
   }
 
-  emit(events, data) {
+  emit(events: string, data: any) {
     routeChannel.trigger(events, data);
   }
 }
@@ -41,7 +41,7 @@ class PageEvts extends Events {
 const pageChannel: PageEvt = new PageEvts();
 
 class RouteEvts extends Events {
-  emit(events, data) {
+  emit(events: string, data: any) {
     pageChannel.off(events);
     pageChannel.exeList.push({
       eventName: events,
@@ -49,7 +49,7 @@ class RouteEvts extends Events {
     });
   }
 
-  addEvents(events) {
+  addEvents(events: Record<string, (...args: any[]) => void>) {
     if (!events || typeof events !== 'object') return;
     Object.keys(events).forEach((key) => {
       this.off(key);

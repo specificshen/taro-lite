@@ -12,7 +12,7 @@ export { History } from './bom/history';
 export { Location } from './bom/location';
 export { nav as navigator } from './bom/navigator';
 export { caf as cancelAnimationFrame, now, raf as requestAnimationFrame } from './bom/raf';
-export { parseUrl, TaroURLProvider as URL } from './bom/URL';
+export { parseUrl, TaroURLProvider as URL } from './bom/url';
 export { URLSearchParams } from './bom/url-search-params';
 export {
   taroHistoryProvider as history,

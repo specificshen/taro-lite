@@ -1,4 +1,3 @@
-import env from '../env';
 import type { TaroElement } from '../dom/element';
 import type { Style } from '../dom/style';
 

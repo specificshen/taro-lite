@@ -113,7 +113,7 @@ export function extend(ctor: Ctor, methodName: string, options: TFunc | Record<s
   });
 }
 
-let componentsAlias;
+let componentsAlias: Record<string, any>;
 export function getComponentsAlias() {
   if (!componentsAlias) {
     componentsAlias = _getComponentsAlias(internalComponents);

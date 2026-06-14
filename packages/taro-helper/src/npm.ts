@@ -223,6 +223,9 @@ export async function getNpmPkg(npmName: string, root: string) {
       npmPath = await resolveNpm(npmName, root);
     }
   }
+  if (!npmPath) {
+    throw new Error(`无法解析 npm 包 "${npmName}"`);
+  }
   const npmFn = require(npmPath);
   return npmFn;
 }

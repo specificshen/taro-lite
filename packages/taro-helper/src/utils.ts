@@ -36,8 +36,8 @@ function toCamelCase(value: string): string {
     .replace(/[-_\s]+(.)?/g, (_, character: string = '') => character.toUpperCase());
 }
 
-function normalizeVisitor(value: unknown): unknown {
-  return typeof value === 'function' ? { enter: value } : value;
+function normalizeVisitor(value: unknown): Record<string, any> {
+  return typeof value === 'function' ? { enter: value } : (value as Record<string, any>);
 }
 
 interface NativeFsCompat {
@@ -226,7 +226,7 @@ export function printLog(type: processTypeEnum, tag: string, filePath?: string) 
   const padding = '';
   filePath = filePath || '';
   if (typeof typeShow.color === 'string') {
-    console.log(chalk[typeShow.color](typeShow.name), padding, tag, padding, filePath);
+    console.log((chalk as any)[typeShow.color](typeShow.name), padding, tag, padding, filePath);
   } else {
     console.log(typeShow.color(typeShow.name), padding, tag, padding, filePath);
   }
@@ -419,7 +419,7 @@ export function resolveScriptPath(p: string): string {
 }
 
 export function generateEnvList(env: Record<string, any>): Record<string, any> {
-  const res = {};
+  const res: Record<string, any> = {};
   if (env && !isEmptyObject(env)) {
     for (const key in env) {
       try {
@@ -472,7 +472,7 @@ export function getNpmPackageAbsolutePath(npmPath: string, defaultFile = 'index'
 }
 
 export function generateConstantsList(constants: Record<string, any>): Record<string, any> {
-  const res = {};
+  const res: Record<string, any> = {};
   if (constants && !isEmptyObject(constants)) {
     for (const key in constants) {
       if (isPlainObject(constants[key])) {
@@ -590,7 +590,7 @@ export const recursiveMerge = <T = any>(src: Partial<T>, ...args: (Partial<T> | 
   return src as T;
 };
 
-export const mergeVisitors = (src, ...args) => {
+export const mergeVisitors = (src: Record<string, any>, ...args: Record<string, any>[]) => {
   const validFuncs = ['exit', 'enter'];
 
   for (const arg of args) {
@@ -618,12 +618,12 @@ export const mergeVisitors = (src, ...args) => {
   return src;
 };
 
-export const applyArrayedVisitors = (obj) => {
+export const applyArrayedVisitors = (obj: Record<string, any>) => {
   let key;
   for (key in obj) {
     const funcs = obj[key];
     if (Array.isArray(funcs)) {
-      obj[key] = (astPath, ...args) => {
+      obj[key] = (astPath: any, ...args: any[]) => {
         funcs.forEach((func) => {
           func(astPath, ...args);
         });
@@ -683,7 +683,7 @@ export function addPlatforms(platform: string) {
   PLATFORMS[upperPlatform] = platform;
 }
 
-export const getModuleDefaultExport = (exports) => (exports.__esModule ? exports.default : exports);
+export const getModuleDefaultExport = (exports: any) => (exports.__esModule ? exports.default : exports);
 
 export function removeHeadSlash(str: string) {
   return str.replace(/^(\/|\\)/, '');
