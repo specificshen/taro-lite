@@ -115,16 +115,6 @@ declare namespace PageMetaProps {
  * ```html
  * <!-- page.config.ts -->
  * <!-- export default definePageConfig({ enablePageMeta: true, ... }) -->
- *
- * <!-- page.vue -->
- * <template>
- *   <page-meta
- *     :page-style="myPageStyle"
- *     `@scroll="handleScroll"
- *   >
- *     <navigation-bar :title="title" />
- *   </page-meta>
- * </template>
  * ```
  * @see https://developers.weixin.qq.com/miniprogram/dev/component/page-meta.html
  */
