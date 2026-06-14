@@ -198,7 +198,7 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
         customLogger: taroConfig.isWatch ? createDevBuildSummaryLogger(outputRoot) : undefined,
         build: {
           outDir: outputRoot,
-          target: 'es6',
+          target: 'es2022',
           cssCodeSplit: true,
           emptyOutDir: false,
           lib: {

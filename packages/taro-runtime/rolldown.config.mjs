@@ -12,7 +12,7 @@ export default defineConfig([
     input: 'src/index.ts',
     external,
     transform: {
-      target: 'es2017',
+      target: 'es2022',
     },
     output: {
       ...baseOutput,
@@ -27,7 +27,7 @@ export default defineConfig([
     input: 'src/index.ts',
     external,
     transform: {
-      target: 'es2017',
+      target: 'es2022',
     },
     output: {
       ...baseOutput,
@@ -40,7 +40,7 @@ export default defineConfig([
     input: 'src/index.ts',
     external,
     transform: {
-      target: 'es2017',
+      target: 'es2022',
     },
     output: {
       ...baseOutput,
