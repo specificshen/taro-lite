@@ -27,6 +27,7 @@
   ],
   "scripts": {
     "prod": "pnpm run build:ci",
+    "prepack": "pnpm run build",
     "build:ci": "pnpm run build",
     "build": "pnpm run build:runtime && pnpm run sync:types",
     "build:runtime": "tsc -p tsconfig.json",

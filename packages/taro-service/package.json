@@ -17,6 +17,7 @@
   },
   "scripts": {
     "prod": "pnpm run build",
+    "prepack": "pnpm run build",
     "prebuild": "pnpm run clean",
     "clean": "bun ../../scripts/clean.ts dist",
     "dev": "tsc -w",

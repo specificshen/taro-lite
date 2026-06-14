@@ -35,6 +35,7 @@
   ],
   "scripts": {
     "prod": "pnpm run build",
+    "prepack": "pnpm run build",
     "clean": "bun ../../scripts/clean.ts dist",
     "dev": "pnpm run copy:template && tsc -w",
     "build": "pnpm run clean && tsc && pnpm run copy:template",

@@ -25,6 +25,7 @@
   ],
   "scripts": {
     "prod": "pnpm run build",
+    "prepack": "pnpm run build",
     "prebuild": "pnpm run clean",
     "build": "pnpm run build:types && pnpm run rolldown --environment NODE_ENV:production",
     "build:types": "tsc --emitDeclarationOnly --declaration --noCheck && bun ./scripts/copy-entry-types.ts",

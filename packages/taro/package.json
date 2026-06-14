@@ -37,6 +37,7 @@
   ],
   "scripts": {
     "prod": "pnpm run build",
+    "prepack": "pnpm run build",
     "prebuild": "pnpm run clean",
     "build": "pnpm run rolldown --environment NODE_ENV:production",
     "clean": "bun ../../scripts/clean.ts dist",
