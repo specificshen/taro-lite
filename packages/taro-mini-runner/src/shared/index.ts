@@ -123,30 +123,28 @@ export function generateQueryString(params: { [key: string]: string }): string {
   return querystring.stringify(params);
 }
 
-export function getPostcssPlugins(
+export async function getPostcssPlugins(
   appPath: string,
   option = {} as IPostcssOption,
   excludePluginNames = MINI_EXCLUDE_POSTCSS_PLUGIN_NAME,
 ) {
   const plugins: any[] = [];
 
-  option.forEach(([pluginName, pluginOption, pluginPkg]: [string, any, any]) => {
-    if (!pluginOption || excludePluginNames.includes(pluginName)) return;
-    if (Object.hasOwnProperty.call(pluginOption, 'enable') && !pluginOption.enable) return;
+  for (const [pluginName, pluginOption, pluginPkg] of option as [string, any, any][]) {
+    if (!pluginOption || excludePluginNames.includes(pluginName)) continue;
+    if (Object.hasOwnProperty.call(pluginOption, 'enable') && !pluginOption.enable) continue;
 
     if (pluginPkg) {
       plugins.push(pluginPkg(pluginOption.config || {}));
-      return;
+      continue;
     }
 
-    if (!isNpmPkg(pluginName)) {
-      // local plugin
-      pluginName = path.join(appPath, pluginName);
-    }
+    const resolvedPluginName = !isNpmPkg(pluginName) ? path.join(appPath, pluginName) : pluginName;
 
     try {
-      const pluginPath = resolveSync(pluginName, { basedir: appPath }) || '';
-      plugins.push(require(pluginPath)(pluginOption.config || {}));
+      const pluginPath = resolveSync(resolvedPluginName, { basedir: appPath }) || '';
+      const pluginModule = await import(pluginPath);
+      plugins.push(pluginModule.default(pluginOption.config || {}));
     } catch (e) {
       const error = e as NodeJS.ErrnoException;
       const msg =
@@ -155,7 +153,7 @@ export function getPostcssPlugins(
           : error.message || String(error);
       logger.info(msg);
     }
-  });
+  }
 
   return plugins;
 }

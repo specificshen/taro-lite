@@ -257,7 +257,7 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
         },
         css: {
           postcss: {
-            plugins: getPostcssPlugins(appPath, __postcssOption, MINI_EXCLUDE_POSTCSS_PLUGIN_NAME),
+            plugins: await getPostcssPlugins(appPath, __postcssOption, MINI_EXCLUDE_POSTCSS_PLUGIN_NAME),
           },
           modules: getCSSModulesOptions(taroConfig),
         },

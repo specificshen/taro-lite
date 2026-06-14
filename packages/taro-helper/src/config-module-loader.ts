@@ -5,6 +5,10 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { transformSync } from '@swc/core';
 import type { Config } from '@swc/core';
 
+function getModuleDefaultExport(exports: any) {
+  return exports?.__esModule ? exports.default : exports;
+}
+
 interface UserConfigModuleLoaderOptions {
   customConfig?: {
     alias?: Record<string, string>;
@@ -126,9 +130,17 @@ function resolveExistingScriptPath(request: string, parentURL: string | undefine
   }
 }
 
+function filePathFromURL(url: string) {
+  const { pathname } = new URL(url);
+  if (process.platform === 'win32' && pathname.length >= 3 && pathname[2] === ':') {
+    return pathname.slice(1).replace(/\//g, path.sep);
+  }
+  return pathname;
+}
+
 function isScriptModuleURL(url: string) {
   if (!url.startsWith('file:')) return false;
-  return SCRIPT_EXTENSIONS.includes(path.extname(fileURLToPath(url)));
+  return SCRIPT_EXTENSIONS.includes(path.extname(filePathFromURL(url)));
 }
 
 export async function loadUserConfigModule(
@@ -160,7 +172,7 @@ export async function loadUserConfigModule(
       return nextLoad(url, context);
     }
 
-    const filename = fileURLToPath(url);
+    const filename = filePathFromURL(url);
     return {
       format: 'commonjs',
       shortCircuit: true,
@@ -174,9 +186,9 @@ export async function loadUserConfigModule(
   });
 
   try {
-    delete require.cache[require.resolve(resolvedId)];
-    const mod = require(resolvedId);
-    return mod.default ?? mod;
+    const fileURL = `${pathToFileURL(resolvedId).href}?t=${Date.now()}`;
+    const mod = await import(fileURL);
+    return getModuleDefaultExport(mod);
   } finally {
     hooks.deregister();
   }

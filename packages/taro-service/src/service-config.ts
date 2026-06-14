@@ -63,9 +63,9 @@ export default class Config {
       serviceProfiler.end('swc register', swcRegisterStartMs);
 
       try {
-        const requireConfigStartMs = serviceProfiler.start();
-        const userExport = getModuleDefaultExport(require(this.configPath));
-        serviceProfiler.end('require config', requireConfigStartMs);
+        const importConfigStartMs = serviceProfiler.start();
+        const userExport = getModuleDefaultExport(await import(this.configPath));
+        serviceProfiler.end('import config', importConfigStartMs);
 
         const evaluateConfigStartMs = serviceProfiler.start();
         this.initialConfig = typeof userExport === 'function' ? await userExport(merge, configEnv) : userExport;
