@@ -10,26 +10,15 @@
     "includes": [
       "**",
       "!dist",
-      "!dist-h5",
-      "!lib",
-      "**/src/lib",
-      "!**/*.d.ts",
-      "!**/*.ets",
       "!coverage",
       "!archive",
-      "!packages/_legacy",
+      "!node_modules",
+      "!oh_modules",
+      "!**/*.d.ts",
+      "!**/*.ets",
       "!packages/taro-cli/src/__tests__/fixtures",
       "!packages/taro-cli/templates",
-      "!packages/taro-components/stencil.config.js",
-      "!packages/taro-components/loader",
-      "!packages/taro-components/src/components",
-      "!packages/taro/types",
-      "!packages/taro-runtime/src/polyfill",
-      "!packages/taro-helper/swc",
-      "!tests/__tests__/bundled",
-      "!harmony_project",
-      "!node_modules",
-      "!oh_modules"
+      "!packages/taro-helper/swc"
     ]
   },
   "formatter": {

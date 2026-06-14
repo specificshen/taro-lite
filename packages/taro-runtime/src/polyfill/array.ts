@@ -1,54 +1,54 @@
-import { isFunction } from '@spcsn/taro-shared'
+import { isFunction } from '@spcsn/taro-shared';
 
-export function handleArrayFindPolyfill () {
+export function handleArrayFindPolyfill() {
   if (!isFunction(Array.prototype.find)) {
     Object.defineProperty(Array.prototype, 'find', {
-      value (predicate: (value: any, index: number, obj: any) => boolean) {
+      value(predicate: (value: any, index: number, obj: any) => boolean) {
         if (this == null) {
-          throw new TypeError('"this" is null or not defined')
+          throw new TypeError('"this" is null or not defined');
         }
-        const o = Object(this)
-        const len = o.length >>> 0
+        const o = Object(this);
+        const len = o.length >>> 0;
         if (!isFunction(predicate)) {
-          throw new TypeError('predicate must be a function')
+          throw new TypeError('predicate must be a function');
         }
-        const thisArg = arguments[1]
-        let k = 0
+        const thisArg = arguments[1];
+        let k = 0;
         while (k < len) {
-          const kValue = o[k]
+          const kValue = o[k];
           if (predicate.call(thisArg, kValue, k, o)) {
-            return kValue
+            return kValue;
           }
-          k++
+          k++;
         }
-        return undefined
-      }
-    })
+        return undefined;
+      },
+    });
   }
 }
 
-export function handleArrayIncludesPolyfill () {
+export function handleArrayIncludesPolyfill() {
   if (!isFunction(Array.prototype.includes)) {
     Object.defineProperty(Array.prototype, 'includes', {
-      value (searchElement: any, fromIndex: number) {
+      value(searchElement: any, fromIndex: number) {
         if (this == null) {
-          throw new TypeError('"this" is null or not defined')
+          throw new TypeError('"this" is null or not defined');
         }
-        const o = Object(this)
-        const len = o.length >>> 0
+        const o = Object(this);
+        const len = o.length >>> 0;
         if (len === 0) {
-          return false
+          return false;
         }
-        const n = fromIndex | 0
-        let k = Math.max(n >= 0 ? n : len - Math.abs(n), 0)
+        const n = fromIndex | 0;
+        let k = Math.max(n >= 0 ? n : len - Math.abs(n), 0);
         while (k < len) {
           if (o[k] === searchElement) {
-            return true
+            return true;
           }
-          k++
+          k++;
         }
-        return false
-      }
-    })
+        return false;
+      },
+    });
   }
 }

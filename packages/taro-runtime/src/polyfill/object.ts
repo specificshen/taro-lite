@@ -1,104 +1,120 @@
-import { isFunction, isObject, isUndefined } from '@spcsn/taro-shared'
+import { isFunction, isObject, isUndefined } from '@spcsn/taro-shared';
 
-export function handleObjectAssignPolyfill () {
+export function handleObjectAssignPolyfill() {
   if (!isFunction(Object.assign)) {
     // Must be writable: true, enumerable: false, configurable: true
-    Object.assign = function (target: any) { // .length of function is 2
-      if (target == null) { // TypeError if undefined or null
-        throw new TypeError('Cannot convert undefined or null to object')
+    Object.assign = function (target: any) {
+      // .length of function is 2
+      if (target == null) {
+        // TypeError if undefined or null
+        throw new TypeError('Cannot convert undefined or null to object');
       }
 
-      const to = Object(target)
+      const to = Object(target);
 
       for (let index = 1; index < arguments.length; index++) {
-        const nextSource = arguments[index]
+        const nextSource = arguments[index];
 
-        if (nextSource != null) { // Skip over if undefined or null
+        if (nextSource != null) {
+          // Skip over if undefined or null
           for (const nextKey in nextSource) {
             // Avoid bugs when hasOwnProperty is shadowed
             if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
-              to[nextKey] = nextSource[nextKey]
+              to[nextKey] = nextSource[nextKey];
             }
           }
         }
       }
-      return to
-    }
+      return to;
+    };
   }
 }
 
-export function handleObjectEntriesPolyfill () {
+export function handleObjectEntriesPolyfill() {
   if (!isFunction(Object.entries)) {
     // Must be writable: true, enumerable: false, configurable: true
-    Object.entries = function (obj: any) { // .length of function is 2
-      if (obj == null) { // TypeError if undefined or null
-        throw new TypeError('Cannot convert undefined or null to object')
+    Object.entries = function (obj: any) {
+      // .length of function is 2
+      if (obj == null) {
+        // TypeError if undefined or null
+        throw new TypeError('Cannot convert undefined or null to object');
       }
 
-      const to: [string, unknown][] = []
+      const to: [string, unknown][] = [];
 
-      if (obj != null) { // Skip over if undefined or null
+      if (obj != null) {
+        // Skip over if undefined or null
         for (const key in obj) {
           // Avoid bugs when hasOwnProperty is shadowed
           if (Object.prototype.hasOwnProperty.call(obj, key)) {
-            to.push([key, obj[key]])
+            to.push([key, obj[key]]);
           }
         }
       }
-      return to
-    }
+      return to;
+    };
   }
 }
 
-export function handleObjectDefinePropertyPolyfill () {
+export function handleObjectDefinePropertyPolyfill() {
   if (!isFunction(Object.defineProperties)) {
     Object.defineProperties = function (obj, properties: Record<PropertyKey, Record<PropertyKey, unknown>>) {
-      function convertToDescriptor (desc: Record<string, unknown>) {
-        function hasProperty (obj: any, prop: PropertyKey) {
-          return Object.prototype.hasOwnProperty.call(obj, prop)
+      function convertToDescriptor(desc: Record<string, unknown>) {
+        function hasProperty(obj: any, prop: PropertyKey) {
+          return Object.prototype.hasOwnProperty.call(obj, prop);
         }
 
-        if (!isObject(desc)) { throw new TypeError('bad desc') }
+        if (!isObject(desc)) {
+          throw new TypeError('bad desc');
+        }
 
-        const d: Record<PropertyKey, unknown> = {}
+        const d: Record<PropertyKey, unknown> = {};
 
-        if (hasProperty(desc, 'enumerable')) d.enumerable = !!desc.enumerable
-        if (hasProperty(desc, 'configurable')) { d.configurable = !!desc.configurable }
-        if (hasProperty(desc, 'value')) d.value = desc.value
-        if (hasProperty(desc, 'writable')) d.writable = !!desc.writable
+        if (hasProperty(desc, 'enumerable')) d.enumerable = !!desc.enumerable;
+        if (hasProperty(desc, 'configurable')) {
+          d.configurable = !!desc.configurable;
+        }
+        if (hasProperty(desc, 'value')) d.value = desc.value;
+        if (hasProperty(desc, 'writable')) d.writable = !!desc.writable;
         if (hasProperty(desc, 'get')) {
-          const g = desc.get
+          const g = desc.get;
 
-          if (!isFunction(g) && !isUndefined(g)) { throw new TypeError('bad get') }
-          d.get = g
+          if (!isFunction(g) && !isUndefined(g)) {
+            throw new TypeError('bad get');
+          }
+          d.get = g;
         }
         if (hasProperty(desc, 'set')) {
-          const s = desc.set
-          if (!isFunction(s) && !isUndefined(s)) { throw new TypeError('bad set') }
-          d.set = s
+          const s = desc.set;
+          if (!isFunction(s) && !isUndefined(s)) {
+            throw new TypeError('bad set');
+          }
+          d.set = s;
         }
 
-        if (('get' in d || 'set' in d) && ('value' in d || 'writable' in d)) { throw new TypeError('identity-confused descriptor') }
+        if (('get' in d || 'set' in d) && ('value' in d || 'writable' in d)) {
+          throw new TypeError('identity-confused descriptor');
+        }
 
-        return d
+        return d;
       }
 
-      if (!isObject(obj)) throw new TypeError('bad obj')
+      if (!isObject(obj)) throw new TypeError('bad obj');
 
-      properties = Object(properties)
+      properties = Object(properties);
 
-      const keys = Object.keys(properties)
-      const descs: [PropertyKey, Record<PropertyKey, unknown>][] = []
+      const keys = Object.keys(properties);
+      const descs: [PropertyKey, Record<PropertyKey, unknown>][] = [];
 
       for (let i = 0; i < keys.length; i++) {
-        descs.push([keys[i], convertToDescriptor(properties[keys[i]])])
+        descs.push([keys[i], convertToDescriptor(properties[keys[i]])]);
       }
 
       for (let i = 0; i < descs.length; i++) {
-        Object.defineProperty(obj, descs[i][0], descs[i][1])
+        Object.defineProperty(obj, descs[i][0], descs[i][1]);
       }
 
-      return obj
-    }
+      return obj;
+    };
   }
 }
