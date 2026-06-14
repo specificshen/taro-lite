@@ -155,6 +155,30 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
     const tslibDeps: RegExp[] = [/node_modules[\\/]tslib[\\/]/];
     const testByReg2DExpList = (reg2DExpList: RegExp[][]) => (id: string) =>
       reg2DExpList.some((regExpList) => regExpList.some((regExp) => regExp.test(id)));
+
+    /** 提取模块所属页面/特性作用域，例如 pages/form-lab 或 features/form-lab */
+    function getPageScope(id: string): string | null {
+      const match = id.match(/[\\/](pages|features)[\\/]([^\\/]+)(?:[\\/]|$)/);
+      return match ? `${match[1]}/${match[2]}` : null;
+    }
+
+    /** 若一个模块的所有引用方都来自同一个页面作用域，则它应留在页面 chunk，不进 common */
+    function isPrivateToSinglePage(id: string, getModuleInfo: (id: string) => any): boolean {
+      const moduleInfo = getModuleInfo(id);
+      if (!moduleInfo?.importers?.length) return false;
+      let commonScope: string | undefined;
+      for (const importerId of moduleInfo.importers) {
+        const scope = getPageScope(importerId);
+        if (!scope) return false;
+        if (commonScope === undefined) {
+          commonScope = scope;
+        } else if (commonScope !== scope) {
+          return false;
+        }
+      }
+      return true;
+    }
+
     switch (framework) {
       case 'react':
         return (id, { getModuleInfo }) => {
@@ -165,6 +189,7 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
           if (testByReg2DExpList([reactRelatedDeps])(id)) return 'common';
           if (testByReg2DExpList([taroDeps, tslibDeps])(id)) return 'taro';
           if (testByReg2DExpList([nodeModulesDeps])(id)) return 'vendors';
+          if (isPrivateToSinglePage(id, getModuleInfo)) return undefined;
           if (moduleInfo?.importers?.length && moduleInfo.importers.length > 1) return 'common';
         };
       default:
@@ -173,6 +198,7 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
           const moduleInfo = getModuleInfo(id);
           if (testByReg2DExpList([taroMiniRunnerDeps])(id)) return null;
           if (testByReg2DExpList([nodeModulesDeps, commonjsHelpersDeps])(id)) return 'vendors';
+          if (isPrivateToSinglePage(id, getModuleInfo)) return undefined;
           if (moduleInfo?.importers?.length && moduleInfo.importers.length > 1) return 'common';
         };
     }
