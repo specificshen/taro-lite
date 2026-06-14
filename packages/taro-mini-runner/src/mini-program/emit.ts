@@ -1,6 +1,7 @@
 import path from 'node:path';
 import { promoteRelativePath } from '@spcsn/taro-helper';
 import { isFunction, isString, toDashed } from '@spcsn/taro-shared';
+import { minify } from 'html-minifier';
 import { getComponentName, prettyPrintJson } from '../shared';
 import { componentConfig } from '../shared/component';
 import { baseCompName, baseTemplateName, customWrapperName } from '../shared/constants';
@@ -254,7 +255,6 @@ function generateTemplateFile(
   const fileName = viteCompilerContext.getTemplatePath(getComponentName(viteCompilerContext, options.filePath));
 
   if (viteCompilerContext.taroConfig.minifyXML?.collapseWhitespace) {
-    const minify = require('html-minifier').minify;
     source = minify(source, {
       collapseWhitespace: true,
       keepClosingSlash: true,

@@ -1,7 +1,9 @@
 import path from 'node:path';
 import { fs } from '@spcsn/taro-helper';
 import sax from 'sax';
+import * as walk from 'acorn-walk';
 import { normalizePath } from 'vite';
+import type { CallExpression, Identifier, Literal, MemberExpression, ObjectExpression, Property } from 'acorn';
 import { isRelativePath, isVirtualModule } from '../shared';
 import { componentConfig } from '../shared/component';
 import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
@@ -82,26 +84,27 @@ export default function (viteCompilerContext: ViteMiniCompilerContext | undefine
       }
 
       if (!isVirtualModule(id) && /\.[jt]sx/.test(id)) {
-        const walk = require('acorn-walk');
-
         walk.simple(ast, {
-          CallExpression: (node) => {
+          CallExpression: (node: CallExpression) => {
             const callee = node.callee;
             if (callee.type === 'MemberExpression') {
-              if (callee.property.name !== 'createElement') {
+              const propertyName = (callee as MemberExpression).property;
+              if (propertyName.type === 'Identifier' && propertyName.name !== 'createElement') {
                 return;
               }
             } else {
-              const nameOfCallee = callee.name;
+              const nameOfCallee = (callee as Identifier).name;
               if (!/_?jsxs?/.test(nameOfCallee) && !nameOfCallee?.includes('createElement')) {
                 return;
               }
             }
 
-            const [type, prop] = node.arguments;
-            const componentName = type.name;
+            const [type, prop] = node.arguments as [Identifier | Literal, ObjectExpression | undefined];
+            const componentName = (type as Identifier).name;
 
-            type.value && taroConfig.onParseCreateElement?.(type.value, componentConfig);
+            if (type.type === 'Literal' && type.value) {
+              taroConfig.onParseCreateElement?.(type.value as string, componentConfig);
+            }
 
             if (componentName === 'CustomWrapper' && !componentConfig.thirdPartyComponents.get('custom-wrapper')) {
               componentConfig.thirdPartyComponents.set('custom-wrapper', new Set());
@@ -109,7 +112,7 @@ export default function (viteCompilerContext: ViteMiniCompilerContext | undefine
             if (componentConfig.thirdPartyComponents.size === 0) {
               return;
             }
-            const attrs = componentConfig.thirdPartyComponents.get(type.value);
+            const attrs = componentConfig.thirdPartyComponents.get((type as Literal).value as string);
 
             if (attrs == null || !prop || prop.type !== 'ObjectExpression') {
               return;
@@ -119,11 +122,11 @@ export default function (viteCompilerContext: ViteMiniCompilerContext | undefine
               .filter(
                 (p) =>
                   p.type === 'Property' &&
-                  p.key.type === 'Identifier' &&
-                  p.key.name !== 'children' &&
-                  p.key.name !== 'id',
+                  (p as Property).key.type === 'Identifier' &&
+                  ((p as Property).key as Identifier).name !== 'children' &&
+                  ((p as Property).key as Identifier).name !== 'id',
               )
-              .forEach((p) => attrs.add(p.key.name));
+              .forEach((p) => attrs.add(((p as Property).key as Identifier).name));
           },
         });
       }
