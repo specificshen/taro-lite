@@ -9,7 +9,7 @@ export default defineConfig([
   {
     input: 'src/index.ts',
     transform: {
-      target: 'es2015',
+      target: 'es2017',
     },
     output: {
       ...baseOutput,
@@ -21,7 +21,7 @@ export default defineConfig([
   {
     input: 'src/index.ts',
     transform: {
-      target: 'es2015',
+      target: 'es2017',
     },
     output: {
       ...baseOutput,
@@ -32,7 +32,7 @@ export default defineConfig([
   {
     input: 'src/index.ts',
     transform: {
-      target: 'es2015',
+      target: 'es2017',
     },
     output: {
       ...baseOutput,
@@ -43,7 +43,7 @@ export default defineConfig([
   {
     input: 'src/template.ts',
     transform: {
-      target: 'es2015',
+      target: 'es2017',
     },
     output: {
       ...baseOutput,
@@ -54,7 +54,7 @@ export default defineConfig([
   {
     input: 'src/template.ts',
     transform: {
-      target: 'es2015',
+      target: 'es2017',
     },
     output: {
       ...baseOutput,
