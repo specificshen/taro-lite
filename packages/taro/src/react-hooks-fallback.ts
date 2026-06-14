@@ -1,4 +1,5 @@
 import { Current, getPageInstance, injectPageInstance } from '@spcsn/taro-runtime';
+import type { Instance } from '@spcsn/taro-runtime';
 import React from 'react';
 
 const hooksMap: Record<string, string> = {
@@ -27,18 +28,18 @@ const hooksMap: Record<string, string> = {
 };
 
 function createHook(lifecycle: string) {
-  return (fn: (...args: any[]) => any) => {
+  return (fn: (...args: any[]) => void) => {
     const router = Current.router;
     const id = router?.$taroPath || router?.path || 'taro-app';
-    const instRef = React.useRef<any>(undefined);
+    const instRef = React.useRef<Instance | undefined>(undefined);
     const fnRef = React.useRef(fn);
     if (fnRef.current !== fn) fnRef.current = fn;
 
     React.useLayoutEffect(() => {
       let inst = (instRef.current = getPageInstance(id));
       if (!inst) {
-        inst = instRef.current = Object.create(null);
-        injectPageInstance(inst as any, id);
+        inst = instRef.current = Object.create(null) as Instance;
+        injectPageInstance(inst, id);
       }
 
       const callback = (...args: any[]) => fnRef.current(...args);
