@@ -99,8 +99,10 @@ describe('package support boundary', () => {
     const packageJson = JSON.parse(readPackageFile('package.json'));
 
     expect(packageJson.main).toBe('dist/index.js');
-    expect(packageJson.module).toBe('dist/index.js');
+    expect(packageJson.module).toBeUndefined();
     expect(packageJson.types).toBe('types/index.d.ts');
+    expect(packageJson.exports['.'].import).toBe('./dist/index.js');
+    expect(packageJson.exports['.'].require).toBe('./dist/index.js');
     expect(packageJson.exports['.'].default).toBe('./dist/index.js');
     expect(packageJson.exports['./mini']).toBeUndefined();
     expect(packageJson.browser).toBeUndefined();
