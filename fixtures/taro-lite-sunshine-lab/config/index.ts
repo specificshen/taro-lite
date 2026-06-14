@@ -16,10 +16,6 @@ export default defineConfig<'vite'>(
         postcss: {
           cssModules: {
             enable: true,
-            config: {
-              namingPattern: 'module',
-              generateScopedName: '[name]__[local]___[hash:base64:5]',
-            },
           },
         },
       },
