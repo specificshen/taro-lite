@@ -19,7 +19,8 @@
       "types": "./dist/template.d.ts",
       "import": "./dist/template.js",
       "require": "./dist/template.cjs"
-    }
+    },
+    "./package.json": "./package.json"
   },
   "files": [
     "dist"
