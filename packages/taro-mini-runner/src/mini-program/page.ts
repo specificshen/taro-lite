@@ -143,6 +143,28 @@ function hasLocalImportNativeComponent(ast: SwcNode): boolean {
   return hasLocalBinding;
 }
 
+function getSwcParseOptions(id: string): swc.ParseOptions {
+  const cleanId = id.split('?')[0].split('#')[0];
+  const ext = path.extname(cleanId).toLowerCase();
+
+  switch (ext) {
+    case '.ts':
+    case '.mts':
+    case '.cts':
+      return { syntax: 'typescript', tsx: false };
+    case '.tsx':
+      return { syntax: 'typescript', tsx: true };
+    case '.js':
+    case '.mjs':
+    case '.cjs':
+      return { syntax: 'ecmascript', jsx: false };
+    case '.jsx':
+      return { syntax: 'ecmascript', jsx: true };
+    default:
+      return { syntax: 'typescript', tsx: true };
+  }
+}
+
 function transformNativeComponents(
   code: string,
   id: string,
@@ -150,10 +172,7 @@ function transformNativeComponents(
   nCompUniqueKeyMap: UniqueKeyMap<string>,
   scopeNativeComp: Map<string, string>,
 ): NativeComponentTransformResult {
-  const ast = swc.parseSync(code, {
-    syntax: 'typescript',
-    tsx: true,
-  }) as unknown as SwcNode;
+  const ast = swc.parseSync(code, getSwcParseOptions(id)) as unknown as SwcNode;
 
   const usedComponents = new Set<string>();
   collectUsedComponents(ast, usedComponents);
