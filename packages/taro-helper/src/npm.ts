@@ -208,7 +208,7 @@ export function getNpmPkgSync(npmName: string, root: string) {
 }
 
 export async function getNpmPkg(npmName: string, root: string) {
-  let npmPath;
+  let npmPath: string | undefined;
   try {
     npmPath = resolveNpmSync(npmName, root);
   } catch (err) {

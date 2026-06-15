@@ -1,8 +1,8 @@
+import type { Dirent } from 'node:fs';
 import { existsSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
-import { createLogger } from 'vite';
-import type { Dirent } from 'node:fs';
 import type { Logger } from 'vite';
+import { createLogger } from 'vite';
 
 const viteLogger = createLogger('info', {
   prefix: '[taro]',

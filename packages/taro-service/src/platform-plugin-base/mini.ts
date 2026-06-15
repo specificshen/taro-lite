@@ -2,11 +2,11 @@ import { existsSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { recursiveMerge, taroJsMiniComponentsPath } from '@spcsn/taro-helper';
 import { isObject } from '@spcsn/taro-shared';
+import type { RecursiveTemplate, UnRecursiveTemplate } from '@spcsn/taro-shared/template';
 import { getPkgVersion } from '../utils/package';
 import { serviceProfiler } from '../utils/profile.js';
-import TaroPlatform from './platform';
-import type { RecursiveTemplate, UnRecursiveTemplate } from '@spcsn/taro-shared/template';
 import type { TConfig } from '../utils/types';
+import TaroPlatform from './platform';
 
 interface IFileType {
   templ: string;

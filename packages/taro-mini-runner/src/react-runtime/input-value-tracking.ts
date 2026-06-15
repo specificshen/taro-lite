@@ -26,7 +26,7 @@ function trackValueOnNode(node: any) {
   let currentValue = '' + node[valueField];
 
   if (
-    node.hasOwnProperty(valueField) ||
+    Object.hasOwn(node, valueField) ||
     typeof descriptor === 'undefined' ||
     typeof descriptor.get !== 'function' ||
     typeof descriptor.set !== 'function'

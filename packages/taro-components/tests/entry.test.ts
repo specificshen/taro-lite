@@ -2,8 +2,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import * as components from '../src/index';
 import { MINI_APP_TYPES } from '../scripts/constants';
+import * as components from '../src/index';
 
 const packageRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const readPackageFile = (filePath: string) => fs.readFileSync(path.join(packageRoot, filePath), 'utf8');

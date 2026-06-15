@@ -1,8 +1,8 @@
-import { View, Text } from '@spcsn/taro-components';
 import Taro from '@spcsn/taro';
+import { Text, View } from '@spcsn/taro-components';
 import { PageWrapper } from '@/components/layout/page-wrapper';
-import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Card } from '@/components/ui/card';
 import { IconCircle, SvgIcon } from '@/components/ui/icon';
 import { Separator } from '@/components/ui/separator';
 import { coverageItems, dashboardStats, fixturePages, qualitySignals } from '@/features/fixture-navigation';

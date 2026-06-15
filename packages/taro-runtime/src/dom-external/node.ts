@@ -1,7 +1,7 @@
 import { DATASET, PROPS, STYLE } from '../constants';
-import { NodeType } from '../dom/node-types';
 import type { TaroElement } from '../dom/element';
 import type { TaroNode } from '../dom/node';
+import { NodeType } from '../dom/node-types';
 import type { Style } from '../dom/style';
 import type { TaroText } from '../dom/text';
 

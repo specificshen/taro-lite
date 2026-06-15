@@ -1,5 +1,5 @@
-import { Current, getPageInstance, injectPageInstance } from '@spcsn/taro-runtime';
 import type { Instance } from '@spcsn/taro-runtime';
+import { Current, getPageInstance, injectPageInstance } from '@spcsn/taro-runtime';
 import React from 'react';
 
 const hooksMap: Record<string, string> = {

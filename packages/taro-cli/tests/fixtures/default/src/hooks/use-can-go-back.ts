@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
 import Taro from '@spcsn/taro';
+import { useEffect, useState } from 'react';
 
 export function useCanGoBack(): boolean {
   const [canGoBack, setCanGoBack] = useState(false);

@@ -1,8 +1,8 @@
 import Creator from './create/creator';
 import Project from './create/project';
 import doctor from './doctor/index';
+import { type ConfigEnv, defineConfig, type UserConfigExport, type UserConfigFn } from './util/define-config';
 import { getRootPath } from './util/index';
-import { defineConfig, type ConfigEnv, type UserConfigExport, type UserConfigFn } from './util/define-config';
 
 export default {
   doctor,
@@ -14,11 +14,11 @@ export default {
 
 export {
   type ConfigEnv,
-  type UserConfigExport,
-  type UserConfigFn,
   Creator,
   defineConfig,
   doctor,
   getRootPath,
   Project,
+  type UserConfigExport,
+  type UserConfigFn,
 };

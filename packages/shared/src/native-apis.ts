@@ -317,7 +317,7 @@ function processApis(taro: IObject, global: IObject, config: IProcessApisIOption
           key = transformResult.key;
           options = transformResult.options;
           // 新 key 可能不存在
-          if (!global.hasOwnProperty(key)) {
+          if (!Object.hasOwn(global, key)) {
             return nonsupport(key)();
           }
         }
@@ -378,7 +378,7 @@ function processApis(taro: IObject, global: IObject, config: IProcessApisIOption
       }
 
       // API 不存在
-      if (!global.hasOwnProperty(platformKey)) {
+      if (!Object.hasOwn(global, platformKey)) {
         taro[key] = nonsupport(key);
         return;
       }
@@ -412,7 +412,7 @@ function equipCommonApis(taro: IObject, global: IObject, apis: Record<string, un
 
   try {
     taro.requirePlugin = requirePlugin || nonsupport('requirePlugin');
-  } catch (error) {
+  } catch (_error) {
     taro.requirePlugin = nonsupport('requirePlugin');
   }
 

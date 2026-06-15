@@ -1,9 +1,9 @@
 import path from 'node:path';
+import type { ILoaderMeta } from '@spcsn/taro/types/compile/config/plugin';
+import type { Node } from 'acorn';
 import * as acorn from 'acorn';
 import * as walk from 'acorn-walk';
-import type { Node } from 'acorn';
 import type { Frameworks } from './index';
-import type { ILoaderMeta } from '@spcsn/taro/types/compile/config/plugin';
 
 function addConfig(source: string) {
   const configsMap: Record<string, string[]> = {

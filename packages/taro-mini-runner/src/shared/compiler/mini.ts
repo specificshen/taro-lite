@@ -1,11 +1,4 @@
 import path from 'node:path';
-import { fs, isAliasPath, readConfig, recursiveMerge, replaceAliasPath, resolveMainFilePath } from '@spcsn/taro-helper';
-import { isArray, isFunction } from '@spcsn/taro-shared';
-import defaultConfig from '../../mini-program/default-config';
-import { miniTemplateLoader, QUERY_IS_NATIVE_COMP } from '../../mini-program/native-support';
-import { getComponentName } from '..';
-import { componentConfig } from '../component';
-import { CompilerContext } from './base';
 import type { PageConfig } from '@spcsn/taro';
 import type {
   ViteAppMeta,
@@ -15,7 +8,14 @@ import type {
   ViteNativeCompMeta,
   VitePageMeta,
 } from '@spcsn/taro/types/compile/viteCompilerContext';
+import { fs, isAliasPath, readConfig, recursiveMerge, replaceAliasPath, resolveMainFilePath } from '@spcsn/taro-helper';
+import { isArray, isFunction } from '@spcsn/taro-shared';
 import type { Rolldown } from 'vite';
+import defaultConfig from '../../mini-program/default-config';
+import { miniTemplateLoader, QUERY_IS_NATIVE_COMP } from '../../mini-program/native-support';
+import { getComponentName } from '..';
+import { componentConfig } from '../component';
+import { CompilerContext } from './base';
 
 export class TaroCompilerContext extends CompilerContext<ViteMiniBuildConfig> implements ViteMiniCompilerContext {
   fileType: ViteFileType;
@@ -97,7 +97,7 @@ export class TaroCompilerContext extends CompilerContext<ViteMiniBuildConfig> im
     if (!usingComponents) return list;
 
     for (const [compName, value] of Object.entries(usingComponents)) {
-      const compPath = value instanceof Array ? value[0] : value;
+      const compPath = Array.isArray(value) ? value[0] : value;
       usingComponents[compName] = this.resolvePageImportPath(scriptPath, compPath);
       const compScriptPath = resolveMainFilePath(path.resolve(path.dirname(scriptPath), compPath));
       if (this.nativeComponents.has(compScriptPath)) continue;

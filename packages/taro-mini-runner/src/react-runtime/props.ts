@@ -1,3 +1,4 @@
+import type { Style, TaroElement } from '@spcsn/taro-runtime';
 import { convertNumber2PX, FormElement } from '@spcsn/taro-runtime';
 import {
   capitalize,
@@ -8,7 +9,6 @@ import {
   isString,
   toCamelCase,
 } from '@spcsn/taro-shared';
-import type { Style, TaroElement } from '@spcsn/taro-runtime';
 
 // 拓展TaroElement的属性
 

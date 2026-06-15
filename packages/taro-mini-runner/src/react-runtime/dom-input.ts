@@ -1,7 +1,7 @@
-import { supportedInputTypes } from './constant';
-import { Props } from './props';
 import type { FormElement, TaroElement } from '@spcsn/taro-runtime';
+import { supportedInputTypes } from './constant';
 import type { RestoreType } from './event';
+import { Props } from './props';
 
 // 从 props 中，更新 input 组件的 value 值
 function updateInputWrapper(element: TaroElement, oldValue: RestoreType, props: Props) {

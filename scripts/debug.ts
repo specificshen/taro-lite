@@ -39,7 +39,7 @@ function execCommand(command: string, successMessage: string, errorMessage: stri
   });
 }
 
-function linkToGlobal(): Promise<void[]> {
+function linkToGlobal(): Promise<undefined[]> {
   return Promise.all(
     packages.map((pkg) =>
       execCommand(
@@ -51,7 +51,7 @@ function linkToGlobal(): Promise<void[]> {
   );
 }
 
-function linkToLocal(): Promise<void[]> {
+function linkToLocal(): Promise<undefined[]> {
   return Promise.all(
     packages.map((pkg) =>
       execCommand(

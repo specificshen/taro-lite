@@ -277,7 +277,7 @@ function handleIntersectionObserverObjectPolyfill() {
     if (!Array.isArray(threshold)) threshold = [threshold];
 
     return threshold.sort().filter(function (t: number, i: number, a: number[]) {
-      if (!isNumber(t) || isNaN(t) || t < 0 || t > 1) {
+      if (!isNumber(t) || Number.isNaN(t) || t < 0 || t > 1) {
         throw new Error('threshold must be a number between 0 and 1 inclusively');
       }
       return t !== a[i - 1];
@@ -681,7 +681,7 @@ function handleIntersectionObserverObjectPolyfill() {
 
     try {
       rect = el.getBoundingClientRect();
-    } catch (err) {
+    } catch (_err) {
       // Ignore Windows 7 IE11 "Unspecified error"
       // https://github.com/w3c/IntersectionObserver/pull/205
     }

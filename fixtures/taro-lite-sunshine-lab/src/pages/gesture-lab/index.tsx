@@ -1,10 +1,10 @@
-import { useState, useRef } from 'react';
-import { View, Text } from '@spcsn/taro-components';
+import { Text, View } from '@spcsn/taro-components';
+import { useRef, useState } from 'react';
+import { LogConsole } from '@/components/demo/log-console';
 import { PageWrapper } from '@/components/layout/page-wrapper';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { LogConsole } from '@/components/demo/log-console';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useLogger } from '@/hooks/use-logger';
 import styles from './index.module.css';
 

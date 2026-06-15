@@ -1,5 +1,5 @@
-import { View, Text, Slider } from '@spcsn/taro-components';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { Slider, Text, View } from '@spcsn/taro-components';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import type { FormData, FormFieldErrors, ValueEvent } from '@/features/form-lab';
 import styles from '../index.module.css';

@@ -1,13 +1,13 @@
 import path from 'node:path';
+import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
 import { fs } from '@spcsn/taro-helper';
-import sax from 'sax';
-import * as walk from 'acorn-walk';
-import { normalizePath } from 'vite';
 import type { CallExpression, Identifier, Literal, MemberExpression, ObjectExpression, Property } from 'acorn';
+import * as walk from 'acorn-walk';
+import sax from 'sax';
+import type { PluginOption, Rolldown } from 'vite';
+import { normalizePath } from 'vite';
 import { isRelativePath, isVirtualModule } from '../shared';
 import { componentConfig } from '../shared/component';
-import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
-import type { PluginOption, Rolldown } from 'vite';
 
 const QUERY_IS_NATIVE_SCRIPT = '?isNativeScript=';
 export const QUERY_IS_NATIVE_PAGE = QUERY_IS_NATIVE_SCRIPT + 'page';
@@ -76,7 +76,7 @@ export default function (viteCompilerContext: ViteMiniCompilerContext | undefine
     },
     moduleParsed(moduleInfo) {
       const { id } = moduleInfo;
-      let ast;
+      let ast: unknown;
       try {
         ast = moduleInfo.ast;
       } catch {

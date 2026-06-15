@@ -36,7 +36,7 @@ export interface ProjectConfig {
   framework?: string;
 }
 
-type TemplateHandler = (error: Error | null, options: CreateOptions) => boolean | void;
+type TemplateHandler = (error: Error | null, options: CreateOptions) => boolean | undefined;
 export type TemplateHandlers = Record<string, TemplateHandler>;
 
 const FILE_FILTER = new Set([...TEMPLATE_CREATOR_FILES, '.DS_Store', '.npmrc']);

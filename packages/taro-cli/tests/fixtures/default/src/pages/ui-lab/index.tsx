@@ -1,23 +1,23 @@
+import { Text, View } from '@spcsn/taro-components';
 import { useState } from 'react';
-import { View, Text } from '@spcsn/taro-components';
+import { LogConsole } from '@/components/demo/log-console';
 import { PageWrapper } from '@/components/layout/page-wrapper';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Separator } from '@/components/ui/separator';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import type { DrawerSide } from '@/components/ui/drawer';
 import {
   Drawer,
-  DrawerHeader,
-  DrawerTitle,
+  DrawerClose,
   DrawerDescription,
   DrawerFooter,
-  DrawerClose,
+  DrawerHeader,
+  DrawerTitle,
 } from '@/components/ui/drawer';
-import type { DrawerSide } from '@/components/ui/drawer';
-import { LogConsole } from '@/components/demo/log-console';
+import { Input } from '@/components/ui/input';
+import { Separator } from '@/components/ui/separator';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useLogger } from '@/hooks/use-logger';
 import styles from './index.module.css';
 

@@ -19,9 +19,13 @@ export {
   taroLocationProvider as location,
   taroWindowProvider as window,
 } from './bom/window';
+export * from './constants';
+export type { Router } from './current';
+export { Current, getCurrentInstance, setCurrentApp, whenAppReady } from './current';
 // dom
 export { TaroElement } from './dom/element';
 export { createEvent, eventHandler, TaroEvent } from './dom/event';
+export { eventSource } from './dom/event-source';
 export { FormElement } from './dom/form';
 export { TaroNode } from './dom/node';
 export { TaroRootElement } from './dom/root';
@@ -29,12 +33,6 @@ export { Style } from './dom/style';
 export { SVGElement } from './dom/svg';
 export { TaroText } from './dom/text';
 export { MutationObserver } from './dom-external/mutation-observer';
-// others
-export { env };
-export * from './constants';
-export { Current, getCurrentInstance, setCurrentApp, whenAppReady } from './current';
-export type { Router } from './current';
-export { eventSource } from './dom/event-source';
 export {
   createComponentConfig,
   createPageConfig,
@@ -49,15 +47,16 @@ export {
   safeExecute,
   stringify,
 } from './dsl/common';
+// typings
+export * from './dsl/instance';
 export * from './emitter/emitter';
 export { hydrate } from './hydrate';
+export * from './interface';
 export { nextTick } from './next-tick';
 export { options } from './options';
 export * from './perf';
-export * from './utils';
-// typings
-export * from './dsl/instance';
-export * from './interface';
-
 // Polyfills
 export * from './polyfill';
+export * from './utils';
+// others
+export { env };

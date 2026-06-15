@@ -1,19 +1,19 @@
 import path from 'node:path';
+import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
 import {
   defaultMainFields,
   fs,
   PLATFORMS,
-  recursiveMerge,
   REG_NODE_MODULES_DIR,
   REG_TARO_SCOPED_PACKAGE,
+  recursiveMerge,
 } from '@spcsn/taro-helper';
-import { getDefaultPostcssConfig } from './postcss';
+import type { PluginOption, UserConfig } from 'vite';
 import { getCSSModulesOptions, getMinify, getMode, getPostcssPlugins, stripMultiPlatformExt } from '../shared';
 import { DEFAULT_TERSER_OPTIONS, MINI_EXCLUDE_POSTCSS_PLUGIN_NAME } from '../shared/constants';
 import { createDevBuildSummaryLogger } from '../shared/logger';
 import { buildProfiler } from '../shared/profile.js';
-import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
-import type { PluginOption, UserConfig } from 'vite';
+import { getDefaultPostcssConfig } from './postcss';
 
 type RolldownInjectOptions = Record<string, string | [string, string]>;
 

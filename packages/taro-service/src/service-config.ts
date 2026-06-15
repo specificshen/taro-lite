@@ -1,4 +1,5 @@
 import * as path from 'node:path';
+import type { IProjectConfig } from '@spcsn/taro/types/compile';
 import {
   createSwcRegister,
   ENTRY,
@@ -16,7 +17,6 @@ import ora from 'ora';
 import { filterGlobalConfig } from './utils';
 import { CONFIG_DIR_NAME, DEFAULT_CONFIG_FILE } from './utils/constants';
 import { serviceProfiler } from './utils/profile.js';
-import type { IProjectConfig } from '@spcsn/taro/types/compile';
 
 interface IConfigOptions {
   appPath: string;
@@ -89,7 +89,7 @@ export default class Config {
       this.initialGlobalConfig = fs.readJSONSync(globalPluginConfigPath) || {};
       this.initialGlobalConfig = filterGlobalConfig(this.initialGlobalConfig, command);
       spinner.succeed('获取 taro 全局配置成功');
-    } catch (e) {
+    } catch (_e) {
       spinner.stop();
       console.warn(`获取全局配置失败，如果需要启用全局插件请查看配置文件: ${globalPluginConfigPath} `);
     }

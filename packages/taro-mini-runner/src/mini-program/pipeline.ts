@@ -1,8 +1,8 @@
-import { VITE_COMPILER_LABEL } from '../shared/runner';
+import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
 import { isFunction } from '@spcsn/taro-shared';
 import type { UnRecursiveTemplate } from '@spcsn/taro-shared/template';
-import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
 import type { PluginOption } from 'vite';
+import { VITE_COMPILER_LABEL } from '../shared/runner';
 
 export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOption {
   const { taroConfig } = viteCompilerContext;

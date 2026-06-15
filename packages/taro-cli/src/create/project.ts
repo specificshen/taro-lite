@@ -12,9 +12,9 @@ import type { default as Inquirer, Question } from 'inquirer';
 import { clearConsole, getPkgVersion, getRootPath } from '../util/index';
 import { TEMPLATE_CREATOR_FILES } from './constants';
 import Creator from './creator';
+import type { ITemplates } from './fetch-template';
 import fetchTemplate from './fetch-template';
 import { createProject, NpmType, type ProjectConfig, type TemplateHandlers } from './template-creator';
-import type { ITemplates } from './fetch-template';
 
 export interface IProjectConf {
   projectName: string;

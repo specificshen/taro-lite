@@ -1,8 +1,8 @@
-import { View, ScrollView } from '@spcsn/taro-components';
-import { useSafeArea } from '@/hooks/use-safe-area';
+import { ScrollView, View } from '@spcsn/taro-components';
 import { useCanGoBack } from '@/hooks/use-can-go-back';
-import { Navbar } from './navbar';
+import { useSafeArea } from '@/hooks/use-safe-area';
 import styles from './layout.module.css';
+import { Navbar } from './navbar';
 
 interface PageWrapperProps {
   title: string;

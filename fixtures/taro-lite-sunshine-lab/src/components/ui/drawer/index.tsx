@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { Text, View } from '@spcsn/taro-components';
 import type { CSSProperties, PropsWithChildren, ReactNode } from 'react';
-import { View, Text } from '@spcsn/taro-components';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSafeArea } from '@/hooks/use-safe-area';
 import { cn } from '@/lib/utils';
 import styles from './index.module.css';

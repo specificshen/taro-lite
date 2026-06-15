@@ -1,3 +1,5 @@
+import type { TaroElement, TaroEvent } from '@spcsn/taro-runtime';
+import type { Fiber } from 'react-reconciler';
 import { getFiberCurrentPropsFromNode, getInstanceFromNode, getNodeFromInstance } from './component-tree';
 import {
   isTextInputElement,
@@ -6,10 +8,8 @@ import {
   toString,
 } from './dom-input';
 import { updateValueIfChanged } from './input-value-tracking';
-import { flushSync } from './reconciler';
-import type { TaroElement, TaroEvent } from '@spcsn/taro-runtime';
-import type { Fiber } from 'react-reconciler';
 import type { Props } from './props';
+import { flushSync } from './reconciler';
 
 export type RestoreType = string | number | boolean | any[];
 

@@ -5,9 +5,9 @@ import {
   Shortcuts,
 } from '@spcsn/taro-shared';
 import { CLASS, COMMENT, ID, ROOT_STR, STYLE, UID } from '../constants';
-import { NodeType } from '../dom/node-types';
 import type { TaroElement } from '../dom/element';
 import type { TaroNode } from '../dom/node';
+import { NodeType } from '../dom/node-types';
 import type { TaroText } from '../dom/text';
 import type { TFunc } from '../interface';
 

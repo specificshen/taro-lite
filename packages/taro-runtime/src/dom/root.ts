@@ -1,10 +1,10 @@
 import { hooks, isArray, isFunction, isUndefined, Shortcuts } from '@spcsn/taro-shared';
 import { CUSTOM_WRAPPER, PAGE_INIT, ROOT_STR, SET_DATA } from '../constants';
+import type { HydratedData, MpInstance, TFunc, UpdatePayload, UpdatePayloadValue } from '../interface';
 import { options } from '../options';
 import { perf } from '../perf';
 import { customWrapperCache, isComment } from '../utils';
 import { TaroElement } from './element';
-import type { HydratedData, MpInstance, TFunc, UpdatePayload, UpdatePayloadValue } from '../interface';
 
 interface SetDataContext {
   setData: (data: Record<string, unknown>, cb: () => void) => void;

@@ -1,5 +1,5 @@
-import Chain from './chain';
 import type { ChainPromise, IRequestParams, TInterceptor } from './chain';
+import Chain from './chain';
 
 export default class Link<T = unknown> {
   taroInterceptor: TInterceptor<T>;

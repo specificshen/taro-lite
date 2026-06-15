@@ -1,10 +1,10 @@
-import { createRequire } from 'node:module';
 import * as fs from 'node:fs';
+import { createRequire } from 'node:module';
 import path from 'node:path';
-import vm from 'node:vm';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { transformSync } from '@swc/core';
+import vm from 'node:vm';
 import type { Config } from '@swc/core';
+import { transformSync } from '@swc/core';
 
 function getModuleDefaultExport(exports: any) {
   if (exports?.__esModule) return exports.default;

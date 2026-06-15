@@ -228,7 +228,7 @@ describe('TaroWindow', () => {
     const newWindow = new TaroWindow();
 
     // 验证这些属性没有被复制到 window 上（除非已经存在）
-    expect(newWindow.hasOwnProperty('atob')).toBe(false);
+    expect(Object.hasOwn(newWindow, 'atob')).toBe(false);
     // document 通过 getter 处理，所以应该有值
     expect(newWindow.document).toBeDefined();
 

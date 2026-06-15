@@ -1,12 +1,12 @@
+import type { ViteMiniBuildConfig } from '@spcsn/taro/types/compile/viteCompilerContext';
 import { isFunction } from '@spcsn/taro-shared';
+import type { Logger, UserConfig } from 'vite';
 import { build, createLogger } from 'vite';
 import miniPreset from '../mini-program';
 import { convertCopyOptions } from '../shared';
-import { componentConfig } from '../shared/component';
 import { TaroCompilerContext } from '../shared/compiler/mini';
+import { componentConfig } from '../shared/component';
 import { buildProfiler } from '../shared/profile.js';
-import type { ViteMiniBuildConfig } from '@spcsn/taro/types/compile/viteCompilerContext';
-import type { Logger, UserConfig } from 'vite';
 
 const VITE_BUILDING_ENVIRONMENT_MESSAGE = /^vite v\S+ building \S+ environment for \S+\.\.\.$/;
 

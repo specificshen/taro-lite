@@ -1,9 +1,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { defaultMainFields, resolveSync } from '@spcsn/taro-helper';
-import { getLoaderMeta } from './loader-meta';
 import type { PluginOption } from 'vite';
 import type { FrameworkPluginContext, Frameworks } from './index';
+import { getLoaderMeta } from './loader-meta';
 
 const JSX_DEV_RUNTIME_SHIM_ID = '\0taro-react-jsx-dev-runtime-shim';
 

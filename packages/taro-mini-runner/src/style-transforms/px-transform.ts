@@ -231,7 +231,7 @@ function convertLegacyOptions(options: PxTransformOptions) {
     delete options.propWhiteList;
   }
   Object.keys(legacyOptions).forEach(function (key) {
-    if (options.hasOwnProperty(key)) {
+    if (Object.hasOwn(options, key)) {
       (options as Record<string, unknown>)[(legacyOptions as Record<string, string>)[key]] = (
         options as Record<string, unknown>
       )[key];

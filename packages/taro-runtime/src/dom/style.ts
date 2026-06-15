@@ -101,7 +101,7 @@ export class Style {
   }
 
   private setCssVariables(styleKey: string) {
-    this.hasOwnProperty(styleKey) ||
+    Object.hasOwn(this, styleKey) ||
       Object.defineProperty(this, styleKey, {
         enumerable: true,
         configurable: true,

@@ -1,7 +1,8 @@
-import { useState } from 'react';
 import { View } from '@spcsn/taro-components';
-import { PageWrapper } from '@/components/layout/page-wrapper';
+import { useState } from 'react';
 import { LogConsole } from '@/components/demo/log-console';
+import { PageWrapper } from '@/components/layout/page-wrapper';
+import type { FormData, FormFieldErrors } from '@/features/form-lab';
 import {
   createInitialForm,
   getFormCompletion,
@@ -9,7 +10,6 @@ import {
   teamSizeOptions,
   validateForm,
 } from '@/features/form-lab';
-import type { FormData, FormFieldErrors } from '@/features/form-lab';
 import { useLogger } from '@/hooks/use-logger';
 import { BasicProfileCard } from './components/basic-profile-card';
 import { BusinessConfigCard } from './components/business-config-card';

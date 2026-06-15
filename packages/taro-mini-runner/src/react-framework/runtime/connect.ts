@@ -1,3 +1,13 @@
+import type { AppConfig } from '@spcsn/taro';
+import type {
+  AppInstance,
+  Instance,
+  MpEvent,
+  PageLifeCycle,
+  PageProps,
+  ReactAppInstance,
+  ReactPageComponent,
+} from '@spcsn/taro-runtime';
 import {
   CONTAINER,
   Current,
@@ -10,21 +20,11 @@ import {
   setCurrentApp,
 } from '@spcsn/taro-runtime';
 import { EMPTY_OBJ, ensure, hooks } from '@spcsn/taro-shared';
-import { reactMeta } from './react-meta';
-import { ensureIsArray, HOOKS_APP_ID, isClassComponent, setDefaultDescriptor, setRouterParams } from './utils';
-import type {
-  AppInstance,
-  Instance,
-  MpEvent,
-  PageLifeCycle,
-  PageProps,
-  ReactAppInstance,
-  ReactPageComponent,
-} from '@spcsn/taro-runtime';
-import type { AppConfig } from '@spcsn/taro';
 import type React from 'react';
 import type TReactDOM from 'react-dom';
 import type TReactDOMClient from 'react-dom/client';
+import { reactMeta } from './react-meta';
+import { ensureIsArray, HOOKS_APP_ID, isClassComponent, setDefaultDescriptor, setRouterParams } from './utils';
 
 type PageComponent = React.CElement<PageProps, React.Component<PageProps, any, any>>;
 type InjectPageInstance = (node?: Instance | null) => void;

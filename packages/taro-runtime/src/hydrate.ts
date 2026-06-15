@@ -1,12 +1,12 @@
 import { hooks, Shortcuts, toCamelCase } from '@spcsn/taro-shared';
 import { CATCH_VIEW, CATCHMOVE, CLASS, CLICK_VIEW, COMPILE_MODE, ID, PURE_VIEW, STYLE, VIEW } from './constants';
-import { getComponentsAlias, isComment, isHasExtractProp, isText } from './utils';
 import type { TaroElement } from './dom/element';
 import type { TaroText } from './dom/text';
 import type { MiniData, MiniElementData } from './interface';
+import { getComponentsAlias, isComment, isHasExtractProp, isText } from './utils';
 
-let SPECIAL_NODES;
-let componentsAlias;
+let SPECIAL_NODES: Record<string, unknown>;
+let componentsAlias: Record<string, unknown>;
 
 /**
  * React also has a fancy function's name for this: `hydrate()`.

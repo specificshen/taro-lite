@@ -1,9 +1,12 @@
 import * as child_process from 'node:child_process';
 import { createHash } from 'node:crypto';
+import * as nativeFs from 'node:fs';
 import * as os from 'node:os';
 import * as path from 'node:path';
 import { parseSync } from '@swc/core';
-import * as nativeFs from 'node:fs';
+import type TResolve from 'resolve';
+import resolvePath from 'resolve';
+import { loadUserConfigModule } from './config-module-loader';
 import {
   CSS_EXT,
   PLATFORMS,
@@ -15,10 +18,7 @@ import {
   SCRIPT_EXT,
   TARO_CONFIG_FOLDER,
 } from './constants';
-import { loadUserConfigModule } from './config-module-loader';
 import { chalk } from './terminal';
-import resolvePath from 'resolve';
-import type TResolve from 'resolve';
 
 const execSync = child_process.execSync;
 
@@ -336,7 +336,7 @@ export function shouldUseYarn(): boolean {
   try {
     execSync('yarn --version', { stdio: 'ignore' });
     return true;
-  } catch (e) {
+  } catch (_e) {
     return false;
   }
 }
@@ -345,7 +345,7 @@ export function shouldUseCnpm(): boolean {
   try {
     execSync('cnpm --version', { stdio: 'ignore' });
     return true;
-  } catch (e) {
+  } catch (_e) {
     return false;
   }
 }
@@ -355,7 +355,7 @@ export function isEmptyObject(obj: object | null | undefined): boolean {
     return true;
   }
   for (const key in obj) {
-    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+    if (Object.hasOwn(obj, key)) {
       return false;
     }
   }
@@ -375,7 +375,7 @@ export function resolveSync(id: string, opts: TResolve.SyncOpts & { mainFields?:
         return pkg;
       },
     });
-  } catch (error) {
+  } catch (_error) {
     return null;
   }
 }
@@ -424,7 +424,7 @@ export function generateEnvList(env: Record<string, string>): Record<string, str
     for (const key in env) {
       try {
         res[`process.env.${key}`] = JSON.parse(env[key]);
-      } catch (err) {
+      } catch (_err) {
         res[`process.env.${key}`] = env[key];
       }
     }
@@ -466,7 +466,7 @@ export function getNpmPackageAbsolutePath(npmPath: string, defaultFile = 'index'
     const packagePath = match[0];
 
     return path.join(packagePath, `./${componentRelativePath}`);
-  } catch (error) {
+  } catch (_error) {
     return null;
   }
 }
@@ -481,7 +481,7 @@ export function generateConstantsList(constants: Record<string, unknown>): Recor
       } else if (typeof value === 'string') {
         try {
           res[key] = JSON.parse(value);
-        } catch (err) {
+        } catch (_err) {
           res[key] = value;
         }
       } else {
@@ -555,7 +555,7 @@ export const pascalCase: (str: string) => string = (str: string): string =>
 export function getInstalledNpmPkgPath(pkgName: string, basedir: string): string | null {
   try {
     return resolvePath.sync(`${pkgName}/package.json`, { basedir });
-  } catch (err) {
+  } catch (_err) {
     return null;
   }
 }
@@ -603,7 +603,7 @@ export const mergeVisitors = (src: Record<string, any>, ...args: Record<string, 
       const value = src[key];
       const sourceValue = arg[key];
 
-      if (!Object.prototype.hasOwnProperty.call(src, key)) {
+      if (!Object.hasOwn(src, key)) {
         src[key] = sourceValue;
         continue;
       }
@@ -622,7 +622,7 @@ export const mergeVisitors = (src: Record<string, any>, ...args: Record<string, 
 };
 
 export const applyArrayedVisitors = (obj: Record<string, any>) => {
-  let key;
+  let key: string;
   for (key in obj) {
     const funcs = obj[key];
     if (Array.isArray(funcs)) {
@@ -807,7 +807,7 @@ export function readPageConfig(configPath: string) {
     if (fs.existsSync(tempPath)) {
       try {
         result = readSFCPageConfig(tempPath);
-      } catch (error) {
+      } catch (_error) {
         result = {};
       }
       return true;

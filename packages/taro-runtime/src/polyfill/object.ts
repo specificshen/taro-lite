@@ -19,7 +19,7 @@ export function handleObjectAssignPolyfill() {
           // Skip over if undefined or null
           for (const nextKey in nextSource) {
             // Avoid bugs when hasOwnProperty is shadowed
-            if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
+            if (Object.hasOwn(nextSource, nextKey)) {
               to[nextKey] = nextSource[nextKey];
             }
           }
@@ -46,7 +46,7 @@ export function handleObjectEntriesPolyfill() {
         // Skip over if undefined or null
         for (const key in obj) {
           // Avoid bugs when hasOwnProperty is shadowed
-          if (Object.prototype.hasOwnProperty.call(obj, key)) {
+          if (Object.hasOwn(obj, key)) {
             to.push([key, obj[key]]);
           }
         }
@@ -61,7 +61,7 @@ export function handleObjectDefinePropertyPolyfill() {
     Object.defineProperties = function (obj, properties: Record<PropertyKey, Record<PropertyKey, unknown>>) {
       function convertToDescriptor(desc: Record<string, unknown>) {
         function hasProperty(obj: any, prop: PropertyKey) {
-          return Object.prototype.hasOwnProperty.call(obj, prop);
+          return Object.hasOwn(obj, prop);
         }
 
         if (!isObject(desc)) {

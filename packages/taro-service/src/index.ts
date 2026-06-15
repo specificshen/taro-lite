@@ -1,6 +1,6 @@
+import { TaroPlatform, TaroPlatformBase } from './platform-plugin-base';
 import Config from './service-config';
 import Kernel from './service-kernel';
-import { TaroPlatform, TaroPlatformBase } from './platform-plugin-base';
 
 export * from './utils/types';
 export { Config, Kernel, TaroPlatform, TaroPlatformBase };

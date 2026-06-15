@@ -1,8 +1,5 @@
 import path from 'node:path';
 import querystring from 'node:querystring';
-import { isNpmPkg, normalizePath, recursiveMerge, REG_NODE_MODULES, resolveSync } from '@spcsn/taro-helper';
-import { backSlashRegEx, MINI_EXCLUDE_POSTCSS_PLUGIN_NAME, needsEscapeRegEx, quoteNewlineRegEx } from './constants';
-import { logger } from './logger';
 import type { IPostcssOption } from '@spcsn/taro/types/compile';
 import type { TRollupResolveMethod } from '@spcsn/taro/types/compile/config/plugin';
 import type {
@@ -10,15 +7,18 @@ import type {
   ViteMiniCompilerContext,
   VitePageMeta,
 } from '@spcsn/taro/types/compile/viteCompilerContext';
+import { isNpmPkg, normalizePath, REG_NODE_MODULES, recursiveMerge, resolveSync } from '@spcsn/taro-helper';
 import type { CSSModulesOptions } from 'vite';
 import type { Target } from 'vite-plugin-static-copy';
+import { backSlashRegEx, MINI_EXCLUDE_POSTCSS_PLUGIN_NAME, needsEscapeRegEx, quoteNewlineRegEx } from './constants';
+import { logger } from './logger';
 export function convertCopyOptions(taroConfig: ViteMiniBuildConfig) {
   const copy = taroConfig.copy;
   const copyOptions: Target[] = [];
   copy?.patterns.forEach(({ from, to }) => {
     const { base, ext } = path.parse(to);
     to = to.replace(new RegExp('^' + taroConfig.outputRoot + '/'), '');
-    let rename;
+    let rename: string | undefined;
 
     if (ext) {
       to = to.replace(base, '');
@@ -132,7 +132,7 @@ export async function getPostcssPlugins(
 
   for (const [pluginName, pluginOption, pluginPkg] of option as [string, any, any][]) {
     if (!pluginOption || excludePluginNames.includes(pluginName)) continue;
-    if (Object.hasOwnProperty.call(pluginOption, 'enable') && !pluginOption.enable) continue;
+    if (Object.hasOwn(pluginOption, 'enable') && !pluginOption.enable) continue;
 
     if (pluginPkg) {
       plugins.push(pluginPkg(pluginOption.config || {}));

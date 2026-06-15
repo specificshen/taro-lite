@@ -1,5 +1,5 @@
-import { Events } from './event-emitter';
 import type { EventCallbacks } from './event-emitter';
+import { Events } from './event-emitter';
 import { isFunction } from './is';
 import type { Shortcuts } from './template';
 

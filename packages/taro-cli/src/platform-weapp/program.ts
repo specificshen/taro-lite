@@ -1,5 +1,5 @@
 import * as path from 'node:path';
-import { TaroPlatformBase, type IPluginContext } from '@spcsn/taro-service';
+import { type IPluginContext, TaroPlatformBase } from '@spcsn/taro-service';
 import { components } from './components';
 import { Template } from './template';
 

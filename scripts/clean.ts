@@ -1,4 +1,4 @@
-import { rm, readdir } from 'node:fs/promises';
+import { readdir, rm } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 
 const args = process.argv.slice(2);

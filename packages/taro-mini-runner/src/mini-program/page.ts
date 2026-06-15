@@ -1,12 +1,12 @@
 import path from 'node:path';
+import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
 import { resolveMainFilePath, swc } from '@spcsn/taro-helper';
 import { internalComponents, toDashed } from '@spcsn/taro-shared';
+import type { PluginOption, ResolvedConfig } from 'vite';
 import { appendVirtualModulePrefix, escapePath, prettyPrintJson, stripVirtualModulePrefix } from '../shared';
+import { componentConfig, resetComponentConfigIncludes } from '../shared/component';
 import { createFilterWithCompileOptions } from '../shared/create-filter';
 import { UniqueKeyMap } from '../shared/map';
-import { componentConfig, resetComponentConfigIncludes } from '../shared/component';
-import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
-import type { PluginOption, ResolvedConfig } from 'vite';
 
 export const PAGE_SUFFIX = '?page-loader=true';
 const nativeComponentMapCache = new WeakMap<ResolvedConfig, Map<string, Record<string, string>>>();

@@ -10,7 +10,7 @@ const globalWithPlatforms = global as GlobalWithPlatforms;
 
 export const PLATFORMS = (globalWithPlatforms.PLATFORMS = globalWithPlatforms.PLATFORMS || {});
 
-export const enum processTypeEnum {
+export enum processTypeEnum {
   START = 'start',
   CREATE = 'create',
   COMPILE = 'compile',

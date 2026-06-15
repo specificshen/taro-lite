@@ -1,9 +1,9 @@
 import * as path from 'node:path';
+import type { IProjectConfig, PluginItem } from '@spcsn/taro/types/compile';
 import { chalk, getModuleDefaultExport } from '@spcsn/taro-helper';
 import { merge } from 'lodash';
 import * as resolve from 'resolve';
 import { PluginType } from './constants';
-import type { IProjectConfig, PluginItem } from '@spcsn/taro/types/compile';
 import type { IPlugin, IPluginsObject } from './types';
 
 export const isNpmPkg: (name: string) => boolean = (name) => !/^(\.|\/)/.test(name);
@@ -71,7 +71,7 @@ export function resolvePresetsOrPlugins(
       continue;
     }
 
-    let fPath;
+    let fPath: string;
     try {
       fPath = resolve.sync(item, {
         basedir: root,
@@ -81,13 +81,13 @@ export function resolvePresetsOrPlugins(
       if ((err as any).code === 'MODULE_NOT_FOUND') {
         try {
           fPath = resolveCliBuiltinPlugin(item, root);
-        } catch (e) {}
+        } catch (_e) {}
       }
       if (!fPath && (err as any).code === 'MODULE_NOT_FOUND') {
         try {
           const cliPath = require.resolve('@spcsn/taro-cli/package.json', { paths: [__dirname, root].filter(Boolean) });
           fPath = resolve.sync(item, { basedir: path.dirname(cliPath), extensions: ['.js', '.ts'] });
-        } catch (e) {}
+        } catch (_e) {}
       }
       if (!fPath) {
         if (args[item]?.backup) {

@@ -1,5 +1,5 @@
-import { addPlatforms } from '@spcsn/taro-helper';
 import type { Func } from '@spcsn/taro/types/compile';
+import { addPlatforms } from '@spcsn/taro-helper';
 import type Kernel from './service-kernel';
 import type { ICommand, IHook, IPlatform } from './utils/types';
 

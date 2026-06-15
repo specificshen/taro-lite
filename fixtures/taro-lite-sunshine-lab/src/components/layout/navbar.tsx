@@ -1,7 +1,7 @@
-import { View, Text } from '@spcsn/taro-components';
 import Taro from '@spcsn/taro';
-import { useSafeArea } from '@/hooks/use-safe-area';
+import { Text, View } from '@spcsn/taro-components';
 import { SvgIcon } from '@/components/ui/icon';
+import { useSafeArea } from '@/hooks/use-safe-area';
 import { cn } from '@/lib/utils';
 import styles from './layout.module.css';
 

@@ -22,8 +22,8 @@ interface TransferElement {
 
 declare const getCurrentPages: () => MiniPageInstance[];
 
-export { initNativeApi };
 export * from './apis-list';
+export { initNativeApi };
 
 export const hostConfig = {
   initNativeApi,

@@ -1,6 +1,6 @@
+import type { TFunc } from './interface';
 import { options } from './options';
 import { debounce } from './utils';
-import type { TFunc } from './interface';
 
 class Performance {
   private recorder = new Map<string, number>();

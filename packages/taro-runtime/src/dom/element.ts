@@ -25,13 +25,6 @@ import {
   VIEW,
 } from '../constants';
 import { MutationObserver, MutationRecordType } from '../dom-external/mutation-observer';
-import { extend, getComponentsAlias, isElement, isHasExtractProp, shortcutAttr } from '../utils';
-import { ClassList } from './class-list';
-import { eventSource } from './event-source';
-import { TaroNode } from './node';
-import { NodeType } from './node-types';
-import { Style } from './style';
-import { treeToArray } from './tree';
 import type {
   AddEventListenerOptions,
   Attributes,
@@ -40,7 +33,14 @@ import type {
   TFunc,
   UpdatePayloadValue,
 } from '../interface';
+import { extend, getComponentsAlias, isElement, isHasExtractProp, shortcutAttr } from '../utils';
+import { ClassList } from './class-list';
 import type { TaroEvent } from './event';
+import { eventSource } from './event-source';
+import { TaroNode } from './node';
+import { NodeType } from './node-types';
+import { Style } from './style';
+import { treeToArray } from './tree';
 
 export class TaroElement extends TaroNode {
   public ctx?: unknown;
@@ -258,7 +258,7 @@ export class TaroElement extends TaroNode {
         return;
       }
 
-      if (!this.props.hasOwnProperty(qualifiedName)) {
+      if (!Object.hasOwn(this.props, qualifiedName)) {
         return;
       }
       delete this.props[qualifiedName];

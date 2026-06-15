@@ -1,10 +1,10 @@
+import type { TaroElement } from '@spcsn/taro-runtime';
 import { ensure, isFunction } from '@spcsn/taro-shared';
+import type { ReactNode } from 'react';
 import { internalInstanceKey } from './constant';
 import { finishEventHandler } from './event';
 import { flushSync, TaroReconciler } from './reconciler';
 import { ContainerMap, createRoot, render } from './render';
-import type { TaroElement } from '@spcsn/taro-runtime';
-import type { ReactNode } from 'react';
 
 let isInsideEventHandler = false;
 

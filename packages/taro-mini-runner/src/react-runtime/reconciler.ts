@@ -1,13 +1,13 @@
+import type { TaroElement, TaroText } from '@spcsn/taro-runtime';
 import { document, FormElement } from '@spcsn/taro-runtime';
 import { isBoolean, isUndefined, noop } from '@spcsn/taro-shared';
 import { createContext } from 'react';
+import type { Fiber, HostConfig } from 'react-reconciler';
 import Reconciler from 'react-reconciler';
 import { DefaultEventPriority, NoEventPriority } from 'react-reconciler/constants';
 import { precacheFiberNode, updateFiberProps } from './component-tree';
 import { track } from './input-value-tracking';
 import { getUpdatePayload, Props, updateProps, updatePropsByPayload } from './props';
-import type { TaroElement, TaroText } from '@spcsn/taro-runtime';
-import type { Fiber, HostConfig } from 'react-reconciler';
 
 let currentUpdatePriority = NoEventPriority;
 
@@ -64,7 +64,7 @@ const hostConfig: HostConfig<
       const [defaultName, defaultKey] = ['switch', 'checkbox', 'radio'].includes(type)
         ? ['checked', 'defaultChecked']
         : ['value', 'defaultValue'];
-      if (props.hasOwnProperty(defaultKey)) {
+      if (Object.hasOwn(props, defaultKey)) {
         newProps = { ...newProps, [defaultName]: props[defaultKey] };
         delete newProps[defaultKey];
       }

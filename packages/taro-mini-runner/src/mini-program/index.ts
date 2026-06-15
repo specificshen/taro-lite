@@ -1,3 +1,5 @@
+import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
+import type { PluginOption } from 'vite';
 import assetsPlugin from '../plugins/vite-plugin-assets';
 import multiPlatformPlugin from '../plugins/vite-plugin-multi-platform';
 import configPlugin from './config';
@@ -7,8 +9,6 @@ import nativeSupportPlugin from './native-support';
 import pagePlugin from './page';
 import pipelinePlugin from './pipeline';
 import stylePlugin from './style';
-import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
-import type { PluginOption } from 'vite';
 
 export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOption[] {
   return [

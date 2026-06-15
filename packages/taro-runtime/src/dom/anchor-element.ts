@@ -1,7 +1,7 @@
 import { parseUrl } from '../bom/url';
 import { TaroElement } from './element';
 
-const enum AnchorElementAttrs {
+enum AnchorElementAttrs {
   HREF = 'href',
   PROTOCOL = 'protocol',
   HOST = 'host',

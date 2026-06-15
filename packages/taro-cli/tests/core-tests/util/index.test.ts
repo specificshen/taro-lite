@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { getTemplateSourceType, getRootPath, getPkgVersion, isNil } from '../../../src/util/index';
+import { getPkgVersion, getRootPath, getTemplateSourceType, isNil } from '../../../src/util/index';
 
 describe('getTemplateSourceType', () => {
   it('returns git for github prefix', () => {

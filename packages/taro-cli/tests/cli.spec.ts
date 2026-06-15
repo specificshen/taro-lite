@@ -1,5 +1,5 @@
-import { type MockedClass, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Kernel } from '@spcsn/taro-service';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, type MockedClass, vi } from 'vitest';
 import CLI from '../src/cli';
 import { getPkgVersion } from '../src/util/index';
 

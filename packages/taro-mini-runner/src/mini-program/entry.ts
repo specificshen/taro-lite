@@ -1,10 +1,10 @@
 import path from 'node:path';
+import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
 import { fs, isEmptyObject, removePathPrefix } from '@spcsn/taro-helper';
+import type { PluginOption } from 'vite';
 import { appendVirtualModulePrefix, escapePath, prettyPrintJson, stripVirtualModulePrefix } from '../shared';
 import { baseCompName, customWrapperName } from '../shared/constants';
 import { miniTemplateLoader, QUERY_IS_NATIVE_PAGE } from './native-support';
-import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
-import type { PluginOption } from 'vite';
 
 const ENTRY_SUFFIX = '?entry-loader=true';
 

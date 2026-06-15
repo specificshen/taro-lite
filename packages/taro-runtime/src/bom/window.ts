@@ -3,12 +3,12 @@ import { CONTEXT_ACTIONS } from '../constants';
 import { Events } from '../emitter/emitter';
 import env from '../env';
 import { taroGetComputedStyleProvider } from './get-computed-style';
+import type { TaroHistory } from './history';
 import { History } from './history';
+import type { TaroLocation } from './location';
 import { Location } from './location';
 import { nav as navigator } from './navigator';
 import { caf, raf } from './raf';
-import type { TaroHistory } from './history';
-import type { TaroLocation } from './location';
 
 export class TaroWindow extends Events {
   navigator = navigator;
@@ -31,11 +31,11 @@ export class TaroWindow extends Events {
 
     globalProperties.forEach((property) => {
       if (property === 'atob' || property === 'document') return;
-      if (!Object.prototype.hasOwnProperty.call(this, property)) {
+      if (!Object.hasOwn(this, property)) {
         // 防止小程序环境下，window 上的某些 get 属性在赋值时报错
         try {
           (this as any)[property] = (global as any)[property];
-        } catch (e) {
+        } catch (_e) {
           if (process.env.NODE_ENV !== 'production') {
             console.warn(`[Taro warn] window.${String(property)} 在赋值到 window 时报错`);
           }

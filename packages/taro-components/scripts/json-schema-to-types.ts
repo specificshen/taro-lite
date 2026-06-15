@@ -1,8 +1,8 @@
+import * as fs from 'node:fs';
 import generator from '@babel/generator';
 import * as parser from '@babel/parser';
 import traverse from '@babel/traverse';
 import * as t from '@babel/types';
-import * as fs from 'node:fs';
 import { MINI_APP_TYPES } from './constants';
 import { camelCase, camelCaseEnhance, getTypeFilePath, getTypesList, paramCase } from './utils';
 
@@ -57,7 +57,7 @@ class GenerateTypes {
           this.jsonSchemas[componentName] = {};
         }
         this.jsonSchemas[componentName][type] = json;
-      } catch (error) {
+      } catch (_error) {
         // console.log(error)
         if (!this.jsonSchemas[componentName]) {
           this.jsonSchemas[componentName] = {};
@@ -203,7 +203,7 @@ class GenerateTypes {
               const json = jsonSchemas[platform];
               const propSchema = json.properties[prop] || json.properties[prop.replace(/^on/, 'bind')];
               const { type, tsType, enum: enumArray } = propSchema;
-              let value;
+              let value: t.TSType;
               if (type === 'string') {
                 if (!enumArray) {
                   value = t.tsTypeReference(t.identifier(type));
@@ -216,7 +216,7 @@ class GenerateTypes {
                 value = t.tsTypeReference(t.identifier(type));
               } else if (['array'].includes(type)) {
                 value = t.tsTypeReference(t.identifier('any[]'));
-              } else if (type instanceof Array) {
+              } else if (Array.isArray(type)) {
                 value = t.tsTypeReference(t.identifier(type.join('|')));
               } else if (tsType === '() => void') {
                 value = t.tsTypeReference(t.identifier('CommonEventFunction'));
@@ -231,7 +231,7 @@ class GenerateTypes {
                 commentValue += `* @supported ${props[prop].join(', ')}\n`;
                 const { defaultValue, type } = propSchema;
                 if (defaultValue != null) {
-                  if (defaultValue instanceof Array) {
+                  if (Array.isArray(defaultValue)) {
                     commentValue += `* @default ${defaultValue.join(',')}\n`;
                   } else if (
                     typeof defaultValue === 'string' &&

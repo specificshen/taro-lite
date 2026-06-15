@@ -53,7 +53,7 @@ export class URLSearchParams {
           } else if (value.length) {
             appendTo(dict, decode(value), '');
           }
-        } catch (err) {
+        } catch (_err) {
           if (process.env.NODE_ENV !== 'production') {
             console.warn(`[Taro warn] URL 参数 ${value} decode 异常`);
           }

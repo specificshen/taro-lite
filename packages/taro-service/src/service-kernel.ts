@@ -1,16 +1,16 @@
 import { EventEmitter } from 'node:events';
 import * as path from 'node:path';
+import type { Func, IProjectConfig, PluginItem } from '@spcsn/taro/types/compile';
 import * as helper from '@spcsn/taro-helper';
 import Joi from 'joi';
 import { merge } from 'lodash';
 import { AsyncSeriesWaterfallHook } from 'tapable';
-import Plugin from './service-plugin';
 import * as runnerUtils from './runner-utils';
+import type Config from './service-config';
+import Plugin from './service-plugin';
 import { convertPluginsToObject, mergePlugins, printHelpLog, resolvePresetsOrPlugins } from './utils';
 import { IS_ADD_HOOK, IS_EVENT_HOOK, IS_MODIFY_HOOK, PluginType } from './utils/constants';
 import { serviceProfiler } from './utils/profile.js';
-import type { Func, IProjectConfig, PluginItem } from '@spcsn/taro/types/compile';
-import type Config from './service-config';
 import type { ICommand, IHook, IPaths, IPlatform, IPlugin, IPluginsObject, IPreset } from './utils/types';
 
 interface IKernelOptions {
@@ -24,8 +24,8 @@ export default class Kernel extends EventEmitter {
   appPath: string;
   isWatch!: boolean;
   isProduction!: boolean;
-  optsPresets: PluginItem[] | void;
-  optsPlugins: PluginItem[] | void;
+  optsPresets: PluginItem[] | undefined;
+  optsPlugins: PluginItem[] | undefined;
   plugins!: Map<string, IPlugin>;
   paths!: IPaths;
   extraPlugins!: IPluginsObject;
@@ -279,8 +279,8 @@ export default class Kernel extends EventEmitter {
   }
 
   async applyPlugins(args: string | { name: string; initialVal?: any; opts?: any }) {
-    let name;
-    let initialVal;
+    let name: string;
+    let initialVal: unknown;
     let opts: any;
     if (typeof args === 'string') {
       name = args;
@@ -354,7 +354,7 @@ export default class Kernel extends EventEmitter {
   }
 
   async run(args: string | { name: string; opts?: any }) {
-    let name;
+    let name: string;
     let opts: any;
     if (typeof args === 'string') {
       name = args;

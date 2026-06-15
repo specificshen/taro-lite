@@ -1,5 +1,5 @@
+import { Text, View } from '@spcsn/taro-components';
 import type { PropsWithChildren } from 'react';
-import { View, Text } from '@spcsn/taro-components';
 import { cn } from '@/lib/utils';
 import styles from './index.module.css';
 

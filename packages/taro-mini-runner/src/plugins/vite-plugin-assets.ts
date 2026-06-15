@@ -1,10 +1,10 @@
 import * as path from 'node:path';
-import { fs, REG_FONT, REG_IMAGE, REG_MEDIA } from '@spcsn/taro-helper';
-import { isBoolean, isString } from '@spcsn/taro-shared';
-import { isVirtualModule } from '../shared';
 import type { IUrlLoaderOption } from '@spcsn/taro/types/compile';
 import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
+import { fs, REG_FONT, REG_IMAGE, REG_MEDIA } from '@spcsn/taro-helper';
+import { isBoolean, isString } from '@spcsn/taro-shared';
 import type { PluginOption, ResolvedConfig } from 'vite';
+import { isVirtualModule } from '../shared';
 
 const rawRE = /(?:\?|&)raw(?:&|$)/;
 const urlRE = /(\?|&)url(?:&|$)/;

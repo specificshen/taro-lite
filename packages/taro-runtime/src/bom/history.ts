@@ -127,7 +127,7 @@ class TaroHistory extends Events {
 
   /* public method */
   go(delta: number) {
-    if (!isNumber(delta) || isNaN(delta)) return;
+    if (!isNumber(delta) || Number.isNaN(delta)) return;
 
     let targetIdx = this.#cur + delta;
     targetIdx = Math.min(Math.max(targetIdx, 0), this.length - 1);

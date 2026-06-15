@@ -1,11 +1,11 @@
+import type { TaroElement, TaroEvent } from '@spcsn/taro-runtime';
 import { hooks } from '@spcsn/taro-shared';
+import type { ReactNode } from 'react';
+import type { OpaqueRoot } from 'react-reconciler';
 import { markContainerAsRoot } from './component-tree';
 import { getEventPriority } from './constant';
 import { enqueueStateRestore, getTargetInstForInputOrChangeEvent, RestoreType } from './event';
 import { runWithPriority, TaroReconciler } from './reconciler';
-import type { TaroElement, TaroEvent } from '@spcsn/taro-runtime';
-import type { ReactNode } from 'react';
-import type { OpaqueRoot } from 'react-reconciler';
 
 export const ContainerMap: WeakMap<TaroElement, Root> = new WeakMap();
 
@@ -19,7 +19,7 @@ type CreateRootOptions = {
   onRecoverableError?: (error: any) => void;
 };
 
-export type Callback = () => void | null | undefined;
+export type Callback = () => undefined | null | undefined;
 
 class Root {
   private renderer: Renderer;

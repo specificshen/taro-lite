@@ -1,18 +1,19 @@
 import {
-  View,
-  Text,
-  Switch,
-  Textarea,
-  Picker,
-  CheckboxGroup,
   Checkbox,
-  RadioGroup,
+  CheckboxGroup,
+  Picker,
   Radio,
+  RadioGroup,
+  Switch,
+  Text,
+  Textarea,
+  View,
 } from '@spcsn/taro-components';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import type { FormData, FormFieldErrors, ValueEvent } from '@/features/form-lab';
 import {
   channelOptions,
   genderOptions,
@@ -21,7 +22,6 @@ import {
   roleOptions,
   teamSizeOptions,
 } from '@/features/form-lab';
-import type { FormData, FormFieldErrors, ValueEvent } from '@/features/form-lab';
 import styles from '../index.module.css';
 
 interface BusinessConfigCardProps {

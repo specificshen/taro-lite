@@ -1,3 +1,5 @@
+import type { AppInstance, PageInstance } from '@spcsn/taro';
+import type { Instance, MpInstance, TaroRootElement } from '@spcsn/taro-runtime';
 import {
   addLeadingSlash,
   CONTEXT_ACTIONS,
@@ -22,14 +24,12 @@ import {
   window,
 } from '@spcsn/taro-runtime';
 import { EMPTY_OBJ, ensure, hooks, isUndefined } from '@spcsn/taro-shared';
-import { setReconciler } from './connect';
-import { reactMeta } from './react-meta';
-import { isClassComponent } from './utils';
-import type { Instance, MpInstance, TaroRootElement } from '@spcsn/taro-runtime';
-import type { AppInstance, PageInstance } from '@spcsn/taro';
 import type React from 'react';
 import type TReactDOM from 'react-dom';
 import type TReactDOMClient from 'react-dom/client';
+import { setReconciler } from './connect';
+import { reactMeta } from './react-meta';
+import { isClassComponent } from './utils';
 
 type ReactDOMRenderer = typeof TReactDOM &
   typeof TReactDOMClient & {

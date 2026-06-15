@@ -1,8 +1,8 @@
 import path from 'node:path';
-import { REG_NODE_MODULES, SCRIPT_EXT } from '@spcsn/taro-helper';
-import { isVirtualModule } from '../shared';
 import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
+import { REG_NODE_MODULES, SCRIPT_EXT } from '@spcsn/taro-helper';
 import type { PluginOption, Rolldown } from 'vite';
+import { isVirtualModule } from '../shared';
 
 function isViteDepsPath(filePath: string) {
   const normalizedPath = path.normalize(filePath);

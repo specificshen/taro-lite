@@ -21,7 +21,7 @@ export interface MutationRecord {
   readonly value?: string | null;
 }
 
-export const enum MutationRecordType {
+export enum MutationRecordType {
   ATTRIBUTES = 'attributes',
   CHARACTER_DATA = 'characterData',
   CHILD_LIST = 'childList',

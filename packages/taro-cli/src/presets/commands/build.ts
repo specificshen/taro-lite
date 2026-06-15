@@ -1,7 +1,7 @@
-import * as hooks from '../constant/hooks';
-import { validateConfig, MessageKind } from '../../doctor/validators';
-import { extractCompileEntry } from '../../util/app-config';
 import type { IPluginContext } from '@spcsn/taro-service';
+import { MessageKind, validateConfig } from '../../doctor/validators';
+import { extractCompileEntry } from '../../util/app-config';
+import * as hooks from '../constant/hooks';
 
 export default (ctx: IPluginContext) => {
   ctx.registerCommand({

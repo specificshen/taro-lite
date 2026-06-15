@@ -1,8 +1,4 @@
 import path from 'node:path';
-import { fs, isEmptyObject, readConfig, resolveMainFilePath, SCRIPT_EXT } from '@spcsn/taro-helper';
-import { stripMultiPlatformExt } from '..';
-import { logger } from '../logger';
-import { VITE_COMPILER_LABEL } from '../runner';
 import type { AppConfig } from '@spcsn/taro';
 import type { IMiniFilesConfig } from '@spcsn/taro/types/compile';
 import type {
@@ -11,7 +7,11 @@ import type {
   ViteMiniBuildConfig,
   VitePageMeta,
 } from '@spcsn/taro/types/compile/viteCompilerContext';
+import { fs, isEmptyObject, readConfig, resolveMainFilePath, SCRIPT_EXT } from '@spcsn/taro-helper';
 import type { Rolldown } from 'vite';
+import { stripMultiPlatformExt } from '..';
+import { logger } from '../logger';
+import { VITE_COMPILER_LABEL } from '../runner';
 
 export class CompilerContext<T extends ViteMiniBuildConfig> implements ViteCompilerContext<T> {
   static label = VITE_COMPILER_LABEL;

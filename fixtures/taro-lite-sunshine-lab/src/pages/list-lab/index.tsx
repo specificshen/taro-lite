@@ -1,12 +1,12 @@
-import { useState, useCallback, useMemo } from 'react';
-import { View, Text, ScrollView, ListView, ListItem } from '@spcsn/taro-components';
+import { ListItem, ListView, ScrollView, Text, View } from '@spcsn/taro-components';
+import { useCallback, useMemo, useState } from 'react';
+import { LogConsole } from '@/components/demo/log-console';
 import { PageWrapper } from '@/components/layout/page-wrapper';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { LogConsole } from '@/components/demo/log-console';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useLogger } from '@/hooks/use-logger';
 import { sleep, uid } from '@/lib/utils';
 import styles from './index.module.css';
