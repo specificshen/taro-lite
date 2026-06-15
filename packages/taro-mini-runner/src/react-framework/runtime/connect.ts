@@ -360,7 +360,7 @@ export function createReactApp(
             triggerAppHook('onError', error);
             if (process.env.NODE_ENV !== 'production' && error?.includes('Minified React error')) {
               console.warn(
-                'React 出现报错，请打开编译配置 mini.debugReact 查看报错详情：https://docs.taro.zone/docs/config-detail#minidebugreact',
+                'React 出现压缩后的报错，请在编译配置中设置 mini.debugReact: true 以查看详细报错信息。',
               );
             }
           };
