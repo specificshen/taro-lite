@@ -220,7 +220,7 @@ export const components: ComponentMap = {
     'indicator-width': '8',
     'indicator-height': '8',
     'indicator-alignment': "'auto'",
-    'indicator-offset': ARRAY,
+    'indicator-offset': '[0, 0]',
     'scroll-with-animation': TRUE,
     'cache-extent': '0',
   },

@@ -142,11 +142,7 @@
   padding: 0 var(--drawer-local-space-6) var(--drawer-local-space-6);
   display: flex;
   align-items: center;
-  margin-left: calc(-1 * var(--drawer-local-space-3));
-}
-
-.drawerFooter > * {
-  margin-left: var(--drawer-local-space-3);
+  gap: var(--drawer-local-space-3);
 }
 
 .drawerClose {

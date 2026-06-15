@@ -183,7 +183,7 @@ export function getCSSModulesOptions(taroConfig: ViteMiniBuildConfig): false | C
     {},
     {
       namingPattern: 'module',
-      generateScopedName: '[hash:base64:4]',
+      generateScopedName: '[hash:hex:8]',
     },
     taroConfig.postcss.cssModules.config,
   );

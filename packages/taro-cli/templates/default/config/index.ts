@@ -28,7 +28,7 @@ export default defineConfig<'vite'>(
             enable: true,
             config: {
               namingPattern: 'module',
-              generateScopedName: '[name]__[local]___[hash:base64:5]',
+              generateScopedName: '[name]__[local]___[hash:hex:8]',
             },
           },
         },

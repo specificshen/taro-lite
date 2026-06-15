@@ -1,9 +1,13 @@
-html,
-body {
+/*
+ * Taro Components 全局基础样式。
+ *
+ * 本文件同时面向 Web 与小程序环境，选择器使用小程序原生标签（page / view / navigator 等），
+ * 避免 `*` 通配符与 `html/body/a` 等 web 专属标签进入小程序 WXSS 产物后触发编译错误。
+ */
+
+page {
   width: 100%;
   height: 100%;
-}
-html {
   -webkit-text-size-adjust: 100%;
   -ms-text-size-adjust: 100%;
   -webkit-tap-highlight-color: transparent;
@@ -11,25 +15,41 @@ html {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-}
-body {
   font-family:
     -apple-system-font,
     Helvetica Neue,
     sans-serif;
   line-height: 1.6;
 }
-* {
+
+view,
+text,
+image,
+button,
+input,
+textarea,
+scroll-view,
+swiper,
+swiper-item,
+cover-view,
+cover-image,
+navigator,
+video,
+canvas,
+map {
   margin: 0;
   padding: 0;
 }
-a img {
+
+navigator image {
   border: 0;
 }
-a {
+
+navigator {
   -webkit-tap-highlight-color: transparent;
   text-decoration: none;
 }
+
 input {
   text-overflow: clip;
   text-align: inherit;

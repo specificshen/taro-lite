@@ -2,6 +2,7 @@ import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteComp
 import type { PluginOption } from 'vite';
 import assetsPlugin from '../plugins/vite-plugin-assets';
 import multiPlatformPlugin from '../plugins/vite-plugin-multi-platform';
+import wxssCompatPlugin from '../plugins/vite-plugin-wxss-compat';
 import configPlugin from './config';
 import emitPlugin from './emit';
 import entryPlugin from './entry';
@@ -20,6 +21,7 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
     nativeSupportPlugin(viteCompilerContext),
     assetsPlugin(viteCompilerContext),
     stylePlugin(viteCompilerContext),
+    wxssCompatPlugin(viteCompilerContext),
     emitPlugin(viteCompilerContext),
   ];
 }

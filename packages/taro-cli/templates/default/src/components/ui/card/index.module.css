@@ -39,9 +39,5 @@
   padding: 0 var(--space-5, 20px) var(--space-5, 20px);
   display: flex;
   align-items: center;
-  margin-left: calc(-1 * var(--space-3, 12px));
-}
-
-.cardFooter > * {
-  margin-left: var(--space-3, 12px);
+  gap: var(--space-3, 12px);
 }

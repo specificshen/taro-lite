@@ -16,7 +16,7 @@
     "uploadWithSourceMap": false,
     "packNpmManually": false,
     "packNpmRelationList": [],
-    "minifyWXSS": true,
+    "minifyWXSS": false,
     "minifyWXML": true,
     "localPlugins": false,
     "disableUseStrict": false,

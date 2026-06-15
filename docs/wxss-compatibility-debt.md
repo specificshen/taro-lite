@@ -1,12 +1,22 @@
 # 小程序兼容性技术债务
 
-> 记录业务项目 `ali-your-space-miniapp` 在微信小程序上传及运行阶段遇到的兼容性问题，
-> 以及当前在业务侧的临时兼容方案。后续应在 **taro-lite 底座工程** 中统一根治。
+> 记录业务项目 `ali-your-space-miniapp` 在微信小程序上传及运行阶段遇到的兼容性问题。
+> 自 taro-lite **v1.1.2** 起，以下问题已在底座工程中统一根治，业务项目可逐步移除临时兼容插件。
 
 ## 目录
 
 - [WXSS 编译错误](#wxss-编译错误)
 - [运行时：Swiper indicator-offset 非法值警告](#运行时swiper-indicator-offset-非法值警告)
+
+## 状态速览
+
+| 问题 | 状态 | 修复版本 |
+|------|------|----------|
+| `#RRGGBBAA` 8 位 hex 颜色 | ✅ 已修复 | v1.1.2 |
+| `*` 通配符选择器 | ✅ 已兜底处理（推荐源码改用 `gap`） | v1.1.2 |
+| CSS Modules hash 含 `-`/`--` | ✅ 已修复（默认改为 hex） | v1.1.2 |
+| 微信工具二次压缩 `rgba()` | ✅ 已修复（模板默认 `minifyWXSS: false`） | v1.1.2 |
+| Swiper `indicator-offset` 默认值 | ✅ 已修复 | v1.1.2 |
 
 ---
 
@@ -86,6 +96,8 @@ ErrorFileCount[2] ./common.wxss(1:51296): error at token `*`
 }
 ```
 
+> **底座已内置处理**：v1.1.2 起 `taro:vite-wxss-compat` 插件会在 `generateBundle` 阶段自动将 `.class > *` 展开为常见小程序标签列表；其它含 `*` 的选择器会输出构建警告并移除。建议业务源码仍优先使用 `gap` 等现代布局属性，避免依赖兜底转换。
+
 ---
 
 ## 问题 2：8 位十六进制颜色 `#RRGGBBAA`
@@ -131,6 +143,8 @@ color: #111f2c8f;
 
 2. **关闭微信开发者工具的二次压缩**：`project.config.json` 中设置 `"minifyWXSS": false`，防止微信工具在上传时把 `rgba()` 再次压回 `#RRGGBBAA`。
 
+> **底座已内置处理**：v1.1.2 起 `taro:vite-wxss-compat` 插件会自动转换 `#RRGGBBAA`，且脚手架/测试 fixture 的 `project.config.json` 默认 `minifyWXSS: false`。业务项目可移除 `config/plugins/wxss-compat.ts`。
+
 ---
 
 ## 问题 3：CSS Modules hash 中的 `-` 与 `--`
@@ -167,46 +181,47 @@ mini: {
 
 `[hash:hex:8]` 的冲突概率（16^8 ≈ 43 亿）高于原 `[hash:base64:5]`（64^5 ≈ 10.7 亿），且 className 仅含 `0-9a-f`，兼容性最好。
 
+> **底座已内置处理**：v1.1.2 起底座默认 `generateScopedName` 已改为 `[hash:hex:8]`，脚手架模板同步调整。业务项目无需再显式配置。
+
 ---
 
-## 建议在底座工程中的根治方案
+## 底座工程中的根治实现
 
-上述问题均属于 **底座构建链路应默认处理好的 WXSS 兼容性**，不应由每个业务项目自行插件兜底。建议在 taro-lite 底座工程中：
+上述问题已在 taro-lite 底座工程中按以下方式实现（v1.1.2）：
 
 ### 1. 构建产物后处理：WXSS 合规化
 
-在 Vite/Rolldown 构建完成后，统一对 `.wxss` 产物做兼容性处理：
+`@spcsn/taro-mini-runner` 新增内置插件 `taro:vite-wxss-compat`，在 `taro:vite-style` 之后、`taro:vite-mini-emit` 之前的 `generateBundle` 阶段执行：
 
 - 将 `#RRGGBBAA` 转回 `rgba()`
-- 扫描并移除/替换 `*` 通配符选择器（或给出明确构建错误）
-- 检查非法选择器（如 id 选择器、不支持的伪类）并告警
+- 对 `.class > *` 直接子元素通配符自动展开为常见小程序标签列表
+- 其它含 `*` 的选择器输出构建警告并移除对应规则
 
-实现位置建议：
+源码位于：
 
-- `@spcsn/taro-mini-runner` 中的 `modifyBuildAssets` hook
-- 或内建一个默认开启的 Vite/Rollup 插件
+- `packages/taro-mini-runner/src/plugins/vite-plugin-wxss-compat.ts`
+- `packages/taro-mini-runner/src/style-transforms/wxss-compat.ts`
 
 ### 2. CSS Modules 默认 hash 策略
 
-将默认 `generateScopedName` 从 `[hash:base64:5]` 调整为 `[hash:hex:8]` 或等效无 `-` 方案，避免 WXSS 对 className 解析的潜在限制。
+默认 `generateScopedName` 已调整为 `[hash:hex:8]`，脚手架模板与测试 fixture 同步使用 `[name]__[local]___[hash:hex:8]`，彻底避免 `-` / `--`。
 
-### 3. 构建期 lint / 静态检查
+### 3. 构建期兜底 + 源码约束
 
-在 dev / build 阶段对 CSS Modules 源码进行扫描，遇到以下写法直接报错或自动转换：
-
-- `*` 通配符
-- `:global()` / `:local()` 未处理
-- 最终产物中出现 `#RRGGBBAA`
-- className hash 以 `-` 开头或包含 `--`
+- 产物阶段兜底转换 `#RRGGBBAA` 与 `*` 选择器
+- 脚手架示例组件已移除所有 `> *` gap hack，改用 `gap` 属性
 
 ### 4. 文档与脚手架约束
 
-- 在底座文档中明确列出 WXSS/Skyline 不支持的 CSS 写法
-- 脚手架生成的示例组件避免使用 `*` 通配符
+- `project.config.json` 模板默认 `"minifyWXSS": false`，防止微信开发者工具上传时二次压缩生成 `#RRGGBBAA`
+- `packages/taro-components/global.css` 已改造为小程序安全版本，移除 `*` 与 `html/body/a` 等 web 专属选择器
+- 本文档保留历史记录，供业务项目排查参考
 
 ---
 
-## 业务项目当前改动清单
+## 业务项目历史改动清单（v1.1.2 前）
+
+底座已统一根治，新业务项目无需再手动修改：
 
 | 文件 | 说明 |
 |------|------|
@@ -261,17 +276,19 @@ indicator-offset="{{i.p13||[]}}"
 >
 ```
 
-### 建议在底座工程中的根治方案
+> **底座已内置处理**：v1.1.2 起 `packages/taro-cli/src/platform-weapp/components.ts` 中 Swiper 的 `indicator-offset` 默认值已改为 `'[0, 0]'`，生成的 `base.wxml` 输出 `indicator-offset="{{i.p13||[0, 0]}}"`。业务项目可移除显式默认值。
+
+### 底座工程中的根治实现
 
 1. **修正 base.wxml 模板默认值**
 
-   将底座生成的 `<swiper>` 模板中：
+   `packages/taro-cli/src/platform-weapp/components.ts` 中 Swiper 配置已改为：
 
-   ```html
-   indicator-offset="{{i.p13||[]}}"
+   ```ts
+   'indicator-offset': '[0, 0]',
    ```
 
-   改为：
+   生成的 `base.wxml` 现在输出：
 
    ```html
    indicator-offset="{{i.p13||[0, 0]}}"
@@ -283,9 +300,9 @@ indicator-offset="{{i.p13||[]}}"
 
 3. **构建期默认值检查**
 
-   在底座生成 `base.wxml` 时，对小程序原生组件属性的默认值做校验，避免传入微信不认可的非法默认值（如空数组、空对象等）。
+   后续可考虑在底座生成 `base.wxml` 时，对小程序原生组件属性的默认值做校验，避免传入微信不认可的非法默认值（如空数组、空对象等）。
 
-### 业务项目当前改动清单（补充）
+### 业务项目历史改动清单（补充）
 
 | 文件 | 说明 |
 |------|------|
