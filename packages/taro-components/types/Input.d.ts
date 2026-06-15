@@ -129,6 +129,11 @@ interface InputProps extends StandardProps, FormItemProps {
    * @supported weapp
    */
   safePasswordCustomHash?: string;
+  /** 光标颜色。当 type 为 text 时有效
+  * @supported weapp
+  * @default ""
+  */
+  cursorColor?: string;
   /** 当键盘输入时，触发input事件，event.detail = {value, cursor, keyCode}，处理函数可以直接 return 一个字符串，将替换输入框的内容。
    * @supported weapp
    */

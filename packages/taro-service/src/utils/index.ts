@@ -71,7 +71,7 @@ export function resolvePresetsOrPlugins(
       continue;
     }
 
-    let fPath: string;
+    let fPath: string | undefined;
     try {
       fPath = resolve.sync(item, {
         basedir: root,
@@ -102,6 +102,9 @@ export function resolvePresetsOrPlugins(
           process.exit(1);
         }
       }
+    }
+    if (!fPath) {
+      continue;
     }
     const existingPlugin = resolvedPresetsOrPlugins.find((plugin) => plugin.id === fPath);
     if (existingPlugin) {

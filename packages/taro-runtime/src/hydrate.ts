@@ -5,8 +5,8 @@ import type { TaroText } from './dom/text';
 import type { MiniData, MiniElementData } from './interface';
 import { getComponentsAlias, isComment, isHasExtractProp, isText } from './utils';
 
-let SPECIAL_NODES: Record<string, unknown>;
-let componentsAlias: Record<string, unknown>;
+let SPECIAL_NODES: string[];
+let componentsAlias: Record<string, any>;
 
 /**
  * React also has a fancy function's name for this: `hydrate()`.

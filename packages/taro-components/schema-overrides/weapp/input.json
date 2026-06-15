@@ -1,0 +1,9 @@
+{
+  "properties": {
+    "cursor-color": {
+      "description": "光标颜色。当 type 为 text 时有效",
+      "type": "string",
+      "defaultValue": ""
+    }
+  }
+}

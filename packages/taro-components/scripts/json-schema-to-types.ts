@@ -1,4 +1,5 @@
 import * as fs from 'node:fs';
+import path from 'node:path';
 import generator from '@babel/generator';
 import * as parser from '@babel/parser';
 import traverse from '@babel/traverse';
@@ -45,10 +46,14 @@ class GenerateTypes {
     this.componentName = componentName;
 
     MINI_APP_TYPES.forEach((type) => {
+      const fileName = `${componentName === 'AD' ? 'ad' : paramCase(componentName)}.json`;
       try {
-        const json = require(
-          `miniapp-types/dist/schema/${type}/${componentName === 'AD' ? 'ad' : paramCase(componentName)}.json`,
-        );
+        const json = require(`miniapp-types/dist/schema/${type}/${fileName}`);
+        const overridePath = path.join(__dirname, '../schema-overrides', type, fileName);
+        const override = fs.existsSync(overridePath) ? JSON.parse(fs.readFileSync(overridePath, 'utf8')) : null;
+        if (json && override?.properties) {
+          json.properties = { ...json.properties, ...override.properties };
+        }
 
         if (!json) {
           return;
@@ -227,7 +232,7 @@ class GenerateTypes {
               node.optional = !json.required?.[prop] || !json.required?.[prop.replace(/^on/, 'bind')];
 
               if (node.leadingComments) {
-                let commentValue = `* ${propSchema.description?.replace(/\n/g, '\n * ')} \n`;
+                let commentValue = `* ${propSchema.description?.trim().replace(/\n/g, '\n * ')}\n`;
                 commentValue += `* @supported ${props[prop].join(', ')}\n`;
                 const { defaultValue, type } = propSchema;
                 if (defaultValue != null) {

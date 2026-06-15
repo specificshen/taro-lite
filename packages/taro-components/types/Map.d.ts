@@ -141,7 +141,7 @@ interface MapProps extends StandardProps {
    * @default false
    */
   enableAutoMaxOverlooking?: boolean;
-  /** 展示3D楼块 
+  /** 展示3D楼块
   * @supported weapp
   * @default false
   */

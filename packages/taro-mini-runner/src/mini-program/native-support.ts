@@ -1,7 +1,7 @@
 import path from 'node:path';
 import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
 import { fs } from '@spcsn/taro-helper';
-import type { CallExpression, Identifier, Literal, MemberExpression, ObjectExpression, Property } from 'acorn';
+import type { CallExpression, Identifier, Literal, MemberExpression, Node, ObjectExpression, Property } from 'acorn';
 import * as walk from 'acorn-walk';
 import sax from 'sax';
 import type { PluginOption, Rolldown } from 'vite';
@@ -84,7 +84,7 @@ export default function (viteCompilerContext: ViteMiniCompilerContext | undefine
       }
 
       if (!isVirtualModule(id) && /\.[jt]sx/.test(id)) {
-        walk.simple(ast, {
+        walk.simple(ast as Node, {
           CallExpression: (node: CallExpression) => {
             const callee = node.callee;
             if (callee.type === 'MemberExpression') {

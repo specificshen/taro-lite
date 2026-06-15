@@ -46,7 +46,7 @@ interface ShareElementProps extends StandardProps {
    * @default "materialRectArc"
    */
   rectTweenType?: 'materialRectArc' | 'materialRectCenterArc' | 'linear' | 'elasticIn' | 'elasticOut' | 'elasticInOut' | 'bounceIn' | 'bounceOut' | 'bounceInOut' | 'cubic-bezier(x1, y1, x2, y2)';
-  /** 动画帧回调 
+  /** 动画帧回调
   * @supported weapp
   */
   onFrame?: string;

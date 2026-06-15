@@ -110,6 +110,11 @@ interface TextareaProps extends StandardProps, FormItemProps {
    * @supported weapp
    */
   placeholderStyle?: string;
+  /** 光标颜色
+  * @supported weapp
+  * @default ""
+  */
+  cursorColor?: string;
   /** 输入框聚焦时触发
    * @supported weapp
    */
