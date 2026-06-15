@@ -4,6 +4,10 @@
       "description": "光标颜色",
       "type": "string",
       "defaultValue": ""
+    },
+    "placeholder-style": {
+      "description": "指定 placeholder 的样式",
+      "type": "string"
     }
   }
 }

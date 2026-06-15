@@ -106,10 +106,6 @@ interface TextareaProps extends StandardProps, FormItemProps {
    * @default 'cursor'
    */
   adjustKeyboardTo?: 'cursor' | 'bottom';
-  /** 需传入对象，格式为 { fontSize: number, fontWeight: string, color: string }
-   * @supported weapp
-   */
-  placeholderStyle?: string;
   /** 光标颜色
   * @supported weapp
   * @default ""

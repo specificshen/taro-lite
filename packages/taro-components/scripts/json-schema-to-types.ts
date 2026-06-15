@@ -191,8 +191,16 @@ class GenerateTypes {
         const addedProps: string[] = [];
         astPath.traverse({
           TSInterfaceBody(astPath) {
+            const list = astPath.node.body as t.TSPropertySignature[];
+            const existingNames = new Set(
+              list.map((item) => (item.key as any)?.name).filter(Boolean),
+            );
             Object.keys(props).forEach((prop) => {
               if (OMIT_PROPS.includes(prop)) {
+                return;
+              }
+              const propName = camelCase(prop, { transform: camelCaseEnhance });
+              if (existingNames.has(propName)) {
                 return;
               }
               const emptySignature = {
@@ -201,7 +209,6 @@ class GenerateTypes {
                 leadingComments: [],
                 kind: 'get',
               } as t.TSPropertySignature;
-              const list = astPath.node.body as t.TSPropertySignature[];
               const node = t.cloneNode(list[0] || emptySignature);
               node.key = t.identifier(camelCase(prop, { transform: camelCaseEnhance }));
               const platform = props[prop][0];
