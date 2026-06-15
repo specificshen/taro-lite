@@ -1,6 +1,6 @@
 {
   "name": "@spcsn/taro",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "SPCSN Taro runtime API entry",
   "author": "Samuel Ouyang",
   "license": "MIT",
