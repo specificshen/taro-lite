@@ -19,12 +19,17 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
         const chunk = bundle[name];
         if (chunk.type !== 'asset' || !name.endsWith(styleExt)) continue;
 
-        const source = String(chunk.source);
-        const { css, warnings } = transformWxss(source);
-        (chunk as Rolldown.OutputAsset).source = css;
+        try {
+          const source = String(chunk.source);
+          const { css, warnings } = transformWxss(source);
+          (chunk as Rolldown.OutputAsset).source = css;
 
-        for (const warning of warnings) {
-          this.warn(warning);
+          for (const warning of warnings) {
+            this.warn(warning);
+          }
+        } catch (error) {
+          const message = error instanceof Error ? error.message : String(error);
+          this.warn(`WXSS compat processing failed for ${name}: ${message}`);
         }
       }
     },

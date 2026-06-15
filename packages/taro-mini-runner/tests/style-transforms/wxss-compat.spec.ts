@@ -26,10 +26,11 @@ describe('wxss-compat', () => {
       expect(css).toBe('.foo{color:#fff;background:#ff0000}');
     });
 
-    it('expands direct-child universal selector with common mini-program tags', () => {
+    it('expands direct-child universal selector with common mini-program tags and warns', () => {
       const input = '.flex > *{flex:1}';
       const { css, warnings } = transformWxss(input);
-      expect(warnings).toHaveLength(0);
+      expect(warnings).toHaveLength(1);
+      expect(warnings[0]).toContain('.flex > *');
       expect(css).toMatch(/\.flex > view,/);
       expect(css).toMatch(/\.flex > text,/);
       expect(css).toMatch(/\.flex > button,/);
@@ -37,10 +38,11 @@ describe('wxss-compat', () => {
       expect(css.split(',').length).toBe(15);
     });
 
-    it('expands direct-child universal selector with pseudo-class', () => {
+    it('expands direct-child universal selector with pseudo-class and warns', () => {
       const input = '.list > *:last-child{margin-right:0}';
       const { css, warnings } = transformWxss(input);
-      expect(warnings).toHaveLength(0);
+      expect(warnings).toHaveLength(1);
+      expect(warnings[0]).toContain('.list > *:last-child');
       expect(css).toMatch(/\.list > view:last-child,/);
       expect(css).toMatch(/\.list > text:last-child,/);
       expect(css).toMatch(/\.list > map:last-child\{margin-right:0\}$/);
@@ -57,7 +59,8 @@ describe('wxss-compat', () => {
     it('processes rules inside @media blocks', () => {
       const input = '@media screen{.card > *{padding:8px}}';
       const { css, warnings } = transformWxss(input);
-      expect(warnings).toHaveLength(0);
+      expect(warnings).toHaveLength(1);
+      expect(warnings[0]).toContain('.card > *');
       expect(css).toContain('@media screen{');
       expect(css).toMatch(/\.card > view,/);
       expect(css).toMatch(/\.card > map\{padding:8px\}\}$/);
@@ -68,6 +71,28 @@ describe('wxss-compat', () => {
       const { css, warnings } = transformWxss(input);
       expect(warnings).toHaveLength(0);
       expect(css).toBe('.a{color:rgba(0,0,0,0.5)}.b{display:flex}');
+    });
+
+    it('preserves CSS with braces in string content', () => {
+      const input = '.foo{content:"}"}.bar > *{flex:1}';
+      const { css, warnings } = transformWxss(input);
+      expect(warnings).toHaveLength(1);
+      expect(css).toContain('content:"}"');
+    });
+
+    it('does not break on nested at-rules', () => {
+      const input = '@supports (display:flex){.foo > *{display:flex}}';
+      const { css, warnings } = transformWxss(input);
+      expect(warnings).toHaveLength(1);
+      expect(css).toContain('@supports (display:flex){');
+    });
+
+    it('keeps original CSS when parsing fails', () => {
+      const input = 'this is not css';
+      const { css, warnings } = transformWxss(input);
+      expect(warnings).toHaveLength(1);
+      expect(warnings[0]).toContain('WXSS compat post-processing failed');
+      expect(css).toBe(input);
     });
   });
 });
