@@ -96,6 +96,12 @@ function transformNode(node: postcss.Container, warnings: string[]): void {
         child.remove();
         return;
       }
+
+      if (isInsetShorthand(child)) {
+        expandInsetShorthand(child);
+        return;
+      }
+
       child.value = child.value
         .replace(HEX8_REGEX, (match) => hex8ToRgba(match))
         .replace(HEX4_REGEX, (match) => hex4ToRgba(match));
@@ -108,6 +114,24 @@ function transformNode(node: postcss.Container, warnings: string[]): void {
  */
 function isUnsupportedDeclaration(decl: postcss.Declaration): boolean {
   return decl.prop === 'letter-spacing' && decl.value.trim() === 'normal';
+}
+
+/**
+ * Skyline 不支持 `inset` 简写，兜底展开为 top / right / bottom / left。
+ */
+function isInsetShorthand(decl: postcss.Declaration): boolean {
+  return decl.prop === 'inset';
+}
+
+function expandInsetShorthand(decl: postcss.Declaration): void {
+  const values = decl.value.trim().split(/\s+/);
+  const [top, right = top, bottom = top, left = right] = values;
+  decl.replaceWith(
+    { prop: 'top', value: top, important: decl.important },
+    { prop: 'right', value: right, important: decl.important },
+    { prop: 'bottom', value: bottom, important: decl.important },
+    { prop: 'left', value: left, important: decl.important },
+  );
 }
 
 function transformRule(rule: postcss.Rule, warnings: string[]): void {
@@ -157,14 +181,12 @@ function expandDirectChildUniversal(selector: string, implicit = false): string 
 
   for (const part of parts) {
     const match = part.match(
-      implicit
-        ? /^(.*>\s*)(:[a-zA-Z-]+(?:\([^)]*\))?)?$/
-        : /^(.*>\s*)(\*)(:[a-zA-Z-]+(?:\([^)]*\))?)?$/,
+      implicit ? /^(.*>\s*)(:[a-zA-Z-]+(?:\([^)]*\))?)?$/ : /^(.*>\s*)(\*)(:[a-zA-Z-]+(?:\([^)]*\))?)?$/,
     );
     if (!match) return;
 
     const prefix = match[1];
-    const suffix = implicit ? match[2] ?? '' : match[3] ?? '';
+    const suffix = implicit ? (match[2] ?? '') : (match[3] ?? '');
     // 如果前缀里还有其它 `*`，说明是更复杂的选择器，不处理
     if (prefix.includes('*')) return;
 

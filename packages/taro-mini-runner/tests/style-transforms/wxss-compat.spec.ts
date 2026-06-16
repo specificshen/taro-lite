@@ -59,6 +59,24 @@ describe('wxss-compat', () => {
       expect(css).toBe('.foo{letter-spacing:2rpx}');
     });
 
+    it('expands inset shorthand to top/right/bottom/left', () => {
+      const input = '.foo{position:absolute;inset:0}';
+      const { css } = transformWxss(input);
+      expect(css).toBe('.foo{position:absolute;top:0;right:0;bottom:0;left:0}');
+    });
+
+    it('expands inset shorthand with two values', () => {
+      const input = '.foo{inset:0 10rpx}';
+      const { css } = transformWxss(input);
+      expect(css.replace(/\s+/g, '')).toBe('.foo{top:0;right:10rpx;bottom:0;left:10rpx}');
+    });
+
+    it('expands inset shorthand with four values', () => {
+      const input = '.foo{inset:1rpx 2rpx 3rpx 4rpx}';
+      const { css } = transformWxss(input);
+      expect(css.replace(/\s+/g, '')).toBe('.foo{top:1rpx;right:2rpx;bottom:3rpx;left:4rpx}');
+    });
+
     it('expands direct-child universal selector with common mini-program tags and warns', () => {
       const input = '.flex > *{flex:1}';
       const { css, warnings } = transformWxss(input);

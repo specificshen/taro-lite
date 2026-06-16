@@ -17,6 +17,7 @@
 | `*` 通配符选择器 | ✅ 已兜底处理（推荐源码改用 `gap`） | v1.1.2 |
 | CSS Modules hash 含 `-`/`--` | ✅ 已修复（默认 hex；base64 自动转 hex） | v1.1.2 |
 | `letter-spacing: normal` | ✅ 已兜底移除 | v1.1.2 |
+| `inset` 简写（Skyline 不支持） | ✅ 已兜底展开 | v1.1.2 |
 | 微信工具二次压缩 `rgba()` | ✅ 已修复（模板默认 `minifyWXSS: false`） | v1.1.2 |
 | Swiper `indicator-offset` 默认值 | ✅ 已修复 | v1.1.2 |
 
@@ -197,8 +198,10 @@ mini: {
 
 - 将 `#RRGGBBAA` / `#RGBA` 转回 `rgba()`
 - 对 `.class > *` 直接子元素通配符自动展开为常见小程序标签列表
+- 对 `.class > :pseudo` 等隐式通配符选择器同样展开
 - 其它含 `*` 的选择器输出构建警告并移除对应规则
 - 移除 WXSS 不支持的默认值 `letter-spacing: normal`
+- 将 Skyline 不支持的 `inset` 简写展开为 `top/right/bottom/left`
 
 源码位于：
 
@@ -211,9 +214,10 @@ mini: {
 
 ### 3. 构建期兜底 + 源码约束
 
-- 产物阶段兜底转换 `#RRGGBBAA` / `#RGBA` 与 `*` 选择器
+- 产物阶段兜底转换 `#RRGGBBAA` / `#RGBA` 与 `*` 选择器（含隐式通配符）
 - 若业务配置仍使用 `[hash:base64:N]`，构建期自动替换为 `[hash:hex:8]`
 - 产物阶段兜底移除 `letter-spacing: normal`
+- 产物阶段兜底将 `inset` 简写展开为 `top/right/bottom/left`
 - 脚手架示例组件已移除所有 `> *` gap hack，改用 `gap` 属性
 
 ### 4. 文档与脚手架约束
