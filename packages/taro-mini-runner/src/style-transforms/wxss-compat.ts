@@ -9,6 +9,7 @@
 import postcss from 'postcss';
 
 const HEX8_REGEX = /#([0-9a-fA-F]{8})\b/g;
+const HEX4_REGEX = /#([0-9a-fA-F]{4})\b/g;
 
 /**
  * 常见小程序原生标签，用于替换 `.class > *` 这类直接子元素通配符。
@@ -45,6 +46,20 @@ export function hex8ToRgba(hex: string): string {
   return `rgba(${r}, ${g}, ${b}, ${roundedA})`;
 }
 
+/**
+ * 4 位十六进制颜色（如 `#fffc`）转 `rgba()`。
+ * 每位数字重复一次即等价于 8 位 hex。
+ */
+export function hex4ToRgba(hex: string): string {
+  const value = hex.slice(1);
+  const r = Number.parseInt(value[0] + value[0], 16);
+  const g = Number.parseInt(value[1] + value[1], 16);
+  const b = Number.parseInt(value[2] + value[2], 16);
+  const a = Number.parseInt(value[3] + value[3], 16) / 255;
+  const roundedA = Math.round(a * 100) / 100;
+  return `rgba(${r}, ${g}, ${b}, ${roundedA})`;
+}
+
 export interface WxssTransformResult {
   css: string;
   warnings: string[];
@@ -52,7 +67,7 @@ export interface WxssTransformResult {
 
 /**
  * 对 WXSS 文本做兼容性转换：
- * 1. `#RRGGBBAA` -> `rgba()`
+ * 1. `#RRGGBBAA` / `#RGBA` -> `rgba()`
  * 2. `.class > *` 直接子元素通配符 -> 展开为常见小程序标签（并提示业务源码优先使用 `gap`）
  * 3. 其它含 `*` 的选择器记录警告并移除对应规则
  *
@@ -77,16 +92,32 @@ function transformNode(node: postcss.Container, warnings: string[]): void {
     if (child.type === 'rule') {
       transformRule(child, warnings);
     } else if (child.type === 'decl') {
-      child.value = child.value.replace(HEX8_REGEX, (match) => hex8ToRgba(match));
+      if (isUnsupportedDeclaration(child)) {
+        child.remove();
+        return;
+      }
+      child.value = child.value
+        .replace(HEX8_REGEX, (match) => hex8ToRgba(match))
+        .replace(HEX4_REGEX, (match) => hex4ToRgba(match));
     }
   });
 }
 
-function transformRule(rule: postcss.Rule, warnings: string[]): void {
-  if (!rule.selector.includes('*')) return;
+/**
+ * WXSS 编译器不支持的声明（默认值可直接移除）。
+ */
+function isUnsupportedDeclaration(decl: postcss.Declaration): boolean {
+  return decl.prop === 'letter-spacing' && decl.value.trim() === 'normal';
+}
 
-  if (isDirectChildUniversalOnly(rule.selector)) {
-    const expanded = expandDirectChildUniversal(rule.selector);
+function transformRule(rule: postcss.Rule, warnings: string[]): void {
+  const hasExplicitUniversal = rule.selector.includes('*');
+  const hasImplicitUniversal = isDirectChildImplicitUniversalOnly(rule.selector);
+
+  if (!hasExplicitUniversal && !hasImplicitUniversal) return;
+
+  if (isDirectChildUniversalOnly(rule.selector, hasImplicitUniversal)) {
+    const expanded = expandDirectChildUniversal(rule.selector, hasImplicitUniversal);
     if (expanded) {
       warnings.push(
         `WXSS does not support universal selector "*"; expanding "${rule.selector}" to specific tags. Consider using "gap" in source CSS.`,
@@ -102,22 +133,38 @@ function transformRule(rule: postcss.Rule, warnings: string[]): void {
 
 /**
  * 判断 selector 的每个逗号分隔部分都是 `.foo > *[:pseudo]` 形式。
+ * 当 allowImplicit 为 true 时，也接受 `.foo > :pseudo`（隐式 *）。
  */
-function isDirectChildUniversalOnly(selector: string): boolean {
+function isDirectChildUniversalOnly(selector: string, allowImplicit = false): boolean {
   const parts = splitSelector(selector);
-  return parts.every((part) => /^.*>\s*\*(:[a-zA-Z-]+(?:\([^)]*\))?)?$/.test(part));
+  return parts.every((part) => {
+    if (/^.*>\s*\*(:[a-zA-Z-]+(?:\([^)]*\))?)?$/.test(part)) return true;
+    return allowImplicit && /^.*>\s*(:[a-zA-Z-]+(?:\([^)]*\))?)?$/.test(part);
+  });
 }
 
-function expandDirectChildUniversal(selector: string): string | undefined {
+/**
+ * 判断 selector 是否包含隐式通配符的直接子元素选择器，例如 `.foo > :last-child`。
+ */
+function isDirectChildImplicitUniversalOnly(selector: string): boolean {
+  const parts = splitSelector(selector);
+  return parts.some((part) => /^.*>\s*(:[a-zA-Z-]+(?:\([^)]*\))?)?$/.test(part));
+}
+
+function expandDirectChildUniversal(selector: string, implicit = false): string | undefined {
   const parts = splitSelector(selector);
   const expanded: string[] = [];
 
   for (const part of parts) {
-    const match = part.match(/^(.*>\s*)(\*)(:[a-zA-Z-]+(?:\([^)]*\))?)?$/);
+    const match = part.match(
+      implicit
+        ? /^(.*>\s*)(:[a-zA-Z-]+(?:\([^)]*\))?)?$/
+        : /^(.*>\s*)(\*)(:[a-zA-Z-]+(?:\([^)]*\))?)?$/,
+    );
     if (!match) return;
 
     const prefix = match[1];
-    const suffix = match[3] ?? '';
+    const suffix = implicit ? match[2] ?? '' : match[3] ?? '';
     // 如果前缀里还有其它 `*`，说明是更复杂的选择器，不处理
     if (prefix.includes('*')) return;
 

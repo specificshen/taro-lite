@@ -187,8 +187,17 @@ export function getCSSModulesOptions(taroConfig: ViteMiniBuildConfig): false | C
     },
     taroConfig.postcss.cssModules.config,
   );
+
+  // base64 hash 可能产生 `-` / `--`，WXSS 编译器解析严格，统一替换为 hex
+  const generateScopedName = String(config.generateScopedName).replace(/\[hash:base64:\d+\]/g, '[hash:hex:8]');
+  if (generateScopedName !== config.generateScopedName) {
+    logger.warn(
+      `CSS Modules generateScopedName "${config.generateScopedName}" contains base64 hash, which may produce class names incompatible with WeChat WXSS. It has been automatically replaced with "${generateScopedName}".`,
+    );
+  }
+
   return {
-    generateScopedName: config.generateScopedName,
+    generateScopedName,
   };
 }
 export function escapePath(p: string) {

@@ -17,7 +17,12 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
       const styleExt = viteCompilerContext.fileType.style;
       for (const name in bundle) {
         const chunk = bundle[name];
-        if (chunk.type !== 'asset' || !name.endsWith(styleExt)) continue;
+        if (chunk.type !== 'asset') continue;
+
+        // style 插件会把 Vite 生成的 .css 重命名为 .wxss（修改 chunk.fileName），
+        // 但 bundle 的 key 仍是原来的 .css，因此要以 chunk.fileName 为准。
+        const fileName = chunk.fileName ?? name;
+        if (!fileName.endsWith(styleExt)) continue;
 
         try {
           const source = String(chunk.source);

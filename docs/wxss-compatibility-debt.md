@@ -13,8 +13,10 @@
 | 问题 | 状态 | 修复版本 |
 |------|------|----------|
 | `#RRGGBBAA` 8 位 hex 颜色 | ✅ 已修复 | v1.1.2 |
+| `#RGBA` 4 位 hex 颜色 | ✅ 已修复 | v1.1.2 |
 | `*` 通配符选择器 | ✅ 已兜底处理（推荐源码改用 `gap`） | v1.1.2 |
-| CSS Modules hash 含 `-`/`--` | ✅ 已修复（默认改为 hex） | v1.1.2 |
+| CSS Modules hash 含 `-`/`--` | ✅ 已修复（默认 hex；base64 自动转 hex） | v1.1.2 |
+| `letter-spacing: normal` | ✅ 已兜底移除 | v1.1.2 |
 | 微信工具二次压缩 `rgba()` | ✅ 已修复（模板默认 `minifyWXSS: false`） | v1.1.2 |
 | Swiper `indicator-offset` 默认值 | ✅ 已修复 | v1.1.2 |
 
@@ -181,7 +183,7 @@ mini: {
 
 `[hash:hex:8]` 的冲突概率（16^8 ≈ 43 亿）高于原 `[hash:base64:5]`（64^5 ≈ 10.7 亿），且 className 仅含 `0-9a-f`，兼容性最好。
 
-> **底座已内置处理**：v1.1.2 起底座默认 `generateScopedName` 已改为 `[hash:hex:8]`，脚手架模板同步调整。业务项目无需再显式配置。
+> **底座已内置处理**：v1.1.2 起底座默认 `generateScopedName` 已改为 `[hash:hex:8]`；若业务项目仍显式配置 `[hash:base64:N]`，底座会在构建时自动替换为 `[hash:hex:8]` 并输出警告，避免生成含 `-` / `--` 的 className。脚手架模板同步调整。业务项目无需再显式配置。
 
 ---
 
@@ -193,9 +195,10 @@ mini: {
 
 `@spcsn/taro-mini-runner` 新增内置插件 `taro:vite-wxss-compat`，在 `taro:vite-style` 之后、`taro:vite-mini-emit` 之前的 `generateBundle` 阶段执行：
 
-- 将 `#RRGGBBAA` 转回 `rgba()`
+- 将 `#RRGGBBAA` / `#RGBA` 转回 `rgba()`
 - 对 `.class > *` 直接子元素通配符自动展开为常见小程序标签列表
 - 其它含 `*` 的选择器输出构建警告并移除对应规则
+- 移除 WXSS 不支持的默认值 `letter-spacing: normal`
 
 源码位于：
 
@@ -208,7 +211,9 @@ mini: {
 
 ### 3. 构建期兜底 + 源码约束
 
-- 产物阶段兜底转换 `#RRGGBBAA` 与 `*` 选择器
+- 产物阶段兜底转换 `#RRGGBBAA` / `#RGBA` 与 `*` 选择器
+- 若业务配置仍使用 `[hash:base64:N]`，构建期自动替换为 `[hash:hex:8]`
+- 产物阶段兜底移除 `letter-spacing: normal`
 - 脚手架示例组件已移除所有 `> *` gap hack，改用 `gap` 属性
 
 ### 4. 文档与脚手架约束

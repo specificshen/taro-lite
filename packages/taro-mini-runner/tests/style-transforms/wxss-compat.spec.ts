@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { hex8ToRgba, transformWxss } from '../../src/style-transforms/wxss-compat';
+import { hex4ToRgba, hex8ToRgba, transformWxss } from '../../src/style-transforms/wxss-compat';
 
 describe('wxss-compat', () => {
   describe('hex8ToRgba', () => {
@@ -10,6 +10,20 @@ describe('wxss-compat', () => {
     it('rounds alpha to two decimals', () => {
       expect(hex8ToRgba('#ffffffff')).toBe('rgba(255, 255, 255, 1)');
       expect(hex8ToRgba('#00000080')).toBe('rgba(0, 0, 0, 0.5)');
+    });
+  });
+
+  describe('hex4ToRgba', () => {
+    it('converts 4-digit hex to rgba by duplicating digits', () => {
+      expect(hex4ToRgba('#fffc')).toBe('rgba(255, 255, 255, 0.8)');
+    });
+
+    it('handles fully transparent 4-digit hex', () => {
+      expect(hex4ToRgba('#0000')).toBe('rgba(0, 0, 0, 0)');
+    });
+
+    it('rounds alpha to two decimals', () => {
+      expect(hex4ToRgba('#fff6')).toBe('rgba(255, 255, 255, 0.4)');
     });
   });
 
@@ -24,6 +38,25 @@ describe('wxss-compat', () => {
       const input = '.foo{color:#fff;background:#ff0000}';
       const { css } = transformWxss(input);
       expect(css).toBe('.foo{color:#fff;background:#ff0000}');
+    });
+
+    it('converts #RGBA colors to rgba', () => {
+      const input = '.foo{color:#fffc;background:#0000}';
+      const { css } = transformWxss(input);
+      expect(css).toBe('.foo{color:rgba(255, 255, 255, 0.8);background:rgba(0, 0, 0, 0)}');
+    });
+
+    it('removes unsupported letter-spacing: normal', () => {
+      const input = '.foo{font-size:24rpx;letter-spacing:normal;color:#333}';
+      const { css, warnings } = transformWxss(input);
+      expect(css).toBe('.foo{font-size:24rpx;color:#333}');
+      expect(warnings).toHaveLength(0);
+    });
+
+    it('keeps non-normal letter-spacing values', () => {
+      const input = '.foo{letter-spacing:2rpx}';
+      const { css } = transformWxss(input);
+      expect(css).toBe('.foo{letter-spacing:2rpx}');
     });
 
     it('expands direct-child universal selector with common mini-program tags and warns', () => {
@@ -46,6 +79,22 @@ describe('wxss-compat', () => {
       expect(css).toMatch(/\.list > view:last-child,/);
       expect(css).toMatch(/\.list > text:last-child,/);
       expect(css).toMatch(/\.list > map:last-child\{margin-right:0\}$/);
+    });
+
+    it('expands implicit direct-child universal selector without explicit *', () => {
+      const input = '.list > :last-child{margin-right:0}';
+      const { css, warnings } = transformWxss(input);
+      expect(warnings).toHaveLength(1);
+      expect(css).toMatch(/\.list > view:last-child,/);
+      expect(css).toMatch(/\.list > map:last-child\{margin-right:0\}$/);
+    });
+
+    it('expands implicit direct-child universal selector without spaces', () => {
+      const input = '.list>:last-child{margin-right:0}';
+      const { css, warnings } = transformWxss(input);
+      expect(warnings).toHaveLength(1);
+      expect(css).toMatch(/\.list>view:last-child,/);
+      expect(css).toMatch(/\.list>map:last-child\{margin-right:0\}$/);
     });
 
     it('warns and removes unsupported universal selectors', () => {
