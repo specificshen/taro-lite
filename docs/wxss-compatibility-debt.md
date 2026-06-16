@@ -208,19 +208,32 @@ mini: {
 - `packages/taro-mini-runner/src/plugins/vite-plugin-wxss-compat.ts`
 - `packages/taro-mini-runner/src/style-transforms/wxss-compat.ts`
 
-### 2. CSS Modules 默认 hash 策略
+### 2. LightningCSS targets 配置
+
+`packages/taro-mini-runner/src/mini-program/config.ts` 中将 `build.target` 保持为 `es2022`（满足 JS 现代化输出），同时单独为 CSS 配置偏旧的浏览器 targets：
+
+```ts
+lightningcss: {
+  targets: browserslistToTargets(browserslist('iOS >= 12, Chrome >= 80, Firefox >= 78')),
+},
+```
+
+这样 LightningCSS 在压缩 CSS 时不会生成 `inset`、`#RRGGBBAA` 等 Skyline/WXSS 不支持的现代语法，从源头减少兼容性问题。
+
+### 3. CSS Modules 默认 hash 策略
 
 默认 `generateScopedName` 已调整为 `[hash:hex:8]`，脚手架模板与测试 fixture 同步使用 `[name]__[local]___[hash:hex:8]`，彻底避免 `-` / `--`。
 
-### 3. 构建期兜底 + 源码约束
+### 4. 构建期兜底 + 源码约束
 
+- LightningCSS targets 已锁定较早浏览器版本，避免生成 `inset`、`#RRGGBBAA` 等现代语法
 - 产物阶段兜底转换 `#RRGGBBAA` / `#RGBA` 与 `*` 选择器（含隐式通配符）
 - 若业务配置仍使用 `[hash:base64:N]`，构建期自动替换为 `[hash:hex:8]`
 - 产物阶段兜底移除 `letter-spacing: normal`
 - 产物阶段兜底将 `inset` 简写展开为 `top/right/bottom/left`
 - 脚手架示例组件已移除所有 `> *` gap hack，改用 `gap` 属性
 
-### 4. 文档与脚手架约束
+### 5. 文档与脚手架约束
 
 - `project.config.json` 模板默认 `"minifyWXSS": false`，防止微信开发者工具上传时二次压缩生成 `#RRGGBBAA`
 - `packages/taro-components/global.css` 已改造为小程序安全版本，移除 `*` 与 `html/body/a` 等 web 专属选择器

@@ -8,6 +8,8 @@ import {
   REG_TARO_SCOPED_PACKAGE,
   recursiveMerge,
 } from '@spcsn/taro-helper';
+import browserslist from 'browserslist';
+import { browserslistToTargets } from 'lightningcss';
 import type { PluginOption, UserConfig } from 'vite';
 import { getCSSModulesOptions, getMinify, getMode, getPostcssPlugins, stripMultiPlatformExt } from '../shared';
 import { DEFAULT_TERSER_OPTIONS, MINI_EXCLUDE_POSTCSS_PLUGIN_NAME } from '../shared/constants';
@@ -286,6 +288,12 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
             plugins: await getPostcssPlugins(appPath, __postcssOption, MINI_EXCLUDE_POSTCSS_PLUGIN_NAME),
           },
           modules: getCSSModulesOptions(taroConfig),
+          lightningcss: {
+            // 小程序 Skyline 对现代 CSS 简写（如 inset、#RRGGBBAA）支持有限，
+            // 将 CSS targets 锁定在较早浏览器版本，避免 LightningCSS 生成这些语法。
+            // wxss-compat 后处理仍会兜底转换，形成双重保险。
+            targets: browserslistToTargets(browserslist('iOS >= 12, Chrome >= 80, Firefox >= 78')),
+          },
         },
       };
     },

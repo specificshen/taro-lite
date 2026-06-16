@@ -246,6 +246,12 @@ importers:
       autoprefixer:
         specifier: ^10.5.0
         version: 10.5.0(postcss@8.5.15)
+      browserslist:
+        specifier: ^4.28.2
+        version: 4.28.2
+      lightningcss:
+        specifier: ^1.32.0
+        version: 1.32.0
       lodash:
         specifier: ^4.18.1
         version: 4.18.1
