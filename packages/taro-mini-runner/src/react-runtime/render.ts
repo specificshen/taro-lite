@@ -4,8 +4,9 @@ import type { ReactNode } from 'react';
 import type { OpaqueRoot } from 'react-reconciler';
 import { markContainerAsRoot } from './component-tree';
 import { getEventPriority } from './constant';
-import { enqueueStateRestore, getTargetInstForInputOrChangeEvent, RestoreType } from './event';
+import { markShouldFlushAfterEvent } from './event';
 import { runWithPriority, TaroReconciler } from './reconciler';
+import { isTextInputElement } from './text-input';
 
 export const ContainerMap: WeakMap<TaroElement, Root> = new WeakMap();
 
@@ -13,10 +14,8 @@ type Renderer = typeof TaroReconciler;
 
 type CreateRootOptions = {
   unstable_strictMode?: boolean;
-  unstable_concurrentUpdatesByDefault?: boolean;
-  unstable_transitionCallbacks?: any;
   identifierPrefix?: string;
-  onRecoverableError?: (error: any) => void;
+  onRecoverableError?: (error: unknown) => void;
 };
 
 export type Callback = () => undefined | null | undefined;
@@ -39,7 +38,7 @@ class Root {
       const concurrentUpdatesByDefaultOverride = false;
       let isStrictMode = false;
       let identifierPrefix = '';
-      let onRecoverableError = (error: any) => console.error(error);
+      let onRecoverableError = (error: unknown) => console.error(error);
       if (options.unstable_strictMode === true) {
         isStrictMode = true;
       }
@@ -105,7 +104,6 @@ export function createRoot(domContainer: TaroElement, options: CreateRootOptions
   if (oldRoot != null) {
     return oldRoot;
   }
-  // options should be an object
   const root = new Root(TaroReconciler, domContainer, options);
   ContainerMap.set(domContainer, root);
 
@@ -121,19 +119,14 @@ export function createRoot(domContainer: TaroElement, options: CreateRootOptions
     });
   });
 
-  // 对比 event.detail.value 和 node.tracker.value，判断 value 值是否有变动，存在变动则塞入队列中
+  // input/change 事件结束后需要立即把 state 落位，避免受控 input 出现闪烁。
   hooks.tap('modifyTaroEvent', (event: unknown, element: unknown) => {
     const e = event as TaroEvent;
     const node = element as TaroElement;
-    const inst = getTargetInstForInputOrChangeEvent(e, node);
 
-    if (!inst) return;
-
-    // 这里塞入的是 event.detail.value，也就是事件的值，在受控组件中，你可以理解为需要被变更的值
-    // 后续会在 finishEventHandler 中，使用最新的 fiber.props.value 来与其比较
-    // 如果不一致，则表示需要更新，会执行 node.value = fiber.props.value 的更新操作
-    const nextValue = e.mpEvent?.detail?.value as unknown as RestoreType;
-    enqueueStateRestore({ target: node, value: nextValue });
+    if (isTextInputElement(node) && (e.type === 'input' || e.type === 'change')) {
+      markShouldFlushAfterEvent();
+    }
   });
 
   return root;

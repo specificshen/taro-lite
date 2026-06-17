@@ -9,7 +9,7 @@ import { ContainerMap, createRoot, render } from './render';
 let isInsideEventHandler = false;
 
 // 重新包裹 batchedUpdates，使其可以在触发事件后执行 finishEventHandler
-const unstable_batchedUpdates = (fn: any, a: any) => {
+const unstable_batchedUpdates = <T, R>(fn: (arg: T) => R, a: T): R => {
   if (isInsideEventHandler) {
     return fn(a);
   }
@@ -53,7 +53,7 @@ function findDOMNode(comp?: TaroElement | ReactNode) {
     return comp;
   }
 
-  return TaroReconciler.findHostInstance(comp as Record<string, any>);
+  return TaroReconciler.findHostInstance(comp as unknown as Record<string, unknown>) as TaroElement | null;
 }
 
 const portalType = isFunction(Symbol) && Symbol.for ? Symbol.for('react.portal') : 0xeaca;

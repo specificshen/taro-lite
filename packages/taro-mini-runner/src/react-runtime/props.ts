@@ -10,8 +10,6 @@ import {
   toCamelCase,
 } from '@spcsn/taro-shared';
 
-// 拓展TaroElement的属性
-
 export type Props = Record<string, unknown>;
 
 type UpdatePayload = unknown[];
@@ -80,7 +78,10 @@ export function getUpdatePayload(dom: TaroElement, oldProps: Props, newProps: Pr
 
   for (i in oldProps) {
     if (!(i in newProps)) {
-      (updatePayload = updatePayload || []).push(i, null);
+      if (!updatePayload) {
+        updatePayload = [];
+      }
+      updatePayload.push(i, null);
     }
   }
   const isFormElement = dom instanceof FormElement;
@@ -90,18 +91,15 @@ export function getUpdatePayload(dom: TaroElement, oldProps: Props, newProps: Pr
       if (i === 'style' && isObject(oldProps[i]) && isObject(newProps[i]) && isEqual(oldProps[i], newProps[i]))
         continue;
 
-      (updatePayload = updatePayload || []).push(i, newProps[i]);
+      if (!updatePayload) {
+        updatePayload = [];
+      }
+      updatePayload.push(i, newProps[i]);
     }
   }
 
   return updatePayload;
 }
-
-// function eventProxy (e: CommonEvent) {
-//   const el = document.getElementById(e.currentTarget.id)
-//   const handlers = el!.__handlers[e.type]
-//   handlers[0](e)
-// }
 
 function setEvent(dom: TaroElement, name: string, value: unknown, oldValue?: unknown) {
   const isCapture = name.endsWith('Capture');
@@ -138,8 +136,14 @@ function setStyle(style: Style, key: string, value: unknown) {
     return;
   }
 
-  (style as Record<string, any>)[key] =
-    isNumber(value) && IS_NON_DIMENSIONAL.test(key) === false ? convertNumber2PX(value) : value === null ? '' : value;
+  const styleValue: string | number | null =
+    isNumber(value) && IS_NON_DIMENSIONAL.test(key) === false
+      ? convertNumber2PX(value)
+      : value === null
+        ? ''
+        : (value as string | number);
+
+  (style as Record<string, string | number | null>)[key] = styleValue;
 }
 
 type StyleValue = Record<string, string | number>;

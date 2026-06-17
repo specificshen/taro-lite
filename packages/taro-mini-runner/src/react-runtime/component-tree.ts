@@ -9,29 +9,32 @@ import { internalContainerInstanceKey, internalInstanceKey, internalPropsKey } f
 import type { Props } from './props';
 import { HostComponent, HostRoot, HostText, SuspenseComponent } from './work-tags';
 
+type NodeData = Record<string, unknown>;
+
+function getNodeData(node: TaroElement | TaroText): NodeData {
+  return node as unknown as NodeData;
+}
+
 export function precacheFiberNode(hostInst: Fiber, node: TaroElement | TaroText): void {
-  (node as Record<string, any>)[internalInstanceKey] = hostInst;
+  getNodeData(node)[internalInstanceKey] = hostInst;
 }
 
 export function markContainerAsRoot(hostRoot: Fiber, node: TaroElement | TaroText): void {
-  (node as Record<string, any>)[internalContainerInstanceKey] = hostRoot;
+  getNodeData(node)[internalContainerInstanceKey] = hostRoot;
 }
 
 export function unmarkContainerAsRoot(node: TaroElement | TaroText): void {
-  (node as Record<string, any>)[internalContainerInstanceKey] = null;
+  getNodeData(node)[internalContainerInstanceKey] = null;
 }
 
 export function isContainerMarkedAsRoot(node: TaroElement | TaroText): boolean {
-  return !!(node as Record<string, any>)[internalContainerInstanceKey];
+  return !!getNodeData(node)[internalContainerInstanceKey];
 }
 
-/**
- * Given a DOM node, return the ReactDOMComponent or ReactDOMTextComponent
- * instance, or null if the node was not rendered by this React.
- */
 export function getInstanceFromNode(node: TaroElement | TaroText): Fiber | null {
+  const data = getNodeData(node);
   const inst =
-    (node as Record<string, any>)[internalInstanceKey] || (node as Record<string, any>)[internalContainerInstanceKey];
+    (data[internalInstanceKey] as Fiber | undefined) || (data[internalContainerInstanceKey] as Fiber | undefined);
 
   if (inst) {
     if (
@@ -41,29 +44,21 @@ export function getInstanceFromNode(node: TaroElement | TaroText): Fiber | null 
       inst.tag === HostRoot
     ) {
       return inst;
-    } else {
-      return null;
     }
   }
   return null;
 }
 
-/**
- * Given a ReactDOMComponent or ReactDOMTextComponent, return the corresponding
- * DOM node.
- */
 export function getNodeFromInstance(inst: Fiber) {
   if (inst.tag === HostComponent || inst.tag === HostText) {
-    // In Fiber this, is just the state node right now. We assume it will be
-    // a host component or host text.
     return inst.stateNode;
   }
 }
 
 export function getFiberCurrentPropsFromNode(node: TaroElement | TaroText): Props {
-  return (node as Record<string, any>)[internalPropsKey] || null;
+  return (getNodeData(node)[internalPropsKey] as Props) || null;
 }
 
 export function updateFiberProps(node: TaroElement | TaroText, props: Props): void {
-  (node as Record<string, any>)[internalPropsKey] = props;
+  getNodeData(node)[internalPropsKey] = props;
 }

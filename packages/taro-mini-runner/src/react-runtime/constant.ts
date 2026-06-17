@@ -72,6 +72,3 @@ const randomKey = Math.random().toString(36).slice(2);
 export const internalPropsKey = '__reactProps$' + randomKey;
 export const internalInstanceKey = '__reactFiber$' + randomKey;
 export const internalContainerInstanceKey = '__reactContainer$' + randomKey;
-// const internalEventHandlersKey = '__reactEvents$' + randomKey
-// const internalEventHandlerListenersKey = '__reactListeners$' + randomKey
-// const internalEventHandlesSetKey = '__reactHandles$' + randomKey

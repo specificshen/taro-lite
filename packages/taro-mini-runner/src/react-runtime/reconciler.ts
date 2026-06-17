@@ -6,7 +6,6 @@ import type { Fiber, HostConfig } from 'react-reconciler';
 import Reconciler from 'react-reconciler';
 import { DefaultEventPriority, NoEventPriority } from 'react-reconciler/constants';
 import { precacheFiberNode, updateFiberProps } from './component-tree';
-import { track } from './input-value-tracking';
 import { getUpdatePayload, Props, updateProps, updatePropsByPayload } from './props';
 
 let currentUpdatePriority = NoEventPriority;
@@ -21,7 +20,7 @@ const hostConfig: HostConfig<
   TaroElement, // HydratableInstance
   TaroElement, // FormInstance
   TaroElement, // PublicInstance
-  Record<string, any>, // HostContext
+  Record<string, unknown>, // HostContext
   unknown, // ChildSet
   unknown, // TimeoutHandle
   unknown, // NoTimeout
@@ -43,11 +42,17 @@ const hostConfig: HostConfig<
   getChildHostContext(parentHostContext) {
     return parentHostContext;
   },
-  prepareForCommit(..._: any[]) {
+  prepareForCommit(_containerInfo: TaroElement) {
     return null;
   },
   resetAfterCommit: noop,
-  createInstance(type, props: Props, _rootContainerInstance: any, _hostContext: any, internalInstanceHandle: Fiber) {
+  createInstance(
+    type,
+    props: Props,
+    _rootContainerInstance: TaroElement,
+    _hostContext: Record<string, unknown>,
+    internalInstanceHandle: Fiber,
+  ) {
     const element = document.createElement(type);
 
     precacheFiberNode(internalInstanceHandle, element);
@@ -58,7 +63,7 @@ const hostConfig: HostConfig<
   appendInitialChild(parent, child) {
     parent.appendChild(child);
   },
-  finalizeInitialChildren(dom, type: string, props: any) {
+  finalizeInitialChildren(dom, type: string, props: Props) {
     let newProps = props;
     if (dom instanceof FormElement) {
       const [defaultName, defaultKey] = ['switch', 'checkbox', 'radio'].includes(type)
@@ -72,16 +77,17 @@ const hostConfig: HostConfig<
 
     updateProps(dom, {}, newProps); // 提前执行更新属性操作，Taro 在 Page 初始化后会立即从 dom 读取必要信息
 
-    if (type === 'input' || type === 'textarea') {
-      track(dom);
-    }
-
     return false;
   },
   shouldSetTextContent() {
     return false;
   },
-  createTextInstance(text: string, _rootContainerInstance: any, _hostContext: any, internalInstanceHandle: Fiber) {
+  createTextInstance(
+    text: string,
+    _rootContainerInstance: TaroElement,
+    _hostContext: Record<string, unknown>,
+    internalInstanceHandle: Fiber,
+  ) {
     const textNode = document.createTextNode(text);
 
     precacheFiberNode(internalInstanceHandle, textNode);
@@ -103,6 +109,7 @@ const hostConfig: HostConfig<
   prepareScopeUpdate: noop,
   getInstanceFromScope: () => null,
   NotPendingTransition: null,
+  // biome-ignore lint/suspicious/noExplicitAny: React 内部类型 ReactContext 未导出，只能用 any 桥接
   HostTransitionContext: createContext(null) as any,
   setCurrentUpdatePriority(newPriority) {
     currentUpdatePriority = newPriority;
@@ -200,8 +207,8 @@ const hostConfig: HostConfig<
     textInstance.nodeValue = '';
   },
   unhideInstance(instance, props) {
-    const styleProp = props.style as { display?: any };
-    let display = styleProp?.hasOwnProperty('display') ? styleProp.display : null;
+    const styleProp = props.style as { display?: string | number | boolean | null };
+    let display = Object.hasOwn(styleProp || {}, 'display') ? styleProp.display : null;
     display = display == null || isBoolean(display) || display === '' ? '' : ('' + display).trim();
     instance.style.setProperty('display', display);
   },
@@ -217,21 +224,25 @@ const hostConfig: HostConfig<
 
 const TaroReconciler = Reconciler(hostConfig);
 
+type ReconcilerWithInternalFlush = typeof TaroReconciler & {
+  flushSyncFromReconciler?: typeof TaroReconciler.flushSync;
+};
+
+const reconciler = TaroReconciler as ReconcilerWithInternalFlush;
+
 export function flushSync(fn?: () => void) {
-  const reconcilerFlushSync = (TaroReconciler as any).flushSync;
-  if (typeof reconcilerFlushSync === 'function') {
-    return reconcilerFlushSync.call(TaroReconciler, fn);
+  if (typeof reconciler.flushSync === 'function') {
+    return fn ? reconciler.flushSync(fn) : reconciler.flushSync();
   }
   // react-reconciler >= 0.33.0 不再把 flushSync 挂到 reconciler 实例上，
   // 但提供了内部的 flushSyncFromReconciler；用它做兜底。
-  const flushSyncFromReconciler = (TaroReconciler as any).flushSyncFromReconciler;
-  if (typeof flushSyncFromReconciler === 'function') {
-    return flushSyncFromReconciler(fn);
+  if (typeof reconciler.flushSyncFromReconciler === 'function') {
+    return fn ? reconciler.flushSyncFromReconciler(fn) : reconciler.flushSyncFromReconciler();
   }
   return fn?.();
 }
 
-export function runWithPriority<T>(priority: any, fn: () => T): T {
+export function runWithPriority<T>(priority: number, fn: () => T): T {
   const previousPriority = currentUpdatePriority;
   currentUpdatePriority = priority;
   try {
