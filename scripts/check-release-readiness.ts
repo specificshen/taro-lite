@@ -41,6 +41,7 @@ const BUSINESS_ENTRY_ALLOWED_PEER_DEPENDENCIES: Record<string, string[]> = {
   '@spcsn/taro-components': [],
   '@spcsn/taro-cli': [],
 };
+const CLI_DISALLOWED_DIRECT_DEPENDENCIES = ['@spcsn/taro-components'];
 
 const README_PATH = 'README.md';
 const INTERNAL_GUIDANCE_DOC_PATHS = ['docs/package-consolidation.md', 'docs/taro-react-only-modernization.md'];
@@ -69,6 +70,7 @@ checkPackageVersions();
 checkPublishSurfaceContract();
 checkPublicDependencyBoundaries();
 checkBusinessEntryRuntimeDependencyContract();
+checkCliDependencyContract();
 checkBusinessEntryPeerDependencyContract();
 checkReadmeBusinessDependencyContract();
 checkReadmeInternalPackageContract();
@@ -174,6 +176,25 @@ function checkBusinessEntryRuntimeDependencyContract() {
       `${relative(packageJsonPath)}: ${packageJson.name} dependencies must not expose TypeScript-only packages: ${typeRuntimeDependencyNames.join(', ')}`,
     );
   }
+}
+
+function checkCliDependencyContract() {
+  const cliPackageJsonPath = publicPackageJsonPaths.find(
+    (packageJsonPath) => readJson(packageJsonPath).name === '@spcsn/taro-cli',
+  );
+  if (!cliPackageJsonPath) return;
+
+  const cliPackageJson = readJson(cliPackageJsonPath);
+  const cliDependencyNames = Object.keys(cliPackageJson.dependencies || {});
+  const invalidDependencyNames = cliDependencyNames.filter((dependencyName) =>
+    CLI_DISALLOWED_DIRECT_DEPENDENCIES.includes(dependencyName),
+  );
+  if (invalidDependencyNames.length === 0) return;
+
+  hasDependencyBoundaryErrors = true;
+  errors.push(
+    `${relative(cliPackageJsonPath)}: @spcsn/taro-cli must not directly depend on business entry packages: ${invalidDependencyNames.join(', ')}`,
+  );
 }
 
 function checkBusinessEntryPeerDependencyContract() {
