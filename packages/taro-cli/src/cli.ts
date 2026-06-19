@@ -128,7 +128,7 @@ export default class CLI {
     }
 
     args.type ||= getStringArg(args, 'type') ?? 'weapp';
-    process.env.TARO_ENV = getStringArg(args, 'type');
+    process.env.TARO_ENV = typeof args.type === 'string' ? args.type : 'weapp';
 
     const mode = getStringArg(args, 'mode') || process.env.NODE_ENV || 'production';
     const expandEnv = dotenvParse(appPath, envPrefix, mode);

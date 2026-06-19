@@ -36,6 +36,13 @@ describe('location', () => {
       expect(hash).toBe('#a=1&b=2?name=hongxin&age=18');
     }
 
+    {
+      const { username, password, host } = parseUrl('https://user:pass@taro.com/path');
+      expect(username).toBe('user');
+      expect(password).toBe('pass');
+      expect(host).toBe('taro.com');
+    }
+
     // the url should be correct
     {
       const { href } = parseUrl('/a/b');

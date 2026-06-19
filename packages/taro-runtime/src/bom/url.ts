@@ -183,6 +183,8 @@ export function parseUrl(url = '') {
     protocol: '',
     hostname: '',
     host: '',
+    username: '',
+    password: '',
     port: '',
     pathname: '',
     search: '',
@@ -196,7 +198,8 @@ export function parseUrl(url = '') {
 
   if (!matches) return result;
 
-  // TODO: username & password ?
+  result.username = matches[4] || '';
+  result.password = matches[5] || '';
   result.protocol = matches[1] || 'https:';
   result.hostname = matches[6] || 'taro.com';
   result.port = matches[8] || '';

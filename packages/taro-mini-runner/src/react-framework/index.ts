@@ -37,7 +37,10 @@ export default (ctx: FrameworkPluginContext) => {
   if (!isReactLike(framework)) return;
 
   ctx.modifyRunnerOpts(({ opts }) => {
-    if (!opts?.compiler) return;
+    if (!opts) return;
+    if (!opts.compiler) {
+      opts.compiler = { type: 'vite' };
+    }
 
     if (isString(opts.compiler)) {
       opts.compiler = {
