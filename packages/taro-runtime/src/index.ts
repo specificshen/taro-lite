@@ -6,6 +6,9 @@ import env from './env';
 
 export { hooks } from '@spcsn/taro-shared';
 export { processApis } from '@spcsn/taro-shared';
+export { mergeInternalComponents, mergeReconciler, toCamelCase } from '@spcsn/taro-shared';
+export { Shortcuts } from '@spcsn/taro-shared';
+export { UnRecursiveTemplate } from '@spcsn/taro-shared/template';
 // bom
 export { taroDocumentProvider as document } from './bom/document';
 export { taroGetComputedStyleProvider as getComputedStyle } from './bom/get-computed-style';

@@ -55,8 +55,8 @@
   "dependencies": {
     "@spcsn/taro-helper": "workspace:*",
     "@spcsn/taro-mini-runner": "workspace:*",
+    "@spcsn/taro-runtime": "workspace:*",
     "@spcsn/taro-service": "workspace:*",
-    "@spcsn/taro-shared": "workspace:*",
     "adm-zip": "^0.5.17",
     "download-git-repo": "^3.0.2",
     "inquirer": "^14.0.2",

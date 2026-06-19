@@ -1,4 +1,4 @@
-import { processApis } from '@spcsn/taro-shared';
+import { processApis } from '@spcsn/taro-runtime';
 import { needPromiseApis } from './apis-list';
 
 interface WeappNativeApi extends Record<string, unknown> {

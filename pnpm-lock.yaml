@@ -85,12 +85,12 @@ importers:
       '@spcsn/taro-mini-runner':
         specifier: workspace:*
         version: link:../taro-mini-runner
+      '@spcsn/taro-runtime':
+        specifier: workspace:*
+        version: link:../taro-runtime
       '@spcsn/taro-service':
         specifier: workspace:*
         version: link:../taro-service
-      '@spcsn/taro-shared':
-        specifier: workspace:*
-        version: link:../shared
       adm-zip:
         specifier: ^0.5.17
         version: 0.5.17

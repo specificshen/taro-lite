@@ -41,7 +41,7 @@ const BUSINESS_ENTRY_ALLOWED_PEER_DEPENDENCIES: Record<string, string[]> = {
   '@spcsn/taro-components': [],
   '@spcsn/taro-cli': [],
 };
-const CLI_DISALLOWED_DIRECT_DEPENDENCIES = ['@spcsn/taro-components'];
+const CLI_DISALLOWED_DIRECT_DEPENDENCIES = ['@spcsn/taro-components', '@spcsn/taro-shared'];
 const TARO_DISALLOWED_DIRECT_DEPENDENCIES = ['@spcsn/taro-shared'];
 
 const README_PATH = 'README.md';
