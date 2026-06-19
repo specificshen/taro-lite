@@ -1,5 +1,7 @@
 import * as fs from 'node:fs';
+import { createRequire } from 'node:module';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import generator from '@babel/generator';
 import * as parser from '@babel/parser';
 import traverse from '@babel/traverse';
@@ -14,6 +16,20 @@ const eventStart = 'on';
 type AST = t.File;
 type PROP_MAP = Partial<Record<(typeof MINI_APP_TYPES)[number], string[]>>;
 type PROP = Record<string, string[]>;
+type JsonSchemaProp = {
+  description?: string;
+  defaultValue?: unknown;
+  enum?: string[];
+  tsType?: string;
+  type?: string | string[];
+};
+type JsonSchema = {
+  properties?: Record<string, JsonSchemaProp>;
+  required?: string[];
+};
+
+const require = createRequire(import.meta.url);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 function isEmpty(value: unknown): boolean {
   if (value == null) {
@@ -39,7 +55,7 @@ function xor(array: string[], values: string[]): string[] {
 }
 
 class GenerateTypes {
-  jsonSchemas: Record<string, any> = {};
+  jsonSchemas: Record<string, Record<string, JsonSchema>> = {};
   componentName: string;
 
   constructor(componentName: string) {
@@ -48,7 +64,8 @@ class GenerateTypes {
     MINI_APP_TYPES.forEach((type) => {
       const fileName = `${componentName === 'AD' ? 'ad' : paramCase(componentName)}.json`;
       try {
-        const json = require(`miniapp-types/dist/schema/${type}/${fileName}`);
+        const schemaPath = require.resolve(`miniapp-types/dist/schema/${type}/${fileName}`);
+        const json = JSON.parse(fs.readFileSync(schemaPath, 'utf8')) as JsonSchema;
         const overridePath = path.join(__dirname, '../schema-overrides', type, fileName);
         const override = fs.existsSync(overridePath) ? JSON.parse(fs.readFileSync(overridePath, 'utf8')) : null;
         if (json && override?.properties) {
@@ -126,7 +143,7 @@ class GenerateTypes {
             MINI_APP_TYPES.forEach((type) => {
               if (jsonSchemas[type]?.properties[name]) {
                 if (isEmpty(existProps[type])) {
-                  existProps[type] = [name];
+                  existProps[type] = [];
                 }
                 existProps[type]?.push(name);
                 supportedPlatforms.push(type);
@@ -134,7 +151,7 @@ class GenerateTypes {
 
               if (name !== convertedName && jsonSchemas[type]?.properties[convertedName]) {
                 if (isEmpty(existProps[type])) {
-                  existProps[type] = [convertedName];
+                  existProps[type] = [];
                 }
                 existProps[type]?.push(convertedName);
                 supportedPlatforms.push(type);
@@ -214,6 +231,9 @@ class GenerateTypes {
               const platform = props[prop][0];
               const json = jsonSchemas[platform];
               const propSchema = json.properties[prop] || json.properties[prop.replace(/^on/, 'bind')];
+              if (!propSchema) {
+                return;
+              }
               const { type, tsType, enum: enumArray } = propSchema;
               let value: t.TSType;
               if (type === 'string') {
@@ -241,7 +261,7 @@ class GenerateTypes {
               if (node.leadingComments) {
                 let commentValue = `* ${propSchema.description?.trim().replace(/\n/g, '\n * ')}\n`;
                 commentValue += `* @supported ${props[prop].join(', ')}\n`;
-                const { defaultValue, type } = propSchema;
+                const { defaultValue, type: schemaType } = propSchema;
                 if (defaultValue != null) {
                   if (Array.isArray(defaultValue)) {
                     commentValue += `* @default ${defaultValue.join(',')}\n`;
@@ -249,7 +269,7 @@ class GenerateTypes {
                     typeof defaultValue === 'string' &&
                     !defaultValue.startsWith('"') &&
                     !['none', '无'].includes(defaultValue) &&
-                    type === 'string'
+                    schemaType === 'string'
                   ) {
                     commentValue += `* @default "${propSchema.defaultValue.replace(/(^')|('$)/gi, '')}"\n`;
                   } else {

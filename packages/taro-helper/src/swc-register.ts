@@ -1,3 +1,4 @@
+import { createRequire } from 'node:module';
 import type { Config } from '@swc/core';
 
 type SwcOnlyMatcher = string | RegExp | ((filename: string) => boolean);
@@ -16,6 +17,8 @@ interface ICreateSwcRegisterParam {
   only: SwcOnlyMatcher[];
   plugins?: SwcPlugin[];
 }
+
+const swcRegisterRequire = createRequire(__filename);
 
 export default function createSwcRegister({ only, plugins }: ICreateSwcRegisterParam) {
   const config: SwcRegisterConfig = {
@@ -40,5 +43,5 @@ export default function createSwcRegister({ only, plugins }: ICreateSwcRegisterP
     };
   }
 
-  require('@swc/register')(config);
+  swcRegisterRequire('@swc/register')(config);
 }

@@ -1,3 +1,4 @@
+import { createRequire } from 'node:module';
 import * as path from 'node:path';
 import type { IProjectConfig, PluginItem } from '@spcsn/taro/types/compile';
 import { chalk, getModuleDefaultExport } from '@spcsn/taro-helper';
@@ -9,6 +10,7 @@ import type { IPlugin, IPluginsObject } from './types';
 export const isNpmPkg: (name: string) => boolean = (name) => !/^(\.|\/)/.test(name);
 
 const removedLegacyPlugins = new Set(['@spcsn/taro-plugin-generator']);
+const runtimeRequire = createRequire(__filename);
 
 const cliBuiltinPlugins: Record<string, string> = {
   '@spcsn/taro-plugin-platform-weapp': 'dist/platform-weapp/index.js',
@@ -18,7 +20,7 @@ function resolveCliBuiltinPlugin(item: string, root: string): string | undefined
   const builtinPath = cliBuiltinPlugins[item];
   if (!builtinPath) return;
 
-  const cliPackageJson = require.resolve('@spcsn/taro-cli/package.json', {
+  const cliPackageJson = runtimeRequire.resolve('@spcsn/taro-cli/package.json', {
     paths: [__dirname, root].filter(Boolean),
   });
   return path.join(path.dirname(cliPackageJson), builtinPath);
@@ -85,7 +87,9 @@ export function resolvePresetsOrPlugins(
       }
       if (!fPath && (err as any).code === 'MODULE_NOT_FOUND') {
         try {
-          const cliPath = require.resolve('@spcsn/taro-cli/package.json', { paths: [__dirname, root].filter(Boolean) });
+          const cliPath = runtimeRequire.resolve('@spcsn/taro-cli/package.json', {
+            paths: [__dirname, root].filter(Boolean),
+          });
           fPath = resolve.sync(item, { basedir: path.dirname(cliPath), extensions: ['.js', '.ts'] });
         } catch (_e) {}
       }
@@ -118,7 +122,7 @@ export function resolvePresetsOrPlugins(
       opts: args[item] || {},
       apply() {
         try {
-          return getModuleDefaultExport(require(fPath));
+          return getModuleDefaultExport(runtimeRequire(fPath));
         } catch (error) {
           console.error(error);
           // 全局的插件运行报错，不抛出 Error 影响主流程，而是通过 log 提醒然后把插件 filter 掉，保证主流程不变

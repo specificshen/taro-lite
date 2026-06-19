@@ -1,3 +1,4 @@
+import { createRequire } from 'node:module';
 import * as path from 'node:path';
 import spawn from 'cross-spawn';
 import resolvePath from 'resolve';
@@ -5,6 +6,7 @@ import * as Util from './utils';
 
 const PEERS = /UNMET PEER DEPENDENCY ([a-z\-0-9.]+)@(.+)/gm;
 const npmCache = new Map<string, string>();
+const runtimeRequire = createRequire(__filename);
 
 const erroneous: string[] = [];
 
@@ -29,7 +31,7 @@ export const taroPluginPrefix = '@spcsn/taro-plugin-';
 
 function resolveFromCliPackage(pluginName: string, root?: string): string | undefined {
   try {
-    const cliPackageJsonPath = require.resolve('@spcsn/taro-cli/package.json', {
+    const cliPackageJsonPath = runtimeRequire.resolve('@spcsn/taro-cli/package.json', {
       paths: [__dirname, root].filter(Boolean) as string[],
     });
     return resolvePath.sync(pluginName, { basedir: path.dirname(cliPackageJsonPath) });
@@ -203,7 +205,7 @@ export const callPluginSync: pluginFunction = (
 
 export function getNpmPkgSync(npmName: string, root: string) {
   const npmPath = resolveNpmSync(npmName, root);
-  const npmFn = require(npmPath);
+  const npmFn = runtimeRequire(npmPath);
   return npmFn;
 }
 
@@ -226,6 +228,6 @@ export async function getNpmPkg(npmName: string, root: string) {
   if (!npmPath) {
     throw new Error(`无法解析 npm 包 "${npmName}"`);
   }
-  const npmFn = require(npmPath);
+  const npmFn = runtimeRequire(npmPath);
   return npmFn;
 }
