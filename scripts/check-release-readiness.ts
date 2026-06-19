@@ -42,6 +42,7 @@ const BUSINESS_ENTRY_ALLOWED_PEER_DEPENDENCIES: Record<string, string[]> = {
   '@spcsn/taro-cli': [],
 };
 const CLI_DISALLOWED_DIRECT_DEPENDENCIES = ['@spcsn/taro-components'];
+const TARO_DISALLOWED_DIRECT_DEPENDENCIES = ['@spcsn/taro-shared'];
 
 const README_PATH = 'README.md';
 const INTERNAL_GUIDANCE_DOC_PATHS = ['docs/package-consolidation.md', 'docs/taro-react-only-modernization.md'];
@@ -71,6 +72,7 @@ checkPublishSurfaceContract();
 checkPublicDependencyBoundaries();
 checkBusinessEntryRuntimeDependencyContract();
 checkCliDependencyContract();
+checkTaroDependencyContract();
 checkBusinessEntryPeerDependencyContract();
 checkReadmeBusinessDependencyContract();
 checkReadmeInternalPackageContract();
@@ -194,6 +196,25 @@ function checkCliDependencyContract() {
   hasDependencyBoundaryErrors = true;
   errors.push(
     `${relative(cliPackageJsonPath)}: @spcsn/taro-cli must not directly depend on business entry packages: ${invalidDependencyNames.join(', ')}`,
+  );
+}
+
+function checkTaroDependencyContract() {
+  const taroPackageJsonPath = publicPackageJsonPaths.find(
+    (packageJsonPath) => readJson(packageJsonPath).name === '@spcsn/taro',
+  );
+  if (!taroPackageJsonPath) return;
+
+  const taroPackageJson = readJson(taroPackageJsonPath);
+  const taroDependencyNames = Object.keys(taroPackageJson.dependencies || {});
+  const invalidDependencyNames = taroDependencyNames.filter((dependencyName) =>
+    TARO_DISALLOWED_DIRECT_DEPENDENCIES.includes(dependencyName),
+  );
+  if (invalidDependencyNames.length === 0) return;
+
+  hasDependencyBoundaryErrors = true;
+  errors.push(
+    `${relative(taroPackageJsonPath)}: @spcsn/taro must not directly depend on disallowed internal packages: ${invalidDependencyNames.join(', ')}`,
   );
 }
 
