@@ -4,12 +4,12 @@ import './dom-external';
 
 import env from './env';
 
-export { processApis } from '@spcsn/taro-shared';
-export { UnRecursiveTemplate } from '@spcsn/taro-shared/template';
 export { hooks } from './runtime-hooks';
 export { mergeInternalComponents } from './internal-components-registry';
 export { mergeReconciler } from './merge-reconciler';
+export { processApis } from './process-apis';
 export { Shortcuts } from './shortcuts';
+export { UnRecursiveTemplate } from './template-adapter';
 export { toCamelCase } from './shared-primitives';
 // bom
 export { taroDocumentProvider as document } from './bom/document';

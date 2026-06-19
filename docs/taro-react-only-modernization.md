@@ -28,13 +28,14 @@
 - `@spcsn/taro-runtime` 的打包 external 已覆盖 `@spcsn/taro-shared/*` 子路径，避免把 shared 子路径意外打进 runtime 产物。
 - `@spcsn/taro-runtime` 已内聚基础能力（primitives、hooks、shortcuts、event-emitter、controlled-components），`src` 中对 `@spcsn/taro-shared` 的引用已收敛到 5 个触点。
 - `@spcsn/taro-runtime` 已新增 `internal-components-registry` 收口层，`internalComponents/getComponentsAlias/mergeInternalComponents` 不再散落在多个模块中直接引用 shared。
+- `@spcsn/taro-runtime` 已新增 `process-apis` 与 `template-adapter` 收口层，`processApis` 与 `UnRecursiveTemplate` 不再由入口文件直接引用 shared。
 
 仍处于过渡态：
 
 - `@spcsn/taro-service`、`@spcsn/taro-mini-runner`、`@spcsn/taro-helper`、`@spcsn/taro-shared`、`@spcsn/taro-runtime` 仍作为安装兼容所需的内部实现包发布。
 - 这些内部包不能直接 `private: true` 后停止发布；必须先把它们打进公开入口包闭包，再移除公开入口里的 npm 依赖。
 - 真实业务验证优先使用三入口包契约，不再按早期方案成组替换十几个历史插件包。
-- `@spcsn/taro-runtime -> @spcsn/taro-shared` 仍是运行时硬依赖：当前剩余阻塞主要是 `processApis` 与 `UnRecursiveTemplate` 的本地化迁移，暂不满足移除 direct dependency 的条件。
+- `@spcsn/taro-runtime -> @spcsn/taro-shared` 仍是运行时硬依赖：`processApis` 与 `UnRecursiveTemplate` 目前仍通过 runtime 适配层委托 shared 实现，尚未完成本地化迁移。
 
 ## 1. 改造目标
 

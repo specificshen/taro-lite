@@ -52,8 +52,9 @@ const TARO_DISALLOWED_DIRECT_DEPENDENCIES = ['@spcsn/taro-shared'];
 const TARO_DISALLOWED_DEV_DEPENDENCIES = ['@spcsn/taro-components'];
 const TARO_ALLOWED_DIRECT_DEPENDENCIES = ['@spcsn/taro-runtime'];
 const RUNTIME_SHARED_SOURCE_ALLOWLIST = new Set([
-  'packages/taro-runtime/src/index.ts',
   'packages/taro-runtime/src/internal-components-registry.ts',
+  'packages/taro-runtime/src/process-apis.ts',
+  'packages/taro-runtime/src/template-adapter.ts',
 ]);
 
 const README_PATH = 'README.md';

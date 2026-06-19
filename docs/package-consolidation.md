@@ -38,6 +38,7 @@
 - `@spcsn/taro-runtime` 的打包 external 已覆盖 `@spcsn/taro-shared/*` 子路径，避免 shared 子路径被误打入 runtime 产物。
 - `@spcsn/taro-runtime` 已将 primitives/hooks/shortcuts/event-emitter/controlled-components 内聚到包内，shared 直连引用面已显著收敛。
 - `@spcsn/taro-runtime` 已新增 `internal-components-registry` 作为 shared 组件映射能力的单点收口层，避免散点直连。
+- `@spcsn/taro-runtime` 已新增 `process-apis` 与 `template-adapter` 作为 shared 能力单点收口层，入口层不再直接依赖 shared。
 
 必须保留的公开入口：
 
@@ -59,7 +60,7 @@
 
 注意：这些包不能直接设为 `private: true` 后停止发布。当前 `@spcsn/taro`、`@spcsn/taro-cli`、`@spcsn/taro-components` 仍会在 npm 安装时解析它们。正确路径是先调整构建产物，把内部包打进公开入口包的 `dist`，再移除公开入口包里的内部 npm 依赖。
 
-当前阻塞：`@spcsn/taro-runtime` 产物仍存在对 `@spcsn/taro-shared` 的 live import/require，主要集中在 `processApis` 与 `UnRecursiveTemplate`，尚不能安全移除 `taro-runtime -> taro-shared` 直接依赖。
+当前阻塞：`@spcsn/taro-runtime` 产物仍存在对 `@spcsn/taro-shared` 的 live import/require，当前集中在收口层 `process-apis` 与 `template-adapter` 的底层实现委托，尚不能安全移除 `taro-runtime -> taro-shared` 直接依赖。
 
 ## 建议顺序
 
