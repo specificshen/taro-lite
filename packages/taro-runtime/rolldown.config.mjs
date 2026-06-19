@@ -1,6 +1,7 @@
 import { defineConfig } from 'rolldown';
 
-const external = ['@spcsn/taro-shared'];
+const externalPackages = ['@spcsn/taro-shared'];
+const external = (id) => externalPackages.some((pkg) => id === pkg || id.startsWith(`${pkg}/`));
 
 const baseOutput = {
   sourcemap: true,
