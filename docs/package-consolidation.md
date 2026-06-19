@@ -32,6 +32,9 @@
 - `@spcsn/taro-runner-utils` 已并入 `@spcsn/taro-service` 与 `@spcsn/taro-mini-runner`，不再作为公开发布包。
 - 临时现代化 CLI 包 `@spcsn/taro-core` 已合并回 `@spcsn/taro-cli`，`taro-core` 不再作为独立包存在。
 - 已收敛的历史 private 包已从仓库删除，不再位于活跃 `packages/` 目录，也不参与 workspace 安装和递归构建。
+- `@spcsn/taro-cli` 已移除对 `@spcsn/taro-components` 与 `@spcsn/taro-shared` 的直接依赖，改由内部运行时导出层承接相关能力。
+- `@spcsn/taro` 已移除对 `@spcsn/taro-shared` 的直接依赖，并清理 `@spcsn/taro-components` 的开发依赖。
+- `scripts/check-release-readiness.ts` 已新增依赖边界闸门，防止上述直连依赖回退。
 
 必须保留的公开入口：
 

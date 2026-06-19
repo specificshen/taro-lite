@@ -4,7 +4,7 @@
 > 目标读者：负责改造 fork 后 Taro monorepo 的 AI / 工程师。
 > 核心目标：把 Taro 从“多框架、多平台、多历史编译器兼容”的通用框架，收敛为“React 19 开发微信小程序/Skyline 优先”的现代小程序构建与运行框架。
 
-## 0. 当前同步状态（2026-06-14）
+## 0. 当前同步状态（2026-06-19）
 
 当前仓库已经不再只是早期方案阶段，`1.0.0` 稳定线已按 React 19 开发 WeApp + Skyline / glass-easel 主链路推进。
 
@@ -21,6 +21,10 @@
 - 已建立 `fixtures/taro-lite-sunshine-lab`，用于验证 React 19 开发 WeApp + Skyline / glass-easel 构建链路。
 - `scripts/check-release-readiness.ts` 已作为发布前防回退检查，覆盖公开包版本、发布面和业务可见类型注释边界。
 - 临时包 `@spcsn/taro-core` 已合并回 `@spcsn/taro-cli`：`taro-core` 的现代 ESM-first 源码和模板成为 `taro-cli` 的实现，`taro-core` 包本身已删除，业务侧仍只依赖 `@spcsn/taro-cli`。
+- CLI 构建链已固定 `--type weapp`：传入其他 type 会告警并回退为 weapp。
+- `@spcsn/taro-cli` 已移除对 `@spcsn/taro-components` 与 `@spcsn/taro-shared` 的直接依赖，平台能力改由 `@spcsn/taro-runtime` 导出层承接。
+- `@spcsn/taro` 已移除对 `@spcsn/taro-shared` 的直接依赖，并清理了 `@spcsn/taro-components` 的开发依赖。
+- 发布检查已新增依赖边界闸门：防止 `@spcsn/taro-cli` 回退直连 `@spcsn/taro-components/@spcsn/taro-shared`，防止 `@spcsn/taro` 回退直连 `@spcsn/taro-shared` 或恢复 `@spcsn/taro-components` 开发依赖。
 
 仍处于过渡态：
 
