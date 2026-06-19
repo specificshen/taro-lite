@@ -1,7 +1,4 @@
-import {
-  getComponentsAlias as _getComponentsAlias,
-  internalComponents,
-} from '@spcsn/taro-shared';
+import { getComponentsAlias as _getComponentsAlias, internalComponents } from '../internal-components-registry';
 import { isFunction } from '../shared-primitives';
 import { Shortcuts } from '../shortcuts';
 import { CLASS, COMMENT, ID, ROOT_STR, STYLE, UID } from '../constants';

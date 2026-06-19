@@ -1,7 +1,4 @@
-import {
-  getComponentsAlias,
-  internalComponents,
-} from '@spcsn/taro-shared';
+import { getComponentsAlias, internalComponents } from '../internal-components-registry';
 import { EMPTY_OBJ, ensure, isArray, isFunction, isString, isUndefined } from '../shared-primitives';
 import { hooks } from '../runtime-hooks';
 import { Shortcuts } from '../shortcuts';
