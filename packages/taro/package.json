@@ -64,7 +64,6 @@
     "@spcsn/taro-runtime": "workspace:*"
   },
   "devDependencies": {
-    "@spcsn/taro-components": "workspace:*",
     "rolldown": "^1.1.1"
   },
   "peerDependencies": {
