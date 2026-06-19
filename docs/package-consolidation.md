@@ -35,6 +35,7 @@
 - `@spcsn/taro-cli` 已移除对 `@spcsn/taro-components` 与 `@spcsn/taro-shared` 的直接依赖，改由内部运行时导出层承接相关能力。
 - `@spcsn/taro` 已移除对 `@spcsn/taro-shared` 的直接依赖，并清理 `@spcsn/taro-components` 的开发依赖。
 - `scripts/check-release-readiness.ts` 已新增依赖边界闸门，防止上述直连依赖回退。
+- `@spcsn/taro-runtime` 的打包 external 已覆盖 `@spcsn/taro-shared/*` 子路径，避免 shared 子路径被误打入 runtime 产物。
 
 必须保留的公开入口：
 
@@ -55,6 +56,8 @@
 - `@spcsn/taro-runtime`
 
 注意：这些包不能直接设为 `private: true` 后停止发布。当前 `@spcsn/taro`、`@spcsn/taro-cli`、`@spcsn/taro-components` 仍会在 npm 安装时解析它们。正确路径是先调整构建产物，把内部包打进公开入口包的 `dist`，再移除公开入口包里的内部 npm 依赖。
+
+当前阻塞：`@spcsn/taro-runtime` 产物仍存在对 `@spcsn/taro-shared` 的 live import/require，尚不能安全移除 `taro-runtime -> taro-shared` 直接依赖。
 
 ## 建议顺序
 

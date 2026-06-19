@@ -25,12 +25,14 @@
 - `@spcsn/taro-cli` 已移除对 `@spcsn/taro-components` 与 `@spcsn/taro-shared` 的直接依赖，平台能力改由 `@spcsn/taro-runtime` 导出层承接。
 - `@spcsn/taro` 已移除对 `@spcsn/taro-shared` 的直接依赖，并清理了 `@spcsn/taro-components` 的开发依赖。
 - 发布检查已新增依赖边界闸门：防止 `@spcsn/taro-cli` 回退直连 `@spcsn/taro-components/@spcsn/taro-shared`，防止 `@spcsn/taro` 回退直连 `@spcsn/taro-shared` 或恢复 `@spcsn/taro-components` 开发依赖。
+- `@spcsn/taro-runtime` 的打包 external 已覆盖 `@spcsn/taro-shared/*` 子路径，避免把 shared 子路径意外打进 runtime 产物。
 
 仍处于过渡态：
 
 - `@spcsn/taro-service`、`@spcsn/taro-mini-runner`、`@spcsn/taro-helper`、`@spcsn/taro-shared`、`@spcsn/taro-runtime` 仍作为安装兼容所需的内部实现包发布。
 - 这些内部包不能直接 `private: true` 后停止发布；必须先把它们打进公开入口包闭包，再移除公开入口里的 npm 依赖。
 - 真实业务验证优先使用三入口包契约，不再按早期方案成组替换十几个历史插件包。
+- `@spcsn/taro-runtime -> @spcsn/taro-shared` 仍是运行时硬依赖：当前产物仍有 live import/require，暂不满足移除 direct dependency 的条件。
 
 ## 1. 改造目标
 
