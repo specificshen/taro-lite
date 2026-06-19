@@ -107,7 +107,7 @@ export default class Config {
       [entryName]: [entryFilePath],
     };
 
-    return {
+    const mergedConfig = {
       entry,
       alias: initialConfig.alias || {},
       copy: initialConfig.copy,
@@ -135,5 +135,30 @@ export default class Config {
       ...initialConfig[configName],
       ...initialConfig[platform],
     };
+
+    if (mergedConfig.framework && mergedConfig.framework !== 'react') {
+      console.warn(`仅支持 framework=react，已忽略 "${String(mergedConfig.framework)}" 并回退为 react。`);
+    }
+    mergedConfig.framework = 'react';
+
+    const mergedCompiler = mergedConfig.compiler;
+    if (typeof mergedCompiler === 'string') {
+      if (mergedCompiler !== 'vite') {
+        console.warn(`仅支持 compiler=vite，已忽略 "${mergedCompiler}" 并回退为 vite。`);
+      }
+      mergedConfig.compiler = 'vite';
+    } else if (mergedCompiler && typeof mergedCompiler === 'object') {
+      if (mergedCompiler.type !== 'vite') {
+        console.warn(`仅支持 compiler.type=vite，已忽略 "${String(mergedCompiler.type)}" 并回退为 vite。`);
+      }
+      mergedConfig.compiler = {
+        ...mergedCompiler,
+        type: 'vite',
+      };
+    } else {
+      mergedConfig.compiler = 'vite';
+    }
+
+    return mergedConfig;
   }
 }
