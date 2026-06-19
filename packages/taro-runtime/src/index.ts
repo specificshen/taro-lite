@@ -5,6 +5,7 @@ import './dom-external';
 import env from './env';
 
 export { hooks } from '@spcsn/taro-shared';
+export { processApis } from '@spcsn/taro-shared';
 // bom
 export { taroDocumentProvider as document } from './bom/document';
 export { taroGetComputedStyleProvider as getComputedStyle } from './bom/get-computed-style';

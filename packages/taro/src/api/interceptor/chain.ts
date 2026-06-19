@@ -1,4 +1,4 @@
-import { isFunction } from '@spcsn/taro-shared';
+import { isFunction } from '../../type-guards';
 
 export type ChainPromise<T = unknown> = Promise<T> & Record<string, any>;
 

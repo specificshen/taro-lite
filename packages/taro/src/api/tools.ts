@@ -1,4 +1,4 @@
-import { isFunction, isObject } from '@spcsn/taro-shared';
+import { isFunction, isObject } from '../type-guards';
 
 interface TaroApi {
   config?: PxTransformConfig;

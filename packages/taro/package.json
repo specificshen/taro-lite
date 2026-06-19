@@ -61,8 +61,7 @@
     "node": ">= 22.15.0"
   },
   "dependencies": {
-    "@spcsn/taro-runtime": "workspace:*",
-    "@spcsn/taro-shared": "workspace:*"
+    "@spcsn/taro-runtime": "workspace:*"
   },
   "devDependencies": {
     "@spcsn/taro-components": "workspace:*",

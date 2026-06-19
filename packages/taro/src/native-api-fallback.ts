@@ -1,6 +1,6 @@
 declare const wx: any;
 
-import { processApis } from '@spcsn/taro-shared';
+import { processApis } from '@spcsn/taro-runtime';
 
 const needPromiseApis = new Set([
   'addFileToFavorites',

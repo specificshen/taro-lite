@@ -69,9 +69,6 @@ importers:
       '@spcsn/taro-runtime':
         specifier: workspace:*
         version: link:../taro-runtime
-      '@spcsn/taro-shared':
-        specifier: workspace:*
-        version: link:../shared
     devDependencies:
       '@spcsn/taro-components':
         specifier: workspace:*

@@ -1,4 +1,4 @@
-import { isFunction } from '@spcsn/taro-shared';
+import { isFunction } from '../../type-guards';
 import type Chain from './chain';
 
 type AbortablePromise<T> = Promise<T> & {
