@@ -51,6 +51,11 @@ const CLI_ALLOWED_DIRECT_DEPENDENCIES = [
 const TARO_DISALLOWED_DIRECT_DEPENDENCIES = ['@spcsn/taro-shared'];
 const TARO_DISALLOWED_DEV_DEPENDENCIES = ['@spcsn/taro-components'];
 const TARO_ALLOWED_DIRECT_DEPENDENCIES = ['@spcsn/taro-runtime'];
+const RUNTIME_SHARED_SOURCE_ALLOWLIST = new Set([
+  'packages/taro-runtime/src/index.ts',
+  'packages/taro-runtime/src/dsl/common.ts',
+  'packages/taro-runtime/src/utils/index.ts',
+]);
 
 const README_PATH = 'README.md';
 const INTERNAL_GUIDANCE_DOC_PATHS = ['docs/package-consolidation.md', 'docs/taro-react-only-modernization.md'];
@@ -91,6 +96,7 @@ checkBusinessFixtureConfigContract();
 checkBusinessFixtureScriptContract();
 checkBusinessTemplateScriptContract();
 checkBusinessVisibleTypeContract();
+checkRuntimeSharedSourceContract();
 
 if (warnings.length > 0) {
   globalThis.console.log('Warnings:\n');
@@ -248,6 +254,7 @@ function checkTaroDependencyContract() {
       `${relative(taroPackageJsonPath)}: @spcsn/taro must not directly depend on disallowed internal packages: ${invalidDependencyNames.join(', ')}`,
     );
   }
+
   if (unexpectedSpcsnDependencyNames.length > 0) {
     errors.push(
       `${relative(taroPackageJsonPath)}: @spcsn/taro has unexpected direct @spcsn dependencies: ${unexpectedSpcsnDependencyNames.join(', ')}`,
@@ -258,6 +265,28 @@ function checkTaroDependencyContract() {
       `${relative(taroPackageJsonPath)}: @spcsn/taro must not keep disallowed devDependencies: ${invalidDevDependencyNames.join(', ')}`,
     );
   }
+}
+
+function checkRuntimeSharedSourceContract() {
+  const runtimeSourceDir = path.join(rootDir, 'packages/taro-runtime/src');
+  const runtimeSourcePaths = collectFiles(runtimeSourceDir, '.ts');
+  const sharedImportPattern = /@spcsn\/taro-shared(?:\/template)?/;
+  const unexpectedImportPaths: string[] = [];
+
+  for (const runtimeSourcePath of runtimeSourcePaths) {
+    const source = fs.readFileSync(runtimeSourcePath, 'utf8');
+    if (!sharedImportPattern.test(source)) continue;
+    const sourceRelativePath = relative(runtimeSourcePath);
+    if (RUNTIME_SHARED_SOURCE_ALLOWLIST.has(sourceRelativePath)) continue;
+    unexpectedImportPaths.push(sourceRelativePath);
+  }
+
+  if (unexpectedImportPaths.length === 0) return;
+
+  hasDependencyBoundaryErrors = true;
+  errors.push(
+    `packages/taro-runtime/src: unexpected @spcsn/taro-shared imports outside allowlist: ${unexpectedImportPaths.join(', ')}`,
+  );
 }
 
 function checkBusinessEntryPeerDependencyContract() {
