@@ -42,8 +42,15 @@ const BUSINESS_ENTRY_ALLOWED_PEER_DEPENDENCIES: Record<string, string[]> = {
   '@spcsn/taro-cli': [],
 };
 const CLI_DISALLOWED_DIRECT_DEPENDENCIES = ['@spcsn/taro-components', '@spcsn/taro-shared'];
+const CLI_ALLOWED_DIRECT_DEPENDENCIES = [
+  '@spcsn/taro-helper',
+  '@spcsn/taro-mini-runner',
+  '@spcsn/taro-runtime',
+  '@spcsn/taro-service',
+];
 const TARO_DISALLOWED_DIRECT_DEPENDENCIES = ['@spcsn/taro-shared'];
 const TARO_DISALLOWED_DEV_DEPENDENCIES = ['@spcsn/taro-components'];
+const TARO_ALLOWED_DIRECT_DEPENDENCIES = ['@spcsn/taro-runtime'];
 
 const README_PATH = 'README.md';
 const INTERNAL_GUIDANCE_DOC_PATHS = ['docs/package-consolidation.md', 'docs/taro-react-only-modernization.md'];
@@ -192,12 +199,22 @@ function checkCliDependencyContract() {
   const invalidDependencyNames = cliDependencyNames.filter((dependencyName) =>
     CLI_DISALLOWED_DIRECT_DEPENDENCIES.includes(dependencyName),
   );
-  if (invalidDependencyNames.length === 0) return;
+  const unexpectedSpcsnDependencyNames = cliDependencyNames.filter(
+    (dependencyName) => dependencyName.startsWith('@spcsn/') && !CLI_ALLOWED_DIRECT_DEPENDENCIES.includes(dependencyName),
+  );
+  if (invalidDependencyNames.length === 0 && unexpectedSpcsnDependencyNames.length === 0) return;
 
   hasDependencyBoundaryErrors = true;
-  errors.push(
-    `${relative(cliPackageJsonPath)}: @spcsn/taro-cli must not directly depend on business entry packages: ${invalidDependencyNames.join(', ')}`,
-  );
+  if (invalidDependencyNames.length > 0) {
+    errors.push(
+      `${relative(cliPackageJsonPath)}: @spcsn/taro-cli must not directly depend on business entry packages: ${invalidDependencyNames.join(', ')}`,
+    );
+  }
+  if (unexpectedSpcsnDependencyNames.length > 0) {
+    errors.push(
+      `${relative(cliPackageJsonPath)}: @spcsn/taro-cli has unexpected direct @spcsn dependencies: ${unexpectedSpcsnDependencyNames.join(', ')}`,
+    );
+  }
 }
 
 function checkTaroDependencyContract() {
@@ -212,15 +229,28 @@ function checkTaroDependencyContract() {
   const invalidDependencyNames = taroDependencyNames.filter((dependencyName) =>
     TARO_DISALLOWED_DIRECT_DEPENDENCIES.includes(dependencyName),
   );
+  const unexpectedSpcsnDependencyNames = taroDependencyNames.filter(
+    (dependencyName) => dependencyName.startsWith('@spcsn/') && !TARO_ALLOWED_DIRECT_DEPENDENCIES.includes(dependencyName),
+  );
   const invalidDevDependencyNames = taroDevDependencyNames.filter((dependencyName) =>
     TARO_DISALLOWED_DEV_DEPENDENCIES.includes(dependencyName),
   );
-  if (invalidDependencyNames.length === 0 && invalidDevDependencyNames.length === 0) return;
+  if (
+    invalidDependencyNames.length === 0 &&
+    unexpectedSpcsnDependencyNames.length === 0 &&
+    invalidDevDependencyNames.length === 0
+  )
+    return;
 
   hasDependencyBoundaryErrors = true;
   if (invalidDependencyNames.length > 0) {
     errors.push(
       `${relative(taroPackageJsonPath)}: @spcsn/taro must not directly depend on disallowed internal packages: ${invalidDependencyNames.join(', ')}`,
+    );
+  }
+  if (unexpectedSpcsnDependencyNames.length > 0) {
+    errors.push(
+      `${relative(taroPackageJsonPath)}: @spcsn/taro has unexpected direct @spcsn dependencies: ${unexpectedSpcsnDependencyNames.join(', ')}`,
     );
   }
   if (invalidDevDependencyNames.length > 0) {
