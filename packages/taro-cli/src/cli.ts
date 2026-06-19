@@ -159,7 +159,11 @@ export default class CLI {
     }
 
     args.type ||= getStringArg(args, 'type') ?? 'weapp';
-    process.env.TARO_ENV = typeof args.type === 'string' ? args.type : 'weapp';
+    if (args.type !== 'weapp') {
+      console.warn(`当前仅支持 --type weapp，已忽略 "${String(args.type)}" 并回退为 weapp。`);
+      args.type = 'weapp';
+    }
+    process.env.TARO_ENV = 'weapp';
 
     const mode = getStringArg(args, 'mode') || process.env.NODE_ENV || 'production';
     const expandEnv = dotenvParse(appPath, envPrefix, mode);

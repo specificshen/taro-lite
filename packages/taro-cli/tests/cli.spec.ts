@@ -75,6 +75,16 @@ describe('cli', () => {
       await cli.run();
       expect(process.env.NODE_ENV).toEqual('development');
     });
+
+    it('should force --type to weapp', async () => {
+      const warnSpy = vi.spyOn(console, 'warn');
+      warnSpy.mockImplementation(() => {});
+      setProcessArgv('taro build --type h5');
+      await cli.run();
+      expect(process.env.TARO_ENV).toEqual('weapp');
+      expect(warnSpy).toHaveBeenCalledWith('当前仅支持 --type weapp，已忽略 "h5" 并回退为 weapp。');
+      warnSpy.mockRestore();
+    });
   });
 
   describe('init', () => {
