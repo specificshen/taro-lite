@@ -5,9 +5,10 @@ import './dom-external';
 import env from './env';
 
 export { processApis } from '@spcsn/taro-shared';
-export { mergeInternalComponents, mergeReconciler } from '@spcsn/taro-shared';
+export { mergeInternalComponents } from '@spcsn/taro-shared';
 export { UnRecursiveTemplate } from '@spcsn/taro-shared/template';
 export { hooks } from './runtime-hooks';
+export { mergeReconciler } from './merge-reconciler';
 export { Shortcuts } from './shortcuts';
 export { toCamelCase } from './shared-primitives';
 // bom
