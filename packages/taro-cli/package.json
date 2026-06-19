@@ -53,7 +53,6 @@
     "node": ">= 22.15.0"
   },
   "dependencies": {
-    "@spcsn/taro-components": "workspace:*",
     "@spcsn/taro-helper": "workspace:*",
     "@spcsn/taro-mini-runner": "workspace:*",
     "@spcsn/taro-service": "workspace:*",

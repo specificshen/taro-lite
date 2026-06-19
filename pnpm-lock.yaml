@@ -82,9 +82,6 @@ importers:
 
   packages/taro-cli:
     dependencies:
-      '@spcsn/taro-components':
-        specifier: workspace:*
-        version: link:../taro-components
       '@spcsn/taro-helper':
         specifier: workspace:*
         version: link:../taro-helper
