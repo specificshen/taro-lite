@@ -1,4 +1,6 @@
-import { ensure, hooks, Shortcuts } from '@spcsn/taro-shared';
+import { hooks } from '../runtime-hooks';
+import { Shortcuts } from '../shortcuts';
+import { ensure } from '../shared-primitives';
 import { DOCUMENT_FRAGMENT } from '../constants';
 import { MutationObserver, MutationRecordType } from '../dom-external/mutation-observer';
 import env from '../env';

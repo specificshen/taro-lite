@@ -1,4 +1,5 @@
-import { Events, hooks } from '@spcsn/taro-shared';
+import { Events } from '../event-emitter';
+import { hooks } from '../runtime-hooks';
 
 const eventCenter = hooks.call('getEventCenter', Events)!;
 

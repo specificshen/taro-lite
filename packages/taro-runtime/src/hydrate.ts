@@ -1,4 +1,6 @@
-import { hooks, Shortcuts, toCamelCase } from '@spcsn/taro-shared';
+import { hooks } from './runtime-hooks';
+import { Shortcuts } from './shortcuts';
+import { toCamelCase } from './shared-primitives';
 import { CATCH_VIEW, CATCHMOVE, CLASS, CLICK_VIEW, COMPILE_MODE, ID, PURE_VIEW, STYLE, VIEW } from './constants';
 import type { TaroElement } from './dom/element';
 import type { TaroText } from './dom/text';

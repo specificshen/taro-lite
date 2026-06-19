@@ -1,4 +1,4 @@
-import { isNumber, isString, warn } from '@spcsn/taro-shared';
+import { isNumber, isString, warn } from '../shared-primitives';
 import { CONTEXT_ACTIONS } from '../constants';
 import { getCurrentInstance } from '../current';
 import { Events } from '../emitter/emitter';

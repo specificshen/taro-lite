@@ -1,4 +1,4 @@
-import { isFunction, isNumber } from '@spcsn/taro-shared';
+import { isFunction, isNumber } from '../shared-primitives';
 import { throttle } from '../utils';
 
 interface Rect {

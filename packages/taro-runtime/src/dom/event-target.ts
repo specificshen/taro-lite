@@ -1,4 +1,5 @@
-import { hooks, isArray, isObject, warn } from '@spcsn/taro-shared';
+import { hooks } from '../runtime-hooks';
+import { isArray, isObject, warn } from '../shared-primitives';
 import type { AddEventListenerOptions, EventHandler } from '../interface';
 
 export class TaroEventTarget {

@@ -1,4 +1,4 @@
-import { EMPTY_OBJ } from '@spcsn/taro-shared';
+import { EMPTY_OBJ } from './shared-primitives';
 import type { TaroDocument } from './dom/document';
 
 interface Env {

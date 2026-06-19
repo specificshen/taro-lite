@@ -1,9 +1,9 @@
 import {
   getComponentsAlias as _getComponentsAlias,
   internalComponents,
-  isFunction,
-  Shortcuts,
 } from '@spcsn/taro-shared';
+import { isFunction } from '../shared-primitives';
+import { Shortcuts } from '../shortcuts';
 import { CLASS, COMMENT, ID, ROOT_STR, STYLE, UID } from '../constants';
 import type { TaroElement } from '../dom/element';
 import type { TaroNode } from '../dom/node';

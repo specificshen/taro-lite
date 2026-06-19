@@ -1,4 +1,4 @@
-import { isFunction } from '@spcsn/taro-shared';
+import { isFunction } from '../shared-primitives';
 
 export function handleArrayFindPolyfill() {
   if (!isFunction(Array.prototype.find)) {

@@ -1,15 +1,10 @@
 import {
-  EMPTY_OBJ,
-  ensure,
   getComponentsAlias,
-  hooks,
   internalComponents,
-  isArray,
-  isFunction,
-  isString,
-  isUndefined,
-  Shortcuts,
 } from '@spcsn/taro-shared';
+import { EMPTY_OBJ, ensure, isArray, isFunction, isString, isUndefined } from '../shared-primitives';
+import { hooks } from '../runtime-hooks';
+import { Shortcuts } from '../shortcuts';
 import type { ComponentClass } from 'react';
 import { raf } from '../bom/raf';
 import { taroWindowProvider } from '../bom/window';

@@ -1,4 +1,4 @@
-import { isString, isUndefined } from '@spcsn/taro-shared';
+import { isString, isUndefined } from '../shared-primitives';
 import { URLSearchParams } from './url-search-params';
 
 class TaroURL {

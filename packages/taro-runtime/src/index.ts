@@ -4,11 +4,12 @@ import './dom-external';
 
 import env from './env';
 
-export { hooks } from '@spcsn/taro-shared';
 export { processApis } from '@spcsn/taro-shared';
-export { mergeInternalComponents, mergeReconciler, toCamelCase } from '@spcsn/taro-shared';
-export { Shortcuts } from '@spcsn/taro-shared';
+export { mergeInternalComponents, mergeReconciler } from '@spcsn/taro-shared';
 export { UnRecursiveTemplate } from '@spcsn/taro-shared/template';
+export { hooks } from './runtime-hooks';
+export { Shortcuts } from './shortcuts';
+export { toCamelCase } from './shared-primitives';
 // bom
 export { taroDocumentProvider as document } from './bom/document';
 export { taroGetComputedStyleProvider as getComputedStyle } from './bom/get-computed-style';

@@ -1,4 +1,5 @@
-import { EMPTY_OBJ, hooks, isUndefined } from '@spcsn/taro-shared';
+import { EMPTY_OBJ, isUndefined } from '../shared-primitives';
+import { hooks } from '../runtime-hooks';
 import {
   CONFIRM,
   CURRENT_TARGET,

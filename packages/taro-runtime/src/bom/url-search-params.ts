@@ -1,4 +1,4 @@
-import { isArray } from '@spcsn/taro-shared';
+import { isArray } from '../shared-primitives';
 
 const findReg = /[!'()~]|%20|%00/g;
 const plusReg = /\+/g;

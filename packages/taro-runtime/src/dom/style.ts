@@ -1,14 +1,8 @@
 import {
   hooks,
-  isArray,
-  isNull,
-  isString,
-  isUndefined,
-  Shortcuts,
-  toCamelCase,
-  toDashed,
-  warn,
-} from '@spcsn/taro-shared';
+} from '../runtime-hooks';
+import { Shortcuts } from '../shortcuts';
+import { isArray, isNull, isString, isUndefined, toCamelCase, toDashed, warn } from '../shared-primitives';
 import { PROPERTY_THRESHOLD } from '../constants';
 import { MutationObserver, MutationRecordType } from '../dom-external/mutation-observer';
 import { TaroElement } from './element';

@@ -1,15 +1,8 @@
 import {
-  EMPTY_OBJ,
   hooks,
-  isArray,
-  isFunction,
-  isObject,
-  isString,
-  isUndefined,
-  Shortcuts,
-  toCamelCase,
-  warn,
-} from '@spcsn/taro-shared';
+} from '../runtime-hooks';
+import { Shortcuts } from '../shortcuts';
+import { EMPTY_OBJ, isArray, isFunction, isObject, isString, isUndefined, toCamelCase, warn } from '../shared-primitives';
 import {
   CATCH_VIEW,
   CATCHMOVE,

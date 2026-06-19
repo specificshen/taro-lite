@@ -1,4 +1,6 @@
-import { hooks, isArray, isFunction, isUndefined, Shortcuts } from '@spcsn/taro-shared';
+import { hooks } from '../runtime-hooks';
+import { Shortcuts } from '../shortcuts';
+import { isArray, isFunction, isUndefined } from '../shared-primitives';
 import { CUSTOM_WRAPPER, PAGE_INIT, ROOT_STR, SET_DATA } from '../constants';
 import type { HydratedData, MpInstance, TFunc, UpdatePayload, UpdatePayloadValue } from '../interface';
 import { options } from '../options';

@@ -1,4 +1,4 @@
-import { isString } from '@spcsn/taro-shared';
+import { isString } from '../shared-primitives';
 import { CONTEXT_ACTIONS } from '../constants';
 import { Events } from '../emitter/emitter';
 import env from '../env';
