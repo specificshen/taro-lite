@@ -43,6 +43,7 @@ const BUSINESS_ENTRY_ALLOWED_PEER_DEPENDENCIES: Record<string, string[]> = {
 };
 const CLI_DISALLOWED_DIRECT_DEPENDENCIES = ['@spcsn/taro-components', '@spcsn/taro-shared'];
 const TARO_DISALLOWED_DIRECT_DEPENDENCIES = ['@spcsn/taro-shared'];
+const TARO_DISALLOWED_DEV_DEPENDENCIES = ['@spcsn/taro-components'];
 
 const README_PATH = 'README.md';
 const INTERNAL_GUIDANCE_DOC_PATHS = ['docs/package-consolidation.md', 'docs/taro-react-only-modernization.md'];
@@ -207,15 +208,26 @@ function checkTaroDependencyContract() {
 
   const taroPackageJson = readJson(taroPackageJsonPath);
   const taroDependencyNames = Object.keys(taroPackageJson.dependencies || {});
+  const taroDevDependencyNames = Object.keys(taroPackageJson.devDependencies || {});
   const invalidDependencyNames = taroDependencyNames.filter((dependencyName) =>
     TARO_DISALLOWED_DIRECT_DEPENDENCIES.includes(dependencyName),
   );
-  if (invalidDependencyNames.length === 0) return;
+  const invalidDevDependencyNames = taroDevDependencyNames.filter((dependencyName) =>
+    TARO_DISALLOWED_DEV_DEPENDENCIES.includes(dependencyName),
+  );
+  if (invalidDependencyNames.length === 0 && invalidDevDependencyNames.length === 0) return;
 
   hasDependencyBoundaryErrors = true;
-  errors.push(
-    `${relative(taroPackageJsonPath)}: @spcsn/taro must not directly depend on disallowed internal packages: ${invalidDependencyNames.join(', ')}`,
-  );
+  if (invalidDependencyNames.length > 0) {
+    errors.push(
+      `${relative(taroPackageJsonPath)}: @spcsn/taro must not directly depend on disallowed internal packages: ${invalidDependencyNames.join(', ')}`,
+    );
+  }
+  if (invalidDevDependencyNames.length > 0) {
+    errors.push(
+      `${relative(taroPackageJsonPath)}: @spcsn/taro must not keep disallowed devDependencies: ${invalidDevDependencyNames.join(', ')}`,
+    );
+  }
 }
 
 function checkBusinessEntryPeerDependencyContract() {
