@@ -1,3 +1,4 @@
+import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { dotenvParse, patchEnv } from '@spcsn/taro-helper';
 import { Config, Kernel } from '@spcsn/taro-service';
@@ -6,6 +7,13 @@ import { cliProfiler, getPkgVersion, printPkgVersion } from './util/index';
 import type { CliArgs } from './util/types';
 
 const SUPPORTED_COMMANDS = ['build', 'init'] as const;
+const INTERNAL_RUNTIME_PACKAGES = new Set([
+  '@spcsn/taro-service',
+  '@spcsn/taro-mini-runner',
+  '@spcsn/taro-helper',
+  '@spcsn/taro-shared',
+  '@spcsn/taro-runtime',
+]);
 
 type Command = (typeof SUPPORTED_COMMANDS)[number];
 
@@ -87,6 +95,29 @@ function getNumberArg(args: CliArgs, key: string): number | undefined {
   return typeof value === 'number' ? value : undefined;
 }
 
+function warnInternalRuntimeDeps(appPath: string) {
+  const packageJsonPath = path.join(appPath, 'package.json');
+  if (!fs.existsSync(packageJsonPath)) return;
+  const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8')) as {
+    dependencies?: Record<string, string>;
+    devDependencies?: Record<string, string>;
+  };
+  const allDeps = new Set([
+    ...Object.keys(packageJson.dependencies || {}),
+    ...Object.keys(packageJson.devDependencies || {}),
+  ]);
+  const leakedDeps = Array.from(allDeps).filter((dep) => INTERNAL_RUNTIME_PACKAGES.has(dep));
+  if (!leakedDeps.length) return;
+
+  console.warn(
+    [
+      '检测到业务工程显式安装了底座内部包：',
+      `- ${leakedDeps.join('\n- ')}`,
+      '建议仅保留 @spcsn/taro、@spcsn/taro-components、@spcsn/taro-cli 三个入口包。',
+    ].join('\n'),
+  );
+}
+
 export default class CLI {
   appPath: string;
 
@@ -153,6 +184,7 @@ export default class CLI {
     kernel.cliCommands = [...SUPPORTED_COMMANDS];
 
     if (command === 'build') {
+      warnInternalRuntimeDeps(appPath);
       kernel.optsPlugins.push(path.join(packageRoot, 'dist', 'platform-weapp'));
       kernel.optsPlugins.push(require.resolve('@spcsn/taro-mini-runner/framework-react'));
 

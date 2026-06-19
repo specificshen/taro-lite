@@ -27,6 +27,9 @@
     "./types/compile/viteCompilerContext": {
       "types": "./types/compile/viteCompilerContext.d.ts"
     },
+    "./types/compile/vite-compiler-context": {
+      "types": "./types/compile/vite-compiler-context.d.ts"
+    },
     "./types/*": "./types/*",
     "./package.json": "./package.json"
   },

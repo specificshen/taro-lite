@@ -1,5 +1,5 @@
 import path from 'node:path';
-import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
+import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/vite-compiler-context';
 import { fs, isEmptyObject, removePathPrefix } from '@spcsn/taro-helper';
 import type { PluginOption } from 'vite';
 import { appendVirtualModulePrefix, escapePath, prettyPrintJson, stripVirtualModulePrefix } from '../shared';

@@ -1,4 +1,4 @@
-import type { ViteMiniBuildConfig } from '@spcsn/taro/types/compile/viteCompilerContext';
+import type { ViteMiniBuildConfig } from '@spcsn/taro/types/compile/vite-compiler-context';
 import { FONT_LIMIT, IMAGE_LIMIT, MEDIA_LIMIT } from '../shared/runner';
 
 const platform = 'weapp';

@@ -1,4 +1,4 @@
-import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
+import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/vite-compiler-context';
 import type { PluginOption } from 'vite';
 import assetsPlugin from '../plugins/vite-plugin-assets';
 import multiPlatformPlugin from '../plugins/vite-plugin-multi-platform';

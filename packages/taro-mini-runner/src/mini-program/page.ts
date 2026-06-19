@@ -1,5 +1,5 @@
 import path from 'node:path';
-import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
+import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/vite-compiler-context';
 import { resolveMainFilePath, swc } from '@spcsn/taro-helper';
 import { internalComponents, toDashed } from '@spcsn/taro-shared';
 import type { PluginOption, ResolvedConfig } from 'vite';

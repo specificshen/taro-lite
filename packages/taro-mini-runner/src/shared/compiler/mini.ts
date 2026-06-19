@@ -7,7 +7,7 @@ import type {
   ViteMiniCompilerContext,
   ViteNativeCompMeta,
   VitePageMeta,
-} from '@spcsn/taro/types/compile/viteCompilerContext';
+} from '@spcsn/taro/types/compile/vite-compiler-context';
 import { fs, isAliasPath, readConfig, recursiveMerge, replaceAliasPath, resolveMainFilePath } from '@spcsn/taro-helper';
 import { isArray, isFunction } from '@spcsn/taro-shared';
 import type { Rolldown } from 'vite';

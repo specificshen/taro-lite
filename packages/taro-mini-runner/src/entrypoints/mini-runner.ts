@@ -1,4 +1,4 @@
-import type { ViteMiniBuildConfig } from '@spcsn/taro/types/compile/viteCompilerContext';
+import type { ViteMiniBuildConfig } from '@spcsn/taro/types/compile/vite-compiler-context';
 import { isFunction } from '@spcsn/taro-shared';
 import type { Logger, UserConfig } from 'vite';
 import { build, createLogger } from 'vite';

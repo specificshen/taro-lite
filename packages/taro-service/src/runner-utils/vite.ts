@@ -1,4 +1,4 @@
-import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
+import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/vite-compiler-context';
 import { VITE_COMPILER_LABEL } from './constant';
 
 interface ViteRollupPluginContextLike {

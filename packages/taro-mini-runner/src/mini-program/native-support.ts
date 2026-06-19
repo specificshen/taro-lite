@@ -1,5 +1,5 @@
 import path from 'node:path';
-import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
+import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/vite-compiler-context';
 import { fs } from '@spcsn/taro-helper';
 import type { CallExpression, Identifier, Literal, MemberExpression, Node, ObjectExpression, Property } from 'acorn';
 import * as walk from 'acorn-walk';

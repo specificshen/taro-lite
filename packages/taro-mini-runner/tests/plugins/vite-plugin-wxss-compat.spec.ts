@@ -1,4 +1,4 @@
-import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
+import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/vite-compiler-context';
 import type { Rolldown } from 'vite';
 import { describe, expect, it, } from 'vitest';
 import wxssCompatPlugin from '../../src/plugins/vite-plugin-wxss-compat';

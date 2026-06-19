@@ -1,4 +1,4 @@
-import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
+import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/vite-compiler-context';
 import { isFunction } from '@spcsn/taro-shared';
 import type { UnRecursiveTemplate } from '@spcsn/taro-shared/template';
 import type { PluginOption } from 'vite';

@@ -1,6 +1,6 @@
 import path from 'node:path';
 import type { Config } from '@spcsn/taro';
-import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
+import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/vite-compiler-context';
 import { promoteRelativePath } from '@spcsn/taro-helper';
 import { isFunction, isString, toDashed } from '@spcsn/taro-shared';
 import type { PluginOption, Rolldown } from 'vite';

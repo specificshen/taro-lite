@@ -6,7 +6,7 @@ import type {
   ViteMiniBuildConfig,
   ViteMiniCompilerContext,
   VitePageMeta,
-} from '@spcsn/taro/types/compile/viteCompilerContext';
+} from '@spcsn/taro/types/compile/vite-compiler-context';
 import { isNpmPkg, normalizePath, REG_NODE_MODULES, recursiveMerge, resolveSync } from '@spcsn/taro-helper';
 import type { CSSModulesOptions } from 'vite';
 import type { Target } from 'vite-plugin-static-copy';

@@ -1,5 +1,5 @@
 import path from 'node:path';
-import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/viteCompilerContext';
+import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/vite-compiler-context';
 import { REG_NODE_MODULES, SCRIPT_EXT } from '@spcsn/taro-helper';
 import type { PluginOption, Rolldown } from 'vite';
 import { isVirtualModule } from '../shared';

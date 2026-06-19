@@ -6,7 +6,7 @@ import type {
   ViteCompilerContext,
   ViteMiniBuildConfig,
   VitePageMeta,
-} from '@spcsn/taro/types/compile/viteCompilerContext';
+} from '@spcsn/taro/types/compile/vite-compiler-context';
 import { fs, isEmptyObject, readConfig, resolveMainFilePath, SCRIPT_EXT } from '@spcsn/taro-helper';
 import type { Rolldown } from 'vite';
 import { stripMultiPlatformExt } from '..';
