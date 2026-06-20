@@ -5,12 +5,9 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createProject, NpmType } from '../src/create/template-creator';
 
 const packageRoot = path.resolve(__dirname, '..');
-const templateCreatorModule = (await import('../templates/default/template-creator.cjs')) as {
-  default: {
-    handler: Parameters<typeof createProject>[1];
-  };
+const templateCreatorModule = (await import('../templates/default/template-creator.mjs')) as {
+  handler: Parameters<typeof createProject>[1];
 };
-const templateCreator = templateCreatorModule.default;
 
 let temporaryRoot = '';
 
@@ -39,7 +36,7 @@ describe('createProject', () => {
         date: '2026-06-06',
         description: 'Demo app',
       },
-      templateCreator.handler,
+      templateCreatorModule.handler,
     );
 
     const projectRoot = path.join(temporaryRoot, 'demo-app');
@@ -60,7 +57,7 @@ describe('createProject', () => {
     expect(fs.existsSync(path.join(projectRoot, '.gitignore'))).toBe(true);
     expect(fs.existsSync(path.join(projectRoot, '.env.development'))).toBe(true);
     expect(fs.existsSync(path.join(projectRoot, '_gitignore'))).toBe(false);
-    expect(fs.existsSync(path.join(projectRoot, 'template-creator.cjs'))).toBe(false);
+    expect(fs.existsSync(path.join(projectRoot, 'template-creator.mjs'))).toBe(false);
     expect(pageSource).toContain('export default function IndexPage');
     expect(pageSource).toContain('<PageWrapper title="Taro Lite">');
   });

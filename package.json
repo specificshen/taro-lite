@@ -25,7 +25,6 @@
     "preinstall": "npx only-allow pnpm",
     "build": "pnpm -r --aggregate-output --filter=./packages/* prod",
     "build:serial": "pnpm -r --workspace-concurrency=1 --aggregate-output --filter=./packages/* prod",
-    "debug": "bun scripts/debug.ts",
     "clear-all": "bun scripts/clean.ts --node-modules",
     "lint": "biome lint .",
     "check": "biome check .",
@@ -43,7 +42,6 @@
     "@biomejs/biome": "^2.5.0",
     "@types/node": "^25.9.3",
     "chalk": "^5.6.2",
-    "concurrently": "^10.0.3",
     "typescript": "~7.0.1-rc",
     "vitest": "^4.1.8"
   },
