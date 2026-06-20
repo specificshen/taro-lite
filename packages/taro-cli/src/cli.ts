@@ -225,8 +225,6 @@ export default class CLI {
           projectName: restArgs[0] || getStringArg(args, 'name'),
           description: getStringArg(args, 'description'),
           npm: getStringArg(args, 'npm'),
-          templateSource: getStringArg(args, 'template-source'),
-          clone: !!args.clone,
           template: getStringArg(args, 'template'),
           autoInstall: args.autoInstall,
           h: args.help,

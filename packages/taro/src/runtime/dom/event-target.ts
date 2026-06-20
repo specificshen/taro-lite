@@ -11,7 +11,6 @@ export class TaroEventTarget {
     hooks.call('onAddEvent', type, handler, options, this);
 
     if (type === 'regionchange') {
-      // map 组件的 regionchange 事件非常特殊，详情：https://github.com/NervJS/taro/issues/5766
       this.addEventListener('begin', handler, options);
       this.addEventListener('end', handler, options);
       return;
@@ -60,7 +59,6 @@ export class TaroEventTarget {
     type = type.toLowerCase();
 
     if (type === 'regionchange') {
-      // map 组件的 regionchange 事件非常特殊，详情：https://github.com/NervJS/taro/issues/5766
       this.removeEventListener('begin', handler);
       this.removeEventListener('end', handler);
       return;

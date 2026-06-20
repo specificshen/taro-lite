@@ -134,8 +134,6 @@ export const taroJsFramework = '@spcsn/taro';
 export const DEVICE_RATIO_NAME = 'deviceRatio';
 export const isWindows = os.platform() === 'win32';
 
-export const DEFAULT_TEMPLATE_SRC = 'github:NervJS/taro-project-templates#v4.2';
-export const DEFAULT_TEMPLATE_SRC_GITEE = 'direct:https://gitee.com/o2team/taro-project-templates.git#v4.2';
 export const TARO_CONFIG_FOLDER = '.taro4.2';
 export const TARO_BASE_CONFIG = 'index.json';
 export const TARO_GLOBAL_CONFIG_DIR = '.taro-global-config';

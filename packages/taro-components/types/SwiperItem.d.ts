@@ -12,7 +12,7 @@ interface SwiperItemProps extends StandardProps {
   skipHiddenItemLayout?: boolean;
 }
 /** 仅可放置在 swiper 组件中，宽高自动设置为100%
- * > 不要为 `SwiperItem` 设置 **style** 属性，可以通过 class 设置样式。[7147](https://github.com/NervJS/taro/issues/7147)
+ * > 不要为 `SwiperItem` 设置 **style** 属性，可以通过 class 设置样式。
  * @classification viewContainer
  * @supported weapp
  * @example_react

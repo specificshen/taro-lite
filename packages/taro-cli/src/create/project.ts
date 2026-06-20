@@ -1,27 +1,15 @@
 import * as path from 'node:path';
 import type { default as Inquirer, Question } from 'inquirer';
-import {
-  chalk,
-  DEFAULT_TEMPLATE_SRC,
-  DEFAULT_TEMPLATE_SRC_GITEE,
-  fs,
-  getUserHomeDir,
-  TARO_BASE_CONFIG,
-  TARO_CONFIG_FOLDER,
-} from '../internal/taro-helper';
+import { chalk, fs } from '../internal/taro-helper';
 import { clearConsole, getPkgVersion, getRootPath } from '../util/index';
 import { TEMPLATE_CREATOR_FILES } from './constants';
 import Creator from './creator';
-import type { ITemplates } from './fetch-template';
-import fetchTemplate from './fetch-template';
 import { createProject, NpmType, type ProjectConfig, type TemplateHandlers } from './template-creator';
 
 export interface IProjectConf {
   projectName: string;
   projectDir: string;
   npm: NpmType;
-  templateSource: string;
-  clone?: boolean;
   template: string;
   description?: string;
   date?: string;
@@ -31,8 +19,6 @@ export interface IProjectConf {
 }
 
 type IProjectConfOptions = Partial<IProjectConf>;
-
-const NONE_AVAILABLE_TEMPLATE = '无可用模板';
 
 export default class Project extends Creator {
   public rootPath: string;
@@ -109,91 +95,19 @@ export default class Project extends Creator {
     }
 
     const answers = await inquirer.prompt<IProjectConf>(prompts);
-    const sourceAnswer = await this.askTemplateSource(inquirer);
-    const templates = await this.fetchTemplates(sourceAnswer.templateSource);
-    const templateAnswer = await this.askTemplate(inquirer, templates);
+    const templateAnswer = await this.askTemplate(inquirer);
 
-    return { ...answers, ...sourceAnswer, ...templateAnswer };
+    return { ...answers, ...templateAnswer };
   }
 
-  async askTemplateSource(inquirer: typeof Inquirer): Promise<Pick<IProjectConf, 'templateSource'>> {
-    if (this.conf.templateSource) return { templateSource: this.conf.templateSource };
-
-    const homedir = getUserHomeDir();
-    const taroConfigPath = path.join(homedir, TARO_CONFIG_FOLDER);
-    const taroConfig = path.join(taroConfigPath, TARO_BASE_CONFIG);
-    let localTemplateSource: string | undefined;
-
-    if (fs.existsSync(taroConfig)) {
-      localTemplateSource = (await fs.readJSON(taroConfig))?.templateSource;
-    } else {
-      await fs.createFile(taroConfig);
-      await fs.writeJSON(taroConfig, { templateSource: DEFAULT_TEMPLATE_SRC });
-      localTemplateSource = DEFAULT_TEMPLATE_SRC;
-    }
-
-    const choices = [
-      { name: 'Gitee（最快）', value: DEFAULT_TEMPLATE_SRC_GITEE },
-      { name: 'Github（最新）', value: DEFAULT_TEMPLATE_SRC },
-      { name: 'CLI 内置默认模板', value: 'default-template' },
-      { name: '自定义', value: 'self-input' },
-    ];
-
-    if (
-      localTemplateSource &&
-      localTemplateSource !== DEFAULT_TEMPLATE_SRC &&
-      localTemplateSource !== DEFAULT_TEMPLATE_SRC_GITEE
-    ) {
-      choices.unshift({ name: `本地模板源：${localTemplateSource}`, value: localTemplateSource });
-    }
-
-    const answer = await inquirer.prompt<IProjectConf>([
-      { type: 'list', name: 'templateSource', message: '请选择模板源', choices },
-      {
-        type: 'input',
-        name: 'templateSource',
-        message: '请输入模板源！',
-        askAnswered: true,
-        when: (a) => a.templateSource === 'self-input',
-      },
-    ]);
-
-    return { templateSource: answer.templateSource };
-  }
-
-  async askTemplate(inquirer: typeof Inquirer, templates: ITemplates[]): Promise<Pick<IProjectConf, 'template'>> {
+  async askTemplate(inquirer: typeof Inquirer): Promise<Pick<IProjectConf, 'template'>> {
     if (this.conf.template) return { template: this.conf.template };
 
-    const choices = [
-      { name: '默认模板', value: 'default' },
-      ...templates.map((item) => ({
-        name: item.desc ? `${item.name}（${item.desc}）` : item.name,
-        value: item.value || item.name,
-      })),
-    ];
-
     const answer = await inquirer.prompt<IProjectConf>([
-      { type: 'list', name: 'template', message: '请选择模板', choices },
+      { type: 'list', name: 'template', message: '请选择模板', choices: [{ name: '默认模板', value: 'default' }] },
     ]);
 
     return { template: answer.template };
-  }
-
-  async fetchTemplates(templateSource?: string): Promise<ITemplates[]> {
-    if (!templateSource || templateSource === NONE_AVAILABLE_TEMPLATE) return [];
-    if (templateSource === 'default-template') {
-      this.conf.template = 'default';
-      return [];
-    }
-
-    const isClone = /gitee/.test(templateSource) || this.conf.clone;
-    const choices = await fetchTemplate(templateSource, this.templatePath(''), isClone);
-    return choices.filter((choice) => {
-      const platforms = choice.platforms;
-      if (typeof platforms === 'string') return platforms.toLowerCase() === 'react';
-      if (Array.isArray(platforms)) return platforms.map((p) => p.toLowerCase()).includes('react');
-      return true;
-    });
   }
 
   async write(): Promise<void> {

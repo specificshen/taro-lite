@@ -69,7 +69,7 @@
     "debug": "^4.4.3",
     "dotenv": "^17.4.2",
     "dotenv-expand": "^13.0.0",
-    "download-git-repo": "^3.0.2",
+
     "inquirer": "^14.0.2",
     "joi": "^18.2.1",
     "lightningcss": "^1.32.0",

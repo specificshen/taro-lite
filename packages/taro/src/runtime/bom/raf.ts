@@ -28,7 +28,6 @@ const _raf = function (callback: (time: number) => void) {
 };
 
 const _caf = function (seed: number) {
-  // fix https://github.com/NervJS/taro/issues/7749
   clearTimeout(seed);
 };
 

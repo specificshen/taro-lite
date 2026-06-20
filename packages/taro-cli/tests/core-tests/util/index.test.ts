@@ -3,7 +3,7 @@ import { getPkgVersion, getRootPath, getTemplateSourceType, isNil } from '../../
 
 describe('getTemplateSourceType', () => {
   it('returns git for github prefix', () => {
-    expect(getTemplateSourceType('github:NervJS/taro')).toBe('git');
+    expect(getTemplateSourceType('github:example/taro')).toBe('git');
   });
 
   it('returns git for gitlab prefix', () => {

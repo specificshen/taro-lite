@@ -27,7 +27,6 @@ interface NativeSlotProps extends StandardProps {
  *   }
  * }
  * ```
- * @see https://github.com/NervJS/taro/pull/12627
  */
 declare const NativeSlot: ComponentType<NativeSlotProps>
 

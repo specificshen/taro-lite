@@ -180,7 +180,7 @@ export interface IProjectBaseConfig {
   modifyRunnerOpts?: (opts: any) => Promise<any>
 }
 
-/** 暴露出来给 config/index 使用的配置类型，参考 https://github.com/NervJS/taro-doctor/blob/main/assets/config_schema.json */
+/** 暴露出来给 config/index 使用的配置类型 */
 export interface IProjectConfig<T extends CompilerTypes = CompilerViteTypes> {
   /** 项目名称 */
   projectName?: string
