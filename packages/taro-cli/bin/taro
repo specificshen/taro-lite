@@ -1,5 +1,5 @@
 #! /usr/bin/env node
 
-const CLI = require('../dist/cli').default
+import CLI from '../dist/cli.js'
 
 new CLI().run()

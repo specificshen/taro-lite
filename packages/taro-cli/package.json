@@ -4,12 +4,13 @@
   "description": "SPCSN Taro Lite CLI for React WeApp mini programs",
   "author": "Samuel Ouyang",
   "license": "MIT",
+  "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "require": "./dist/index.js",
+      "import": "./dist/index.js",
       "default": "./dist/index.js"
     },
     "./package.json": "./package.json"
@@ -24,7 +25,7 @@
     "test:coverage": "vitest run --coverage",
     "updateSnapshot": "vitest run --update",
     "prebuild": "pnpm run clean",
-    "build": "tsc",
+    "build": "tsc && bun ../../scripts/fix-esm-imports.ts dist",
     "typecheck": "tsc --noEmit",
     "dev": "tsc -w",
     "clean": "bun ../../scripts/clean.ts dist"

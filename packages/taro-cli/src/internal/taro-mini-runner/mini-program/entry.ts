@@ -1,5 +1,8 @@
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/vite-compiler-context';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 import type { PluginOption } from 'vite';
 import { fs, isEmptyObject, removePathPrefix } from '../../taro-helper';
 import { appendVirtualModulePrefix, escapePath, prettyPrintJson, stripVirtualModulePrefix } from '../shared';
@@ -133,14 +136,14 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
           setReconciler,
           'import { window } from "@spcsn/taro/runtime"',
           `import { ${creator} } from "${creatorLocation}"`,
-          'import { initPxTransform } from "@spcsn/taro"',
+          'import Taro from "@spcsn/taro"',
           setReconcilerPost,
           `import component from "${escapePath(rawId)}"`,
           importFrameworkStatement,
           `var config = ${appConfigStr};`,
           'window.__taroAppConfig = config',
           instantiateApp,
-          'initPxTransform({',
+          'Taro.initPxTransform({',
           `designWidth: ${taroConfig.designWidth || 750},`,
           `deviceRatio: ${JSON.stringify(taroConfig.deviceRatio || { 750: 1 })}`,
           '})',

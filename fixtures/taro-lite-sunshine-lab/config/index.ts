@@ -1,5 +1,8 @@
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { defineConfig, type UserConfigExport } from '@spcsn/taro-cli';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig<'vite'>(
   () =>

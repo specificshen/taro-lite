@@ -1,6 +1,9 @@
+import { createRequire } from 'node:module';
 import * as path from 'node:path';
 import type { IProjectConfig } from '@spcsn/taro/types/compile';
-import { merge } from 'lodash';
+
+const require = createRequire(import.meta.url);
+import _ from 'lodash';
 import ora from 'ora';
 import {
   createSwcRegister,
@@ -68,7 +71,7 @@ export default class Config {
         serviceProfiler.end('import config', importConfigStartMs);
 
         const evaluateConfigStartMs = serviceProfiler.start();
-        this.initialConfig = typeof userExport === 'function' ? await userExport(merge, configEnv) : userExport;
+        this.initialConfig = typeof userExport === 'function' ? await userExport(_.merge, configEnv) : userExport;
         serviceProfiler.end('evaluate config', evaluateConfigStartMs);
         this.isInitSuccess = true;
       } catch (err) {

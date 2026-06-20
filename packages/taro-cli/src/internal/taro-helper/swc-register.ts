@@ -18,7 +18,7 @@ interface ICreateSwcRegisterParam {
   plugins?: SwcPlugin[];
 }
 
-const swcRegisterRequire = createRequire(__filename);
+const swcRegisterRequire = createRequire(import.meta.url);
 
 export default function createSwcRegister({ only, plugins }: ICreateSwcRegisterParam) {
   const config: SwcRegisterConfig = {

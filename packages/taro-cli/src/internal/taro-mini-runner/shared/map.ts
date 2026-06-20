@@ -1,4 +1,4 @@
-import { isEqual } from 'lodash';
+import _ from 'lodash';
 
 export class UniqueKeyMap<T = any> {
   store: Map<string, T>;
@@ -13,7 +13,7 @@ export class UniqueKeyMap<T = any> {
     if (!this.store.has(key)) {
       this.store.set(key, value);
       return key;
-    } else if (isEqual(this.store.get(key), value)) {
+    } else if (_.isEqual(this.store.get(key), value)) {
       return key;
     }
 

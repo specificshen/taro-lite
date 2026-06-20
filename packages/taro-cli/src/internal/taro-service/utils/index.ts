@@ -1,16 +1,19 @@
 import { createRequire } from 'node:module';
 import * as path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { IProjectConfig, PluginItem } from '@spcsn/taro/types/compile';
-import { merge } from 'lodash';
-import * as resolve from 'resolve';
+import _ from 'lodash';
+import resolve from 'resolve';
 import { chalk, getModuleDefaultExport } from '../../taro-helper';
 import { PluginType } from './constants';
 import type { IPlugin, IPluginsObject } from './types';
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 export const isNpmPkg: (name: string) => boolean = (name) => !/^(\.|\/)/.test(name);
 
 const removedLegacyPlugins = new Set(['@spcsn/taro-plugin-generator']);
-const runtimeRequire = createRequire(__filename);
+const runtimeRequire = createRequire(import.meta.url);
 
 const cliBuiltinPlugins: Record<string, string> = {
   '@spcsn/taro-plugin-platform-weapp': 'dist/platform-weapp/index.js',
@@ -53,7 +56,7 @@ export function mergePlugins(dist: PluginItem[], src: PluginItem[]) {
   return () => {
     const srcObj = convertPluginsToObject(src)();
     const distObj = convertPluginsToObject(dist)();
-    return merge(distObj, srcObj);
+    return _.merge(distObj, srcObj);
   };
 }
 
@@ -112,7 +115,7 @@ export function resolvePresetsOrPlugins(
     }
     const existingPlugin = resolvedPresetsOrPlugins.find((plugin) => plugin.id === fPath);
     if (existingPlugin) {
-      existingPlugin.opts = merge({}, existingPlugin.opts, args[item] || {});
+      existingPlugin.opts = _.merge({}, existingPlugin.opts, args[item] || {});
       continue;
     }
     const resolvedItem = {

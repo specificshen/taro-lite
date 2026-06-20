@@ -1,5 +1,8 @@
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { AppConfig } from '@spcsn/taro';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 import type { IMiniFilesConfig } from '@spcsn/taro/types/compile';
 import type {
   ViteAppMeta,

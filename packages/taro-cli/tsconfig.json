@@ -3,7 +3,8 @@
   "compilerOptions": {
     "outDir": "dist",
     "rootDir": "./src",
-    "module": "commonjs",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "sourceMap": true,
     "declaration": true
   },

@@ -1,12 +1,14 @@
 import { createRequire } from 'node:module';
 import * as path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import spawn from 'cross-spawn';
 import resolvePath from 'resolve';
 import * as Util from './utils';
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PEERS = /UNMET PEER DEPENDENCY ([a-z\-0-9.]+)@(.+)/gm;
 const npmCache = new Map<string, string>();
-const runtimeRequire = createRequire(__filename);
+const runtimeRequire = createRequire(import.meta.url);
 
 const erroneous: string[] = [];
 

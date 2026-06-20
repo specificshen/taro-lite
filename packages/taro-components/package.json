@@ -2,11 +2,12 @@
   "name": "@spcsn/taro-components",
   "version": "1.2.0",
   "description": "Taro 组件库",
+  "type": "module",
   "main": "dist/index.js",
   "exports": {
     ".": {
       "types": "./types/index.d.ts",
-      "require": "./dist/index.js",
+      "import": "./dist/index.js",
       "default": "./dist/index.js"
     },
     "./types/*": "./types/*",

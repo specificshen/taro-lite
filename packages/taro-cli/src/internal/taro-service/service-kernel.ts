@@ -2,7 +2,7 @@ import { EventEmitter } from 'node:events';
 import * as path from 'node:path';
 import type { Func, IProjectConfig, PluginItem } from '@spcsn/taro/types/compile';
 import Joi from 'joi';
-import { merge } from 'lodash';
+import _ from 'lodash';
 import { AsyncSeriesWaterfallHook } from 'tapable';
 import * as helper from '../taro-helper';
 import * as runnerUtils from './runner-utils';
@@ -142,10 +142,10 @@ export default class Kernel extends EventEmitter {
   }
 
   resolvePlugins(cliAndProjectPlugins: IPluginsObject, globalPlugins: IPluginsObject) {
-    cliAndProjectPlugins = merge(this.extraPlugins, cliAndProjectPlugins);
+    cliAndProjectPlugins = _.merge(this.extraPlugins, cliAndProjectPlugins);
     const resolvedCliAndProjectPlugins = resolvePresetsOrPlugins(this.appPath, cliAndProjectPlugins, PluginType.Plugin);
 
-    globalPlugins = merge(this.globalExtraPlugins, globalPlugins);
+    globalPlugins = _.merge(this.globalExtraPlugins, globalPlugins);
     const globalConfigRootPath = path.join(helper.getUserHomeDir(), helper.TARO_GLOBAL_CONFIG_DIR);
     const resolvedGlobalPlugins = resolvePresetsOrPlugins(globalConfigRootPath, globalPlugins, PluginType.Plugin, true);
 
@@ -178,8 +178,8 @@ export default class Kernel extends EventEmitter {
     }
     if (Array.isArray(plugins)) {
       isGlobalConfigPreset
-        ? (this.globalExtraPlugins = merge(this.globalExtraPlugins, convertPluginsToObject(plugins)()))
-        : (this.extraPlugins = merge(this.extraPlugins, convertPluginsToObject(plugins)()));
+        ? (this.globalExtraPlugins = _.merge(this.globalExtraPlugins, convertPluginsToObject(plugins)()))
+        : (this.extraPlugins = _.merge(this.extraPlugins, convertPluginsToObject(plugins)()));
     }
   }
 

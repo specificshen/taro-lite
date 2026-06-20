@@ -1,8 +1,11 @@
 import * as child_process from 'node:child_process';
 import { createHash } from 'node:crypto';
 import * as nativeFs from 'node:fs';
+import { createRequire } from 'node:module';
 import * as os from 'node:os';
 import * as path from 'node:path';
+
+const require = createRequire(import.meta.url);
 import { parseSync } from '@swc/core';
 import type TResolve from 'resolve';
 import resolvePath from 'resolve';

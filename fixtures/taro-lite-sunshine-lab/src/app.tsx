@@ -1,9 +1,9 @@
-import { useLaunch } from '@spcsn/taro';
+import Taro from '@spcsn/taro';
 import type { PropsWithChildren } from 'react';
 import './app.css';
 
 function App({ children }: PropsWithChildren) {
-  useLaunch(() => {
+  Taro.useLaunch(() => {
     console.log('Fixture app launched.');
   });
 

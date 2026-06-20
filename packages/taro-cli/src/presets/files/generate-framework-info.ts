@@ -1,6 +1,9 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { IPluginContext } from '../../internal/taro-service';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 function getPkgVersion(): string {
   const packageJsonPath = path.resolve(__dirname, '../../../package.json');

@@ -40,8 +40,7 @@ export default defineConfig({
   plugins: [definePlugin],
   output: {
     dir: 'dist',
-    format: 'cjs',
+    format: 'esm',
     sourcemap: true,
-    exports: 'auto',
   },
 });

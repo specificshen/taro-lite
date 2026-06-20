@@ -1,7 +1,12 @@
 import fs from 'node:fs';
+import { createRequire } from 'node:module';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { PluginOption } from 'vite';
 import { defaultMainFields, resolveSync } from '../../taro-helper';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const require = createRequire(import.meta.url);
 import type { FrameworkPluginContext, Frameworks } from './index';
 import { getLoaderMeta } from './loader-meta';
 
