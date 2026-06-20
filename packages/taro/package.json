@@ -67,7 +67,7 @@
     "node": ">= 22.15.0"
   },
   "devDependencies": {
-    "rolldown": "^1.1.1"
+    "rolldown": "^1.1.2"
   },
   "peerDependencies": {
     "@spcsn/taro-components": "^1.2.0",
