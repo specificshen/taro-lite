@@ -55,7 +55,7 @@ function initStyle(ctor: typeof Style, styleProperties: string[]) {
   for (let i = 0; i < styleProperties.length; i++) {
     const styleKey = styleProperties[i];
 
-    if ((ctor as any)[styleKey]) return;
+    if ((ctor as unknown as Record<string, unknown>)[styleKey]) return;
 
     properties[styleKey] = {
       get(this: Style) {
@@ -82,7 +82,7 @@ export class Style {
 
   public _usedStyleProp: Set<string>;
 
-  public _value: Record<string, any>;
+  public _value: Record<string, unknown>;
 
   public _element: TaroElement;
 

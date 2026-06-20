@@ -3,9 +3,10 @@ import type { TaroElement } from '../dom/element';
 import { options } from '../options';
 
 export function getBoundingClientRectImpl(this: TaroElement): Promise<unknown> {
-  if (!options.miniGlobal) return Promise.resolve(null);
+  const miniGlobal = options.miniGlobal;
+  if (!miniGlobal) return Promise.resolve(null);
   return new Promise((resolve) => {
-    const query = options.miniGlobal.createSelectorQuery();
+    const query = miniGlobal.createSelectorQuery();
     query
       .select(`#${this.uid}`)
       .boundingClientRect((res: unknown) => {

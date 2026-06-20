@@ -21,7 +21,7 @@ export class MutationObserver {
       this.core = {
         observe: noop,
         disconnect: noop,
-        takeRecords: noop as () => any,
+        takeRecords: noop as () => MutationRecord[],
       };
     }
   }

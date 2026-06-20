@@ -49,6 +49,7 @@ export function contains(this: TaroNode, node: TaroNode & { id?: string }): bool
       isContains = true;
       return true;
     }
+    return false;
   });
   return isContains;
 }

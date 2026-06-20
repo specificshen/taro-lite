@@ -2,7 +2,7 @@ import type { TaroNode } from '../../dom/node';
 import type { MutationRecord } from './record';
 import { MutationRecordType } from './record';
 
-export type MutationCallback = (mutations: MutationRecord[]) => any;
+export type MutationCallback = (mutations: MutationRecord[]) => void;
 
 /**
  * @see https://dom.spec.whatwg.org/#dictdef-mutationobserverinit
@@ -114,7 +114,7 @@ function logMutation(observer: MutationObserverImpl, record: MutationRecord) {
     Promise.resolve().then(() => {
       pendingMuatations = false;
       observers.forEach((observer) => {
-        return observer.callback(observer.takeRecords());
+        observer.callback(observer.takeRecords());
       });
     });
   }

@@ -335,7 +335,7 @@ export class TaroNode extends TaroEventTarget {
     return env.document;
   }
 
-  static extend(methodName: string, options: TFunc | Record<string, any>) {
+  static extend(methodName: string, options: TFunc | Record<string, unknown>) {
     extend(TaroNode, methodName, options);
   }
 }

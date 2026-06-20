@@ -180,7 +180,9 @@ export function eventHandler(event: MpEvent) {
         // 最上层组件统一 batchUpdate
         hooks.call('batchedEventUpdates', () => {
           if (eventsBatch[type]) {
-            eventsBatch[type].forEach((fn) => fn());
+            eventsBatch[type].forEach((fn) => {
+              fn();
+            });
             delete eventsBatch[type];
           }
           dispatch();
@@ -188,7 +190,8 @@ export function eventHandler(event: MpEvent) {
         return getEventCBResult(event);
       } else {
         // 如果上层组件也有绑定同类型的组件，委托给上层组件调用事件回调
-        (eventsBatch[type] ||= []).push(dispatch);
+        eventsBatch[type] ??= [];
+        eventsBatch[type].push(dispatch);
       }
     } else {
       dispatch();

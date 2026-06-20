@@ -42,6 +42,7 @@ function findCustomWrapper(root: TaroRootElement, dataPathArr: string[]) {
         splitedPath = dataPathArr.slice(i + 2).join('.');
       }
     }
+    return false;
   });
 
   if (customWrapper) {
