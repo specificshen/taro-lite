@@ -1,19 +1,6 @@
 {
   "compileOnSave": true,
-  "compilerOptions": {
-    "target": "ES2022",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "esModuleInterop": true,
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "removeComments": false,
-    "experimentalDecorators": true,
-    "types": ["node"]
-  },
+  "extends": "./packages/tsconfig.base.json",
   "include": ["scripts/**/*.ts", "packages/*/scripts/**/*.ts", "vitest.config.ts"],
   "exclude": ["node_modules", "fixtures"]
 }

@@ -6,6 +6,7 @@ import * as os from 'node:os';
 import * as path from 'node:path';
 
 const require = createRequire(import.meta.url);
+
 import { parseSync } from '@swc/core';
 import type TResolve from 'resolve';
 import resolvePath from 'resolve';

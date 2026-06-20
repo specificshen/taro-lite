@@ -4,13 +4,6 @@ import './dom-external';
 
 import env from './env';
 
-export { hooks } from './runtime-hooks';
-export { mergeInternalComponents } from './internal-components-registry';
-export { mergeReconciler } from './merge-reconciler';
-export { processApis } from './process-apis';
-export { Shortcuts } from './shortcuts';
-export { RecursiveTemplate, UnRecursiveTemplate } from './template-adapter';
-export { toCamelCase } from './shared-primitives';
 // bom
 export { taroDocumentProvider as document } from './bom/document';
 export { taroGetComputedStyleProvider as getComputedStyle } from './bom/get-computed-style';
@@ -58,11 +51,18 @@ export * from './dsl/instance';
 export * from './emitter/emitter';
 export { hydrate } from './hydrate';
 export * from './interface';
+export { mergeInternalComponents } from './internal-components-registry';
+export { mergeReconciler } from './merge-reconciler';
 export { nextTick } from './next-tick';
 export { options } from './options';
 export * from './perf';
 // Polyfills
 export * from './polyfill';
+export { processApis } from './process-apis';
+export { hooks } from './runtime-hooks';
+export { toCamelCase } from './shared-primitives';
+export { Shortcuts } from './shortcuts';
+export { RecursiveTemplate, UnRecursiveTemplate } from './template-adapter';
 export * from './utils';
 // others
 export { env };

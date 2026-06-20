@@ -4,6 +4,7 @@ import type { ILoaderMeta } from '@spcsn/taro/types/compile/config/plugin';
 import type { Node } from 'acorn';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 import * as acorn from 'acorn';
 import * as walk from 'acorn-walk';
 import type { Frameworks } from './index';

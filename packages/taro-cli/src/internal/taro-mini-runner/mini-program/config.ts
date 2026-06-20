@@ -5,6 +5,7 @@ import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/vite-com
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const require = createRequire(import.meta.url);
+
 import browserslist from 'browserslist';
 import { browserslistToTargets } from 'lightningcss';
 import type { PluginOption, UserConfig } from 'vite';

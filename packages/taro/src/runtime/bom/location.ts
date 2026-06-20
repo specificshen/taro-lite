@@ -1,7 +1,7 @@
-import { isNumber, isString, warn } from '../shared-primitives';
 import { CONTEXT_ACTIONS } from '../constants';
 import { getCurrentInstance } from '../current';
 import { Events } from '../emitter/emitter';
+import { isNumber, isString, warn } from '../shared-primitives';
 import { RuntimeCache } from '../utils/cache';
 import { TaroURLProvider } from './url';
 

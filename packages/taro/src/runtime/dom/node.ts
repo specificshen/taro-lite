@@ -1,11 +1,11 @@
-import { hooks } from '../runtime-hooks';
-import { Shortcuts } from '../shortcuts';
-import { ensure } from '../shared-primitives';
 import { DOCUMENT_FRAGMENT } from '../constants';
 import { MutationObserver, MutationRecordType } from '../dom-external/mutation-observer';
 import env from '../env';
 import { hydrate } from '../hydrate';
 import type { TFunc, UpdatePayload } from '../interface';
+import { hooks } from '../runtime-hooks';
+import { ensure } from '../shared-primitives';
+import { Shortcuts } from '../shortcuts';
 import { extend, incrementId, isComment } from '../utils';
 import type { TaroDocument } from './document';
 import type { TaroElement } from './element';

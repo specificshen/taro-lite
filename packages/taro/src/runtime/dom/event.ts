@@ -1,5 +1,3 @@
-import { EMPTY_OBJ, isUndefined } from '../shared-primitives';
-import { hooks } from '../runtime-hooks';
 import {
   CONFIRM,
   CURRENT_TARGET,
@@ -12,6 +10,8 @@ import {
 } from '../constants';
 import env from '../env';
 import type { EventOptions, MpEvent } from '../interface';
+import { hooks } from '../runtime-hooks';
+import { EMPTY_OBJ, isUndefined } from '../shared-primitives';
 import { isParentBound } from '../utils';
 import type { TaroElement } from './element';
 

@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url';
 import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/vite-compiler-context';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 import type { PluginOption } from 'vite';
 import { fs, isEmptyObject, removePathPrefix } from '../../taro-helper';
 import { appendVirtualModulePrefix, escapePath, prettyPrintJson, stripVirtualModulePrefix } from '../shared';

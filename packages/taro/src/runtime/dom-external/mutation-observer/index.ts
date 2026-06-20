@@ -1,5 +1,5 @@
-import { noop } from '../../shared-primitives';
 import type { TaroNode } from '../../dom/node';
+import { noop } from '../../shared-primitives';
 import type { MutationCallback, MutationObserverInit } from './implements';
 import { MutationObserverImpl, recordMutation } from './implements';
 import { MutationRecord, MutationRecordType } from './record';

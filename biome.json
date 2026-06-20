@@ -15,7 +15,7 @@
       "!**/*.d.ts",
       "!packages/taro-cli/templates",
       "!packages/taro-helper/swc",
-      "!archives/packages/taro-helper/swc"
+      "!archives/packages"
     ]
   },
   "formatter": {

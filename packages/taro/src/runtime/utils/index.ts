@@ -1,12 +1,12 @@
-import { getComponentsAlias as _getComponentsAlias, internalComponents } from '../internal-components-registry';
-import { isFunction } from '../shared-primitives';
-import { Shortcuts } from '../shortcuts';
 import { CLASS, COMMENT, ID, ROOT_STR, STYLE, UID } from '../constants';
 import type { TaroElement } from '../dom/element';
 import type { TaroNode } from '../dom/node';
 import { NodeType } from '../dom/node-types';
 import type { TaroText } from '../dom/text';
 import type { TFunc } from '../interface';
+import { getComponentsAlias as _getComponentsAlias, internalComponents } from '../internal-components-registry';
+import { isFunction } from '../shared-primitives';
+import { Shortcuts } from '../shortcuts';
 
 export const incrementId = () => {
   const chatCodes: number[] = [];

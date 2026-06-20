@@ -1,10 +1,8 @@
-import {
-  hooks,
-} from '../runtime-hooks';
-import { Shortcuts } from '../shortcuts';
-import { isArray, isNull, isString, isUndefined, toCamelCase, toDashed, warn } from '../shared-primitives';
 import { PROPERTY_THRESHOLD } from '../constants';
 import { MutationObserver, MutationRecordType } from '../dom-external/mutation-observer';
+import { hooks } from '../runtime-hooks';
+import { isArray, isNull, isString, isUndefined, toCamelCase, toDashed, warn } from '../shared-primitives';
+import { Shortcuts } from '../shortcuts';
 import { TaroElement } from './element';
 import { styleProperties } from './style-properties';
 

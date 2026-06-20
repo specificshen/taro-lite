@@ -1,10 +1,10 @@
-import { hooks } from '../runtime-hooks';
-import { Shortcuts } from '../shortcuts';
-import { isArray, isFunction, isUndefined } from '../shared-primitives';
 import { CUSTOM_WRAPPER, PAGE_INIT, ROOT_STR, SET_DATA } from '../constants';
 import type { HydratedData, MpInstance, TFunc, UpdatePayload, UpdatePayloadValue } from '../interface';
 import { options } from '../options';
 import { perf } from '../perf';
+import { hooks } from '../runtime-hooks';
+import { isArray, isFunction, isUndefined } from '../shared-primitives';
+import { Shortcuts } from '../shortcuts';
 import { customWrapperCache, isComment } from '../utils';
 import { TaroElement } from './element';
 

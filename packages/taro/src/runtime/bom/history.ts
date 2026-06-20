@@ -1,6 +1,6 @@
-import { isNumber, isString } from '../shared-primitives';
 import { CONTEXT_ACTIONS } from '../constants';
 import { Events } from '../emitter/emitter';
+import { isNumber, isString } from '../shared-primitives';
 import { RuntimeCache } from '../utils/cache';
 import type { TaroLocation } from './location';
 import type { TaroWindow } from './window';

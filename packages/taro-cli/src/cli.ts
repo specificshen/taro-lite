@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import customCommand from './commands/custom-command';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 import { dotenvParse, patchEnv } from './internal/taro-helper';
 import { Config, Kernel } from './internal/taro-service';
 import { cliProfiler, getPkgVersion, printPkgVersion } from './util/index';

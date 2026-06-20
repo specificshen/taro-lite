@@ -1,9 +1,4 @@
 import {
-  hooks,
-} from '../runtime-hooks';
-import { Shortcuts } from '../shortcuts';
-import { EMPTY_OBJ, isArray, isFunction, isObject, isString, isUndefined, toCamelCase, warn } from '../shared-primitives';
-import {
   CATCH_VIEW,
   CATCHMOVE,
   CLASS,
@@ -26,6 +21,18 @@ import type {
   TFunc,
   UpdatePayloadValue,
 } from '../interface';
+import { hooks } from '../runtime-hooks';
+import {
+  EMPTY_OBJ,
+  isArray,
+  isFunction,
+  isObject,
+  isString,
+  isUndefined,
+  toCamelCase,
+  warn,
+} from '../shared-primitives';
+import { Shortcuts } from '../shortcuts';
 import { extend, getComponentsAlias, isElement, isHasExtractProp, shortcutAttr } from '../utils';
 import { ClassList } from './class-list';
 import type { TaroEvent } from './event';

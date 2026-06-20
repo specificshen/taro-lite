@@ -1,6 +1,6 @@
+import type { AddEventListenerOptions, EventHandler } from '../interface';
 import { hooks } from '../runtime-hooks';
 import { isArray, isObject, warn } from '../shared-primitives';
-import type { AddEventListenerOptions, EventHandler } from '../interface';
 
 export class TaroEventTarget {
   public __handlers: Record<string, EventHandler[]> = {};

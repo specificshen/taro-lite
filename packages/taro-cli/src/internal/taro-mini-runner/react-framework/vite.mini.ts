@@ -7,6 +7,7 @@ import { defaultMainFields, resolveSync } from '../../taro-helper';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const require = createRequire(import.meta.url);
+
 import type { FrameworkPluginContext, Frameworks } from './index';
 import { getLoaderMeta } from './loader-meta';
 

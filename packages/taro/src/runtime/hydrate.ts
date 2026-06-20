@@ -1,10 +1,10 @@
-import { hooks } from './runtime-hooks';
-import { Shortcuts } from './shortcuts';
-import { toCamelCase } from './shared-primitives';
 import { CATCH_VIEW, CATCHMOVE, CLASS, CLICK_VIEW, COMPILE_MODE, ID, PURE_VIEW, STYLE, VIEW } from './constants';
 import type { TaroElement } from './dom/element';
 import type { TaroText } from './dom/text';
 import type { MiniData, MiniElementData } from './interface';
+import { hooks } from './runtime-hooks';
+import { toCamelCase } from './shared-primitives';
+import { Shortcuts } from './shortcuts';
 import { getComponentsAlias, isComment, isHasExtractProp, isText } from './utils';
 
 let SPECIAL_NODES: string[];

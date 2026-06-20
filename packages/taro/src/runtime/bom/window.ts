@@ -1,7 +1,7 @@
-import { isString } from '../shared-primitives';
 import { CONTEXT_ACTIONS } from '../constants';
 import { Events } from '../emitter/emitter';
 import env from '../env';
+import { isString } from '../shared-primitives';
 import { taroGetComputedStyleProvider } from './get-computed-style';
 import type { TaroHistory } from './history';
 import { History } from './history';

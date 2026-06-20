@@ -25,7 +25,7 @@
     "test:coverage": "vitest run --coverage",
     "updateSnapshot": "vitest run --update",
     "prebuild": "pnpm run clean",
-    "build": "tsc && bun ../../scripts/fix-esm-imports.ts dist",
+    "build": "tsc && bun ./scripts/fix-esm-imports.ts dist",
     "typecheck": "tsc --noEmit",
     "dev": "tsc -w",
     "clean": "bun ../../scripts/clean.ts dist"

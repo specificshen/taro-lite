@@ -1,5 +1,5 @@
-import { Shortcuts } from '../shortcuts';
 import { MutationObserver, MutationRecordType } from '../dom-external/mutation-observer';
+import { Shortcuts } from '../shortcuts';
 import { TaroNode } from './node';
 import { NodeType } from './node-types';
 

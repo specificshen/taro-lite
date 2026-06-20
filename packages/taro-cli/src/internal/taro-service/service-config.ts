@@ -3,6 +3,7 @@ import * as path from 'node:path';
 import type { IProjectConfig } from '@spcsn/taro/types/compile';
 
 const require = createRequire(import.meta.url);
+
 import _ from 'lodash';
 import ora from 'ora';
 import {
