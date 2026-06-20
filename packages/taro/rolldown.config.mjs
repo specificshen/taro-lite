@@ -11,33 +11,15 @@ const runtimeDefines = {
   ENABLE_MUTATION_OBSERVER: 'false',
 };
 
-const definePlugin = {
-  name: 'runtime-define',
-  transform(code) {
-    const lines = code.split('\n');
-    let changed = false;
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i];
-      if (line.includes('declare const')) continue;
-      for (const [key, value] of Object.entries(runtimeDefines)) {
-        const regex = new RegExp(`\\b${key}\\b`, 'g');
-        if (regex.test(line)) {
-          lines[i] = line.replace(regex, value);
-          changed = true;
-        }
-      }
-    }
-    return changed ? { code: lines.join('\n'), map: { mappings: '' } } : null;
-  },
-};
-
 export default defineConfig({
   input: {
     index: 'src/index.ts',
     'runtime/index': 'src/runtime/index.ts',
   },
   external,
-  plugins: [definePlugin],
+  transform: {
+    define: runtimeDefines,
+  },
   output: {
     dir: 'dist',
     format: 'esm',

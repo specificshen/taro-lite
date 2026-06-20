@@ -4,10 +4,10 @@
     "declaration": true,
     "emitDeclarationOnly": true,
     "noCheck": true,
-    "outDir": "dist/runtime",
-    "rootDir": "src/runtime",
+    "outDir": "dist",
+    "rootDir": "src",
     "types": ["node"]
   },
-  "include": ["src/runtime/**/*"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
 }
