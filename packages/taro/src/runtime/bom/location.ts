@@ -4,11 +4,12 @@ import { Events } from '../emitter/emitter';
 import { isNumber, isString, warn } from '../shared-primitives';
 import { RuntimeCache } from '../utils/cache';
 import { TaroURLProvider } from './url';
+import type { TaroWindow } from './window';
 
 type PreValue = ReturnType<typeof TaroURLProvider.prototype._toRaw>;
 
 type Options = {
-  window: any;
+  window: TaroWindow;
 };
 type LocationContext = {
   lastHref: string;
@@ -21,7 +22,7 @@ class TaroLocation extends Events {
   /* private property */
   #url = new TaroURLProvider(INIT_URL);
   #noCheckUrl = false;
-  #window: any;
+  #window: TaroWindow;
 
   constructor(options: Options) {
     super();
@@ -164,11 +165,11 @@ class TaroLocation extends Events {
 
   set protocol(val: string) {
     const REG = /^(http|https):$/i;
-    if (!val || !isString(val) || !REG.test(val.trim())) return;
+    const trimmed = val.trim();
+    if (!val || !isString(val) || !REG.test(trimmed)) return;
 
-    val = val.trim();
     const preValue = this.#getPreValue();
-    this.#url.protocol = val;
+    this.#url.protocol = trimmed;
 
     if (this.#checkUrlChange(preValue)) this.#recordHistory();
   }
@@ -179,10 +180,10 @@ class TaroLocation extends Events {
 
   set host(val: string) {
     if (!val || !isString(val)) return;
-    val = val.trim();
+    const trimmed = val.trim();
 
     const preValue = this.#getPreValue();
-    this.#url.host = val;
+    this.#url.host = trimmed;
 
     if (this.#checkUrlChange(preValue)) this.#recordHistory();
   }
@@ -193,10 +194,10 @@ class TaroLocation extends Events {
 
   set hostname(val: string) {
     if (!val || !isString(val)) return;
-    val = val.trim();
+    const trimmed = val.trim();
 
     const preValue = this.#getPreValue();
-    this.#url.hostname = val;
+    this.#url.hostname = trimmed;
 
     if (this.#checkUrlChange(preValue)) this.#recordHistory();
   }
@@ -206,11 +207,12 @@ class TaroLocation extends Events {
   }
 
   set port(val: string) {
-    const xVal = Number((val = val.trim()));
+    const trimmed = val.trim();
+    const xVal = Number(trimmed);
     if (!isNumber(xVal) || xVal <= 0) return;
 
     const preValue = this.#getPreValue();
-    this.#url.port = val;
+    this.#url.port = trimmed;
 
     if (this.#checkUrlChange(preValue)) this.#recordHistory();
   }
@@ -221,10 +223,10 @@ class TaroLocation extends Events {
 
   set pathname(val: string) {
     if (!val || !isString(val)) return;
-    val = val.trim();
+    const trimmed = val.trim();
 
     const preValue = this.#getPreValue();
-    this.#url.pathname = val;
+    this.#url.pathname = trimmed;
 
     if (this.#checkUrlChange(preValue)) this.#recordHistory();
   }
@@ -235,11 +237,11 @@ class TaroLocation extends Events {
 
   set search(val: string) {
     if (!val || !isString(val)) return;
-    val = val.trim();
-    val = val.startsWith('?') ? val : `?${val}`;
+    const trimmed = val.trim();
+    const searchValue = trimmed.startsWith('?') ? trimmed : `?${trimmed}`;
 
     const preValue = this.#getPreValue();
-    this.#url.search = val;
+    this.#url.search = searchValue;
 
     if (this.#checkUrlChange(preValue)) this.#recordHistory();
   }
@@ -251,11 +253,11 @@ class TaroLocation extends Events {
   // 小程序的navigateTo存在截断hash字符串的问题
   set hash(val: string) {
     if (!val || !isString(val)) return;
-    val = val.trim();
-    val = val.startsWith('#') ? val : `#${val}`;
+    const trimmed = val.trim();
+    const hashValue = trimmed.startsWith('#') ? trimmed : `#${trimmed}`;
 
     const preValue = this.#getPreValue();
-    this.#url.hash = val;
+    this.#url.hash = hashValue;
 
     if (this.#checkUrlChange(preValue)) this.#recordHistory();
   }
@@ -266,10 +268,11 @@ class TaroLocation extends Events {
 
   set href(val: string) {
     const REG = /^(http:|https:)?\/\/.+/;
-    if (!val || !isString(val) || !REG.test((val = val.trim()))) return;
+    const trimmed = val.trim();
+    if (!val || !isString(val) || !REG.test(trimmed)) return;
 
     const preValue = this.#getPreValue();
-    this.#url.href = val;
+    this.#url.href = trimmed;
 
     if (this.#checkUrlChange(preValue)) this.#recordHistory();
   }
@@ -280,10 +283,11 @@ class TaroLocation extends Events {
 
   set origin(val: string) {
     const REG = /^(http:|https:)?\/\/.+/;
-    if (!val || !isString(val) || !REG.test((val = val.trim()))) return;
+    const trimmed = val.trim();
+    if (!val || !isString(val) || !REG.test(trimmed)) return;
 
     const preValue = this.#getPreValue();
-    this.#url.origin = val;
+    this.#url.origin = trimmed;
 
     if (this.#checkUrlChange(preValue)) this.#recordHistory();
   }

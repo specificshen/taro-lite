@@ -30,19 +30,33 @@ function encode(str: string) {
   return encodeURIComponent(str).replace(findReg, replacer);
 }
 
+interface IterableQuery {
+  forEach(callback: (value: string, key: string) => void): void;
+}
+
+function isIterableQuery(query: unknown): query is IterableQuery {
+  return (
+    typeof query === 'object' &&
+    query !== null &&
+    'forEach' in query &&
+    typeof (query as IterableQuery).forEach === 'function'
+  );
+}
+
 export class URLSearchParams {
   #dict: Record<string, string[]> = Object.create(null);
 
-  constructor(query?: any) {
-    query ??= '';
+  constructor(input?: unknown) {
+    const query = input ?? '';
 
     const dict = this.#dict;
 
     if (typeof query === 'string') {
-      if (query.charAt(0) === '?') {
-        query = query.slice(1);
+      let queryString = query;
+      if (queryString.charAt(0) === '?') {
+        queryString = queryString.slice(1);
       }
-      for (let pairs = query.split('&'), i = 0, length = pairs.length; i < length; i++) {
+      for (let pairs = queryString.split('&'), i = 0, length = pairs.length; i < length; i++) {
         const value = pairs[i];
         const index = value.indexOf('=');
 
@@ -65,11 +79,13 @@ export class URLSearchParams {
           const value = query[i];
           appendTo(dict, value[0], value[1]);
         }
-      } else if (query.forEach) {
-        query.forEach((value: string, key: string) => appendTo(dict, key, value));
-      } else {
+      } else if (isIterableQuery(query)) {
+        query.forEach((value: string, key: string) => {
+          appendTo(dict, key, value);
+        });
+      } else if (typeof query === 'object' && query !== null) {
         for (const key in query) {
-          appendTo(dict, key, query[key]);
+          appendTo(dict, key, (query as Record<string, string>)[key]);
         }
       }
     }
@@ -105,7 +121,7 @@ export class URLSearchParams {
     this.#dict[name] = ['' + value];
   }
 
-  forEach(callback: (value: string, name: string, searchParams: URLSearchParams) => void, thisArg?: any) {
+  forEach(callback: (value: string, name: string, searchParams: URLSearchParams) => void, thisArg?: unknown) {
     const dict = this.#dict;
     const searchParams = this;
     Object.getOwnPropertyNames(dict).forEach((name) => {
@@ -121,7 +137,7 @@ export class URLSearchParams {
 
   toString() {
     const dict = this.#dict;
-    const query: any[] = [];
+    const query: string[] = [];
     for (const key in dict) {
       const name = encode(key);
       for (let i = 0, value = dict[key]; i < value.length; i++) {

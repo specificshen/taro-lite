@@ -38,4 +38,6 @@ function createDocument(): TaroDocument {
 }
 
 // Note: 小程序端 vite 打包成 commonjs，const document = xxx 会报错，所以把 document 改为 taroDocumentProvider
-export const taroDocumentProvider: TaroDocument = (env.document = createDocument());
+const taroDocument = createDocument();
+env.document = taroDocument;
+export const taroDocumentProvider: TaroDocument = taroDocument;

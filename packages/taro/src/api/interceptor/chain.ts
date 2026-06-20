@@ -1,6 +1,6 @@
 import { isFunction } from '../../type-guards';
 
-export type ChainPromise<T = unknown> = Promise<T> & Record<string, any>;
+export type ChainPromise<T = unknown> = Promise<T> & Record<string, (...args: unknown[]) => unknown>;
 
 export type TInterceptor<T = unknown> = (c: Chain<T>) => Promise<T>;
 
@@ -32,7 +32,11 @@ export default class Chain<T = unknown> {
     const nextChain = this._getNextChain();
     const p = nextInterceptor(nextChain) as ChainPromise<T>;
     const res = p.catch((err) => Promise.reject(err)) as ChainPromise<T>;
-    Object.keys(p).forEach((k) => isFunction(p[k]) && (res[k] = p[k]));
+    Object.keys(p).forEach((k) => {
+      if (isFunction(p[k])) {
+        res[k] = p[k];
+      }
+    });
     return res;
   }
 

@@ -7,14 +7,14 @@ export interface Router {
   onReady: string;
   onHide: string;
   onShow: string;
-  exitState?: any;
+  exitState?: unknown;
 }
 
 interface Current {
   app: AppInstance | null;
   router: Router | null;
   page: PageInstance | null;
-  preloadData?: any;
+  preloadData?: unknown;
 }
 
 export const Current: Current = {

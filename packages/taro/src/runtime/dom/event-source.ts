@@ -15,7 +15,9 @@ class EventSource extends Map {
   removeNodeTree(child: TaroNode) {
     this.removeNode(child);
     const { childNodes } = child;
-    childNodes.forEach((node) => this.removeNodeTree(node));
+    childNodes.forEach((node) => {
+      this.removeNodeTree(node);
+    });
   }
 }
 

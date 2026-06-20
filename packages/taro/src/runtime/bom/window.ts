@@ -29,12 +29,15 @@ export class TaroWindow extends Events {
       ...Object.getOwnPropertySymbols(global || {}),
     ];
 
+    const self = this as unknown as Record<string | symbol, unknown>;
+    const globalRecord = global as unknown as Record<string | symbol, unknown>;
+
     globalProperties.forEach((property) => {
       if (property === 'atob' || property === 'document') return;
       if (!Object.hasOwn(this, property)) {
         // 防止小程序环境下，window 上的某些 get 属性在赋值时报错
         try {
-          (this as any)[property] = (global as any)[property];
+          self[property] = globalRecord[property];
         } catch (_e) {
           if (process.env.NODE_ENV !== 'production') {
             console.warn(`[Taro warn] window.${String(property)} 在赋值到 window 时报错`);
@@ -123,6 +126,8 @@ export class TaroWindow extends Events {
 }
 
 // Note: 小程序端 vite 打包成 commonjs，const window = xxx 会报错，所以把 window 改为 taroWindowProvider，location 和 history 同理
-export const taroWindowProvider: TaroWindow = (env.window = new TaroWindow());
+const taroWindow = new TaroWindow();
+env.window = taroWindow;
+export const taroWindowProvider: TaroWindow = taroWindow;
 export const taroLocationProvider = taroWindowProvider.location;
 export const taroHistoryProvider = taroWindowProvider.history;
