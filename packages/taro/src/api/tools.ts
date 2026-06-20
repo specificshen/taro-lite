@@ -1,4 +1,4 @@
-import { isFunction, isObject } from '../type-guards';
+import { isObject } from '../type-guards';
 
 interface TaroApi {
   config?: PxTransformConfig;
@@ -45,7 +45,10 @@ export function getInitPxTransform(taro: TaroApi) {
       targetUnit = defaultTargetUnit,
       unitPrecision = defaultUnitPrecision,
     } = config;
-    const taroConfig = (taro.config ||= {});
+    if (!taro.config) {
+      taro.config = {};
+    }
+    const taroConfig = taro.config;
     taroConfig.designWidth = designWidth;
     taroConfig.deviceRatio = deviceRatio;
     taroConfig.baseFontSize = baseFontSize;
@@ -59,8 +62,8 @@ export function getPxTransform(taro: TaroApi) {
     const config = taro.config || {};
     const baseFontSize = config.baseFontSize;
     const deviceRatio = config.deviceRatio || defaultDesignRatio;
-    const designWidth = ((input = 0) =>
-      isFunction(config.designWidth) ? config.designWidth(input) : config.designWidth || defaultDesignWidth)(size);
+    const designWidth =
+      typeof config.designWidth === 'function' ? config.designWidth(size) : config.designWidth || defaultDesignWidth;
     if (!(designWidth in deviceRatio)) {
       throw new Error(`deviceRatio 配置中不存在 ${designWidth} 的设置！`);
     }

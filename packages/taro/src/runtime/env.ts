@@ -1,14 +1,15 @@
-import { EMPTY_OBJ } from './shared-primitives';
+import type { TaroWindow } from './bom/window';
 import type { TaroDocument } from './dom/document';
+import { EMPTY_OBJ } from './shared-primitives';
 
 interface Env {
-  window: any;
+  window: TaroWindow;
   document: TaroDocument;
 }
 
 const env: Env = {
-  window: EMPTY_OBJ,
-  document: EMPTY_OBJ,
+  window: EMPTY_OBJ as unknown as TaroWindow,
+  document: EMPTY_OBJ as unknown as TaroDocument,
 };
 
 export default env;

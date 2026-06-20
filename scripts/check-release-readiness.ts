@@ -11,6 +11,7 @@ type PackageJson = {
   private?: boolean;
   main?: string;
   dependencies?: Record<string, string>;
+  devDependencies?: Record<string, string>;
   optionalDependencies?: Record<string, string>;
   peerDependencies?: Record<string, string>;
   peerDependenciesMeta?: Record<string, unknown>;

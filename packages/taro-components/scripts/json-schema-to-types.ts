@@ -126,14 +126,14 @@ class GenerateTypes {
     const jsonSchemas = this.jsonSchemas[this.componentName];
     const existProps: PROP_MAP = {};
 
-    traverse(ast as any, {
+    traverse(ast as t.Node, {
       TSInterfaceDeclaration(astPath) {
         if (astPath.node.id.name !== `${componentName}Props`) {
           return;
         }
         astPath.traverse({
           TSPropertySignature(astPath) {
-            const { name } = astPath.node.key as any;
+            const name = (astPath.node.key as t.Identifier | null)?.name;
             if (!name) {
               return;
             }
@@ -141,7 +141,7 @@ class GenerateTypes {
 
             const convertedName = name.match(/^on/) ? name.replace(/^on/, 'bind') : paramCase(name);
             MINI_APP_TYPES.forEach((type) => {
-              if (jsonSchemas[type]?.properties[name]) {
+              if (jsonSchemas[type]?.properties?.[name]) {
                 if (isEmpty(existProps[type])) {
                   existProps[type] = [];
                 }
@@ -149,7 +149,7 @@ class GenerateTypes {
                 supportedPlatforms.push(type);
               }
 
-              if (name !== convertedName && jsonSchemas[type]?.properties[convertedName]) {
+              if (name !== convertedName && jsonSchemas[type]?.properties?.[convertedName]) {
                 if (isEmpty(existProps[type])) {
                   existProps[type] = [];
                 }
@@ -200,7 +200,7 @@ class GenerateTypes {
   addProps(ast: AST, props: PROP = {}) {
     const componentName = this.componentName;
     const jsonSchemas = this.jsonSchemas[this.componentName];
-    traverse(ast as any, {
+    traverse(ast as t.Node, {
       TSInterfaceDeclaration(astPath) {
         if (astPath.node.id.name !== `${componentName}Props`) {
           return;
@@ -209,9 +209,7 @@ class GenerateTypes {
         astPath.traverse({
           TSInterfaceBody(astPath) {
             const list = astPath.node.body as t.TSPropertySignature[];
-            const existingNames = new Set(
-              list.map((item) => (item.key as any)?.name).filter(Boolean),
-            );
+            const existingNames = new Set(list.map((item) => (item.key as t.Identifier | null)?.name).filter(Boolean));
             Object.keys(props).forEach((prop) => {
               if (OMIT_PROPS.includes(prop)) {
                 return;
@@ -230,7 +228,7 @@ class GenerateTypes {
               node.key = t.identifier(camelCase(prop, { transform: camelCaseEnhance }));
               const platform = props[prop][0];
               const json = jsonSchemas[platform];
-              const propSchema = json.properties[prop] || json.properties[prop.replace(/^on/, 'bind')];
+              const propSchema = json?.properties?.[prop] || json?.properties?.[prop.replace(/^on/, 'bind')];
               if (!propSchema) {
                 return;
               }
@@ -244,9 +242,9 @@ class GenerateTypes {
                     (enumArray as string[]).map((item: string) => t.tsLiteralType(t.stringLiteral(item))),
                   );
                 }
-              } else if (['boolean', 'number'].includes(type)) {
+              } else if (typeof type === 'string' && ['boolean', 'number'].includes(type)) {
                 value = t.tsTypeReference(t.identifier(type));
-              } else if (['array'].includes(type)) {
+              } else if (type === 'array') {
                 value = t.tsTypeReference(t.identifier('any[]'));
               } else if (Array.isArray(type)) {
                 value = t.tsTypeReference(t.identifier(type.join('|')));
@@ -256,7 +254,7 @@ class GenerateTypes {
                 value = t.tsTypeReference(t.identifier('string'));
               }
               node.typeAnnotation = t.tsTypeAnnotation(value);
-              node.optional = !json.required?.[prop] || !json.required?.[prop.replace(/^on/, 'bind')];
+              node.optional = !json?.required?.includes(prop) || !json?.required?.includes(prop.replace(/^on/, 'bind'));
 
               if (node.leadingComments) {
                 let commentValue = `* ${propSchema.description?.trim().replace(/\n/g, '\n * ')}\n`;
@@ -271,7 +269,7 @@ class GenerateTypes {
                     !['none', '无'].includes(defaultValue) &&
                     schemaType === 'string'
                   ) {
-                    commentValue += `* @default "${propSchema.defaultValue.replace(/(^')|('$)/gi, '')}"\n`;
+                    commentValue += `* @default "${defaultValue.replace(/(^')|('$)/gi, '')}"\n`;
                   } else {
                     commentValue += `* @default ${defaultValue}\n`;
                   }
@@ -290,7 +288,7 @@ class GenerateTypes {
   }
 
   formatJSDoc(ast: AST) {
-    traverse(ast as any, {
+    traverse(ast as t.Node, {
       enter(astPath) {
         if (astPath.node.trailingComments) {
           astPath.node.trailingComments = [];
@@ -302,16 +300,16 @@ class GenerateTypes {
   // 属性排序
   sortProps(ast: AST) {
     const componentName = this.componentName;
-    traverse(ast as any, {
+    traverse(ast as t.Node, {
       TSInterfaceDeclaration(astPath) {
         if (astPath.node.id.name !== `${componentName}Props`) {
           return;
         }
         astPath.traverse({
           TSInterfaceBody(astPath) {
-            astPath.node.body.sort((a: any, b: any) => {
-              const aName = a.key?.name;
-              const bName = b.key?.name;
+            astPath.node.body.sort((a: t.TSTypeElement, b: t.TSTypeElement) => {
+              const aName = ((a as t.TSPropertySignature).key as t.Identifier | undefined)?.name || '';
+              const bName = ((b as t.TSPropertySignature).key as t.Identifier | undefined)?.name || '';
 
               if (aName.startsWith(catchStart) && !bName.startsWith(catchStart)) return 1;
               if (bName.startsWith(catchStart) && !aName.startsWith(catchStart)) return -1;
