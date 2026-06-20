@@ -31,8 +31,8 @@ const README_BUSINESS_DEPENDENCIES = {
 };
 
 const BUSINESS_ENTRY_ALLOWED_PEER_DEPENDENCIES: Record<string, string[]> = {
-  '@spcsn/taro': ['@spcsn/taro-components', '@types/react'],
-  '@spcsn/taro-components': [],
+  '@spcsn/taro': ['@spcsn/taro-components', 'react', '@types/react'],
+  '@spcsn/taro-components': ['react', '@types/react'],
   '@spcsn/taro-cli': [],
 };
 const CLI_DISALLOWED_DIRECT_DEPENDENCIES = ['@spcsn/taro-components'];

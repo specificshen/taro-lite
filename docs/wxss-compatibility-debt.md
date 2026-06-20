@@ -205,12 +205,12 @@ mini: {
 
 源码位于：
 
-- `archives/packages/taro-mini-runner/src/plugins/vite-plugin-wxss-compat.ts`
-- `archives/packages/taro-mini-runner/src/style-transforms/wxss-compat.ts`
+- `packages/taro-cli/src/internal/taro-mini-runner/plugins/vite-plugin-wxss-compat.ts`
+- `packages/taro-cli/src/internal/taro-mini-runner/style-transforms/wxss-compat.ts`
 
 ### 2. LightningCSS targets 配置
 
-`archives/packages/taro-mini-runner/src/mini-program/config.ts` 中将 `build.target` 保持为 `es2022`（满足 JS 现代化输出），同时单独为 CSS 配置偏旧的浏览器 targets：
+`packages/taro-cli/src/internal/taro-mini-runner/mini-program/config.ts` 中将 `build.target` 保持为 `es2022`（满足 JS 现代化输出），同时单独为 CSS 配置偏旧的浏览器 targets：
 
 ```ts
 lightningcss: {

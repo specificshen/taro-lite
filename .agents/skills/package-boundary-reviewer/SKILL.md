@@ -34,10 +34,10 @@ Do not make business projects explicitly install internal implementation package
 
 ### Common package areas
 
-- CLI consolidation: `packages/taro-cli`; archived internals at `archives/packages/taro-service`, `archives/packages/taro-mini-runner`, `archives/packages/taro-helper`.
-- Runtime consolidation: `packages/taro`; archived internals at `archives/packages/taro-runtime`, `archives/packages/taro-shared`.
-- Component dependency cleanup: `packages/taro-components` and its runtime/shared/taro relationships.
-- Native binding surface: `crates/native_binding` and `npm/*` platform packages.
+- CLI consolidation: `packages/taro-cli`; active internals under `packages/taro-cli/src/internal/`; archived read-only snapshots at `archives/packages/taro-service`, `archives/packages/taro-mini-runner`, `archives/packages/taro-helper`, `archives/packages/taro-shared`.
+- Runtime consolidation: `packages/taro` with inlined runtime at `packages/taro/src/runtime/`; archived read-only snapshot at `archives/packages/taro-runtime`.
+- Component dependency cleanup: `packages/taro-components` and its peer relationship to React/`@spcsn/taro`.
+- Native binding surface: already removed; do not reintroduce `crates/native_binding` or `npm/*` platform packages.
 
 ### Validation
 

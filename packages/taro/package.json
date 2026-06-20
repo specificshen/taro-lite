@@ -70,6 +70,7 @@
   },
   "peerDependencies": {
     "@spcsn/taro-components": "^1.2.0",
+    "react": "^19",
     "@types/react": "^19"
   },
   "peerDependenciesMeta": {

@@ -22,27 +22,19 @@ Business projects should normally understand only:
 - `@spcsn/taro-components`
 - `@spcsn/taro-cli`
 
-Treat these as internal implementation details unless the current code proves otherwise:
+Treat these historical package names as internal implementation details that have been inlined; their active source now lives inside the three entry packages above:
 
-- `@spcsn/taro-runtime`
-- `@spcsn/taro-react`
-- `@spcsn/taro-vite-runner`
-- `@spcsn/taro-service`
-- `@spcsn/taro-helper`
-- Vite, PostCSS, Terser, Babel, React Refresh, and other runner/framework internals
+- `@spcsn/taro-runtime` → inlined into `packages/taro/src/runtime/`, exposed as `@spcsn/taro/runtime` for CLI build-time use.
+- `@spcsn/taro-service`, `@spcsn/taro-mini-runner`, `@spcsn/taro-helper`, `@spcsn/taro-shared` → inlined into `packages/taro-cli/src/internal/`.
+- Vite, PostCSS, LightningCSS, Babel/SWC, React Refresh, and other runner/framework internals.
 
 ### Module map
 
-- `packages/taro-cli`: CLI entry, command orchestration, postinstall, generator/platform integration, business-facing `taro` binary.
-- `packages/taro`: main runtime/API entry consumed by business code.
+- `packages/taro-cli`: CLI entry, command orchestration, generator/platform integration, business-facing `taro` binary. Contains inlined internal implementations under `src/internal/`.
+- `packages/taro`: main runtime/API entry consumed by business code. Contains the inlined runtime under `src/runtime/`.
 - `packages/taro-components`: component package consumed by business code.
-- `archives/packages/taro-mini-runner`: Vite runner and React framework implementation (archived internal).
-- `archives/packages/taro-service`: service/plugin orchestration used by CLI and runner (archived internal).
-- `archives/packages/taro-runtime`: mini-app runtime and DOM-like abstractions (archived internal).
-- `archives/packages/taro-helper` and `archives/packages/taro-shared`: shared internal utilities (archived internal).
-- `crates/native_binding`: Node native binding package `@spcsn/taro-binding`.
-- `npm/*`: platform-specific native binding packages.
-- `docs/package-consolidation.md`: current package surface consolidation direction.
+- `archives/packages/`: historical read-only snapshots of the former internal packages, no longer in the workspace or publish surface.
+- `docs/package-consolidation.md`: current package surface consolidation state.
 - `docs/package-archive-plan.md`: archive plan and current public/private package boundaries.
 
 ### First-pass workflow
