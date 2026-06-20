@@ -8,11 +8,11 @@ import type { CliArgs } from './util/types';
 
 const SUPPORTED_COMMANDS = ['build', 'init'] as const;
 const INTERNAL_RUNTIME_PACKAGES = new Set([
+  '@spcsn/taro-runtime',
   '@spcsn/taro-service',
   '@spcsn/taro-mini-runner',
   '@spcsn/taro-helper',
   '@spcsn/taro-shared',
-  '@spcsn/taro/runtime',
 ]);
 
 type Command = (typeof SUPPORTED_COMMANDS)[number];

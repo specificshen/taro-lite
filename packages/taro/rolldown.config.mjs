@@ -1,6 +1,6 @@
 import { defineConfig } from 'rolldown';
 
-const externalPackages = ['@spcsn/taro-shared', 'react'];
+const externalPackages = ['react'];
 const external = (id) => externalPackages.some((pkg) => id === pkg || id.startsWith(`${pkg}/`));
 
 const runtimeDefines = {

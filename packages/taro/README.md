@@ -6,7 +6,7 @@
 
 - 业务侧公开依赖，应由小程序应用显式安装。
 - 提供 Taro API、生命周期 hooks、配置类型和小程序端运行时入口。
-- 依赖 `@spcsn/taro/runtime` 与 `@spcsn/taro-shared`，它们目前仍是发布期实现依赖。
+- 运行时源码已内联到本包，`@spcsn/taro/runtime` 仅作为构建期子路径导出供 CLI 引用。
 
 ## 发布入口
 
