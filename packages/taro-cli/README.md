@@ -1,6 +1,6 @@
 # `@spcsn/taro-cli`
 
-`@spcsn/taro-cli` 是 Taro Lite 的命令行入口，负责项目初始化、构建、配置检查和运行环境信息输出。
+`@spcsn/taro-cli` 是 Taro Lite 的命令行入口，负责项目初始化与微信小程序构建。
 
 ## 包定位
 
@@ -25,12 +25,7 @@ taro <command> [options]
 | 命令 | 说明 |
 | --- | --- |
 | `init <name>` | 创建新项目 |
-| `build` | 构建项目 |
-| `config` | 查看或设置全局配置 |
-| `doctor` | 检测项目配置与依赖是否有问题 |
-| `info` | 打印当前环境信息 |
-| `inspect` | 检查 Vite 构建配置 |
-| `update` | 更新 `@spcsn` 相关依赖到最新版本 |
+| `build` | 构建微信小程序项目 |
 
 ## 支持范围
 

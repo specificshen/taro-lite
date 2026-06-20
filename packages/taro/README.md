@@ -10,7 +10,6 @@
 
 ## 发布入口
 
-- `index.js`: 兼容入口，运行时加载 `dist/index.js`。
 - `dist/index.js`: 由源码通过 Rolldown 构建生成的小程序端入口。
 - `types/index.d.ts`: 业务项目使用的类型声明入口。
 
