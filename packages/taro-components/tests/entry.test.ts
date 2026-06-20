@@ -134,4 +134,22 @@ describe('package support boundary', () => {
     expect(fs.existsSync(path.join(packageRoot, 'types/index.vue3.d.ts'))).toBe(false);
     expect(fs.existsSync(path.join(packageRoot, 'types/index.solid.d.ts'))).toBe(false);
   });
+
+  it('exports a matching type declaration for every runtime component', () => {
+    const typeEntry = readPackageFile('types/index.d.ts');
+    const srcEntry = readPackageFile('src/index.ts');
+    const componentExports = [...srcEntry.matchAll(/export const (\w+) = /g)].map((match) => match[1]);
+
+    expect(componentExports.length).toBeGreaterThan(0);
+
+    for (const component of componentExports) {
+      expect(typeEntry).toContain(`export { ${component} }`);
+
+      const candidates = [
+        path.join(packageRoot, `types/${component}.d.ts`),
+        path.join(packageRoot, `types/gesture/${component}.d.ts`),
+      ];
+      expect(candidates.some((candidate) => fs.existsSync(candidate))).toBe(true);
+    }
+  });
 });
