@@ -38,7 +38,9 @@ class TaroURL {
   }
 
   set protocol(val: string) {
-    isString(val) && (this.#protocol = val.trim());
+    if (isString(val)) {
+      this.#protocol = val.trim();
+    }
   }
 
   get host() {
@@ -59,7 +61,9 @@ class TaroURL {
   }
 
   set hostname(val: string) {
-    val && isString(val) && (this.#hostname = val.trim());
+    if (val && isString(val)) {
+      this.#hostname = val.trim();
+    }
   }
 
   get port() {
@@ -67,7 +71,9 @@ class TaroURL {
   }
 
   set port(val: string) {
-    isString(val) && (this.#port = val.trim());
+    if (isString(val)) {
+      this.#port = val.trim();
+    }
   }
 
   get pathname() {

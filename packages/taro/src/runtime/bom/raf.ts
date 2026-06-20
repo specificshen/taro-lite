@@ -22,7 +22,8 @@ const _raf = function (callback: (time: number) => void) {
   const _now = now();
   const nextTime = Math.max(lastTime + 16, _now); // First time will execute it immediately but barely noticeable and performance is gained.
   return setTimeout(function () {
-    callback((lastTime = nextTime));
+    lastTime = nextTime;
+    callback(lastTime);
   }, nextTime - _now);
 };
 

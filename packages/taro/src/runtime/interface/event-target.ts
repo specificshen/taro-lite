@@ -11,4 +11,5 @@ export interface AddEventListenerOptions extends EventListenerOptions {
 export interface EventHandler<T = any, R = void> {
   (...args: T[]): R;
   _stop?: boolean;
+  oldHandler?: EventHandler;
 }

@@ -10,7 +10,9 @@ export class ClassList {
     className
       .trim()
       .split(/\s+/)
-      .forEach((token) => this.tokenList.push(token));
+      .forEach((token) => {
+        this.tokenList.push(token);
+      });
   }
 
   public get value() {

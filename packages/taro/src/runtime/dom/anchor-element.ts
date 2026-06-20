@@ -49,9 +49,9 @@ export class AnchorElement extends TaroElement {
     return this.props[AnchorElementAttrs.PATHNAME] ?? '';
   }
 
-  public setAttribute(qualifiedName: string, value: any): void {
+  public setAttribute(qualifiedName: string, value: unknown): void {
     if (qualifiedName === AnchorElementAttrs.HREF) {
-      const willSetAttr = parseUrl(value) as Record<string, string>;
+      const willSetAttr = parseUrl(String(value)) as Record<string, string>;
       for (const k in willSetAttr) {
         super.setAttribute(k, willSetAttr[k]);
       }

@@ -2,13 +2,13 @@ import { DOCUMENT_FRAGMENT } from '../constants';
 import type { TaroElement } from '../dom/element';
 import { options } from '../options';
 
-export function getBoundingClientRectImpl(this: TaroElement): Promise<null> {
+export function getBoundingClientRectImpl(this: TaroElement): Promise<unknown> {
   if (!options.miniGlobal) return Promise.resolve(null);
   return new Promise((resolve) => {
     const query = options.miniGlobal.createSelectorQuery();
     query
       .select(`#${this.uid}`)
-      .boundingClientRect((res: any) => {
+      .boundingClientRect((res: unknown) => {
         resolve(res);
       })
       .exec();

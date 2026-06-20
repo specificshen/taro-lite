@@ -16,7 +16,7 @@ export class FormElement extends TaroElement {
     return val == null ? '' : val;
   }
 
-  public set value(val: string | boolean | number | any[]) {
+  public set value(val: string | boolean | number | unknown[]) {
     this.setAttribute(VALUE, val);
   }
 
