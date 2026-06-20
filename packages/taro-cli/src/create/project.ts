@@ -1,4 +1,5 @@
 import * as path from 'node:path';
+import type { default as Inquirer, Question } from 'inquirer';
 import {
   chalk,
   DEFAULT_TEMPLATE_SRC,
@@ -7,8 +8,7 @@ import {
   getUserHomeDir,
   TARO_BASE_CONFIG,
   TARO_CONFIG_FOLDER,
-} from '@spcsn/taro-helper';
-import type { default as Inquirer, Question } from 'inquirer';
+} from '../internal/taro-helper';
 import { clearConsole, getPkgVersion, getRootPath } from '../util/index';
 import { TEMPLATE_CREATOR_FILES } from './constants';
 import Creator from './creator';

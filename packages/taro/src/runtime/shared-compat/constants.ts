@@ -1,0 +1,1 @@
+export const COMPILE_MODE_IDENTIFIER_PREFIX = 'f';

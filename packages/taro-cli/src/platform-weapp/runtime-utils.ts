@@ -1,4 +1,4 @@
-import { Shortcuts, toCamelCase } from '@spcsn/taro-runtime';
+import { Shortcuts, toCamelCase } from '@spcsn/taro/runtime';
 import { initNativeApi } from './apis';
 
 interface MiniPageInstance {

@@ -1,0 +1,13 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "noCheck": true,
+    "outDir": "dist/runtime",
+    "rootDir": "src/runtime",
+    "types": ["node"]
+  },
+  "include": ["src/runtime/**/*"],
+  "exclude": ["node_modules", "dist"]
+}

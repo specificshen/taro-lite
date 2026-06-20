@@ -25,11 +25,11 @@ Do not broaden a fix to unsupported upstream Taro platforms or frameworks unless
 2. Search exact error text, config key, package name, or function name first.
 3. Identify which layer owns the behavior before editing:
    - CLI command and config loading: `packages/taro-cli`
-   - Plugin/service orchestration: `packages/taro-service`
-   - Vite build and mini output generation: `packages/taro-vite-runner`
+   - Plugin/service orchestration: `archives/packages/taro-service`
+   - Vite build and mini output generation: `archives/packages/taro-mini-runner`
    - React integration: runner framework-react output or legacy framework package code if still referenced
    - WeApp platform behavior: CLI-integrated platform code or remaining platform package code if still referenced
-   - Runtime APIs and DOM-like behavior: `packages/taro` and `packages/taro-runtime`
+   - Runtime APIs and DOM-like behavior: `packages/taro` and `archives/packages/taro-runtime`
    - Components: `packages/taro-components`
 
 ### Config contract

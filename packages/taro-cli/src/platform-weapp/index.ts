@@ -1,4 +1,4 @@
-import { type IPluginContext } from '@spcsn/taro-service';
+import { type IPluginContext } from '../internal/taro-service';
 import WeappPlatform from './program';
 
 export default (ctx: IPluginContext) => {

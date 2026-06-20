@@ -1,6 +1,6 @@
 import * as path from 'node:path';
 import * as readline from 'node:readline';
-import { fs } from '@spcsn/taro-helper';
+import { fs } from '../internal/taro-helper';
 import type { FileStat } from './types';
 
 type ProfileEntry = {

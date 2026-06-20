@@ -1,9 +1,9 @@
-import { Kernel } from '@spcsn/taro-service';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, type MockedClass, vi } from 'vitest';
 import CLI from '../src/cli';
+import { Kernel } from '../src/internal/taro-service';
 import { getPkgVersion } from '../src/util/index';
 
-vi.mock('@spcsn/taro-service');
+vi.mock('../src/internal/taro-service');
 const MockedKernel = Kernel as unknown as MockedClass<typeof Kernel>;
 const APP_PATH = '/a/b/c';
 

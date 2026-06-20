@@ -1,6 +1,6 @@
-import type { Instance } from '@spcsn/taro-runtime';
-import { Current, getPageInstance, injectPageInstance } from '@spcsn/taro-runtime';
 import React from 'react';
+import type { Instance } from './runtime';
+import { Current, getPageInstance, injectPageInstance } from './runtime';
 
 const hooksMap: Record<string, string> = {
   useAddToFavorites: 'onAddToFavorites',
@@ -36,9 +36,11 @@ function createHook(lifecycle: string) {
     if (fnRef.current !== fn) fnRef.current = fn;
 
     React.useLayoutEffect(() => {
-      let inst = (instRef.current = getPageInstance(id));
+      instRef.current = getPageInstance(id);
+      let inst = instRef.current;
       if (!inst) {
-        inst = instRef.current = Object.create(null) as Instance;
+        instRef.current = Object.create(null) as Instance;
+        inst = instRef.current;
         injectPageInstance(inst, id);
       }
 

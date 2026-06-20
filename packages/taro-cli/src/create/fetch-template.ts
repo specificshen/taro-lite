@@ -1,8 +1,8 @@
 import * as path from 'node:path';
-import { chalk, fs } from '@spcsn/taro-helper';
 import AdmZip from 'adm-zip';
 import download from 'download-git-repo';
 import ora from 'ora';
+import { chalk, fs } from '../internal/taro-helper';
 import { getTemplateSourceType, readDirWithFileTypes } from '../util/index';
 import { TEMPLATE_CREATOR_FILES } from './constants';
 

@@ -50,7 +50,7 @@
 
 ## 内部包处理方向
 
-以下包优先改为内部实现，不再作为业务可感知发布包：
+以下包已改为内部实现，不再作为业务可感知发布包，并迁入 `archives/packages/`：
 
 - `@spcsn/taro-service`
 - `@spcsn/taro-mini-runner`
@@ -58,14 +58,38 @@
 - `@spcsn/taro-shared`
 - `@spcsn/taro-runtime`
 
-注意：这些包不能直接设为 `private: true` 后停止发布。当前 `@spcsn/taro`、`@spcsn/taro-cli`、`@spcsn/taro-components` 仍会在 npm 安装时解析它们。正确路径是先调整构建产物，把内部包打进公开入口包的 `dist`，再移除公开入口包里的内部 npm 依赖。
+处理方式：
 
-当前阻塞：`@spcsn/taro-runtime` 产物仍存在对 `@spcsn/taro-shared` 的 live import/require，当前集中在收口层 `process-apis` 与 `template-adapter` 的底层实现委托，尚不能安全移除 `taro-runtime -> taro-shared` 直接依赖。
+- 这些包已标记 `private: true`，不再公开发布。
+- `@spcsn/taro-runtime` 的源码已内联到 `packages/taro/src/runtime/`，由 `@spcsn/taro` 统一构建并暴露 `./runtime` 子路径。
+- `@spcsn/taro-helper`、`@spcsn/taro-service`、`@spcsn/taro-mini-runner`、`@spcsn/taro-shared` 的源码已内联到 `packages/taro-cli/src/internal/`。
+- `@spcsn/taro` 与 `@spcsn/taro-cli` 均已清空 `bundleDependencies`。
+- `@spcsn/taro-cli` 仅保留对 `@spcsn/taro` 的 workspace 依赖，用于构建期引用 `@spcsn/taro/runtime`。
 
-## 建议顺序
+业务工程安装时仍只需要：
+
+- `@spcsn/taro`
+- `@spcsn/taro-components`
+- `@spcsn/taro-cli`
+
+## 建议顺序（已完成）
 
 1. `1.0.0` 先保持全量发布，保证生产业务不受影响。
 2. 先收敛 CLI 侧：把 service、runner、platform、framework、generator、Babel/PostCSS 插件打入 `@spcsn/taro-cli`。
 3. 再收敛运行时侧：把 api、runtime、react、shared 打入 `@spcsn/taro`。
 4. 最后处理 `@spcsn/taro-components` 对 runtime/shared/taro 的依赖关系，避免循环和重复打包。
 5. 每完成一个阶段，用真实业务工程验证 `pnpm install` 和 `npm run build`。
+
+收敛已执行到位：所有内部能力都已源码级内联，不再依赖 `bundleDependencies` 或 workspace 内的归档包构建产物。
+
+## 历史包归档
+
+按 `docs/package-archive-plan.md`，以下内部实现包已迁入 `archives/packages/`，不再出现在 `packages/` 活跃目录，也不再作为公开发布包：
+
+- `@spcsn/taro-runtime`
+- `@spcsn/taro-shared`
+- `@spcsn/taro-service`
+- `@spcsn/taro-mini-runner`
+- `@spcsn/taro-helper`
+
+这些归档目录仅保留历史 `package.json`、测试与 README，已不再出现在 `pnpm-workspace.yaml` 中，不参与 workspace 安装、`pnpm -r build` 与 `release:check`。

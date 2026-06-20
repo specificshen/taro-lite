@@ -1,4 +1,4 @@
-import type { Kernel } from '@spcsn/taro-service';
+import type { Kernel } from '../internal/taro-service';
 
 interface CustomCommandArgs {
   _: string[];

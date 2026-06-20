@@ -1,4 +1,4 @@
-import { UnRecursiveTemplate } from '@spcsn/taro-runtime';
+import { UnRecursiveTemplate } from '@spcsn/taro/runtime';
 
 type MiniComponents = Record<string, Record<string, string>>;
 

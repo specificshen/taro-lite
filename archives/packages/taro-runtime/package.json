@@ -1,0 +1,58 @@
+{
+  "name": "@spcsn/taro-runtime",
+  "version": "1.1.4",
+  "private": true,
+  "description": "SPCSN Taro runtime for mini apps.",
+  "author": "Samuel Ouyang",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": [
+    "./dist/dom-external/index.js"
+  ],
+  "scripts": {
+    "prod": "echo \"archived: no-op\"",
+    "prepack": "echo \"archived: no-op\"",
+    "prebuild": "echo \"archived: no-op\"",
+    "build": "echo \"archived: no-op\"",
+    "build:types": "echo \"archived: no-op\"",
+    "clean": "echo \"archived: no-op\"",
+    "dev": "echo \"archived: no-op\"",
+    "rolldown": "echo \"archived: no-op\"",
+    "test": "vitest run",
+    "test:ci": "vitest run --coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/specificshen/taro-lite.git"
+  },
+  "bugs": {
+    "url": "https://github.com/specificshen/taro-lite/issues"
+  },
+  "homepage": "https://github.com/specificshen/taro-lite#readme",
+  "engines": {
+    "node": ">= 22.15.0"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^25.9.3",
+    "@vitest/coverage-istanbul": "^4.1.8",
+    "concurrently": "^10.0.3",
+    "rolldown": "^1.1.1",
+    "typescript": "~6.0.3",
+    "vitest": "^4.1.8"
+  }
+}

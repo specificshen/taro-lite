@@ -2,7 +2,7 @@ import React from 'react'
 import Taro from './index'
 
 declare module './index' {
-  // ref: packages/taro-runtime/src/current.ts
+  // ref: packages/taro/src/runtime/current.ts
   interface RouterInfo<TParams extends Partial<Record<string, string>> = Partial<Record<string, string>>> {
     /** 路由参数 */
     params: TParams

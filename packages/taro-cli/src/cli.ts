@@ -1,8 +1,8 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { dotenvParse, patchEnv } from '@spcsn/taro-helper';
-import { Config, Kernel } from '@spcsn/taro-service';
 import customCommand from './commands/custom-command';
+import { dotenvParse, patchEnv } from './internal/taro-helper';
+import { Config, Kernel } from './internal/taro-service';
 import { cliProfiler, getPkgVersion, printPkgVersion } from './util/index';
 import type { CliArgs } from './util/types';
 
@@ -12,7 +12,7 @@ const INTERNAL_RUNTIME_PACKAGES = new Set([
   '@spcsn/taro-mini-runner',
   '@spcsn/taro-helper',
   '@spcsn/taro-shared',
-  '@spcsn/taro-runtime',
+  '@spcsn/taro/runtime',
 ]);
 
 type Command = (typeof SUPPORTED_COMMANDS)[number];
@@ -190,7 +190,9 @@ export default class CLI {
     if (command === 'build') {
       warnInternalRuntimeDeps(appPath);
       kernel.optsPlugins.push(path.join(packageRoot, 'dist', 'platform-weapp'));
-      kernel.optsPlugins.push(require.resolve('@spcsn/taro-mini-runner/framework-react'));
+      kernel.optsPlugins.push(
+        path.join(packageRoot, 'dist', 'internal', 'taro-mini-runner', 'react-framework', 'index.js'),
+      );
 
       await cliProfiler.measure('build command', () =>
         customCommand(command, kernel, {

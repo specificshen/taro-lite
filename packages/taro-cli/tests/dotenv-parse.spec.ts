@@ -1,10 +1,10 @@
 import * as path from 'node:path';
-import { dotenvParse } from '@spcsn/taro-helper';
-import { Kernel } from '@spcsn/taro-service';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, type MockedClass, vi } from 'vitest';
 import CLI from '../src/cli';
+import { dotenvParse } from '../src/internal/taro-helper';
+import { Kernel } from '../src/internal/taro-service';
 
-vi.mock('@spcsn/taro-service');
+vi.mock('../src/internal/taro-service');
 const MockedKernel = Kernel as unknown as MockedClass<typeof Kernel>;
 const APP_PATH = path.join(__dirname, 'fixtures/default');
 

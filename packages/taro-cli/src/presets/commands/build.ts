@@ -1,5 +1,5 @@
-import type { IPluginContext } from '@spcsn/taro-service';
 import { MessageKind, validateConfig } from '../../doctor/validators';
+import type { IPluginContext } from '../../internal/taro-service';
 import { extractCompileEntry } from '../../util/app-config';
 import * as hooks from '../constant/hooks';
 

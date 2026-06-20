@@ -1,6 +1,6 @@
-import { recursiveMerge } from '@spcsn/taro-helper';
 import { describe, expect, it } from 'vitest';
-import { componentConfig } from '../../taro-mini-runner/src/shared/component';
+import { recursiveMerge } from '../src/internal/taro-helper';
+import { componentConfig } from '../src/internal/taro-mini-runner/shared/component';
 import { components } from '../src/platform-weapp/components';
 import { Template } from '../src/platform-weapp/template';
 

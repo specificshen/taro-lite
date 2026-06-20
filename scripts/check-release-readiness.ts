@@ -14,6 +14,7 @@ type PackageJson = {
   optionalDependencies?: Record<string, string>;
   peerDependencies?: Record<string, string>;
   peerDependenciesMeta?: Record<string, unknown>;
+  bundleDependencies?: string[];
   scripts?: Record<string, string>;
 };
 
@@ -22,14 +23,6 @@ const rootPackage = readJson(path.join(rootDir, 'package.json'));
 const expectedVersion = rootPackage.version ?? '';
 
 const BUSINESS_ENTRY_PACKAGES = ['@spcsn/taro', '@spcsn/taro-components', '@spcsn/taro-cli'];
-
-const PLANNED_INTERNAL_PACKAGES = [
-  '@spcsn/taro-service',
-  '@spcsn/taro-mini-runner',
-  '@spcsn/taro-helper',
-  '@spcsn/taro-shared',
-  '@spcsn/taro-runtime',
-];
 
 const README_BUSINESS_DEPENDENCIES = {
   dependencies: ['@spcsn/taro', '@spcsn/taro-components'],
@@ -41,24 +34,19 @@ const BUSINESS_ENTRY_ALLOWED_PEER_DEPENDENCIES: Record<string, string[]> = {
   '@spcsn/taro-components': [],
   '@spcsn/taro-cli': [],
 };
-const CLI_DISALLOWED_DIRECT_DEPENDENCIES = ['@spcsn/taro-components', '@spcsn/taro-shared'];
-const CLI_ALLOWED_DIRECT_DEPENDENCIES = [
-  '@spcsn/taro-helper',
-  '@spcsn/taro-mini-runner',
-  '@spcsn/taro-runtime',
-  '@spcsn/taro-service',
-];
+const CLI_DISALLOWED_DIRECT_DEPENDENCIES = ['@spcsn/taro-components'];
+const CLI_ALLOWED_DIRECT_DEPENDENCIES: string[] = ['@spcsn/taro'];
 const TARO_DISALLOWED_DIRECT_DEPENDENCIES = ['@spcsn/taro-shared'];
 const TARO_DISALLOWED_DEV_DEPENDENCIES = ['@spcsn/taro-components'];
-const TARO_ALLOWED_DIRECT_DEPENDENCIES = ['@spcsn/taro-runtime'];
-const RUNTIME_SHARED_SOURCE_ALLOWLIST = new Set([
-  'packages/taro-runtime/src/internal-components-registry.ts',
-  'packages/taro-runtime/src/process-apis.ts',
-  'packages/taro-runtime/src/template-adapter.ts',
-]);
+const TARO_ALLOWED_DIRECT_DEPENDENCIES: string[] = [];
 
 const README_PATH = 'README.md';
-const INTERNAL_GUIDANCE_DOC_PATHS = ['docs/package-consolidation.md', 'docs/taro-react-only-modernization.md'];
+const INTERNAL_GUIDANCE_DOC_PATHS = [
+  'docs/package-consolidation.md',
+  'docs/taro-react-only-modernization.md',
+  'docs/package-archive-plan.md',
+];
+const ARCHIVE_PACKAGES_DIR = 'archives/packages';
 const BUSINESS_FIXTURE_PACKAGE_JSON_PATH = 'fixtures/taro-lite-sunshine-lab/package.json';
 const BUSINESS_FIXTURE_CONFIG_PATH = 'fixtures/taro-lite-sunshine-lab/config/index.ts';
 const CLI_DEFAULT_FIXTURE_PACKAGE_JSON_PATH = 'packages/taro-cli/tests/fixtures/default/package.json';
@@ -72,8 +60,9 @@ let hasDependencyBoundaryErrors = false;
 let hasReadmeContractErrors = false;
 let hasPublishSurfaceErrors = false;
 let hasBusinessFixtureContractErrors = false;
+let hasArchivePlanErrors = false;
 
-const expectedPublicPackageNames = [...BUSINESS_ENTRY_PACKAGES, ...PLANNED_INTERNAL_PACKAGES];
+const expectedPublicPackageNames = BUSINESS_ENTRY_PACKAGES;
 const publicPackageJsonPaths = collectPublicPackageJsonPaths();
 const publicPackageNames = publicPackageJsonPaths
   .map((packageJsonPath) => readJson(packageJsonPath).name)
@@ -90,6 +79,7 @@ checkBusinessEntryPeerDependencyContract();
 checkReadmeBusinessDependencyContract();
 checkReadmeInternalPackageContract();
 checkInternalGuidanceDocContract();
+checkArchivePlanContract();
 checkBusinessFixtureDependencyContract();
 checkCliDefaultFixtureDependencyContract();
 checkBusinessFixtureConfigContract();
@@ -100,13 +90,17 @@ checkRuntimeSharedSourceContract();
 
 if (warnings.length > 0) {
   globalThis.console.log('Warnings:\n');
-  warnings.forEach((warning) => globalThis.console.log(`- ${warning}`));
+  warnings.forEach((warning) => {
+    globalThis.console.log(`- ${warning}`);
+  });
   globalThis.console.log('');
 }
 
 if (errors.length > 0) {
   globalThis.console.log('Release readiness check failed:\n');
-  errors.forEach((error) => globalThis.console.log(`- ${error}`));
+  errors.forEach((error) => {
+    globalThis.console.log(`- ${error}`);
+  });
   globalThis.console.log('\nHints:');
   if (hasVersionErrors) globalThis.console.log(`- Align package versions with root version ${expectedVersion}.`);
   if (hasDependencyBoundaryErrors)
@@ -117,6 +111,10 @@ if (errors.length > 0) {
     globalThis.console.log('- Keep package publish surface aligned with docs/package-consolidation.md.');
   if (hasBusinessFixtureContractErrors)
     globalThis.console.log('- Keep the business fixture limited to public business-facing @spcsn packages.');
+  if (hasArchivePlanErrors)
+    globalThis.console.log(
+      '- Keep the archive directory and package archive plan aligned with docs/package-archive-plan.md.',
+    );
   process.exit(1);
 }
 
@@ -161,15 +159,17 @@ function checkPublicDependencyBoundaries() {
   for (const packageJsonPath of publicPackageJsonPaths) {
     const packageJson = readJson(packageJsonPath);
     const dependencyNames = collectDependencyNames(packageJson);
-    const invalidDependencyNames = dependencyNames.filter((dependencyName) =>
-      privateWorkspacePackageNames.includes(dependencyName),
+    const bundledDependencyNames = new Set(packageJson.bundleDependencies || []);
+    const invalidDependencyNames = dependencyNames.filter(
+      (dependencyName) =>
+        privateWorkspacePackageNames.includes(dependencyName) && !bundledDependencyNames.has(dependencyName),
     );
 
     if (invalidDependencyNames.length === 0) continue;
 
     hasDependencyBoundaryErrors = true;
     errors.push(
-      `${relative(packageJsonPath)}: ${packageJson.name} depends on private or workspace-excluded packages: ${invalidDependencyNames.join(', ')}`,
+      `${relative(packageJsonPath)}: ${packageJson.name} depends on private or workspace-excluded packages that are not bundled: ${invalidDependencyNames.join(', ')}`,
     );
   }
 }
@@ -202,11 +202,15 @@ function checkCliDependencyContract() {
 
   const cliPackageJson = readJson(cliPackageJsonPath);
   const cliDependencyNames = Object.keys(cliPackageJson.dependencies || {});
+  const bundledDependencyNames = new Set(cliPackageJson.bundleDependencies || []);
   const invalidDependencyNames = cliDependencyNames.filter((dependencyName) =>
     CLI_DISALLOWED_DIRECT_DEPENDENCIES.includes(dependencyName),
   );
   const unexpectedSpcsnDependencyNames = cliDependencyNames.filter(
-    (dependencyName) => dependencyName.startsWith('@spcsn/') && !CLI_ALLOWED_DIRECT_DEPENDENCIES.includes(dependencyName),
+    (dependencyName) =>
+      dependencyName.startsWith('@spcsn/') &&
+      !CLI_ALLOWED_DIRECT_DEPENDENCIES.includes(dependencyName) &&
+      !bundledDependencyNames.has(dependencyName),
   );
   if (invalidDependencyNames.length === 0 && unexpectedSpcsnDependencyNames.length === 0) return;
 
@@ -232,11 +236,15 @@ function checkTaroDependencyContract() {
   const taroPackageJson = readJson(taroPackageJsonPath);
   const taroDependencyNames = Object.keys(taroPackageJson.dependencies || {});
   const taroDevDependencyNames = Object.keys(taroPackageJson.devDependencies || {});
+  const bundledDependencyNames = new Set(taroPackageJson.bundleDependencies || []);
   const invalidDependencyNames = taroDependencyNames.filter((dependencyName) =>
     TARO_DISALLOWED_DIRECT_DEPENDENCIES.includes(dependencyName),
   );
   const unexpectedSpcsnDependencyNames = taroDependencyNames.filter(
-    (dependencyName) => dependencyName.startsWith('@spcsn/') && !TARO_ALLOWED_DIRECT_DEPENDENCIES.includes(dependencyName),
+    (dependencyName) =>
+      dependencyName.startsWith('@spcsn/') &&
+      !TARO_ALLOWED_DIRECT_DEPENDENCIES.includes(dependencyName) &&
+      !bundledDependencyNames.has(dependencyName),
   );
   const invalidDevDependencyNames = taroDevDependencyNames.filter((dependencyName) =>
     TARO_DISALLOWED_DEV_DEPENDENCIES.includes(dependencyName),
@@ -268,29 +276,27 @@ function checkTaroDependencyContract() {
 }
 
 function checkRuntimeSharedSourceContract() {
-  const runtimeSourceDir = path.join(rootDir, 'packages/taro-runtime/src');
+  const runtimeSourceDir = path.join(rootDir, 'packages/taro/src/runtime');
   const runtimeSourcePaths = collectFiles(runtimeSourceDir, '.ts');
   const sharedImportPattern = /@spcsn\/taro-shared(?:\/template)?/;
-  const unexpectedImportPaths: string[] = [];
+  const sharedImportPaths: string[] = [];
 
   for (const runtimeSourcePath of runtimeSourcePaths) {
     const source = fs.readFileSync(runtimeSourcePath, 'utf8');
     if (!sharedImportPattern.test(source)) continue;
-    const sourceRelativePath = relative(runtimeSourcePath);
-    if (RUNTIME_SHARED_SOURCE_ALLOWLIST.has(sourceRelativePath)) continue;
-    unexpectedImportPaths.push(sourceRelativePath);
+    sharedImportPaths.push(relative(runtimeSourcePath));
   }
 
-  if (unexpectedImportPaths.length === 0) return;
+  if (sharedImportPaths.length === 0) return;
 
   hasDependencyBoundaryErrors = true;
   errors.push(
-    `packages/taro-runtime/src: unexpected @spcsn/taro-shared imports outside allowlist: ${unexpectedImportPaths.join(', ')}`,
+    `packages/taro/src/runtime: inlined runtime must not import @spcsn/taro-shared: ${sharedImportPaths.join(', ')}`,
   );
 }
 
 function checkBusinessEntryPeerDependencyContract() {
-  const hiddenPackageNames = PLANNED_INTERNAL_PACKAGES;
+  const hiddenPackageNames = privateWorkspacePackageNames;
   const businessEntryPackageJsonPaths = publicPackageJsonPaths.filter((packageJsonPath) =>
     BUSINESS_ENTRY_PACKAGES.includes(readJson(packageJsonPath).name ?? ''),
   );
@@ -360,6 +366,51 @@ function checkInternalGuidanceDocContract() {
       `${docPath}: internal docs that mention package consolidation must state they are not business guidance.`,
     );
   }
+}
+
+function checkArchivePlanContract() {
+  const archiveDirPath = path.join(rootDir, ARCHIVE_PACKAGES_DIR);
+  if (!fs.existsSync(archiveDirPath)) {
+    hasArchivePlanErrors = true;
+    errors.push(`${ARCHIVE_PACKAGES_DIR}: archive packages directory must exist.`);
+    return;
+  }
+
+  const archiveReadmePath = path.join(archiveDirPath, 'README.md');
+  if (!fs.existsSync(archiveReadmePath)) {
+    hasArchivePlanErrors = true;
+    errors.push(`${ARCHIVE_PACKAGES_DIR}/README.md: archive directory must document its purpose and current state.`);
+  }
+
+  const archivePackageNames = collectArchivedPackageNames();
+  const unexpectedlyPublicArchivePackageNames = archivePackageNames.filter((packageName) =>
+    expectedPublicPackageNames.includes(packageName),
+  );
+
+  if (unexpectedlyPublicArchivePackageNames.length > 0) {
+    hasArchivePlanErrors = true;
+    errors.push(
+      `${ARCHIVE_PACKAGES_DIR}: archived packages must not be in the active public release surface: ${unexpectedlyPublicArchivePackageNames.join(', ')}`,
+    );
+  }
+}
+
+function collectArchivedPackageNames(): string[] {
+  const archiveDirPath = path.join(rootDir, ARCHIVE_PACKAGES_DIR);
+  if (!fs.existsSync(archiveDirPath)) return [];
+
+  const entries = fs.readdirSync(archiveDirPath, { withFileTypes: true });
+  const packageNames: string[] = [];
+
+  for (const entry of entries) {
+    if (!entry.isDirectory()) continue;
+    const packageJsonPath = path.join(archiveDirPath, entry.name, 'package.json');
+    if (!fs.existsSync(packageJsonPath)) continue;
+    const packageJson = readJson(packageJsonPath);
+    if (isString(packageJson.name)) packageNames.push(packageJson.name);
+  }
+
+  return packageNames;
 }
 
 function checkBusinessFixtureDependencyContract() {
@@ -1046,11 +1097,8 @@ function checkBusinessVisibleTypeContract() {
 }
 
 function printPublishSurface() {
-  globalThis.console.log('Business entry packages:\n');
+  globalThis.console.log('Public business entry packages:\n');
   printPackageGroup(BUSINESS_ENTRY_PACKAGES);
-
-  globalThis.console.log('\nPlanned internal packages still published for install compatibility:\n');
-  printPackageGroup(PLANNED_INTERNAL_PACKAGES);
 
   const otherPackageNames = publicPackageNames.filter(
     (packageName) => !expectedPublicPackageNames.includes(packageName),
@@ -1059,10 +1107,17 @@ function printPublishSurface() {
     globalThis.console.log('\nOther public packages:\n');
     printPackageGroup(otherPackageNames);
   }
+
+  if (privateWorkspacePackageNames.length > 0) {
+    globalThis.console.log('\nPrivate workspace packages (bundled or archived):\n');
+    printPackageGroup(privateWorkspacePackageNames);
+  }
 }
 
 function printPackageGroup(packageNames: string[]): void {
-  packageNames.forEach((packageName) => globalThis.console.log(`- ${packageName}`));
+  packageNames.forEach((packageName) => {
+    globalThis.console.log(`- ${packageName}`);
+  });
 }
 
 function collectPackageJsonPaths(): string[] {

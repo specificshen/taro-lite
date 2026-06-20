@@ -36,13 +36,14 @@ Treat these as internal implementation details unless the current code proves ot
 - `packages/taro-cli`: CLI entry, command orchestration, postinstall, generator/platform integration, business-facing `taro` binary.
 - `packages/taro`: main runtime/API entry consumed by business code.
 - `packages/taro-components`: component package consumed by business code.
-- `packages/taro-vite-runner`: Vite runner and React framework implementation that should feel internal to business projects.
-- `packages/taro-service`: service/plugin orchestration used by CLI and runner.
-- `packages/taro-runtime`: mini-app runtime and DOM-like abstractions.
-- `packages/taro-helper` and `packages/shared`: shared internal utilities.
+- `archives/packages/taro-mini-runner`: Vite runner and React framework implementation (archived internal).
+- `archives/packages/taro-service`: service/plugin orchestration used by CLI and runner (archived internal).
+- `archives/packages/taro-runtime`: mini-app runtime and DOM-like abstractions (archived internal).
+- `archives/packages/taro-helper` and `archives/packages/taro-shared`: shared internal utilities (archived internal).
 - `crates/native_binding`: Node native binding package `@spcsn/taro-binding`.
 - `npm/*`: platform-specific native binding packages.
 - `docs/package-consolidation.md`: current package surface consolidation direction.
+- `docs/package-archive-plan.md`: archive plan and current public/private package boundaries.
 
 ### First-pass workflow
 

@@ -1,5 +1,5 @@
 import * as path from 'node:path';
-import { type IPluginContext, TaroPlatformBase } from '@spcsn/taro-service';
+import { type IPluginContext, TaroPlatformBase, type TConfig } from '../internal/taro-service';
 import { components } from './components';
 import { Template } from './template';
 
@@ -18,7 +18,7 @@ class Weapp extends TaroPlatformBase {
     xs: '.wxs',
   };
 
-  constructor(ctx: IPluginContext, config: any) {
+  constructor(ctx: IPluginContext, config: TConfig) {
     super(ctx, config);
     const platformDirectory = path.dirname(ctx.path ?? __filename);
     this.runtimePath = path.join(platformDirectory, 'runtime');

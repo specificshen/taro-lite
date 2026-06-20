@@ -25,7 +25,7 @@ importers:
         version: 6.0.3
       vitest:
         specifier: ^4.1.8
-        version: 4.1.8(@types/node@25.9.3)(@vitest/coverage-istanbul@4.1.8)
+        version: 4.1.8(@types/node@25.9.3)(@vitest/coverage-istanbul@4.1.8)(vite@8.0.16(@types/node@25.9.3))
 
   fixtures/taro-lite-sunshine-lab:
     dependencies:
@@ -46,29 +46,7 @@ importers:
         specifier: ^19.2.17
         version: 19.2.17
 
-  packages/shared:
-    devDependencies:
-      '@types/node':
-        specifier: ^25.9.3
-        version: 25.9.3
-      concurrently:
-        specifier: ^10.0.3
-        version: 10.0.3
-      rolldown:
-        specifier: ^1.1.1
-        version: 1.1.1
-      typescript:
-        specifier: ~6.0.3
-        version: 6.0.3
-      vitest:
-        specifier: ^4.1.8
-        version: 4.1.8(@types/node@25.9.3)(@vitest/coverage-istanbul@4.1.8)
-
   packages/taro:
-    dependencies:
-      '@spcsn/taro-runtime':
-        specifier: workspace:*
-        version: link:../taro-runtime
     devDependencies:
       rolldown:
         specifier: ^1.1.1
@@ -76,43 +54,139 @@ importers:
 
   packages/taro-cli:
     dependencies:
-      '@spcsn/taro-helper':
+      '@spcsn/taro':
         specifier: workspace:*
-        version: link:../taro-helper
-      '@spcsn/taro-mini-runner':
-        specifier: workspace:*
-        version: link:../taro-mini-runner
-      '@spcsn/taro-runtime':
-        specifier: workspace:*
-        version: link:../taro-runtime
-      '@spcsn/taro-service':
-        specifier: workspace:*
-        version: link:../taro-service
+        version: link:../taro
+      '@swc/core':
+        specifier: ^1.15.41
+        version: 1.15.41
+      '@swc/register':
+        specifier: 0.1.10
+        version: 0.1.10(@swc/core@1.15.41)
+      '@vitejs/plugin-react':
+        specifier: ^6.0.2
+        version: 6.0.2(vite@8.0.16(@types/node@25.9.3))
+      acorn:
+        specifier: ^8.17.0
+        version: 8.17.0
+      acorn-walk:
+        specifier: ^8.3.5
+        version: 8.3.5
       adm-zip:
         specifier: ^0.5.17
         version: 0.5.17
+      autoprefixer:
+        specifier: ^10.5.0
+        version: 10.5.0(postcss@8.5.15)
+      browserslist:
+        specifier: ^4.28.2
+        version: 4.28.2
+      chalk:
+        specifier: ^5.6.2
+        version: 5.6.2
+      chokidar:
+        specifier: ^5.0.0
+        version: 5.0.0
+      cross-spawn:
+        specifier: ^7.0.6
+        version: 7.0.6
+      debug:
+        specifier: ^4.4.3
+        version: 4.4.3
+      dotenv:
+        specifier: ^17.4.2
+        version: 17.4.2
+      dotenv-expand:
+        specifier: ^13.0.0
+        version: 13.0.0
       download-git-repo:
         specifier: ^3.0.2
         version: 3.0.2
       inquirer:
         specifier: ^14.0.2
         version: 14.0.2(@types/node@25.9.3)
+      joi:
+        specifier: ^18.2.1
+        version: 18.2.1
+      lightningcss:
+        specifier: ^1.32.0
+        version: 1.32.0
+      lodash:
+        specifier: ^4.18.1
+        version: 4.18.1
       ora:
         specifier: ^9.4.0
         version: 9.4.0
+      picomatch:
+        specifier: ^4.0.4
+        version: 4.0.4
+      postcss:
+        specifier: ^8.5.15
+        version: 8.5.15
+      react:
+        specifier: ^19.2.7
+        version: 19.2.7
+      react-dom:
+        specifier: ^19.2.7
+        version: 19.2.7(react@19.2.7)
+      react-reconciler:
+        specifier: 0.33.0
+        version: 0.33.0(react@19.2.7)
+      regenerator-runtime:
+        specifier: ~0.14.1
+        version: 0.14.1
+      resolve:
+        specifier: ^1.22.12
+        version: 1.22.12
+      sax:
+        specifier: 1.6.0
+        version: 1.6.0
+      tapable:
+        specifier: ^2.3.3
+        version: 2.3.3
+      vite:
+        specifier: ^8.0.16
+        version: 8.0.16(@types/node@25.9.3)
+      vite-plugin-static-copy:
+        specifier: ^4.1.1
+        version: 4.1.1(vite@8.0.16(@types/node@25.9.3))
     devDependencies:
-      '@spcsn/taro':
-        specifier: workspace:*
-        version: link:../taro
       '@types/adm-zip':
         specifier: ^0.5.8
         version: 0.5.8
+      '@types/cross-spawn':
+        specifier: ^6.0.6
+        version: 6.0.6
+      '@types/debug':
+        specifier: ^4.1.13
+        version: 4.1.13
       '@types/inquirer':
         specifier: ^9.0.9
         version: 9.0.9
+      '@types/lodash':
+        specifier: ^4.17.24
+        version: 4.17.24
       '@types/node':
         specifier: ^25.9.3
         version: 25.9.3
+      '@types/picomatch':
+        specifier: ^4.0.3
+        version: 4.0.3
+      '@types/react':
+        specifier: ^19.2.17
+        version: 19.2.17
+      '@types/react-dom':
+        specifier: ^19.2.3
+        version: 19.2.3(@types/react@19.2.17)
+      '@types/react-reconciler':
+        specifier: ^0.33.0
+        version: 0.33.0(@types/react@19.2.17)
+      '@types/resolve':
+        specifier: ^1.20.6
+        version: 1.20.6
+      '@types/sax':
+        specifier: 1.2.7
+        version: 1.2.7
       '@vitest/coverage-istanbul':
         specifier: ^4.1.8
         version: 4.1.8(vitest@4.1.8)
@@ -121,7 +195,7 @@ importers:
         version: 6.0.3
       vitest:
         specifier: ^4.1.8
-        version: 4.1.8(@types/node@25.9.3)(@vitest/coverage-istanbul@4.1.8)
+        version: 4.1.8(@types/node@25.9.3)(@vitest/coverage-istanbul@4.1.8)(vite@8.0.16(@types/node@25.9.3))
 
   packages/taro-components:
     devDependencies:
@@ -160,215 +234,7 @@ importers:
         version: 6.0.3
       vitest:
         specifier: ^4.1.8
-        version: 4.1.8(@types/node@25.9.3)(@vitest/coverage-istanbul@4.1.8)
-
-  packages/taro-helper:
-    dependencies:
-      '@swc/core':
-        specifier: ^1.15.41
-        version: 1.15.41
-      '@swc/register':
-        specifier: 0.1.10
-        version: 0.1.10(@swc/core@1.15.41)
-      chalk:
-        specifier: ^5.6.2
-        version: 5.6.2
-      chokidar:
-        specifier: ^5.0.0
-        version: 5.0.0
-      cross-spawn:
-        specifier: ^7.0.6
-        version: 7.0.6
-      debug:
-        specifier: ^4.4.3
-        version: 4.4.3
-      dotenv:
-        specifier: ^17.4.2
-        version: 17.4.2
-      dotenv-expand:
-        specifier: ^13.0.0
-        version: 13.0.0
-      resolve:
-        specifier: ^1.22.12
-        version: 1.22.12
-    devDependencies:
-      '@types/cross-spawn':
-        specifier: ^6.0.6
-        version: 6.0.6
-      '@types/debug':
-        specifier: ^4.1.13
-        version: 4.1.13
-      '@types/node':
-        specifier: ^25.9.3
-        version: 25.9.3
-      '@types/resolve':
-        specifier: ^1.20.6
-        version: 1.20.6
-      '@vitest/coverage-istanbul':
-        specifier: ^4.1.8
-        version: 4.1.8(vitest@4.1.8)
-      typescript:
-        specifier: ~6.0.3
-        version: 6.0.3
-      vitest:
-        specifier: ^4.1.8
-        version: 4.1.8(@types/node@25.9.3)(@vitest/coverage-istanbul@4.1.8)
-
-  packages/taro-mini-runner:
-    dependencies:
-      '@spcsn/taro-helper':
-        specifier: workspace:*
-        version: link:../taro-helper
-      '@spcsn/taro-runtime':
-        specifier: workspace:*
-        version: link:../taro-runtime
-      '@spcsn/taro-shared':
-        specifier: workspace:*
-        version: link:../shared
-      '@vitejs/plugin-react':
-        specifier: ^6.0.2
-        version: 6.0.2(vite@8.0.16(@types/node@25.9.3))
-      acorn:
-        specifier: ^8.17.0
-        version: 8.17.0
-      acorn-walk:
-        specifier: ^8.3.5
-        version: 8.3.5
-      autoprefixer:
-        specifier: ^10.5.0
-        version: 10.5.0(postcss@8.5.15)
-      browserslist:
-        specifier: ^4.28.2
-        version: 4.28.2
-      lightningcss:
-        specifier: ^1.32.0
-        version: 1.32.0
-      lodash:
-        specifier: ^4.18.1
-        version: 4.18.1
-      picomatch:
-        specifier: ^4.0.4
-        version: 4.0.4
-      postcss:
-        specifier: ^8.5.15
-        version: 8.5.15
-      react:
-        specifier: ^19.2.7
-        version: 19.2.7
-      react-dom:
-        specifier: ^19.2.7
-        version: 19.2.7(react@19.2.7)
-      react-reconciler:
-        specifier: 0.33.0
-        version: 0.33.0(react@19.2.7)
-      regenerator-runtime:
-        specifier: ~0.14.1
-        version: 0.14.1
-      sax:
-        specifier: 1.6.0
-        version: 1.6.0
-      vite:
-        specifier: ^8.0.16
-        version: 8.0.16(@types/node@25.9.3)
-      vite-plugin-static-copy:
-        specifier: ^4.1.1
-        version: 4.1.1(vite@8.0.16(@types/node@25.9.3))
-    devDependencies:
-      '@spcsn/taro':
-        specifier: workspace:*
-        version: link:../taro
-      '@types/lodash':
-        specifier: ^4.17.24
-        version: 4.17.24
-      '@types/node':
-        specifier: ^25.9.3
-        version: 25.9.3
-      '@types/picomatch':
-        specifier: ^4.0.3
-        version: 4.0.3
-      '@types/react':
-        specifier: ^19.2.17
-        version: 19.2.17
-      '@types/react-dom':
-        specifier: ^19.2.3
-        version: 19.2.3(@types/react@19.2.17)
-      '@types/react-reconciler':
-        specifier: ^0.33.0
-        version: 0.33.0(@types/react@19.2.17)
-      '@types/sax':
-        specifier: 1.2.7
-        version: 1.2.7
-      typescript:
-        specifier: ~6.0.3
-        version: 6.0.3
-
-  packages/taro-runtime:
-    dependencies:
-      '@spcsn/taro-shared':
-        specifier: workspace:*
-        version: link:../shared
-    devDependencies:
-      '@types/node':
-        specifier: ^25.9.3
-        version: 25.9.3
-      '@vitest/coverage-istanbul':
-        specifier: ^4.1.8
-        version: 4.1.8(vitest@4.1.8)
-      concurrently:
-        specifier: ^10.0.3
-        version: 10.0.3
-      rolldown:
-        specifier: ^1.1.1
-        version: 1.1.1
-      typescript:
-        specifier: ~6.0.3
-        version: 6.0.3
-      vitest:
-        specifier: ^4.1.8
-        version: 4.1.8(@types/node@25.9.3)(@vitest/coverage-istanbul@4.1.8)
-
-  packages/taro-service:
-    dependencies:
-      '@spcsn/taro-helper':
-        specifier: workspace:*
-        version: link:../taro-helper
-      '@spcsn/taro-shared':
-        specifier: workspace:*
-        version: link:../shared
-      joi:
-        specifier: ^18.2.1
-        version: 18.2.1
-      lodash:
-        specifier: ^4.18.1
-        version: 4.18.1
-      ora:
-        specifier: ^9.4.0
-        version: 9.4.0
-      resolve:
-        specifier: ^1.22.12
-        version: 1.22.12
-      tapable:
-        specifier: ^2.3.3
-        version: 2.3.3
-    devDependencies:
-      '@spcsn/taro':
-        specifier: workspace:*
-        version: link:../taro
-      '@types/lodash':
-        specifier: ^4.17.24
-        version: 4.17.24
-      '@types/node':
-        specifier: ^25.9.3
-        version: 25.9.3
-      '@types/resolve':
-        specifier: ^1.20.6
-        version: 1.20.6
-      typescript:
-        specifier: ~6.0.3
-        version: 6.0.3
-      vitest:
-        specifier: ^4.1.8
-        version: 4.1.8(@types/node@25.9.3)(@vitest/coverage-istanbul@4.1.8)
+        version: 4.1.8(@types/node@25.9.3)(@vitest/coverage-istanbul@4.1.8)(vite@8.0.16(@types/node@25.9.3))
 
 packages:
 
@@ -2292,6 +2158,7 @@ packages:
       '@vitest/ui': 4.1.8
       happy-dom: '*'
       jsdom: '*'
+      vite: ^6.0.0 || ^7.0.0 || ^8.0.0
     peerDependenciesMeta:
       '@edge-runtime/vm':
         optional: true
@@ -2973,7 +2840,7 @@ snapshots:
       magicast: 0.5.3
       obug: 2.1.2
       tinyrainbow: 3.1.0
-      vitest: 4.1.8(@types/node@25.9.3)(@vitest/coverage-istanbul@4.1.8)
+      vitest: 4.1.8(@types/node@25.9.3)(@vitest/coverage-istanbul@4.1.8)(vite@8.0.16(@types/node@25.9.3))
     transitivePeerDependencies:
       - supports-color
 
@@ -4121,7 +3988,7 @@ snapshots:
       '@types/node': 25.9.3
       fsevents: 2.3.3
 
-  vitest@4.1.8(@types/node@25.9.3)(@vitest/coverage-istanbul@4.1.8):
+  vitest@4.1.8(@types/node@25.9.3)(@vitest/coverage-istanbul@4.1.8)(vite@8.0.16(@types/node@25.9.3)):
     dependencies:
       '@vitest/expect': 4.1.8
       '@vitest/mocker': 4.1.8(vite@8.0.16(@types/node@25.9.3))
@@ -4147,18 +4014,7 @@ snapshots:
       '@types/node': 25.9.3
       '@vitest/coverage-istanbul': 4.1.8(vitest@4.1.8)
     transitivePeerDependencies:
-      - '@vitejs/devtools'
-      - esbuild
-      - jiti
-      - less
       - msw
-      - sass
-      - sass-embedded
-      - stylus
-      - sugarss
-      - terser
-      - tsx
-      - yaml
 
   which-typed-array@1.1.22:
     dependencies:

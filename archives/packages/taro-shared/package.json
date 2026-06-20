@@ -1,0 +1,58 @@
+{
+  "name": "@spcsn/taro-shared",
+  "version": "1.1.4",
+  "private": true,
+  "description": "Shared utilities for SPCSN Taro packages.",
+  "author": "Samuel Ouyang",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.js"
+    },
+    "./template": {
+      "types": "./dist/template.d.ts",
+      "import": "./dist/template.js",
+      "require": "./dist/template.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": [],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/specificshen/taro-lite.git"
+  },
+  "scripts": {
+    "prod": "echo \"source moved to packages/taro-cli/src/internal\"",
+    "prepack": "echo \"source moved to packages/taro-cli/src/internal\"",
+    "prebuild": "echo \"source moved to packages/taro-cli/src/internal\"",
+    "clean": "bun ../../../scripts/clean.ts dist",
+    "build": "echo \"source moved to packages/taro-cli/src/internal\"",
+    "build:types": "tsc --emitDeclarationOnly --declaration",
+    "dev": "echo \"source moved to packages/taro-cli/src/internal\"",
+    "rolldown": "rolldown --config rolldown.config.mjs",
+    "test": "vitest run"
+  },
+  "bugs": {
+    "url": "https://github.com/specificshen/taro-lite/issues"
+  },
+  "homepage": "https://github.com/specificshen/taro-lite#readme",
+  "engines": {
+    "node": ">= 22.15.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.3",
+    "concurrently": "^10.0.3",
+    "rolldown": "^1.1.1",
+    "typescript": "~6.0.3",
+    "vitest": "^4.1.8"
+  }
+}

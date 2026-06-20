@@ -1,6 +1,6 @@
-declare const wx: any;
+declare const wx: Record<string, unknown> | undefined;
 
-import { processApis } from '@spcsn/taro-runtime';
+import { processApis } from './runtime';
 
 const needPromiseApis = new Set([
   'addFileToFavorites',
@@ -36,7 +36,7 @@ const needPromiseApis = new Set([
   'startFacialRecognitionVerify',
 ]);
 
-function initWeappNativeApiFallback(taro: Record<string, any>): void {
+function initWeappNativeApiFallback(taro: Record<string, unknown>): void {
   if (typeof wx === 'undefined' || typeof taro.addInterceptor === 'function') return;
 
   processApis(taro, wx, {
@@ -60,13 +60,15 @@ function initWeappNativeApiFallback(taro: Record<string, any>): void {
   });
 
   taro.cloud = wx.cloud;
-  taro.getTabBar = function (pageCtx: any) {
-    if (typeof pageCtx?.getTabBar === 'function') {
-      return pageCtx.getTabBar()?.$taroInstances;
+  taro.getTabBar = function (pageCtx: Record<string, unknown>) {
+    const getTabBar = pageCtx.getTabBar as (() => { $taroInstances?: unknown } | null | undefined) | undefined;
+    if (typeof getTabBar === 'function') {
+      return getTabBar()?.$taroInstances;
     }
   };
   taro.getRenderer = function () {
-    return taro.getCurrentInstance()?.page?.renderer ?? 'webview';
+    const getCurrentInstance = taro.getCurrentInstance as () => { page?: { renderer?: string } } | undefined;
+    return getCurrentInstance?.()?.page?.renderer ?? 'webview';
   };
 }
 
