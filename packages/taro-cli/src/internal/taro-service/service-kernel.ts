@@ -177,9 +177,15 @@ export default class Kernel extends EventEmitter {
       }
     }
     if (Array.isArray(plugins)) {
-      isGlobalConfigPreset
-        ? (this.globalExtraPlugins = _.merge(this.globalExtraPlugins, convertPluginsToObject(plugins)()))
-        : (this.extraPlugins = _.merge(this.extraPlugins, convertPluginsToObject(plugins)()));
+      const mergedPlugins = _.merge(
+        isGlobalConfigPreset ? this.globalExtraPlugins : this.extraPlugins,
+        convertPluginsToObject(plugins)(),
+      );
+      if (isGlobalConfigPreset) {
+        this.globalExtraPlugins = mergedPlugins;
+      } else {
+        this.extraPlugins = mergedPlugins;
+      }
     }
   }
 

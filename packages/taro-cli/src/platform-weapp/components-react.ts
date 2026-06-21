@@ -43,7 +43,9 @@ export const Ad = 'ad';
 export const OfficialAccount = 'official-account';
 export const OpenData = 'open-data';
 export const WebView = 'web-view';
-export const Map = 'map';
+const MapComponent = 'map';
+
+export { MapComponent as Map };
 export const NavigationBar = 'navigation-bar';
 export const PageMeta = 'page-meta';
 export const VoipRoom = 'voip-room';

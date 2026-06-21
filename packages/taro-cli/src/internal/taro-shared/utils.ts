@@ -60,9 +60,9 @@ export function capitalize(s: string) {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
-const hasOwnProperty = Object.prototype.hasOwnProperty;
+const objectHasOwnProperty = Object.prototype.hasOwnProperty;
 
-export const hasOwn = (val: Record<string, unknown>, key: string) => hasOwnProperty.call(val, key);
+export const hasOwn = (val: Record<string, unknown>, key: string) => objectHasOwnProperty.call(val, key);
 
 /**
  * ensure takes a condition and throw a error if the condition fails,
@@ -250,7 +250,11 @@ export function isEnableTTDom() {
 
   const ttMode = tt.getRenderMode ? tt.getRenderMode() : TTRenderType.V1;
 
-  ttMode === TTRenderType.V2 && tt.__$enableTTDom$__ ? (ttUseV2TTDom = true) : (ttUseV2TTDom = false);
+  if (ttMode === TTRenderType.V2 && tt.__$enableTTDom$__) {
+    ttUseV2TTDom = true;
+  } else {
+    ttUseV2TTDom = false;
+  }
 
   return ttUseV2TTDom;
 }

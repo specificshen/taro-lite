@@ -152,11 +152,12 @@ function initNativeComponentEntry(params: InitNativeComponentEntryParams) {
           compId,
           getCtx,
           renderComponent(ctx) {
+            if (ctx.data == null) ctx.data = {};
             return h(
               reactMeta.PageContext.Provider,
               { value: compId },
               h(Component, {
-                ...(ctx.data ||= {}).props,
+                ...ctx.data.props,
                 ...refs,
                 $scope: ctx,
               }),
@@ -252,7 +253,8 @@ export function createNativePageConfig(
       this.config = pageConfig || {};
       // this.$taroPath 是页面唯一标识
       const uniqueOptions = Object.assign({}, options, { $taroTimestamp: Date.now() });
-      const $taroPath = (this.$taroPath = getPath(id, uniqueOptions));
+      this.$taroPath = getPath(id, uniqueOptions);
+      const $taroPath = this.$taroPath;
 
       // this.$taroParams 作为暴露给开发者的页面参数对象，可以被随意修改
       if (this.$taroParams == null) {
@@ -307,7 +309,9 @@ export function createNativePageConfig(
           pageElement = null;
         }
         if (prepareMountList.length) {
-          prepareMountList.forEach((fn) => fn());
+          for (const fn of prepareMountList) {
+            fn();
+          }
           prepareMountList = [];
         }
       });
@@ -423,7 +427,8 @@ export function createNativeComponentConfig(
       }
     },
     attached(this: MpInstance) {
-      const compId = (this.compId = getNativeCompId());
+      this.compId = getNativeCompId();
+      const compId = this.compId;
       setCurrent(compId);
       this.config = componentConfig;
       const app = isNewBlended ? nativeComponentApp : Current.app;

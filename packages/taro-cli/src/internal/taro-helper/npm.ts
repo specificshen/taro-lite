@@ -167,7 +167,8 @@ export function installNpmPkg(pkgList: string[] | string, options: IInstallOptio
   let matches: RegExpExecArray | null = null;
   const peers: string[] = [];
 
-  while ((matches = PEERS.exec(output.stdout))) {
+  matches = PEERS.exec(output.stdout);
+  while (matches) {
     const pkg = matches[1];
     const version = matches[2];
     if (version.match(' ')) {
@@ -175,6 +176,7 @@ export function installNpmPkg(pkgList: string[] | string, options: IInstallOptio
     } else {
       peers.push(`${pkg}@${version}`);
     }
+    matches = PEERS.exec(output.stdout);
   }
   if (options.peerDependencies && peers.length) {
     console.info('正在安装 peerDependencies...');

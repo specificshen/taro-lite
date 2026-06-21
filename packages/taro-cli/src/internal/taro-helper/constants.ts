@@ -8,7 +8,8 @@ type GlobalWithPlatforms = typeof global & {
 
 const globalWithPlatforms = global as GlobalWithPlatforms;
 
-export const PLATFORMS = (globalWithPlatforms.PLATFORMS = globalWithPlatforms.PLATFORMS || {});
+globalWithPlatforms.PLATFORMS = globalWithPlatforms.PLATFORMS || {};
+export const PLATFORMS = globalWithPlatforms.PLATFORMS;
 
 export enum processTypeEnum {
   START = 'start',

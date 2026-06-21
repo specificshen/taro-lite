@@ -103,7 +103,9 @@ export class TaroHooks<T extends Record<string, TFunc> = Record<string, TFunc>> 
 
   private tapOneOrMany<K extends Extract<keyof T, string>>(hookName: K, callback: T[K] | T[K][]) {
     const list = isFunction(callback) ? [callback] : callback;
-    list.forEach((cb) => this.on(hookName, cb));
+    for (const cb of list) {
+      this.on(hookName, cb);
+    }
   }
 
   tap<K extends Extract<keyof T, string>>(hookName: K, callback: T[K] | T[K][]) {

@@ -30,9 +30,9 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
               const chunk = bundle[chunkName];
               if (chunk?.type === 'chunk' && chunk.moduleIds.includes(id)) {
                 const module = chunk.modules[id];
-                (module as any).renderedExports?.forEach((item: string) =>
-                  componentConfig.includes.add(toDashed(item)),
-                );
+                for (const item of (module as any).renderedExports || []) {
+                  componentConfig.includes.add(toDashed(item));
+                }
                 isFound = true;
                 return true;
               }
@@ -65,9 +65,10 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
             const pageConfig = page.config;
 
             if (!page.isNative) {
-              const usingComponents = (pageConfig.usingComponents = {
+              pageConfig.usingComponents = {
                 ...pageConfig.usingComponents,
-              });
+              };
+              const usingComponents = pageConfig.usingComponents;
               if (isUsingCustomWrapper) {
                 const importCustomWrapperPath = promoteRelativePath(
                   path.relative(

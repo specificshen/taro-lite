@@ -138,7 +138,8 @@ export function createPageConfig(
 
       // this.$taroPath 是页面唯一标识
       const uniqueOptions = Object.assign({}, options, { $taroTimestamp: Date.now() });
-      const $taroPath = (this.$taroPath = getPath(id, uniqueOptions));
+      this.$taroPath = getPath(id, uniqueOptions);
+      const $taroPath = this.$taroPath;
       // this.$taroParams 作为暴露给开发者的页面参数对象，可以被随意修改
       if (this.$taroParams == null) {
         this.$taroParams = uniqueOptions;
@@ -184,7 +185,9 @@ export function createPageConfig(
             pageElement = null;
           }
           if (prepareMountList.length) {
-            prepareMountList.forEach((fn) => fn());
+            for (const fn of prepareMountList) {
+              fn();
+            }
             prepareMountList = [];
           }
         }),

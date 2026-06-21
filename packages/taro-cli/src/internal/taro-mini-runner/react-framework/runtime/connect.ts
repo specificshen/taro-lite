@@ -399,7 +399,9 @@ export function createReactApp(
       const app = getAppInstance();
       const func = hooks.call('getLifecycle', instance, lifecycle);
       if (Array.isArray(func)) {
-        func.forEach((cb) => cb.apply(app, option));
+        for (const cb of func) {
+          cb.apply(app, option);
+        }
       }
     }
   }

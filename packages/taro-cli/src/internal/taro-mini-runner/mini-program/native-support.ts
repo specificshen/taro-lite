@@ -126,7 +126,9 @@ export default function (viteCompilerContext: ViteMiniCompilerContext | undefine
                   ((p as Property).key as Identifier).name !== 'children' &&
                   ((p as Property).key as Identifier).name !== 'id',
               )
-              .forEach((p) => attrs.add(((p as Property).key as Identifier).name));
+              .forEach((p) => {
+                attrs.add(((p as Property).key as Identifier).name);
+              });
           },
         });
       }

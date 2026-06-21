@@ -28,9 +28,9 @@ export function capitalize(s: string) {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
-const hasOwnProperty = Object.prototype.hasOwnProperty;
+const objectHasOwnProperty = Object.prototype.hasOwnProperty;
 
-export const hasOwn = (val: Record<string, unknown>, key: string) => hasOwnProperty.call(val, key);
+export const hasOwn = (val: Record<string, unknown>, key: string) => objectHasOwnProperty.call(val, key);
 
 let _uniqueId = 1;
 const _loadTime = new Date().getTime().toString();

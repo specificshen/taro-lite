@@ -20,12 +20,16 @@ export class Transaction<T = TaroPlatform> {
 
   initAll(scope: T) {
     const wrappers = this.wrappers;
-    wrappers.forEach((wrapper) => wrapper.init?.call(scope));
+    for (const wrapper of wrappers) {
+      wrapper.init?.call(scope);
+    }
   }
 
   closeAll(scope: T) {
     const wrappers = this.wrappers;
-    wrappers.forEach((wrapper) => wrapper.close?.call(scope));
+    for (const wrapper of wrappers) {
+      wrapper.close?.call(scope);
+    }
   }
 
   addWrapper(wrapper: IWrapper) {

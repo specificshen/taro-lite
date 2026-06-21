@@ -92,7 +92,9 @@ class App extends React.Component {
   }
 
   watchConfigFile(rollupCtx: Rolldown.PluginContext) {
-    this.configFileList.forEach((configFile) => rollupCtx.addWatchFile(configFile));
+    for (const configFile of this.configFileList) {
+      rollupCtx.addWatchFile(configFile);
+    }
   }
 
   getAppScriptPath(): string {

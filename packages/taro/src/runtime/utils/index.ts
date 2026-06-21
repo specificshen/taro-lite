@@ -67,12 +67,14 @@ export function isHasExtractProp(el: TaroElement): boolean {
  * @param type 事件类型
  */
 export function isParentBound(node: TaroElement | null, type: string): boolean {
-  while ((node = node?.parentElement || null)) {
-    if (!node || node.nodeName === ROOT_STR || node.nodeName === 'root-portal') {
+  node = node?.parentElement || null;
+  while (node) {
+    if (node.nodeName === ROOT_STR || node.nodeName === 'root-portal') {
       return false;
     } else if (node.__handlers[type]?.length) {
       return true;
     }
+    node = node.parentElement || null;
   }
 
   return false;

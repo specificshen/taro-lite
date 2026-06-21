@@ -385,7 +385,7 @@ function handleIntersectionObserverObjectPolyfill() {
       const intersectionRect =
         rootIsInDom && rootContainsTarget && this._computeTargetAndRootIntersection(target, rootRect);
 
-      const newEntry = (item.entry = new (
+      item.entry = new (
         IntersectionObserverEntry as unknown as new (
           entry: IntersectionObserverEntryInit,
         ) => IntersectionObserverEntry
@@ -395,7 +395,8 @@ function handleIntersectionObserverObjectPolyfill() {
         boundingClientRect: targetRect,
         rootBounds: rootRect,
         intersectionRect: intersectionRect,
-      }));
+      });
+      const newEntry = item.entry;
 
       if (!oldEntry) {
         this._queuedEntries.push(newEntry);

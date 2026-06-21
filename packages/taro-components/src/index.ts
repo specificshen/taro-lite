@@ -41,7 +41,9 @@ export const Canvas = 'canvas';
 export const Ad = 'ad';
 export const AdCustom = 'ad-custom';
 export const WebView = 'web-view';
-export const Map = 'map';
+const MapComponent = 'map';
+
+export { MapComponent as Map };
 export const OfficialAccount = 'official-account';
 export const OpenData = 'open-data';
 export const PageMeta = 'page-meta';

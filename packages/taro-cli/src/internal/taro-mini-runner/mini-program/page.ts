@@ -30,7 +30,9 @@ function getJsxElementName(node: SwcNode): string | undefined {
 
 function collectUsedComponents(node: unknown, usedComponents: Set<string>) {
   if (Array.isArray(node)) {
-    node.forEach((item) => collectUsedComponents(item, usedComponents));
+    for (const item of node) {
+      collectUsedComponents(item, usedComponents);
+    }
     return;
   }
   if (!isSwcNode(node)) return;
@@ -99,7 +101,9 @@ function getSourceRange(span: SourceSpan): Pick<SourceEdit, 'start' | 'end'> {
 
 function collectSwcNodes(node: unknown, visitor: (node: SwcNode) => void) {
   if (Array.isArray(node)) {
-    node.forEach((item) => collectSwcNodes(item, visitor));
+    for (const item of node) {
+      collectSwcNodes(item, visitor);
+    }
     return;
   }
 
@@ -109,10 +113,10 @@ function collectSwcNodes(node: unknown, visitor: (node: SwcNode) => void) {
     visitor(node);
   }
 
-  Object.entries(node).forEach(([key, value]) => {
-    if (key === 'span') return;
+  for (const [key, value] of Object.entries(node)) {
+    if (key === 'span') continue;
     collectSwcNodes(value, visitor);
-  });
+  }
 }
 
 function hasLocalImportNativeComponent(ast: SwcNode): boolean {

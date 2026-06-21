@@ -503,8 +503,10 @@ export function cssImports(content: string): string[] {
 
   content = String(content).replace(/\/\*.+?\*\/|\/\/.*(?=[\n\r])/g, '');
 
-  while ((match = cssImportRegExp.exec(content))) {
+  match = cssImportRegExp.exec(content);
+  while (match) {
     results.push(match[2]);
+    match = cssImportRegExp.exec(content);
   }
 
   return results;
@@ -521,7 +523,7 @@ export function emptyDirectory(
       if (fs.lstatSync(curPath).isDirectory()) {
         let removed = false;
         let i = 0; // retry counter
-        do {
+        while (!removed && i < retries) {
           try {
             const excludes = Array.isArray(opts.excludes) ? opts.excludes : [opts.excludes];
             const canRemove =
@@ -535,11 +537,9 @@ export function emptyDirectory(
           } catch {
             // Retry because Windows can hold directory handles briefly.
           } finally {
-            if (++i < retries) {
-              continue;
-            }
+            i++;
           }
-        } while (!removed);
+        }
       } else {
         const excludes = Array.isArray(opts.excludes) ? opts.excludes : [opts.excludes];
         const canRemove =
@@ -806,7 +806,7 @@ export function readPageConfig(configPath: string) {
   const extNames = ['.js', '.jsx', '.ts', '.tsx'];
 
   // check source file extension
-  extNames.some((ext) => {
+  for (const ext of extNames) {
     const tempPath = configPath.replace('.config', ext);
     if (fs.existsSync(tempPath)) {
       try {
@@ -814,9 +814,9 @@ export function readPageConfig(configPath: string) {
       } catch (_error) {
         result = {};
       }
-      return true;
+      break;
     }
-  });
+  }
   return result;
 }
 
