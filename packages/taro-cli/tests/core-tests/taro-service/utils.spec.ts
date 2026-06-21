@@ -64,14 +64,14 @@ describe('taro-service utils', () => {
 
   describe('filterGlobalConfig', () => {
     it('returns config unchanged when command is provided', () => {
-      const config = { plugins: ['@jdtaro/plugin-build-weapp'] } as any;
+      const config = { plugins: ['@jdtaro/plugin-build-weapp'] } as { plugins?: string[] };
       expect(filterGlobalConfig(config, 'build')).toEqual(config);
     });
 
     it('filters out unrelated plugins when command is empty', () => {
       const config = {
         plugins: ['@jdtaro/plugin-build-weapp', '@jdtaro/plugin-build-h5', 'other-plugin'],
-      } as any;
+      } as { plugins?: string[] };
       expect(filterGlobalConfig(config, '')).toEqual({ plugins: ['other-plugin'] });
     });
   });

@@ -1,7 +1,18 @@
 import Taro from '@spcsn/taro';
 import { useEffect, useState } from 'react';
 
-declare const wx: any;
+interface WechatApi {
+  getMenuButtonBoundingClientRect?: () => {
+    bottom: number;
+    height: number;
+    left: number;
+    right: number;
+    top: number;
+    width: number;
+  };
+}
+
+declare const wx: WechatApi;
 
 export interface SafeAreaInfo {
   statusBarHeight: number;
@@ -32,7 +43,7 @@ export function useSafeArea(): SafeAreaInfo {
 
   useEffect(() => {
     try {
-      const windowInfo = (Taro as any).getWindowInfo ? (Taro as any).getWindowInfo() : Taro.getSystemInfoSync();
+      const windowInfo = typeof Taro.getWindowInfo === 'function' ? Taro.getWindowInfo() : Taro.getSystemInfoSync();
 
       let menuButtonInfo = { bottom: 58, top: 24, height: 32, width: 88, left: 280, right: 368 };
       if (typeof wx !== 'undefined' && wx.getMenuButtonBoundingClientRect) {

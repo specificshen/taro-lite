@@ -1,9 +1,10 @@
+import type { IProjectConfig } from '@spcsn/taro/types/compile';
 import { describe, expect, it, vi } from 'vitest';
 import Config from '../../../src/internal/taro-service/service-config';
 
-function createConfig(initialConfig: Record<string, unknown> = {}) {
+function createConfig(initialConfig: Partial<IProjectConfig> = {}) {
   const config = new Config({ appPath: '/tmp' });
-  config.initialConfig = initialConfig as any;
+  config.initialConfig = initialConfig as IProjectConfig;
   return config;
 }
 
