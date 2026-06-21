@@ -21,13 +21,7 @@ export default function MediaPage() {
           </CardHeader>
           <CardContent>
             <View className={styles.imageWrap}>
-              <Image
-                className={styles.sampleImage}
-                src={SAMPLE_IMAGE}
-                mode="aspectFill"
-                lazyLoad
-                showMenuByLongpress
-              />
+              <Image className={styles.sampleImage} src={SAMPLE_IMAGE} mode="aspectFill" lazyLoad showMenuByLongpress />
             </View>
             <Text className={styles.caption}>aspectFill · lazyLoad · showMenuByLongpress</Text>
           </CardContent>
@@ -38,11 +32,7 @@ export default function MediaPage() {
             <CardTitle>Canvas 组件</CardTitle>
           </CardHeader>
           <CardContent>
-            <Canvas
-              className={styles.sampleCanvas}
-              type="2d"
-              id="media-canvas"
-            />
+            <Canvas className={styles.sampleCanvas} type="2d" id="media-canvas" />
             <Text className={styles.caption}>type=2d · 用于绘制图形与动画</Text>
           </CardContent>
         </Card>
