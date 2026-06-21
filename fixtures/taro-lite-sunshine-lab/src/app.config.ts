@@ -9,6 +9,7 @@ export default defineAppConfig({
     fixturePageRoutes.networkLab,
     fixturePageRoutes.gestureLab,
     fixturePageRoutes.stateLab,
+    fixturePageRoutes.mediaLab,
   ],
   window: {
     navigationStyle: 'custom',

@@ -1,6 +1,6 @@
-export type FixturePageIcon = 'layers' | 'form' | 'list' | 'wifi' | 'hand' | 'zap';
+export type FixturePageIcon = 'layers' | 'form' | 'list' | 'wifi' | 'hand' | 'zap' | 'image';
 
-export type FixturePageGradient = 'primary' | 'warm' | 'ocean' | 'rose' | 'sky' | 'success';
+export type FixturePageGradient = 'primary' | 'warm' | 'ocean' | 'rose' | 'sky' | 'success' | 'violet';
 
 export type FixturePageBadgeVariant = 'default' | 'secondary' | 'success' | 'warning';
 
@@ -24,6 +24,7 @@ export const fixturePageRoutes = {
   networkLab: 'pages/network-lab/index',
   gestureLab: 'pages/gesture-lab/index',
   stateLab: 'pages/state-lab/index',
+  mediaLab: 'pages/media-lab/index',
 } as const;
 
 export const fixturePages: FixturePageItem[] = [
@@ -92,6 +93,17 @@ export const fixturePages: FixturePageItem[] = [
     badgeVariant: 'secondary',
     coverage: 'React 19',
     health: 'Concurrent ready',
+  },
+  {
+    title: '媒体测试',
+    desc: 'Image 与 Canvas 组件渲染及样式兼容性',
+    route: `/${fixturePageRoutes.mediaLab}`,
+    icon: 'image',
+    gradient: 'violet',
+    badge: 'Media',
+    badgeVariant: 'default',
+    coverage: '2 components',
+    health: 'Render ready',
   },
 ];
 

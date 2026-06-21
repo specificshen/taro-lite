@@ -131,9 +131,11 @@ export function Icon({ name, size = 'md', className }: IconProps) {
   return <Text className={cn(styles.icon, styles[`icon_${size}`], className)}>{iconMap[name] || name}</Text>;
 }
 
+export type IconCircleGradient = 'primary' | 'warm' | 'ocean' | 'rose' | 'sky' | 'dark' | 'success' | 'warning' | 'violet';
+
 interface IconCircleProps {
   name: IconName;
-  gradient?: 'primary' | 'warm' | 'ocean' | 'rose' | 'sky' | 'dark' | 'success' | 'warning';
+  gradient?: IconCircleGradient;
   size?: 'sm' | 'md' | 'lg';
   className?: string;
 }
