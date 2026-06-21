@@ -99,10 +99,11 @@ export default function NetworkPage() {
         setLastStatus('success');
         add(`Mock 请求完成，耗时 ${ms}ms`, 'success');
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       const ms = Date.now() - start;
       setLatency(ms);
-      setResponse(`请求失败: ${err.message || JSON.stringify(err)}`);
+      const message = err instanceof Error ? err.message : String(err);
+      setResponse(`请求失败: ${message}`);
       setLastStatus('error');
       add(`请求失败，耗时 ${ms}ms`, 'error');
     }
@@ -135,12 +136,13 @@ export default function NetworkPage() {
         setLastStatus('warn');
         add('Mock 404 响应', 'warn');
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       const ms = Date.now() - start;
       setLatency(ms);
-      setResponse(`异常: ${err.message || JSON.stringify(err)}`);
+      const message = err instanceof Error ? err.message : String(err);
+      setResponse(`异常: ${message}`);
       setLastStatus('error');
-      add(`异常捕获: ${err.message || err}`, 'error');
+      add(`异常捕获: ${message}`, 'error');
     }
   };
 
