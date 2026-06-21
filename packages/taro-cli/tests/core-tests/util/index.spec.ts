@@ -1,23 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { getPkgVersion, getRootPath, getTemplateSourceType, isNil } from '../../../src/util/index';
-
-describe('getTemplateSourceType', () => {
-  it('returns git for github prefix', () => {
-    expect(getTemplateSourceType('github:example/taro')).toBe('git');
-  });
-
-  it('returns git for gitlab prefix', () => {
-    expect(getTemplateSourceType('gitlab:some/repo')).toBe('git');
-  });
-
-  it('returns git for direct prefix', () => {
-    expect(getTemplateSourceType('direct:https://example.com/repo')).toBe('git');
-  });
-
-  it('returns url for http url', () => {
-    expect(getTemplateSourceType('https://example.com/template.zip')).toBe('url');
-  });
-});
+import { getPkgVersion, getRootPath, isNil } from '../../../src/util/index';
 
 describe('getRootPath', () => {
   it('returns the package root directory', () => {

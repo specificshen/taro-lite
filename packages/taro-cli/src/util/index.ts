@@ -69,10 +69,6 @@ export function printPkgVersion(): void {
   console.log();
 }
 
-export function getTemplateSourceType(url: string): 'git' | 'url' {
-  return /^(github|gitlab|direct):/.test(url) ? 'git' : 'url';
-}
-
 export function readDirWithFileTypes(folder: string): FileStat[] {
   return fs.readdirSync(folder).map((name: string) => {
     const stat = fs.statSync(path.join(folder, name));
