@@ -1,5 +1,5 @@
 import type { ViteMiniBuildConfig } from '@spcsn/taro/types/compile/vite-compiler-context';
-import { FONT_LIMIT, IMAGE_LIMIT, MEDIA_LIMIT } from '../shared/runner';
+import { FONT_LIMIT, IMAGE_LIMIT, MEDIA_LIMIT } from '../../taro-service/runner-utils/constant';
 
 const platform = 'weapp';
 

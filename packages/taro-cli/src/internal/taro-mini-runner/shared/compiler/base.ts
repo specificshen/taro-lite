@@ -15,7 +15,7 @@ import type { Rolldown } from 'vite';
 import { fs, isEmptyObject, readConfig, resolveMainFilePath, SCRIPT_EXT } from '../../../taro-helper';
 import { stripMultiPlatformExt } from '..';
 import { logger } from '../logger';
-import { VITE_COMPILER_LABEL } from '../runner';
+import { VITE_COMPILER_LABEL } from '../../../taro-service/runner-utils/constant';
 
 export class CompilerContext<T extends ViteMiniBuildConfig> implements ViteCompilerContext<T> {
   static label = VITE_COMPILER_LABEL;
