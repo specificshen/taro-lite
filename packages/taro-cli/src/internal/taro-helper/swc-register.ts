@@ -1,28 +1,29 @@
-import { createRequire } from 'node:module';
-import type { Config } from '@swc/core';
+import { transformSync } from '@swc/core';
+import { addHook } from 'pirates';
 
 type SwcOnlyMatcher = string | RegExp | ((filename: string) => boolean);
 type SwcPlugin = [string, Record<string, unknown>];
-
-type SwcRegisterConfig = Config & {
-  only: SwcOnlyMatcher[];
-  jsc: NonNullable<Config['jsc']> & {
-    experimental?: {
-      plugins: SwcPlugin[];
-    };
-  };
-};
 
 interface ICreateSwcRegisterParam {
   only: SwcOnlyMatcher[];
   plugins?: SwcPlugin[];
 }
 
-const swcRegisterRequire = createRequire(import.meta.url);
+const HOOK_EXTENSIONS = ['.js', '.jsx', '.ts', '.tsx', '.mjs', '.cjs', '.es6', '.es'];
 
-export default function createSwcRegister({ only, plugins }: ICreateSwcRegisterParam) {
-  const config: SwcRegisterConfig = {
-    only: Array.from(new Set([...only])),
+function makeMatcher(matcher: SwcOnlyMatcher) {
+  if (typeof matcher === 'function') {
+    return matcher;
+  }
+  if (matcher instanceof RegExp) {
+    return (filename: string) => matcher.test(filename);
+  }
+  return (filename: string) => filename.includes(matcher);
+}
+
+function compile(code: string, filename: string, plugins?: SwcPlugin[]) {
+  const { code: transformed } = transformSync(code, {
+    filename,
     jsc: {
       parser: {
         syntax: 'typescript',
@@ -31,17 +32,20 @@ export default function createSwcRegister({ only, plugins }: ICreateSwcRegisterP
       transform: {
         legacyDecorator: true,
       },
+      experimental: plugins ? { plugins } : undefined,
     },
     module: {
       type: 'commonjs',
     },
-  };
+    sourceMaps: 'inline',
+  });
+  return transformed;
+}
 
-  if (plugins) {
-    config.jsc.experimental = {
-      plugins,
-    };
-  }
-
-  swcRegisterRequire('@swc/register')(config);
+export default function createSwcRegister({ only, plugins }: ICreateSwcRegisterParam) {
+  const matchers = only.map(makeMatcher);
+  addHook((code, filename) => compile(code, filename, plugins), {
+    exts: HOOK_EXTENSIONS,
+    matcher: (filename) => matchers.some((m) => m(filename)),
+  });
 }
