@@ -30,7 +30,7 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
               const chunk = bundle[chunkName];
               if (chunk?.type === 'chunk' && chunk.moduleIds.includes(id)) {
                 const module = chunk.modules[id];
-                for (const item of (module as any).renderedExports || []) {
+                for (const item of (module as { renderedExports?: string[] }).renderedExports || []) {
                   componentConfig.includes.add(toDashed(item));
                 }
                 isFound = true;
@@ -193,7 +193,7 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
         if (viteCompilerContext) {
           const { taroConfig } = viteCompilerContext;
           if (isFunction(taroConfig.modifyBuildAssets)) {
-            const assets: Record<string, any> = {};
+            const assets: Record<string, { source: () => string | Uint8Array }> = {};
             for (const name in bundle) {
               const chunk = bundle[name];
               const source = chunk.type === 'asset' ? chunk.source : chunk.code;
@@ -205,7 +205,7 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
               set(target, p, newValue) {
                 if (!isString(p)) return false;
 
-                target[p] = newValue;
+                target[p] = newValue as { source: () => string | Uint8Array };
                 const chunk = bundle[p];
                 if (chunk.type === 'asset') {
                   chunk.source = newValue.source();
@@ -239,7 +239,7 @@ function generateConfigFile(
   const fileName = viteCompilerContext.getConfigPath(getComponentName(viteCompilerContext, filePath));
   const unOfficialConfigs = ['enableShareAppMessage', 'enableShareTimeline', 'components'];
   unOfficialConfigs.forEach((item) => {
-    delete (config as Record<string, any>)[item];
+    delete (config as Record<string, unknown>)[item];
   });
   const source = prettyPrintJson(config);
   ctx.emitFile({

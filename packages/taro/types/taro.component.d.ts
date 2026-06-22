@@ -27,9 +27,9 @@ declare module './index' {
     onHide?(): void
   }
   interface AppInstance extends Show {
-    mount?(component: React.ComponentClass<any>, id: string, cb: (...args: unknown[]) => void): void
+    mount?(component: React.ComponentType<Record<string, unknown>>, id: string, cb: (...args: unknown[]) => void): void
     mount?(
-      component: React.ComponentClass<any>,
+      component: React.ComponentType<Record<string, unknown>>,
       id: string,
       getCtx: (...args: unknown[]) => void,
       cb: (...args: unknown[]) => void,

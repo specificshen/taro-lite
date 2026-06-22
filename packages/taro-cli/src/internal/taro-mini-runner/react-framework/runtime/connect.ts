@@ -26,7 +26,7 @@ import { EMPTY_OBJ, ensure, hooks } from '../../../taro-shared';
 import { reactMeta } from './react-meta';
 import { ensureIsArray, HOOKS_APP_ID, isClassComponent, setDefaultDescriptor, setRouterParams } from './utils';
 
-type PageComponent = React.CElement<PageProps, React.Component<PageProps, any, any>>;
+type PageComponent = React.CElement<PageProps, React.Component<PageProps, Record<string, unknown>, never>>;
 type InjectPageInstance = (node?: Instance | null) => void;
 type PageInjectedProps = PageProps & {
   ref?: React.Ref<Instance>;
@@ -235,7 +235,7 @@ export function createReactApp(
         elements.push(page());
       }
 
-      let props: React.ComponentProps<any> | null = null;
+      let props: React.ComponentProps<typeof App> | null = null;
 
       if (isReactComponent) {
         props = { ref: appInstanceRef };

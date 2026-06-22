@@ -38,7 +38,9 @@ function collectUsedComponents(node: unknown, usedComponents: Set<string>) {
   if (!isSwcNode(node)) return;
 
   if (node.type === 'JSXElement' || node.type === 'JSXOpeningElement') {
-    const nameNode = (node.name || (node as any).opening?.name) as SwcNode | undefined;
+    const nameNode = (node.name || (node as unknown as { opening?: { name: SwcNode } }).opening?.name) as
+      | SwcNode
+      | undefined;
     const tagName = nameNode ? getJsxElementName(nameNode) : undefined;
     if (tagName && internalComponentNames.has(tagName)) {
       usedComponents.add(toDashed(tagName));

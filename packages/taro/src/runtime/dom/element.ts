@@ -45,7 +45,7 @@ import { treeToArray } from './tree';
 export class TaroElement extends TaroNode {
   public ctx?: unknown;
   public tagName!: string;
-  public props: Record<string, any> = {};
+  public props: Record<string, unknown> = {};
   public style: Style;
   public dataset: Record<string, unknown> = EMPTY_OBJ;
   public innerHTML!: string;

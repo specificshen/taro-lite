@@ -76,7 +76,7 @@ function isCssVariable(propertyName: string) {
 }
 
 export class Style {
-  [key: string]: any;
+  [key: string]: string | undefined;
 
   public _pending!: boolean;
 

@@ -9,7 +9,7 @@ export default class Plugin {
   ctx: Kernel;
   optsSchema!: Func;
 
-  constructor(opts: any) {
+  constructor(opts: { id: string; path: string; ctx: Kernel }) {
     this.id = opts.id;
     this.path = opts.path;
     this.ctx = opts.ctx;
@@ -44,7 +44,7 @@ export default class Plugin {
     this.register(platform);
   }
 
-  registerMethod(...args: any[]) {
+  registerMethod(...args: unknown[]) {
     const { name, fn } = processArgs(args);
     const methods = this.ctx.methods.get(name) || [];
     methods.push(
@@ -59,25 +59,26 @@ export default class Plugin {
     this.ctx.methods.set(name, methods);
   }
 
-  addPluginOptsSchema(schema: any) {
+  addPluginOptsSchema(schema: Func) {
     this.optsSchema = schema;
   }
 }
 
-function processArgs(args: any[]) {
-  let name: any, fn: any;
+function processArgs(args: unknown[]) {
+  let name: string, fn: Func | undefined;
   if (!args.length) {
     throw new Error('参数为空');
   } else if (args.length === 1) {
     if (typeof args[0] === 'string') {
       name = args[0];
     } else {
-      name = args[0].name;
-      fn = args[0].fn;
+      const arg = args[0] as Record<string, unknown>;
+      name = arg.name as string;
+      fn = arg.fn as Func | undefined;
     }
   } else {
-    name = args[0];
-    fn = args[1];
+    name = args[0] as string;
+    fn = args[1] as Func | undefined;
   }
   return { name, fn };
 }

@@ -6,9 +6,9 @@ import vm from 'node:vm';
 import type { Config } from '@swc/core';
 import { transformSync } from '@swc/core';
 
-function getModuleDefaultExport(exports: any) {
-  if (exports?.__esModule) return exports.default;
-  if (exports?.default !== undefined) return exports.default;
+function getModuleDefaultExport(exports: Record<string, unknown>): unknown {
+  if (exports.__esModule) return exports.default;
+  if (exports.default !== undefined) return exports.default;
   return exports;
 }
 
@@ -130,7 +130,7 @@ function runConfigModule(
   customSwcConfig: Config,
 ) {
   const code = transformConfigModule(filename, customConfig, customSwcConfig);
-  const module = { exports: {} as any };
+  const module = { exports: {} as Record<string, unknown> };
   const wrapper = `(function(exports, require, module, __filename, __dirname, global, process){${code}\n})`;
   const fn = vm.runInThisContext(wrapper, { filename });
   fn(

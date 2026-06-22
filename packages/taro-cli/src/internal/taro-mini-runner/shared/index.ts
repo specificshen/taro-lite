@@ -1,12 +1,13 @@
 import path from 'node:path';
 import querystring from 'node:querystring';
-import type { IPostcssOption } from '@spcsn/taro/types/compile';
+import type { Func, IPostcssOption, IPxTransformOption } from '@spcsn/taro/types/compile';
 import type { TRollupResolveMethod } from '@spcsn/taro/types/compile/config/plugin';
 import type {
   ViteMiniBuildConfig,
   ViteMiniCompilerContext,
   VitePageMeta,
 } from '@spcsn/taro/types/compile/vite-compiler-context';
+import type { AcceptedPlugin } from 'postcss';
 import type { CSSModulesOptions } from 'vite';
 import type { Target } from 'vite-plugin-static-copy';
 import { isNpmPkg, normalizePath, REG_NODE_MODULES, recursiveMerge, resolveSync } from '../../taro-helper';
@@ -128,14 +129,18 @@ export async function getPostcssPlugins(
   option = {} as IPostcssOption,
   excludePluginNames = MINI_EXCLUDE_POSTCSS_PLUGIN_NAME,
 ) {
-  const plugins: any[] = [];
+  const plugins: AcceptedPlugin[] = [];
 
-  for (const [pluginName, pluginOption, pluginPkg] of option as [string, any, any][]) {
+  for (const [pluginName, pluginOption, pluginPkg] of option as [
+    string,
+    { enable?: boolean; config?: Record<string, unknown> | IPxTransformOption } | undefined,
+    Func?,
+  ][]) {
     if (!pluginOption || excludePluginNames.includes(pluginName)) continue;
     if (Object.hasOwn(pluginOption, 'enable') && !pluginOption.enable) continue;
 
     if (pluginPkg) {
-      plugins.push(pluginPkg(pluginOption.config || {}));
+      plugins.push(pluginPkg(pluginOption.config || {}) as AcceptedPlugin);
       continue;
     }
 
@@ -149,7 +154,7 @@ export async function getPostcssPlugins(
 
     try {
       const pluginModule = await import(pluginPath);
-      plugins.push(pluginModule.default(pluginOption.config || {}));
+      plugins.push(pluginModule.default(pluginOption.config || {}) as AcceptedPlugin);
     } catch (e) {
       const error = e as NodeJS.ErrnoException;
       logger.info(error.message || String(error));

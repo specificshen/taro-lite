@@ -17,7 +17,7 @@ export default (ctx: IPluginContext) => {
         if (!fs.existsSync(projectConfigPath)) return;
       }
 
-      const origProjectConfig = fs.readJSONSync(projectConfigPath);
+      const origProjectConfig = fs.readJSONSync(projectConfigPath) as Record<string, unknown>;
       origProjectConfig.appid = process.env.TARO_APP_ID || origProjectConfig.appid;
 
       let distProjectConfig = origProjectConfig;

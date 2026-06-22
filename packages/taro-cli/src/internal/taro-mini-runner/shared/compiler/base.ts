@@ -11,6 +11,17 @@ import type {
   ViteMiniBuildConfig,
   VitePageMeta,
 } from '@spcsn/taro/types/compile/vite-compiler-context';
+
+interface LoaderMeta {
+  importFrameworkStatement: string;
+  mockAppStatement: string;
+  frameworkArgs: string;
+  creator: string;
+  creatorLocation: string;
+  importFrameworkName: string;
+  [key: string]: unknown;
+}
+
 import type { Rolldown } from 'vite';
 import { fs, isEmptyObject, readConfig, resolveMainFilePath, SCRIPT_EXT } from '../../../taro-helper';
 import { VITE_COMPILER_LABEL } from '../../../taro-service/runner-utils/constant';
@@ -27,7 +38,7 @@ export class CompilerContext<T extends ViteMiniBuildConfig> implements ViteCompi
   app!: ViteAppMeta;
   pages!: VitePageMeta[];
   components?: VitePageMeta[];
-  loaderMeta: any = {
+  loaderMeta: LoaderMeta = {
     importFrameworkStatement: `
 import * as React from 'react'
 import ReactDOM from 'react-dom'

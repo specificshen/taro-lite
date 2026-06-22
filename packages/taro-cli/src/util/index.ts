@@ -61,7 +61,7 @@ export function getRootPath(): string {
 }
 
 export function getPkgVersion(): string {
-  return fs.readJSONSync(path.join(getRootPath(), 'package.json')).version;
+  return (fs.readJSONSync(path.join(getRootPath(), 'package.json')) as { version: string }).version;
 }
 
 export function printPkgVersion(): void {

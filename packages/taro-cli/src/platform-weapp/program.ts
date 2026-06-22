@@ -28,7 +28,7 @@ class Weapp extends TaroPlatformBase {
     this.runtimePath = path.join(platformDirectory, 'runtime');
     this.taroComponentsPath = path.join(platformDirectory, 'components-react');
     this.template = new Template();
-    this.projectConfigJson = this.config.projectConfigName || 'project.config.json';
+    this.projectConfigJson = (this.config.projectConfigName as string | undefined) || 'project.config.json';
 
     this.config = {
       renderer: 'skyline',

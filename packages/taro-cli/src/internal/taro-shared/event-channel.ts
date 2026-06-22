@@ -6,7 +6,7 @@ interface ExeListItem {
 }
 
 interface RouteEvt extends Events {
-  addEvents: (events: Record<string, (...args: any[]) => void>) => void;
+  addEvents: (events: Record<string, (...args: unknown[]) => void>) => void;
   emit?: (events: string, data: Record<string, unknown>) => void;
 }
 
@@ -20,7 +20,7 @@ let routeChannel: RouteEvt;
 class PageEvts extends Events {
   exeList: ExeListItem[] = [];
 
-  on(eventName: string, callback: (...args: any[]) => void) {
+  on(eventName: string, callback: (...args: unknown[]) => void) {
     super.on(eventName, callback, this);
     this.exeList = this.exeList.reduce<ExeListItem[]>((prev, item) => {
       if (item.eventName === eventName) {
@@ -49,7 +49,7 @@ class RouteEvts extends Events {
     });
   }
 
-  addEvents(events: Record<string, (...args: any[]) => void>) {
+  addEvents(events: Record<string, (...args: unknown[]) => void>) {
     if (!events || typeof events !== 'object') return;
     Object.keys(events).forEach((key) => {
       this.off(key);

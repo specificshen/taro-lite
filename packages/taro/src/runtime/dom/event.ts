@@ -16,11 +16,17 @@ import { isParentBound } from '../utils';
 import type { TaroElement } from './element';
 
 // Taro 事件对象。以 Web 标准的事件对象为基础，加入小程序事件对象中携带的部分信息，并模拟实现事件冒泡。
-export class TaroEvent {
-  [key: string]: any;
+interface TaroEventTargetLike {
+  id: string;
+  dataset: Record<string, unknown>;
+  [key: string]: unknown;
+}
 
-  private cacheTarget: any;
-  private cacheCurrentTarget: any;
+export class TaroEvent {
+  [key: string]: unknown;
+
+  private cacheTarget?: TaroEventTargetLike;
+  private cacheCurrentTarget?: TaroEventTargetLike;
 
   public type: string;
 

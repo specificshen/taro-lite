@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-export class UniqueKeyMap<T = any> {
+export class UniqueKeyMap<T = unknown> {
   store: Map<string, T>;
   counters: Map<string, number>;
 

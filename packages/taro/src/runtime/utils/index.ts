@@ -93,13 +93,13 @@ export function shortcutAttr(key: string): string {
   }
 }
 
-export const customWrapperCache = new Map<string, Record<string, any>>();
+export const customWrapperCache = new Map<string, Record<string, unknown>>();
 
 interface Ctor {
-  new (...args: any[]): any;
+  new (...args: unknown[]): unknown;
 }
 
-export function extend(ctor: Ctor, methodName: string, options: TFunc | Record<string, any>) {
+export function extend(ctor: Ctor, methodName: string, options: TFunc | PropertyDescriptor) {
   if (isFunction(options)) {
     options = {
       value: options,
@@ -112,7 +112,7 @@ export function extend(ctor: Ctor, methodName: string, options: TFunc | Record<s
   });
 }
 
-let componentsAlias: Record<string, any>;
+let componentsAlias: Record<string, Record<string, string>>;
 export function getComponentsAlias() {
   if (!componentsAlias) {
     componentsAlias = _getComponentsAlias(internalComponents);

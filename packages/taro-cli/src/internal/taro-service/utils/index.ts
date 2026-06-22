@@ -83,12 +83,12 @@ export function resolvePresetsOrPlugins(
         extensions: ['.js', '.ts'],
       });
     } catch (err) {
-      if ((err as any).code === 'MODULE_NOT_FOUND') {
+      if ((err as NodeJS.ErrnoException).code === 'MODULE_NOT_FOUND') {
         try {
           fPath = resolveCliBuiltinPlugin(item, root);
         } catch (_e) {}
       }
-      if (!fPath && (err as any).code === 'MODULE_NOT_FOUND') {
+      if (!fPath && (err as NodeJS.ErrnoException).code === 'MODULE_NOT_FOUND') {
         try {
           const cliPath = runtimeRequire.resolve('@spcsn/taro-cli/package.json', {
             paths: [__dirname, root].filter(Boolean),
@@ -97,9 +97,10 @@ export function resolvePresetsOrPlugins(
         } catch (_e) {}
       }
       if (!fPath) {
-        if (args[item]?.backup) {
+        const backup = (args[item] as Record<string, unknown> | null)?.backup;
+        if (backup) {
           // 如果项目中没有，可以使用 CLI 中的插件
-          fPath = args[item]?.backup;
+          fPath = backup as string;
         } else if (skipError) {
           // 如果跳过报错，那么 log 提醒，并且不使用该插件
           console.log(chalk.yellow(`找不到插件依赖 "${item}"，请先在项目中安装，项目路径：${root}`));

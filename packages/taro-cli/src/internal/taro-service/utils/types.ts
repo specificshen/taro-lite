@@ -29,12 +29,12 @@ export interface IPaths {
   nodeModulesPath: string;
 }
 
-export type IPluginsObject = Record<string, Record<any, any> | null>;
+export type IPluginsObject = Record<string, unknown | null>;
 
 export interface IPlugin {
   id: string;
   path: string;
-  opts: any;
+  opts: unknown;
   type: PluginType;
   apply: Func;
 }
@@ -84,7 +84,7 @@ export declare interface IPluginContext {
   /**
    * 获取当前执行命令所带的参数
    */
-  runOpts: any;
+  runOpts: Record<string, unknown>;
   /**
    * 为包 @spcsn/taro-helper 的快捷使用方式，包含其所有 API
    */
@@ -116,7 +116,7 @@ export declare interface IPluginContext {
   /**
    * 触发注册的钩子（使用`ctx.register`方法注册的钩子），传入钩子名和钩子所需参数
    */
-  applyPlugins: (args: string | { name: string; initialVal?: any; opts?: any }) => Promise<any>;
+  applyPlugins: (args: string | { name: string; initialVal?: unknown; opts?: unknown }) => Promise<unknown>;
   /**
    * 为插件添加入参校验
    */
@@ -141,12 +141,12 @@ export declare interface IPluginContext {
    * 编译中修改 vite 配置
    */
   modifyViteConfig: (
-    fn: (args: { viteConfig: any; data?: IModifyChainData; viteCompilerContext: any }) => void,
+    fn: (args: { viteConfig: unknown; data?: IModifyChainData; viteCompilerContext: unknown }) => void,
   ) => void;
   /**
    * 修改编译后的结果
    */
-  modifyBuildAssets: (fn: (args: { assets: any; miniPlugin: any }) => void) => void;
+  modifyBuildAssets: (fn: (args: { assets: unknown; miniPlugin: unknown }) => void) => void;
   /**
    * 修改编译过程中的页面组件配置
    */
@@ -154,9 +154,29 @@ export declare interface IPluginContext {
   /**
    * 修改 Taro 编译配置
    */
-  modifyRunnerOpts: (fn: (args: { opts: any }) => void) => void;
+  modifyRunnerOpts: (fn: (args: { opts: unknown }) => void) => void;
+  /**
+   * 将文件内容写入输出目录。
+   */
+  writeFileToDist: (args: { filePath: string; content: string }) => void;
+  /**
+   * 生成 project.config.json。
+   */
+  generateProjectConfig: (args: { srcConfigName: string; distConfigName: string }) => void;
+  /**
+   * 平台插件实例路径。
+   */
+  path?: string;
+  /**
+   * 平台 setup 关闭钩子。
+   */
+  onSetupClose?: (platform: unknown) => void;
+  /**
+   * 平台 build 初始化钩子。
+   */
+  onBuildInit?: (platform: unknown) => void;
 
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
-export declare type TConfig = Record<string, any>;
+export declare type TConfig = Record<string, unknown>;

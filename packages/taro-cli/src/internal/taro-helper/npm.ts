@@ -16,9 +16,9 @@ type pluginFunction = (
   pluginName: string,
   content: string | null,
   file: string,
-  config: Record<string, any>,
+  config: Record<string, unknown>,
   root: string,
-) => any;
+) => unknown;
 export interface IInstallOptions {
   dev: boolean;
   peerDependencies?: boolean;
@@ -185,24 +185,12 @@ export function installNpmPkg(pkgList: string[] | string, options: IInstallOptio
   return output;
 }
 
-export const callPlugin: pluginFunction = async (
-  pluginName: string,
-  content: string | null,
-  file: string,
-  config: Record<string, any>,
-  root: string,
-) => {
+export const callPlugin: pluginFunction = async (pluginName, content, file, config, root) => {
   const pluginFn = await getNpmPkg(`${taroPluginPrefix}${pluginName}`, root);
   return pluginFn(content, file, config);
 };
 
-export const callPluginSync: pluginFunction = (
-  pluginName: string,
-  content: string | null,
-  file: string,
-  config: Record<string, any>,
-  root: string,
-) => {
+export const callPluginSync: pluginFunction = (pluginName, content, file, config, root) => {
   const pluginFn = getNpmPkgSync(`${taroPluginPrefix}${pluginName}`, root);
   return pluginFn(content, file, config);
 };

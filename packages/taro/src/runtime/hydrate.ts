@@ -8,7 +8,7 @@ import { Shortcuts } from './shortcuts';
 import { getComponentsAlias, isComment, isHasExtractProp, isText } from './utils';
 
 let SPECIAL_NODES: string[];
-let componentsAlias: Record<string, any>;
+let componentsAlias: Record<string, Record<string, string>>;
 
 /**
  * React also has a fancy function's name for this: `hydrate()`.

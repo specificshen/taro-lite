@@ -1,7 +1,7 @@
 import { internalComponents } from './components';
-import { hooks } from './runtime-hooks';
+import { hooks, type TaroHooks, type TFunc } from './runtime-hooks';
 
-export const EMPTY_OBJ: any = {};
+export const EMPTY_OBJ: unknown = {};
 
 export const EMPTY_ARR: unknown[] = [];
 
@@ -141,7 +141,7 @@ export function cacheDataHas(key: string) {
   return key in cacheData;
 }
 
-export function mergeInternalComponents(components: Record<string, any>) {
+export function mergeInternalComponents(components: Record<string, Record<string, string>>) {
   Object.keys(components).forEach((name) => {
     if (name in internalComponents) {
       Object.assign(internalComponents[name], components[name]);
@@ -196,11 +196,13 @@ export function getComponentsAlias(origin: typeof internalComponents) {
   return mapping;
 }
 
-export function mergeReconciler(hostConfig: Record<string, any>, hooksForTest?: any) {
-  const obj = hooksForTest || hooks;
+type AnyHook = (...args: never[]) => unknown;
+
+export function mergeReconciler(hostConfig: Record<string, AnyHook>, hooksForTest?: TaroHooks) {
+  const obj = (hooksForTest || hooks) as TaroHooks;
   const keys = Object.keys(hostConfig);
   keys.forEach((key) => {
-    obj.tap(key, hostConfig[key]);
+    obj.tap(key, hostConfig[key] as TFunc);
   });
 }
 
@@ -238,7 +240,13 @@ export enum TTRenderType {
   V2 = 2,
 }
 
-declare const tt: any;
+interface TaroTTNamespace {
+  getRenderMode?(): TTRenderType;
+  __$enableTTDom$__?: boolean;
+  [key: string]: unknown;
+}
+
+declare const tt: TaroTTNamespace;
 let ttUseV2TTDom: boolean | undefined;
 
 export function isEnableTTDom() {

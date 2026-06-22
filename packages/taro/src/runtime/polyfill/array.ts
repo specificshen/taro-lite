@@ -3,7 +3,7 @@ import { isFunction } from '../shared-primitives';
 export function handleArrayFindPolyfill() {
   if (!isFunction(Array.prototype.find)) {
     Object.defineProperty(Array.prototype, 'find', {
-      value(predicate: (value: any, index: number, obj: any) => boolean) {
+      value<T>(this: T[], predicate: (value: T, index: number, obj: T[]) => boolean): T | undefined {
         if (this == null) {
           throw new TypeError('"this" is null or not defined');
         }
@@ -30,7 +30,7 @@ export function handleArrayFindPolyfill() {
 export function handleArrayIncludesPolyfill() {
   if (!isFunction(Array.prototype.includes)) {
     Object.defineProperty(Array.prototype, 'includes', {
-      value(searchElement: any, fromIndex: number) {
+      value<T>(this: T[], searchElement: T, fromIndex: number): boolean {
         if (this == null) {
           throw new TypeError('"this" is null or not defined');
         }

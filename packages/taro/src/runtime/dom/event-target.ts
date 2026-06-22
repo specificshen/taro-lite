@@ -24,7 +24,7 @@ export class TaroEventTarget {
     }
 
     if (isOnce) {
-      const wrapper = function (this: TaroEventTarget, ...args: any[]) {
+      const wrapper = function (this: TaroEventTarget, ...args: unknown[]) {
         handler.apply(this, args); // this 指向 Element
         this.removeEventListener(type, wrapper);
       };
@@ -42,7 +42,7 @@ export class TaroEventTarget {
     // 这样解决：view -> view(handlerA.stop = false) -> view(handlerB.stop = false)
     // 因此每次绑定事件都新建一个函数，如果带来了性能问题，可以把这段逻辑抽取到 PReact 插件中。
     const oldHandler = handler;
-    handler = function (this: TaroEventTarget, ...args: any[]) {
+    handler = function (this: TaroEventTarget, ...args: unknown[]) {
       return oldHandler.apply(this, args); // this 指向 Element
     };
     handler.oldHandler = oldHandler;

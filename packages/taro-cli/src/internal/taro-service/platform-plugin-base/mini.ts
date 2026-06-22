@@ -1,6 +1,7 @@
 import { existsSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import type { RecursiveTemplate, UnRecursiveTemplate } from '@spcsn/taro/runtime';
+import type { ViteMiniBuildConfig } from '@spcsn/taro/types/compile/vite-compiler-context';
 import { recursiveMerge, taroJsMiniComponentsPath } from '../../taro-helper';
 import miniRunner from '../../taro-mini-runner';
 import { isObject } from '../../taro-shared';
@@ -44,7 +45,7 @@ export abstract class TaroPlatformBase<T extends TConfig = TConfig> extends Taro
   }
 
   private setupImpl() {
-    const { output } = this.config;
+    const output = this.config.output as Record<string, unknown> | undefined | null;
     // 仅 output.clean 为 false 时不清空输出目录
     if (
       output === undefined ||
@@ -55,7 +56,7 @@ export abstract class TaroPlatformBase<T extends TConfig = TConfig> extends Taro
     ) {
       this.emptyOutputDir();
     } else if (isObject(output.clean)) {
-      this.emptyOutputDir(output.clean.keep || []);
+      this.emptyOutputDir((output.clean as { keep?: string[] }).keep || []);
     }
     this.printBuildSummary();
     if (this.projectConfigJson) {
@@ -145,7 +146,7 @@ export abstract class TaroPlatformBase<T extends TConfig = TConfig> extends Taro
   /**
    * 返回当前项目内的 runner 包
    */
-  protected async getRunner(): Promise<(options: any) => Promise<void>> {
+  protected async getRunner(): Promise<(options: ViteMiniBuildConfig) => Promise<void>> {
     const { appPath } = this.ctx.paths;
     const runner = await serviceProfiler.measure('load runner module', async () => miniRunner);
     return runner.bind(null, appPath);
@@ -322,7 +323,7 @@ export abstract class TaroPlatformBase<T extends TConfig = TConfig> extends Taro
       ),
     );
     serviceProfiler.end('prepare runner options', getOptionsStartMs);
-    await serviceProfiler.measure('run runner', () => runner(options));
+    await serviceProfiler.measure('run runner', () => runner(options as unknown as ViteMiniBuildConfig));
   }
 
   /**
@@ -341,18 +342,21 @@ export abstract class TaroPlatformBase<T extends TConfig = TConfig> extends Taro
   /**
    * 递归替换对象的 key 值
    */
-  protected recursiveReplaceObjectKeys(obj: Record<string, any>, keyMap: Record<string, any>) {
+  protected recursiveReplaceObjectKeys(obj: Record<string, unknown>, keyMap: Record<string, string | false>) {
     Object.keys(obj).forEach((key) => {
-      if (keyMap[key]) {
-        obj[keyMap[key]] = obj[key];
-        if (typeof obj[key] === 'object') {
-          this.recursiveReplaceObjectKeys(obj[keyMap[key]], keyMap);
+      const value = obj[key];
+      const mapped = keyMap[key];
+      if (mapped) {
+        const newKey = mapped as string;
+        obj[newKey] = value;
+        if (typeof value === 'object') {
+          this.recursiveReplaceObjectKeys(obj[newKey] as Record<string, unknown>, keyMap);
         }
         delete obj[key];
-      } else if (keyMap[key] === false) {
+      } else if (mapped === false) {
         delete obj[key];
-      } else if (typeof obj[key] === 'object') {
-        this.recursiveReplaceObjectKeys(obj[key], keyMap);
+      } else if (typeof value === 'object') {
+        this.recursiveReplaceObjectKeys(value as Record<string, unknown>, keyMap);
       }
     });
   }

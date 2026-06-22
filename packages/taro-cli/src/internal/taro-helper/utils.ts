@@ -24,6 +24,17 @@ import {
 } from './constants';
 import { chalk } from './terminal';
 
+interface SwcNode {
+  type: string;
+  [key: string]: unknown;
+}
+
+interface SwcVisitor {
+  [key: string]: SwcVisitorFunc | SwcVisitor | SwcVisitorFunc[];
+}
+
+type SwcVisitorFunc = (astPath: SwcNode, ...args: unknown[]) => void;
+
 const execSync = child_process.execSync;
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
@@ -40,8 +51,8 @@ function toCamelCase(value: string): string {
     .replace(/[-_\s]+(.)?/g, (_, character: string = '') => character.toUpperCase());
 }
 
-function normalizeVisitor(value: unknown): Record<string, unknown> {
-  return typeof value === 'function' ? { enter: value } : (value as Record<string, unknown>);
+function normalizeVisitor(value: unknown): SwcVisitor {
+  return typeof value === 'function' ? { enter: value as SwcVisitorFunc } : (value as SwcVisitor);
 }
 
 interface NativeFsCompat {
@@ -70,8 +81,8 @@ interface NativeFsCompat {
   move: (sourcePath: string, targetPath: string, options?: { overwrite?: boolean }) => Promise<void>;
   pathExists: (targetPath: nativeFs.PathLike) => Promise<boolean>;
   createFile: (filePath: nativeFs.PathLike) => Promise<void>;
-  readJSON: <T = any>(filePath: nativeFs.PathLike) => Promise<T>;
-  readJSONSync: <T = any>(filePath: nativeFs.PathOrFileDescriptor) => T;
+  readJSON: <T = unknown>(filePath: nativeFs.PathLike) => Promise<T>;
+  readJSONSync: <T = unknown>(filePath: nativeFs.PathOrFileDescriptor) => T;
   writeJSON: (filePath: nativeFs.PathLike, data: unknown) => Promise<void>;
 }
 
@@ -230,7 +241,13 @@ export function printLog(type: processTypeEnum, tag: string, filePath?: string) 
   const padding = '';
   filePath = filePath || '';
   if (typeof typeShow.color === 'string') {
-    console.log((chalk as any)[typeShow.color](typeShow.name), padding, tag, padding, filePath);
+    console.log(
+      (chalk as unknown as Record<string, (s: string) => string>)[typeShow.color](typeShow.name),
+      padding,
+      tag,
+      padding,
+      filePath,
+    );
   } else {
     console.log(typeShow.color(typeShow.name), padding, tag, padding, filePath);
   }
@@ -569,7 +586,7 @@ export function getInstalledNpmPkgVersion(pkgName: string, basedir: string): str
   if (!pkgPath) {
     return null;
   }
-  return fs.readJSONSync(pkgPath).version;
+  return (fs.readJSONSync(pkgPath) as { version?: string }).version ?? null;
 }
 
 export const recursiveMerge = <T = unknown>(src: Partial<T>, ...args: (Partial<T> | undefined)[]): T => {
@@ -597,7 +614,7 @@ export const recursiveMerge = <T = unknown>(src: Partial<T>, ...args: (Partial<T
   return src as T;
 };
 
-export const mergeVisitors = (src: Record<string, any>, ...args: Record<string, any>[]) => {
+export const mergeVisitors = (src: SwcVisitor, ...args: SwcVisitor[]) => {
   const validFuncs = ['exit', 'enter'];
 
   for (const arg of args) {
@@ -614,7 +631,7 @@ export const mergeVisitors = (src: Record<string, any>, ...args: Record<string, 
 
       const shouldMergeToArray = validFuncs.includes(key);
       if (shouldMergeToArray) {
-        src[key] = [value, sourceValue].flat();
+        src[key] = [value, sourceValue].flat() as SwcVisitorFunc[];
         continue;
       }
 
@@ -625,18 +642,18 @@ export const mergeVisitors = (src: Record<string, any>, ...args: Record<string, 
   return src;
 };
 
-export const applyArrayedVisitors = (obj: Record<string, any>) => {
+export const applyArrayedVisitors = (obj: SwcVisitor) => {
   let key: string;
   for (key in obj) {
     const funcs = obj[key];
     if (Array.isArray(funcs)) {
-      obj[key] = (astPath: any, ...args: any[]) => {
+      obj[key] = (astPath: SwcNode, ...args: unknown[]) => {
         funcs.forEach((func) => {
           func(astPath, ...args);
         });
       };
-    } else if (typeof funcs === 'object') {
-      applyArrayedVisitors(funcs);
+    } else if (funcs && typeof funcs === 'object' && !Array.isArray(funcs)) {
+      applyArrayedVisitors(funcs as SwcVisitor);
     }
   }
   return obj;
@@ -698,7 +715,7 @@ export function removeHeadSlash(str: string) {
 }
 
 // converts swc ast nodes to js object
-function swcExprToObject(node: any) {
+function swcExprToObject(node: SwcNode | undefined | null): unknown {
   if (!node) return undefined;
 
   const literalTypes = ['BooleanLiteral', 'StringLiteral', 'NumericLiteral'];
@@ -715,16 +732,16 @@ function swcExprToObject(node: any) {
   }
 
   if (node.type === 'ObjectExpression') {
-    return swcGenProps(node.properties);
+    return swcGenProps(node.properties as SwcNode[]);
   }
 
   if (node.type === 'ArrayExpression') {
-    return node.elements.reduce((acc: any[], el: any) => {
+    return (node.elements as SwcNode[]).reduce((acc: unknown[], el: SwcNode | undefined | null) => {
       if (!el) return acc;
       if (el.spread) {
-        return [...acc, ...(swcExprToObject(el.expression) || [])];
+        return [...acc, ...((swcExprToObject(el.expression as SwcNode) as unknown[]) || [])];
       }
-      return [...acc, swcExprToObject(el.expression)];
+      return [...acc, swcExprToObject(el.expression as SwcNode)];
     }, []);
   }
 
@@ -732,20 +749,20 @@ function swcExprToObject(node: any) {
 }
 
 // converts swc ObjectExpressions to js object
-function swcGenProps(props: any[]) {
-  return props.reduce((acc, prop) => {
+function swcGenProps(props: SwcNode[]) {
+  return props.reduce((acc: Record<string, unknown>, prop: SwcNode) => {
     if (prop.type === 'SpreadElement') {
       return {
         ...acc,
-        ...swcExprToObject(prop.arguments),
+        ...(swcExprToObject(prop.arguments as SwcNode) as Record<string, unknown>),
       };
     }
 
     if (prop.type === 'KeyValueProperty') {
-      const key = prop.key.value;
-      const value = swcExprToObject(prop.value);
+      const key = (prop.key as SwcNode).value;
+      const value = swcExprToObject(prop.value as SwcNode);
       if (value !== undefined && key !== undefined) {
-        return { ...acc, [key]: value };
+        return { ...acc, [key as string]: value };
       }
     }
 
@@ -753,13 +770,17 @@ function swcGenProps(props: any[]) {
   }, {});
 }
 
-function findSwcCallExpressions(node: any, calleeName: string, results: any[] = []) {
+function findSwcCallExpressions(
+  node: Record<string, unknown> | undefined | null,
+  calleeName: string,
+  results: SwcNode[] = [],
+) {
   if (!node || typeof node !== 'object') return results;
 
   if (node.type === 'CallExpression') {
-    const callee = node.callee;
+    const callee = node.callee as SwcNode | undefined;
     if (callee?.type === 'Identifier' && callee.value === calleeName) {
-      results.push(node);
+      results.push(node as SwcNode);
     }
   }
 
@@ -767,10 +788,10 @@ function findSwcCallExpressions(node: any, calleeName: string, results: any[] = 
     if (value && typeof value === 'object') {
       if (Array.isArray(value)) {
         for (const item of value) {
-          findSwcCallExpressions(item, calleeName, results);
+          findSwcCallExpressions(item as Record<string, unknown>, calleeName, results);
         }
       } else {
-        findSwcCallExpressions(value, calleeName, results);
+        findSwcCallExpressions(value as Record<string, unknown>, calleeName, results);
       }
     }
   }
@@ -786,15 +807,15 @@ function readSFCPageConfig(configPath: string) {
   const dpcReg = /definePageConfig\(\{[\w\W]+?\}\)/g;
   const matches = sfcSource.match(dpcReg);
 
-  let result: any = {};
+  let result: Record<string, unknown> = {};
 
   if (matches && matches.length === 1) {
     const configSource = matches[0];
     const ast = parseSync(configSource, { syntax: 'typescript', tsx: true });
-    const calls = findSwcCallExpressions(ast, 'definePageConfig');
+    const calls = findSwcCallExpressions(ast as unknown as Record<string, unknown>, 'definePageConfig');
     if (calls.length === 1) {
-      const configNode = calls[0].arguments[0]?.expression;
-      result = swcExprToObject(configNode);
+      const configNode = (calls[0].arguments as SwcNode[])[0]?.expression as SwcNode;
+      result = swcExprToObject(configNode) as Record<string, unknown>;
     }
   }
 
@@ -802,7 +823,7 @@ function readSFCPageConfig(configPath: string) {
 }
 
 export function readPageConfig(configPath: string) {
-  let result: any = {};
+  let result: Record<string, unknown> = {};
   const extNames = ['.js', '.jsx', '.ts', '.tsx'];
 
   // check source file extension
@@ -821,17 +842,17 @@ export function readPageConfig(configPath: string) {
 }
 
 interface IReadConfigOptions {
-  alias?: Record<string, any>;
-  defineConstants?: Record<string, any>;
+  alias?: Record<string, string>;
+  defineConstants?: Record<string, string>;
 }
 
 export async function readConfig<T extends IReadConfigOptions>(configPath: string, options: T = {} as T) {
-  let result: any = {};
+  let result: Record<string, unknown> = {};
   if (fs.existsSync(configPath)) {
     if (REG_JSON.test(configPath)) {
-      result = fs.readJSONSync(configPath);
+      result = fs.readJSONSync(configPath) as Record<string, unknown>;
     } else {
-      result = await loadUserConfigModule(configPath, {
+      result = (await loadUserConfigModule(configPath, {
         customConfig: {
           alias: options.alias || {},
           define: {
@@ -853,7 +874,7 @@ export async function readConfig<T extends IReadConfigOptions>(configPath: strin
             },
           },
         },
-      });
+      })) as Record<string, unknown>;
     }
   } else {
     result = readPageConfig(configPath);

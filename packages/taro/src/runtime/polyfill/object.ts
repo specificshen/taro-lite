@@ -3,7 +3,7 @@ import { isFunction, isObject, isUndefined } from '../shared-primitives';
 export function handleObjectAssignPolyfill() {
   if (!isFunction(Object.assign)) {
     // Must be writable: true, enumerable: false, configurable: true
-    Object.assign = function (target: any) {
+    Object.assign = function (target: unknown) {
       // .length of function is 2
       if (target == null) {
         // TypeError if undefined or null
@@ -33,7 +33,7 @@ export function handleObjectAssignPolyfill() {
 export function handleObjectEntriesPolyfill() {
   if (!isFunction(Object.entries)) {
     // Must be writable: true, enumerable: false, configurable: true
-    Object.entries = function (obj: any) {
+    Object.entries = function (obj: unknown) {
       // .length of function is 2
       if (obj == null) {
         // TypeError if undefined or null
@@ -41,14 +41,13 @@ export function handleObjectEntriesPolyfill() {
       }
 
       const to: [string, unknown][] = [];
+      const source = obj as Record<string, unknown>;
 
-      if (obj != null) {
-        // Skip over if undefined or null
-        for (const key in obj) {
-          // Avoid bugs when hasOwnProperty is shadowed
-          if (Object.hasOwn(obj, key)) {
-            to.push([key, obj[key]]);
-          }
+      // Skip over if undefined or null
+      for (const key in source) {
+        // Avoid bugs when hasOwnProperty is shadowed
+        if (Object.hasOwn(source, key)) {
+          to.push([key, source[key]]);
         }
       }
       return to;
@@ -60,7 +59,7 @@ export function handleObjectDefinePropertyPolyfill() {
   if (!isFunction(Object.defineProperties)) {
     Object.defineProperties = function (obj, properties: Record<PropertyKey, Record<PropertyKey, unknown>>) {
       function convertToDescriptor(desc: Record<string, unknown>) {
-        function hasProperty(obj: any, prop: PropertyKey) {
+        function hasProperty(obj: Record<PropertyKey, unknown>, prop: PropertyKey) {
           return Object.hasOwn(obj, prop);
         }
 

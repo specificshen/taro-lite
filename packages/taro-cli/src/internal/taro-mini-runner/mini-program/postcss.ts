@@ -1,4 +1,4 @@
-import type { Func, IPostcssOption } from '@spcsn/taro/types/compile';
+import type { Func, IPostcssOption, IPxTransformOption } from '@spcsn/taro/types/compile';
 import autoprefixerPlugin from 'autoprefixer';
 import postcssPxTransform from '../style-transforms/px-transform';
 
@@ -7,10 +7,10 @@ export const getDefaultPostcssConfig = function ({
   deviceRatio,
   postcssOption = {} as IPostcssOption<'mini'>,
 }: {
-  designWidth: any;
-  deviceRatio: any;
+  designWidth: number | ((size?: string | number) => number);
+  deviceRatio: Record<string, number>;
   postcssOption?: IPostcssOption<'mini'>;
-}): [string, any, Func?][] {
+}): [string, { enable?: boolean; config?: Record<string, unknown> | IPxTransformOption } | undefined, Func?][] {
   const {
     autoprefixer,
     pxtransform = {},

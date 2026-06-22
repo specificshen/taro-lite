@@ -39,7 +39,7 @@ export function getUniqueKey() {
   return _loadTime + _uniqueId++;
 }
 
-export function mergeInternalComponents(components: Record<string, any>) {
+export function mergeInternalComponents(components: Record<string, Record<string, string>>) {
   Object.keys(components).forEach((name) => {
     if (name in internalComponents) {
       Object.assign(internalComponents[name], components[name]);

@@ -5,7 +5,7 @@ import type { TFunc } from './interface';
 
 const TIMEOUT = 100;
 
-export const nextTick = (cb: TFunc, ctx?: Record<string, any>) => {
+export const nextTick = (cb: TFunc, ctx?: Record<string, unknown>) => {
   const beginTime = Date.now();
   const router = Current.router;
 

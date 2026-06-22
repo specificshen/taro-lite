@@ -133,7 +133,12 @@ function initNativeComponentEntry(params: InitNativeComponentEntryParams) {
       cb && cb();
     }
 
-    mount(Component: any, compId: string, getCtx: () => MpInstance, cb?: () => void) {
+    mount(
+      Component: React.ComponentType<Record<string, unknown>>,
+      compId: string,
+      getCtx: () => MpInstance,
+      cb?: () => void,
+    ) {
       const isReactComponent = isClassComponent(R, Component);
       const inject = (node?: Instance) => node && injectPageInstance(node, compId);
       const refs = isReactComponent
@@ -152,12 +157,12 @@ function initNativeComponentEntry(params: InitNativeComponentEntryParams) {
           compId,
           getCtx,
           renderComponent(ctx) {
-            if (ctx.data == null) ctx.data = {};
+            const data = (ctx.data || {}) as Record<string, unknown>;
             return h(
               reactMeta.PageContext.Provider,
               { value: compId },
               h(Component, {
-                ...ctx.data.props,
+                ...(data.props as Record<string, unknown>),
                 ...refs,
                 $scope: ctx,
               }),
@@ -209,7 +214,7 @@ function initNativeComponentEntry(params: InitNativeComponentEntryParams) {
 }
 
 export function createNativePageConfig(
-  Component: any,
+  Component: React.ComponentType<Record<string, unknown>>,
   pageName: string,
   data: Record<string, unknown>,
   react: typeof React,
@@ -342,7 +347,7 @@ export function createNativePageConfig(
       // 缓存当前页面上下文信息
       window.trigger(CONTEXT_ACTIONS.RESTORE, this.$taroPath);
       // 设置 Current 的 page 和 router
-      if (Current.page === this) {
+      if (Current.page === (this as unknown as PageInstance)) {
         Current.page = null;
         Current.router = null;
       }
@@ -365,9 +370,15 @@ export function createNativePageConfig(
     };
   });
 
+  const ComponentMeta = Component as unknown as Record<string, unknown>;
+
   // onShareAppMessage 和 onShareTimeline 一样，会影响小程序右上方按钮的选项，因此不能默认注册。
   SIDE_EFFECT_LIFECYCLES.forEach((lifecycle) => {
-    if (Component[lifecycle] || Component.prototype?.[lifecycle] || Component[lifecycle.replace(/^on/, 'enable')]) {
+    if (
+      ComponentMeta[lifecycle] ||
+      (ComponentMeta.prototype as Record<string, unknown>)?.[lifecycle] ||
+      ComponentMeta[lifecycle.replace(/^on/, 'enable')]
+    ) {
       pageObj[lifecycle] = function (this: MpInstance, ...args: unknown[]) {
         const target = (args[0] as EventLike | undefined)?.target;
         if (target?.id) {
@@ -394,7 +405,7 @@ export function createNativePageConfig(
 }
 
 export function createNativeComponentConfig(
-  Component: any,
+  Component: React.ComponentType<Record<string, unknown>>,
   react: typeof React,
   reactDOM: typeof ReactDOM,
   componentConfig: NativeComponentConfig,
@@ -482,8 +493,14 @@ export function createNativeComponentConfig(
     Current.router = null;
   }
 
+  const componentMeta = Component as unknown as Record<string, unknown>;
+
   // onShareAppMessage 和 onShareTimeline 一样，会影响小程序右上方按钮的选项，因此不能默认注册。
-  if (Component.onShareAppMessage || Component.prototype?.onShareAppMessage || Component.enableShareAppMessage) {
+  if (
+    componentMeta.onShareAppMessage ||
+    (componentMeta.prototype as Record<string, unknown>)?.onShareAppMessage ||
+    componentMeta.enableShareAppMessage
+  ) {
     componentObj.methods.onShareAppMessage = function (this: MpInstance, options: EventLike) {
       const target = options?.target;
       if (target) {
@@ -496,7 +513,11 @@ export function createNativeComponentConfig(
       return safeExecute(this.compId, 'onShareAppMessage', options);
     };
   }
-  if (Component.onShareTimeline || Component.prototype?.onShareTimeline || Component.enableShareTimeline) {
+  if (
+    componentMeta.onShareTimeline ||
+    (componentMeta.prototype as Record<string, unknown>)?.onShareTimeline ||
+    componentMeta.enableShareTimeline
+  ) {
     componentObj.methods.onShareTimeline = function (this: MpInstance) {
       return safeExecute(this.compId, 'onShareTimeline');
     };

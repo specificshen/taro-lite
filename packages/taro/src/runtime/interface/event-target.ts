@@ -8,7 +8,7 @@ export interface AddEventListenerOptions extends EventListenerOptions {
   sideEffect?: boolean;
 }
 
-export interface EventHandler<T = any, R = void> {
+export interface EventHandler<T = unknown, R = void> {
   (...args: T[]): R;
   _stop?: boolean;
   oldHandler?: EventHandler;

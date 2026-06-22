@@ -2,17 +2,19 @@ import type { Shortcuts } from '../shortcuts';
 import type { PageConfig } from './utils';
 
 export interface MpInstance {
-  [key: string]: any;
+  [key: string]: unknown;
   config: PageConfig;
   setData: (data: unknown, cb: () => void) => void;
   route?: string;
   __route__: string;
   $taroParams?: Record<string, unknown>;
   $taroPath: string;
-  __data__: any;
-  data: any;
-  exitState?: any;
-  selectComponent: (selector: string) => any;
+  __data__: unknown;
+  data: unknown;
+  exitState?: unknown;
+  selectComponent: (selector: string) => unknown;
+  compId: string;
+  onReady: { called?: boolean };
   __webviewId__?: number;
 }
 

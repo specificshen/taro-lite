@@ -1,4 +1,3 @@
-import type { Func } from '@spcsn/taro/types/compile';
 import type { IPluginContext, TConfig } from '../utils/types';
 
 interface IWrapper {
@@ -12,7 +11,7 @@ const DEFAULT_COMPILER = 'vite';
 export class Transaction<T = TaroPlatform> {
   wrappers: IWrapper[] = [];
 
-  async perform(fn: Func, scope: T, ...args: any[]) {
+  async perform<A extends unknown[], R>(fn: (...args: A) => R, scope: T, ...args: A) {
     this.initAll(scope);
     await fn.call(scope, ...args);
     this.closeAll(scope);
@@ -57,8 +56,8 @@ export default abstract class TaroPlatform<T extends TConfig = TConfig> {
     this.helper = ctx.helper;
     this.config = config;
     this.updateOutputPath(config);
-    const _compiler = config.compiler;
-    this.compiler = typeof _compiler === 'object' ? _compiler.type : _compiler;
+    const _compiler = config.compiler as string | { type?: string } | undefined | null;
+    this.compiler = (typeof _compiler === 'object' && _compiler !== null ? _compiler.type : _compiler) ?? '';
     if (!VALID_COMPILER.includes(this.compiler)) {
       this.compiler = DEFAULT_COMPILER;
     }
@@ -77,8 +76,9 @@ export default abstract class TaroPlatform<T extends TConfig = TConfig> {
    * 如果分端编译详情配置了 output.path，则需更新 outputPath 位置
    */
   private updateOutputPath(config: TConfig) {
-    const platformPath = config.output?.path;
-    if (platformPath) {
+    const output = config.output as Record<string, unknown> | undefined;
+    const platformPath = output?.path;
+    if (typeof platformPath === 'string') {
       this.ctx.paths.outputPath = platformPath;
     }
   }

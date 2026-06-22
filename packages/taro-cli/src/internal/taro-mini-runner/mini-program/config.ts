@@ -138,7 +138,7 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
   }
   const __postcssOption = getDefaultPostcssConfig({
     designWidth: taroConfig.designWidth || 750,
-    deviceRatio: taroConfig.deviceRatio,
+    deviceRatio: taroConfig.deviceRatio || {},
     postcssOption: taroConfig.postcss,
   });
 
@@ -171,7 +171,10 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
     }
 
     /** 若一个模块的所有引用方都来自同一个页面作用域，则它应留在页面 chunk，不进 common */
-    function isPrivateToSinglePage(id: string, getModuleInfo: (id: string) => any): boolean {
+    function isPrivateToSinglePage(
+      id: string,
+      getModuleInfo: (id: string) => { importers?: string[] } | null | undefined,
+    ): boolean {
       const moduleInfo = getModuleInfo(id);
       if (!moduleInfo?.importers?.length) return false;
       let commonScope: string | undefined;

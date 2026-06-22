@@ -18,7 +18,7 @@ export function isObject<T>(o: unknown): o is T {
   return o !== null && typeof o === 'object';
 }
 
-export function isFunction(o: unknown): o is (...args: any[]) => any {
+export function isFunction(o: unknown): o is (...args: unknown[]) => unknown {
   return typeof o === 'function';
 }
 

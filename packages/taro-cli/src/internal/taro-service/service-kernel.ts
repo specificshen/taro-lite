@@ -40,11 +40,11 @@ export default class Kernel extends EventEmitter {
   commands: Map<string, ICommand>;
   platforms: Map<string, IPlatform>;
   helper!: Record<string, unknown>;
-  runnerUtils: any;
-  runOpts: any;
-  debugger: any;
+  runnerUtils!: typeof runnerUtils;
+  runOpts!: Record<string, unknown>;
+  debugger!: (...args: unknown[]) => void;
 
-  [key: string]: any;
+  [key: string]: unknown;
 
   constructor(options: IKernelOptions) {
     super();
@@ -219,7 +219,7 @@ export default class Kernel extends EventEmitter {
     }
   }
 
-  checkPluginOpts(pluginCtx: any, opts: any) {
+  checkPluginOpts(pluginCtx: Plugin, opts: unknown) {
     if (typeof pluginCtx.optsSchema !== 'function') {
       return;
     }
@@ -264,11 +264,11 @@ export default class Kernel extends EventEmitter {
       }
     });
     return new Proxy(pluginCtx, {
-      get: (target: any, name: string) => {
+      get: (target: Plugin, name: string) => {
         if (this.methods.has(name)) {
           const method = this.methods.get(name);
           if (Array.isArray(method)) {
-            return (...arg: any[]) => {
+            return (...arg: unknown[]) => {
               method.forEach((item) => {
                 item.apply(this, arg);
               });
@@ -277,17 +277,19 @@ export default class Kernel extends EventEmitter {
           return method;
         }
         if (kernelApis.includes(name)) {
-          return typeof this[name] === 'function' ? this[name].bind(this) : this[name];
+          return typeof this[name] === 'function'
+            ? (this as unknown as Record<string, Func>)[name].bind(this)
+            : this[name];
         }
-        return target[name];
+        return (target as unknown as Record<string, unknown>)[name];
       },
     });
   }
 
-  async applyPlugins(args: string | { name: string; initialVal?: any; opts?: any }) {
+  async applyPlugins(args: string | { name: string; initialVal?: unknown; opts?: unknown }) {
     let name: string;
     let initialVal: unknown;
-    let opts: any;
+    let opts: unknown;
     if (typeof args === 'string') {
       name = args;
     } else {
@@ -308,7 +310,7 @@ export default class Kernel extends EventEmitter {
     }
     const waterfall = new AsyncSeriesWaterfallHook(['arg']);
     if (hooks.length) {
-      const resArr: any[] = [];
+      const resArr: unknown[] = [];
       for (const hook of hooks) {
         waterfall.tapPromise(
           {
@@ -343,7 +345,7 @@ export default class Kernel extends EventEmitter {
     return withNameConfig;
   }
 
-  setRunOpts(opts: any) {
+  setRunOpts(opts: Record<string, unknown>) {
     this.runOpts = opts;
   }
 
@@ -359,14 +361,14 @@ export default class Kernel extends EventEmitter {
     printHelpLog(name, optionsMap, command?.synopsisList ? new Set(command?.synopsisList) : new Set());
   }
 
-  async run(args: string | { name: string; opts?: any }) {
+  async run(args: string | { name: string; opts?: Record<string, unknown> }) {
     let name: string;
-    let opts: any;
+    let opts: Record<string, unknown> = {};
     if (typeof args === 'string') {
       name = args;
     } else {
       name = args.name;
-      opts = args.opts;
+      opts = args.opts || {};
     }
     this.debugger('command:run');
     this.debugger(`command:run:name:${name}`);
@@ -392,9 +394,10 @@ export default class Kernel extends EventEmitter {
       return this.runHelp(name);
     }
 
-    if (opts?.options?.platform) {
+    const options = opts?.options as Record<string, unknown> | undefined;
+    if (options?.platform) {
       const platformConfigStartMs = serviceProfiler.start();
-      opts.config = this.runWithPlatform(opts.options.platform);
+      opts.config = this.runWithPlatform(options.platform as string);
       serviceProfiler.end('platform config', platformConfigStartMs);
 
       await serviceProfiler.measure('modifyRunnerOpts hooks', () =>

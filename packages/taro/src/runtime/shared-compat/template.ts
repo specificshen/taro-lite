@@ -204,7 +204,7 @@ export class BaseTemplate {
         }
 
         if (compName === 'view' || compName === 'text' || compName === 'image') {
-          const comp: Record<any, any> = {};
+          const comp: Record<string, string> = {};
           Object.keys(newComp).forEach((key) => {
             const value = newComp[key];
             if (value !== 'eh') comp[key] = value;
@@ -530,11 +530,11 @@ export class BaseTemplate {
     return keymap;
   }
 
-  protected getEvents(): any {
+  protected getEvents(): Record<string, string> {
     return events;
   }
 
-  protected getClickEvent(): any {
+  protected getClickEvent(): Record<string, string> {
     return { bindtap: 'eh' };
   }
 
@@ -550,7 +550,7 @@ export class BaseTemplate {
     return this.isUseXS ? this.buildXsTemplate(_filePath) + '\n' : '';
   }
 
-  public buildPageTemplate = (baseTempPath: string, _page?: { content: Record<string, any>; path: string }) => {
+  public buildPageTemplate = (baseTempPath: string, _page?: { content: Record<string, unknown>; path: string }) => {
     const template = `<import src="${baseTempPath}"/>
 <template is="taro_tmpl" data="{{${this.dataKeymap('root:root')}}}" />`;
 
@@ -602,7 +602,10 @@ ${this.buildXsImportTemplate()}<template is="{{'tmpl_0_' + item.${Shortcuts.Node
 }`;
   };
 
-  public mergeComponents(ctx: any, patch: Record<string, Record<string, string>>) {
+  public mergeComponents(
+    ctx: { helper: { recursiveMerge: <T>(src: Partial<T>, ...args: (Partial<T> | undefined)[]) => T } },
+    patch: Record<string, Record<string, string>>,
+  ) {
     ctx.helper.recursiveMerge(this.internalComponents, patch);
   }
 

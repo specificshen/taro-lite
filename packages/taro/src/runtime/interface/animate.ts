@@ -64,7 +64,7 @@ export interface KeyFrame {
   translateZ?: number | string;
   composite?: 'replace' | 'add' | 'accumulate' | 'auto';
   easing?: string;
-  [property: string]: any;
+  [property: string]: string | number | number[] | Array<number | string> | undefined;
 }
 
 /** @ignore */

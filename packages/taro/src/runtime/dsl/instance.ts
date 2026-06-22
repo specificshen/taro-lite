@@ -75,9 +75,9 @@ interface Show {
 
 export interface AppInstance extends Show {
   componentDidShow?(options?: Record<string, unknown>): void;
-  mount?(component: React.ComponentClass, id: string, cb: (...args: unknown[]) => void): void;
+  mount?(component: React.ComponentType<Record<string, unknown>>, id: string, cb: (...args: unknown[]) => void): void;
   mount?(
-    component: React.ComponentClass,
+    component: React.ComponentType<Record<string, unknown>>,
     id: string,
     getCtx: (...args: unknown[]) => void,
     cb: (...args: unknown[]) => void,
