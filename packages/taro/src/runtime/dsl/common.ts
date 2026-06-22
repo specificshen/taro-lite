@@ -133,7 +133,7 @@ export function createPageConfig(
 
       perf.start(PAGE_INIT);
 
-      Current.page = this as PageInstance;
+      Current.page = this as unknown as PageInstance;
       this.config = pageConfig || {};
 
       // this.$taroPath 是页面唯一标识
@@ -205,7 +205,7 @@ export function createPageConfig(
     [ONSHOW](this: MpInstance, options: Record<string, unknown> = {}) {
       hasLoaded.then(() => {
         // 设置 Current 的 page 和 router
-        Current.page = this as PageInstance;
+        Current.page = this as unknown as PageInstance;
         setCurrentRouter(this);
         // 恢复上下文信息
         taroWindowProvider.trigger(CONTEXT_ACTIONS.RECOVER, this.$taroPath);
@@ -219,7 +219,7 @@ export function createPageConfig(
       // 缓存当前页面上下文信息
       taroWindowProvider.trigger(CONTEXT_ACTIONS.RESTORE, this.$taroPath);
       // 设置 Current 的 page 和 router
-      if (Current.page === this) {
+      if (Current.page === (this as unknown as PageInstance)) {
         Current.page = null;
         Current.router = null;
       }
@@ -301,7 +301,7 @@ export function createComponentConfig(
   const config: Record<string, unknown> = {
     [ATTACHED](this: MpInstance) {
       perf.start(PAGE_INIT);
-      this.pageIdCache = this.getPageId?.() || pageId();
+      this.pageIdCache = (this.getPageId as (() => string) | undefined)?.() || pageId();
 
       const path = getPath(id, { id: this.pageIdCache });
 
@@ -351,7 +351,11 @@ export function createRecursiveComponentConfig(componentName?: string): Record<s
   const lifeCycles = isCustomWrapper
     ? {
         [ATTACHED](this: MpInstance) {
-          const componentId = this.data.i?.sid || this.props.i?.sid;
+          const data = this.data as Record<string, unknown>;
+          const props = this.props as Record<string, unknown> | undefined;
+          const componentId =
+            ((data.i as Record<string, unknown> | undefined)?.sid as string | undefined) ||
+            ((props?.i as Record<string, unknown> | undefined)?.sid as string | undefined);
           if (isString(componentId)) {
             customWrapperCache.set(componentId, this);
             const el = env.document.getElementById(componentId);
@@ -361,7 +365,11 @@ export function createRecursiveComponentConfig(componentName?: string): Record<s
           }
         },
         [DETACHED](this: MpInstance) {
-          const componentId = this.data.i?.sid || this.props.i?.sid;
+          const data = this.data as Record<string, unknown>;
+          const props = this.props as Record<string, unknown> | undefined;
+          const componentId =
+            ((data.i as Record<string, unknown> | undefined)?.sid as string | undefined) ||
+            ((props?.i as Record<string, unknown> | undefined)?.sid as string | undefined);
           if (isString(componentId)) {
             customWrapperCache.delete(componentId);
             const el = env.document.getElementById(componentId);

@@ -54,7 +54,8 @@ export function useSafeArea(): SafeAreaInfo {
         }
       }
 
-      const calcNavBarHeight = (menuButtonInfo.top - windowInfo.statusBarHeight) * 2 + menuButtonInfo.height;
+      const statusBarHeight = windowInfo.statusBarHeight ?? 0;
+      const calcNavBarHeight = (menuButtonInfo.top - statusBarHeight) * 2 + menuButtonInfo.height;
 
       const safeAreaBottom =
         (windowInfo.safeArea?.bottom ? windowInfo.screenHeight - windowInfo.safeArea.bottom : 0) || 0;

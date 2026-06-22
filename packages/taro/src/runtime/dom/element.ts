@@ -106,7 +106,7 @@ export class TaroElement extends TaroNode {
     const props = this.props;
     const propKeys = Object.keys(props);
     const style = this.style.cssText;
-    const attrs = propKeys.map((key) => ({ name: key, value: props[key] }));
+    const attrs = propKeys.map((key) => ({ name: key, value: props[key] as string }));
     return attrs.concat(style ? { name: STYLE, value: style } : []);
   }
 
@@ -317,7 +317,7 @@ export class TaroElement extends TaroNode {
   }
 
   public getAttribute(qualifiedName: string): string {
-    const attr = qualifiedName === STYLE ? this.style.cssText : this.props[qualifiedName];
+    const attr = qualifiedName === STYLE ? this.style.cssText : (this.props[qualifiedName] as string | undefined);
     return attr ?? '';
   }
 

@@ -10,11 +10,11 @@ declare const ENABLE_SIZE_APIS: boolean;
 declare const ENABLE_TEMPLATE_CONTENT: boolean;
 
 if (ENABLE_CLONE_NODE) {
-  TaroNode.extend('cloneNode', cloneNode);
+  TaroNode.extend('cloneNode', cloneNode as unknown as (...args: unknown[]) => unknown);
 }
 
 if (ENABLE_CONTAINS) {
-  TaroNode.extend('contains', contains);
+  TaroNode.extend('contains', contains as unknown as (...args: unknown[]) => unknown);
 }
 
 if (ENABLE_SIZE_APIS) {

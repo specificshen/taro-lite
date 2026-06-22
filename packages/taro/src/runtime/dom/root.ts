@@ -38,7 +38,7 @@ function findCustomWrapper(root: TaroRootElement, dataPathArr: string[]) {
     if (element.nodeName === CUSTOM_WRAPPER) {
       const res = customWrapperCache.get(element.sid);
       if (res) {
-        customWrapper = res as SetDataContext;
+        customWrapper = res as unknown as SetDataContext;
         splitedPath = dataPathArr.slice(i + 2).join('.');
       }
     }

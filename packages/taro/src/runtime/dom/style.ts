@@ -32,7 +32,7 @@ function setStyle(this: Style, newVal: string, styleKey: string) {
       `Style 属性 ${styleKey} 的值数据量过大，可能会影响渲染性能，考虑使用 CSS 类或其它方案替代。`,
     );
 
-  const old = this[styleKey];
+  const old = this._value[styleKey];
 
   if (old === newVal) return;
 
@@ -76,7 +76,7 @@ function isCssVariable(propertyName: string) {
 }
 
 export class Style {
-  [key: string]: string | undefined;
+  [key: string]: unknown;
 
   public _pending!: boolean;
 
@@ -111,7 +111,7 @@ export class Style {
 
     const texts: string[] = [];
     this._usedStyleProp.forEach((key) => {
-      const val = this[key];
+      const val = this[key] as string | undefined;
       if (isNull(val) || isUndefined(val)) return;
       let styleName = isCssVariable(key) ? key : toDashed(key);
       if (styleName.indexOf('webkit') === 0 || styleName.indexOf('Webkit') === 0) {
@@ -179,14 +179,14 @@ export class Style {
       return '';
     }
 
-    const value = this[propertyName];
+    const value = this[propertyName] as string;
     this[propertyName] = undefined;
     return value;
   }
 
   public getPropertyValue(propertyName: string) {
     propertyName = toCamelCase(propertyName);
-    const value = this[propertyName];
+    const value = this[propertyName] as string | undefined;
     if (!value) {
       return '';
     }

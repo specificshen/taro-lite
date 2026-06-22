@@ -4,7 +4,7 @@ import type { TaroEvent } from './event';
 
 export class FormElement extends TaroElement {
   public get type() {
-    return this.props[TYPE] ?? '';
+    return (this.props[TYPE] as string | undefined) ?? '';
   }
 
   public set type(val: string) {
@@ -13,7 +13,7 @@ export class FormElement extends TaroElement {
 
   public get value() {
     const val = this.props.value;
-    return val == null ? '' : val;
+    return val == null ? '' : String(val);
   }
 
   public set value(val: string | boolean | number | unknown[]) {

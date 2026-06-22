@@ -13,8 +13,12 @@ enum AnchorElementAttrs {
 }
 
 export class AnchorElement extends TaroElement {
+  private getAttr(key: AnchorElementAttrs): string {
+    return (this.props[key] as string | undefined) ?? '';
+  }
+
   public get href() {
-    return this.props[AnchorElementAttrs.HREF] ?? '';
+    return this.getAttr(AnchorElementAttrs.HREF);
   }
 
   public set href(val: string) {
@@ -22,31 +26,31 @@ export class AnchorElement extends TaroElement {
   }
 
   get protocol() {
-    return this.props[AnchorElementAttrs.PROTOCOL] ?? '';
+    return this.getAttr(AnchorElementAttrs.PROTOCOL);
   }
 
   get host() {
-    return this.props[AnchorElementAttrs.HOST] ?? '';
+    return this.getAttr(AnchorElementAttrs.HOST);
   }
 
   get search() {
-    return this.props[AnchorElementAttrs.SEARCH] ?? '';
+    return this.getAttr(AnchorElementAttrs.SEARCH);
   }
 
   get hash() {
-    return this.props[AnchorElementAttrs.HASH] ?? '';
+    return this.getAttr(AnchorElementAttrs.HASH);
   }
 
   get hostname() {
-    return this.props[AnchorElementAttrs.HOSTNAME] ?? '';
+    return this.getAttr(AnchorElementAttrs.HOSTNAME);
   }
 
   get port() {
-    return this.props[AnchorElementAttrs.PORT] ?? '';
+    return this.getAttr(AnchorElementAttrs.PORT);
   }
 
   get pathname() {
-    return this.props[AnchorElementAttrs.PATHNAME] ?? '';
+    return this.getAttr(AnchorElementAttrs.PATHNAME);
   }
 
   public setAttribute(qualifiedName: string, value: unknown): void {
