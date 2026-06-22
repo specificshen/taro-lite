@@ -18,9 +18,10 @@ jobs:
   nodejs-testing:
     name: Testing on Node.js ${{ matrix.node-version }} (${{ matrix.host }})
     strategy:
+      fail-fast: false
       matrix:
         node-version: [22.x]
-        host: [ubuntu-latest]
+        host: [ubuntu-latest, macos-latest]
 
     runs-on: ${{ matrix.host }}
     steps:
@@ -35,12 +36,13 @@ jobs:
           cache: 'pnpm'
       - name: Setup Chrome
         uses: browser-actions/setup-chrome@v1
+        id: setup-chrome
         with:
           chrome-version: stable
       - name: Install dependencies
         run: pnpm -r install --frozen-lockfile
       - name: Export browser path
-        run: echo "PUPPETEER_EXECUTABLE_PATH=$(which chrome)" >> $GITHUB_ENV
+        run: echo "PUPPETEER_EXECUTABLE_PATH=${{ steps.setup-chrome.outputs.chrome-path }}" >> $GITHUB_ENV
       - name: Lint
         run: pnpm lint
       - name: Format check
