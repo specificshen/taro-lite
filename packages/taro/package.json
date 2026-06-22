@@ -50,7 +50,9 @@
     "build": "pnpm run rolldown --environment NODE_ENV:production && bun scripts/copy-dts.ts",
     "clean": "bun ../../scripts/clean.ts dist",
     "dev": "pnpm run rolldown --environment NODE_ENV:development -w",
-    "rolldown": "rolldown --config rolldown.config.mjs"
+    "rolldown": "rolldown --config rolldown.config.mjs",
+    "test": "vitest run",
+    "test:ci": "vitest run --coverage"
   },
   "repository": {
     "type": "git",
@@ -67,7 +69,9 @@
     "node": ">= 22.15.0"
   },
   "devDependencies": {
-    "rolldown": "^1.1.2"
+    "rolldown": "^1.1.2",
+    "@vitest/coverage-istanbul": "^4.1.9",
+    "vitest": "^4.1.9"
   },
   "peerDependencies": {
     "@spcsn/taro-components": "^1.2.0",
