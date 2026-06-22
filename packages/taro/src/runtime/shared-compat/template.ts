@@ -343,8 +343,8 @@ export class BaseTemplate {
       return tmpl;
     } else {
       const data = isUnRecursiveXs
-        ? // TODO: 此处直接 c+1，不是最优解，变量 c 的作用是监测组件嵌套的层级是否大于 baselevel
-          // 但目前的监测方法用于所有组件嵌套的总和，应该分开组件计算，单个组件嵌套层级大于 baselevel 时，再进入 comp 组件中进行新的嵌套
+        ? // 当前用 c+1 累计所有组件嵌套层级；若要按单个组件拆分计数，
+          // 需要同步调整模板命名、xs 辅助函数和递归边界，改动面较大，暂保持简单策略。
           `${this.dataKeymap(`i:item,c:c+1,l:xs.f(l,item.${Shortcuts.NodeName})`)}`
         : this.isSupportRecursive
           ? `${this.dataKeymap('i:item')}`

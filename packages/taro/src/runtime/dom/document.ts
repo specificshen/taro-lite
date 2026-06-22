@@ -80,7 +80,8 @@ export class TaroDocument extends TaroElement {
     return [];
   }
 
-  // @TODO: @PERF: 在 hydrate 移除掉空的 node
+  // 注意：createComment 返回空文本节点作为占位；hydrate 阶段不能贸然过滤空文本节点，
+  // 因为 React reconciler 可能随后更新其内容，移除会导致 setData 路径在视图中找不到对应节点。
   public createComment(): TaroText {
     const textnode = new TaroText('');
     textnode.nodeName = COMMENT;
