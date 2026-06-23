@@ -243,107 +243,120 @@ type ITaroHooks = {
   getMemoryLevel: (level: unknown) => void;
 };
 
-export const hooks = new TaroHooks<ITaroHooks>({
-  getMiniLifecycle: TaroHook(HOOK_TYPE.SINGLE, (defaultConfig) => defaultConfig as MiniLifecycle),
+const globalHooks =
+  typeof globalThis !== 'undefined'
+    ? ((globalThis as Record<string, unknown>).__TARO_SHARED_HOOKS__ as TaroHooks<ITaroHooks> | undefined)
+    : undefined;
 
-  getMiniLifecycleImpl: TaroHook(HOOK_TYPE.SINGLE, function (this: TaroHooks<ITaroHooks>) {
-    return this.call('getMiniLifecycle', defaultMiniLifecycle);
-  }),
+const hooksInstance =
+  globalHooks ||
+  new TaroHooks<ITaroHooks>({
+    getMiniLifecycle: TaroHook(HOOK_TYPE.SINGLE, (defaultConfig) => defaultConfig as MiniLifecycle),
 
-  getLifecycle: TaroHook(
-    HOOK_TYPE.SINGLE,
-    (instance, lifecycle) => (instance as Record<string, TFunc>)[lifecycle as string],
-  ),
+    getMiniLifecycleImpl: TaroHook(HOOK_TYPE.SINGLE, function (this: TaroHooks<ITaroHooks>) {
+      return this.call('getMiniLifecycle', defaultMiniLifecycle);
+    }),
 
-  modifyRecursiveComponentConfig: TaroHook(HOOK_TYPE.SINGLE, (defaultConfig) => defaultConfig),
+    getLifecycle: TaroHook(
+      HOOK_TYPE.SINGLE,
+      (instance, lifecycle) => (instance as Record<string, TFunc>)[lifecycle as string],
+    ),
 
-  getPathIndex: TaroHook(HOOK_TYPE.SINGLE, (indexOfNode) => `[${indexOfNode as number}]`),
+    modifyRecursiveComponentConfig: TaroHook(HOOK_TYPE.SINGLE, (defaultConfig) => defaultConfig),
 
-  getEventCenter: TaroHook(HOOK_TYPE.SINGLE, (Events) => new (Events as new () => Events)()),
+    getPathIndex: TaroHook(HOOK_TYPE.SINGLE, (indexOfNode) => `[${indexOfNode as number}]`),
 
-  isBubbleEvents: TaroHook(HOOK_TYPE.SINGLE, (eventName) => {
-    /**
-     * 支持冒泡的事件, 除 支付宝小程序外，其余的可冒泡事件都和微信保持一致
-     * 详见 见 https://developers.weixin.qq.com/miniprogram/dev/framework/view/wxml/event.html
-     */
-    const BUBBLE_EVENTS = new Set([
-      'touchstart',
-      'touchmove',
-      'touchcancel',
-      'touchend',
-      'touchforcechange',
-      'tap',
-      'longpress',
-      'longtap',
-      'transitionend',
-      'animationstart',
-      'animationiteration',
-      'animationend',
-    ]);
+    getEventCenter: TaroHook(HOOK_TYPE.SINGLE, (Events) => new (Events as new () => Events)()),
 
-    return BUBBLE_EVENTS.has(eventName as string);
-  }),
+    isBubbleEvents: TaroHook(HOOK_TYPE.SINGLE, (eventName) => {
+      /**
+       * 支持冒泡的事件, 除 支付宝小程序外，其余的可冒泡事件都和微信保持一致
+       * 详见 见 https://developers.weixin.qq.com/miniprogram/dev/framework/view/wxml/event.html
+       */
+      const BUBBLE_EVENTS = new Set([
+        'touchstart',
+        'touchmove',
+        'touchcancel',
+        'touchend',
+        'touchforcechange',
+        'tap',
+        'longpress',
+        'longtap',
+        'transitionend',
+        'animationstart',
+        'animationiteration',
+        'animationend',
+      ]);
 
-  getSpecialNodes: TaroHook(HOOK_TYPE.SINGLE, () => ['view', 'text', 'image']),
+      return BUBBLE_EVENTS.has(eventName as string);
+    }),
 
-  onRemoveAttribute: TaroHook(HOOK_TYPE.SINGLE),
+    getSpecialNodes: TaroHook(HOOK_TYPE.SINGLE, () => ['view', 'text', 'image']),
 
-  batchedEventUpdates: TaroHook(HOOK_TYPE.SINGLE),
+    onRemoveAttribute: TaroHook(HOOK_TYPE.SINGLE),
 
-  mergePageInstance: TaroHook(HOOK_TYPE.SINGLE),
+    batchedEventUpdates: TaroHook(HOOK_TYPE.SINGLE),
 
-  modifyPageObject: TaroHook(HOOK_TYPE.SINGLE),
+    mergePageInstance: TaroHook(HOOK_TYPE.SINGLE),
 
-  createPullDownComponent: TaroHook(HOOK_TYPE.SINGLE),
+    modifyPageObject: TaroHook(HOOK_TYPE.SINGLE),
 
-  getDOMNode: TaroHook(HOOK_TYPE.SINGLE),
+    createPullDownComponent: TaroHook(HOOK_TYPE.SINGLE),
 
-  modifyHydrateData: TaroHook(HOOK_TYPE.SINGLE),
+    getDOMNode: TaroHook(HOOK_TYPE.SINGLE),
 
-  transferHydrateData: TaroHook(HOOK_TYPE.SINGLE),
+    modifyHydrateData: TaroHook(HOOK_TYPE.SINGLE),
 
-  modifySetAttrPayload: TaroHook(HOOK_TYPE.SINGLE),
+    transferHydrateData: TaroHook(HOOK_TYPE.SINGLE),
 
-  modifyRmAttrPayload: TaroHook(HOOK_TYPE.SINGLE),
+    modifySetAttrPayload: TaroHook(HOOK_TYPE.SINGLE),
 
-  onAddEvent: TaroHook(HOOK_TYPE.SINGLE),
+    modifyRmAttrPayload: TaroHook(HOOK_TYPE.SINGLE),
 
-  proxyToRaw: TaroHook(HOOK_TYPE.SINGLE, function (proxyObj) {
-    return proxyObj as Record<string, unknown>;
-  }),
+    onAddEvent: TaroHook(HOOK_TYPE.SINGLE),
 
-  modifyMpEvent: TaroHook(HOOK_TYPE.MULTI),
+    proxyToRaw: TaroHook(HOOK_TYPE.SINGLE, function (proxyObj) {
+      return proxyObj as Record<string, unknown>;
+    }),
 
-  modifyMpEventImpl: TaroHook(HOOK_TYPE.SINGLE, function (this: TaroHooks<ITaroHooks>, e: unknown) {
-    try {
-      // 有些小程序的事件对象的某些属性只读
-      this.call('modifyMpEvent', e as MpEvent);
-    } catch (error) {
-      console.warn('[Taro modifyMpEvent hook Error]: ' + (error instanceof Error ? error.message : String(error)));
-    }
-  }),
+    modifyMpEvent: TaroHook(HOOK_TYPE.MULTI),
 
-  injectNewStyleProperties: TaroHook(HOOK_TYPE.SINGLE),
+    modifyMpEventImpl: TaroHook(HOOK_TYPE.SINGLE, function (this: TaroHooks<ITaroHooks>, e: unknown) {
+      try {
+        // 有些小程序的事件对象的某些属性只读
+        this.call('modifyMpEvent', e as MpEvent);
+      } catch (error) {
+        console.warn('[Taro modifyMpEvent hook Error]: ' + (error instanceof Error ? error.message : String(error)));
+      }
+    }),
 
-  modifyTaroEvent: TaroHook(HOOK_TYPE.MULTI),
+    injectNewStyleProperties: TaroHook(HOOK_TYPE.SINGLE),
 
-  dispatchTaroEvent: TaroHook(HOOK_TYPE.SINGLE, (e, node) => {
-    (node as { dispatchEvent: (event: unknown) => void }).dispatchEvent(e);
-  }),
+    modifyTaroEvent: TaroHook(HOOK_TYPE.MULTI),
 
-  dispatchTaroEventFinish: TaroHook(HOOK_TYPE.MULTI),
+    dispatchTaroEvent: TaroHook(HOOK_TYPE.SINGLE, (e, node) => {
+      (node as { dispatchEvent: (event: unknown) => void }).dispatchEvent(e);
+    }),
 
-  modifyTaroEventReturn: TaroHook(HOOK_TYPE.SINGLE, () => undefined),
+    dispatchTaroEventFinish: TaroHook(HOOK_TYPE.MULTI),
 
-  modifyDispatchEvent: TaroHook(HOOK_TYPE.MULTI),
+    modifyTaroEventReturn: TaroHook(HOOK_TYPE.SINGLE, () => undefined),
 
-  initNativeApi: TaroHook(HOOK_TYPE.MULTI),
+    modifyDispatchEvent: TaroHook(HOOK_TYPE.MULTI),
 
-  patchElement: TaroHook(HOOK_TYPE.MULTI),
+    initNativeApi: TaroHook(HOOK_TYPE.MULTI),
 
-  modifyAddEventListener: TaroHook(HOOK_TYPE.SINGLE),
+    patchElement: TaroHook(HOOK_TYPE.MULTI),
 
-  modifyRemoveEventListener: TaroHook(HOOK_TYPE.SINGLE),
+    modifyAddEventListener: TaroHook(HOOK_TYPE.SINGLE),
 
-  getMemoryLevel: TaroHook(HOOK_TYPE.SINGLE),
-});
+    modifyRemoveEventListener: TaroHook(HOOK_TYPE.SINGLE),
+
+    getMemoryLevel: TaroHook(HOOK_TYPE.SINGLE),
+  });
+
+if (!globalHooks && typeof globalThis !== 'undefined') {
+  (globalThis as { __TARO_SHARED_HOOKS__?: TaroHooks<ITaroHooks> }).__TARO_SHARED_HOOKS__ = hooksInstance;
+}
+
+export const hooks = hooksInstance;

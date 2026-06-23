@@ -24,6 +24,14 @@ interface TextProps extends StandardProps {
    * @supported weapp
    */
   maxLines?: number;
+  /** 文本截断时省略样式
+   * @supported weapp
+   */
+  overflow?: keyof TextProps.Overflow;
+  /** 限制文本最大行数（React Native 风格别名）
+   * @supported weapp
+   */
+  numberOfLines?: number;
 }
 declare namespace TextProps {
   /** space 的合法值 */

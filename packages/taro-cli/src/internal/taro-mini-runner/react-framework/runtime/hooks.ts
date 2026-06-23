@@ -1,14 +1,36 @@
 import type { AppInstance, Instance, PageLifeCycle, PageProps, Router } from '@spcsn/taro/runtime';
-import { Current, getPageInstance, injectPageInstance } from '@spcsn/taro/runtime';
+import {
+  Current,
+  eventCenter,
+  getOnHideEventKey,
+  getOnReadyEventKey,
+  getOnShowEventKey,
+  getPageInstance,
+  injectPageInstance,
+} from '@spcsn/taro/runtime';
 import type { Func } from '@spcsn/taro/types/compile';
 import { isArray, isFunction } from '../../../taro-shared';
 import { reactMeta } from './react-meta';
 import { HOOKS_APP_ID } from './utils';
 
+const EVENT_LIFECYCLE_MAP: Record<string, string | undefined> = {
+  componentDidShow: 'onShow',
+  componentDidHide: 'onHide',
+  onReady: 'onReady',
+};
+
+const getEventKeyByLifecycle = (lifecycle: string, id: string): string | undefined => {
+  const eventName = EVENT_LIFECYCLE_MAP[lifecycle];
+  if (!eventName) return undefined;
+  if (eventName === 'onShow') return getOnShowEventKey(id);
+  if (eventName === 'onHide') return getOnHideEventKey(id);
+  if (eventName === 'onReady') return getOnReadyEventKey(id);
+  return undefined;
+};
+
 const createTaroHook = (lifecycle: keyof PageLifeCycle | keyof AppInstance) => {
   return (fn: Func) => {
-    const { R: React, PageContext } = reactMeta;
-    const id = React.useContext(PageContext) || HOOKS_APP_ID;
+    const { R: React } = reactMeta;
     const instRef = React.useRef<Record<string, unknown> | undefined>(undefined);
 
     // hold fn ref and keep up to date
@@ -16,6 +38,11 @@ const createTaroHook = (lifecycle: keyof PageLifeCycle | keyof AppInstance) => {
     if (fnRef.current !== fn) fnRef.current = fn;
 
     React.useLayoutEffect(() => {
+      const isAppLifecycle = ['onLaunch', 'onError', 'onUnhandledRejection', 'onPageNotFound'].includes(
+        lifecycle as string,
+      );
+      const router = Current.router;
+      const id = isAppLifecycle ? HOOKS_APP_ID : router?.$taroPath || router?.path || HOOKS_APP_ID;
       let inst = getPageInstance(id) as Record<string, unknown> | undefined;
       instRef.current = inst;
       let first = false;
@@ -37,6 +64,13 @@ const createTaroHook = (lifecycle: keyof PageLifeCycle | keyof AppInstance) => {
       if (first) {
         injectPageInstance(inst as Instance<PageProps>, id);
       }
+
+      // 同时通过 eventCenter 订阅页面生命周期事件，绕过 instance / getLifecycle 映射可能失效的问题
+      const eventKey = getEventKeyByLifecycle(lifecycle as string, id);
+      if (eventKey) {
+        eventCenter.on(eventKey, callback);
+      }
+
       return () => {
         const inst = instRef.current;
         if (!inst) return;
@@ -45,6 +79,9 @@ const createTaroHook = (lifecycle: keyof PageLifeCycle | keyof AppInstance) => {
           inst[lifecycle] = undefined;
         } else if (isArray(list)) {
           inst[lifecycle] = list.filter((item) => item !== callback);
+        }
+        if (eventKey) {
+          eventCenter.off(eventKey, callback);
         }
         instRef.current = undefined;
       };

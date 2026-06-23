@@ -1,0 +1,13 @@
+{
+  "properties": {
+    "overflow": {
+      "description": "文本截断时省略样式",
+      "type": "string",
+      "enum": ["clip", "fade", "ellipsis", "visible"]
+    },
+    "number-of-lines": {
+      "description": "限制文本最大行数（React Native 风格别名）",
+      "type": "number"
+    }
+  }
+}
