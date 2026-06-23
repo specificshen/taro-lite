@@ -1,6 +1,6 @@
 # ESM 改造与 Monorepo 合包规划
 
-> 状态：进行中  
+> 状态：阶段一已完成，阶段二/三待评估  
 > 目标版本：1.2.0  
 > 核心原则：包数量收敛到 3 个，内部实现从 `@spcsn/taro/runtime` 统一引用，避免 ESM 下的状态分裂。
 
@@ -46,27 +46,38 @@
 
 | 模块 | 当前位置（taro-cli 内部） | 原始位置（taro runtime） | 风险等级 | 说明 |
 |---|---|---|---|---|
-| `event-emitter` | `src/internal/taro-shared/event-emitter.ts` | `src/runtime/event-emitter.ts` | **高** | `eventCenter` 是全局事件总线，分裂会导致生命周期事件丢失或重复 |
-| `Current` / 全局上下文 | 通过 `@spcsn/taro/runtime` 导入 | `src/runtime/current.ts` | 中 | 目前从 runtime 导入，但需确认没有内部副本 |
-| `instances` | 通过 `@spcsn/taro/runtime` 导入 | `src/runtime/dsl/common.ts` | 中 | 页面实例 map，目前从 runtime 导入 |
+| `hooks` | `src/internal/taro-shared/runtime-hooks.ts` | `src/runtime/runtime-hooks.ts` | **高** | 已收敛 ✅ |
+| `event-emitter` | `src/internal/taro-shared/event-emitter.ts` | `src/runtime/event-emitter.ts` | **高** | 已收敛 ✅ |
+| `shared-compat` 工具函数/常量/组件配置 | `src/internal/taro-shared/` | `src/runtime/shared-compat/` | **高** | 已收敛 ✅ |
+| `Current` / 全局上下文 | 通过 `@spcsn/taro/runtime` 导入 | `src/runtime/current.ts` | 中 | 目前从 runtime 导入，未发现内部副本 |
+| `instances` | 通过 `@spcsn/taro/runtime` 导入 | `src/runtime/dsl/common.ts` | 中 | 目前从 runtime 导入，未发现内部副本 |
 | `options` | `src/internal/taro-shared/` 未明显存在 | `src/runtime/options.ts` | 低 | 目前未发现内部副本 |
-| 工具函数（`isFunction`、`toCamelCase` 等） | `src/internal/taro-shared/is.ts`、`utils.ts` | `src/runtime/shared-primitives.ts` | 低 | 纯函数，无状态，复制不会导致 bug，但增加维护成本 |
-| 组件配置 / shortcuts | `src/internal/taro-shared/components.ts`、`shortcuts.ts` | `src/runtime/internal-components-registry.ts`、`shortcuts.ts` | 中 | 配置类数据，分裂可能导致组件行为不一致 |
 
 ## 4. 收敛计划
 
-### 阶段一：高风险状态模块收敛（优先做）
+### 阶段一：高风险状态模块收敛（已完成 ✅）
 
 目标：所有带状态或全局唯一的模块，统一从 `@spcsn/taro/runtime` 导入。
 
-1. **`event-emitter` / `eventCenter`**
-   - 删除 `taro-cli/src/internal/taro-shared/event-emitter.ts`
-   - 所有引用改为 `import { eventCenter, Events } from '@spcsn/taro/runtime'`
-   - 确保 `taro-cli` 与 `taro` 共用同一个事件总线
+完成内容：
 
-2. **确认 `Current`、`instances`、`options` 没有内部副本**
-   - 搜索 `taro-cli/src/internal` 是否还有自实现的 `Current`、`instances`、`options`
-   - 如果有，删除并改为从 `@spcsn/taro/runtime` 导入
+1. **`hooks`**
+   - `taro-cli/src/internal/taro-shared/runtime-hooks.ts` 改为 re-export `@spcsn/taro/runtime`
+   - `runtime/index.ts` 导出 `TaroHooks`、`HOOK_TYPE`、`TaroHook`、`TFunc`
+   - 保留 `globalThis.__TARO_SHARED_HOOKS__` 兜底
+
+2. **`event-emitter` / `Events`**
+   - 删除 `taro-cli/src/internal/taro-shared/event-emitter.ts`
+   - `runtime/index.ts` 显式导出 `Events` 与 `EventCallbacks`
+   - `taro-cli/src/internal/taro-shared/event-channel.ts` 改为从 `@spcsn/taro/runtime` 导入 `Events`
+
+3. **`shared-compat` 全量收敛**
+   - 将 cli 多出的工具函数/常量下沉到 `runtime/shared-compat`
+   - `runtime/shared-compat/index.ts` 统一 barrel 导出
+   - `runtime/index.ts` 显式导出 cli 所需的 `is*`、`internalComponents`、`EMPTY_OBJ`、`ensure`、`noop`、`toDashed`、`capitalize` 等
+   - `taro-cli` 内部所有 `from '../../taro-shared'` 改为 `from '@spcsn/taro/runtime'`
+   - 删除 cli 重复的 `components.ts`、`constants.ts`、`is.ts`、`native-apis.ts`、`shortcuts.ts`、`template.ts`、`utils.ts`
+   - `taro-cli/src/internal/taro-shared/` 仅保留 cli 特有的 `event-channel.ts`
 
 ### 阶段二：配置与工具函数收敛
 
