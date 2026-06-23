@@ -33,3 +33,10 @@ export import useUnhandledRejection = Taro.useUnhandledRejection
 export import useUnload = Taro.useUnload
 
 export type Chain = Taro.Chain
+
+// 底座内部与业务工程可能用到的类型导出
+export type AppConfig = Taro.AppConfig
+export type PageConfig = Taro.PageConfig
+export type Config = Taro.Config
+export type AppInstance = Taro.AppInstance
+export type PageInstance = Taro.PageInstance
