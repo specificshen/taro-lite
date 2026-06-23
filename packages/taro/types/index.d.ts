@@ -162,10 +162,38 @@
 /// <reference path="taro.lifecycle.d.ts" />
 /// <reference path="taro.runtime.d.ts" />
 
-export = Taro
 export as namespace Taro
 
 declare const Taro: Taro.TaroStatic
+export default Taro
+
+// src/index.ts 中 named 导出的 hooks
+export import useAddToFavorites = Taro.useAddToFavorites
+export import useDidHide = Taro.useDidHide
+export import useDidShow = Taro.useDidShow
+export import useError = Taro.useError
+export import useLaunch = Taro.useLaunch
+export import useLoad = Taro.useLoad
+export import usePageNotFound = Taro.usePageNotFound
+export import usePageScroll = Taro.usePageScroll
+export import usePullDownRefresh = Taro.usePullDownRefresh
+export import useReachBottom = Taro.useReachBottom
+export import useReady = Taro.useReady
+export import useResize = Taro.useResize
+export import useRouter = Taro.useRouter
+export import useSaveExitState = Taro.useSaveExitState
+export import useScope = Taro.useScope
+export import useShareAppMessage = Taro.useShareAppMessage
+export import useShareTimeline = Taro.useShareTimeline
+export import useTabItemTap = Taro.useTabItemTap
+export import useUnhandledRejection = Taro.useUnhandledRejection
+export import useUnload = Taro.useUnload
+
+// 业务中常用的命名空间/类型
+export import request = Taro.request
+export import IntersectionObserver = Taro.IntersectionObserver
+export import EventChannel = Taro.EventChannel
+export type Chain = Taro.Chain
 
 declare namespace Taro {
   interface TaroStatic {}
@@ -173,5 +201,5 @@ declare namespace Taro {
 declare global {
   const defineAppConfig: (config: Taro.AppConfig) => Taro.AppConfig
   const definePageConfig: (config: Taro.PageConfig) => Taro.Config
-  const importNativeComponent: <T> (path: string, name = '', exportName = 'default') => Awaited<T>
+  const importNativeComponent: <T> (path: string, name?: string, exportName?: string) => Awaited<T>
 }
