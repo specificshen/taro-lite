@@ -1,4 +1,4 @@
-import { Events } from './event-emitter';
+import { Events } from '@spcsn/taro/runtime';
 
 interface ExeListItem {
   eventName: string;

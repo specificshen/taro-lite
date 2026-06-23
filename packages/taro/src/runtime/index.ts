@@ -61,6 +61,19 @@ export * from './polyfill';
 export { processApis } from './process-apis';
 export type { TFunc } from './runtime-hooks';
 export { HOOK_TYPE, hooks, TaroHook, TaroHooks } from './runtime-hooks';
+export {
+  isArray,
+  isBoolean,
+  isFunction,
+  isNumber,
+  isObject,
+  isString,
+  isUndefined,
+} from './shared-compat/is';
+export { internalComponents } from './shared-compat/components';
+export { capitalize, EMPTY_OBJ, ensure, noop, toDashed } from './shared-compat/utils';
+export { Events } from './event-emitter';
+export type { EventCallbacks } from './event-emitter';
 export { toCamelCase } from './shared-primitives';
 export { Shortcuts } from './shortcuts';
 export { RecursiveTemplate, UnRecursiveTemplate } from './template-adapter';

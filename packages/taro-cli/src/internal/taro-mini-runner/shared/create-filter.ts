@@ -5,7 +5,7 @@
  */
 import path from 'node:path';
 import pm from 'picomatch';
-import { isArray, isFunction } from '../../taro-shared';
+import { isArray, isFunction } from '@spcsn/taro/runtime';
 
 type FilterPattern = ReadonlyArray<string | RegExp> | string | RegExp | null | undefined;
 

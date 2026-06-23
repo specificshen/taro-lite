@@ -3,7 +3,7 @@ import type { IUrlLoaderOption } from '@spcsn/taro/types/compile';
 import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/vite-compiler-context';
 import type { PluginOption, ResolvedConfig } from 'vite';
 import { fs, REG_FONT, REG_IMAGE, REG_MEDIA } from '../../taro-helper';
-import { isBoolean, isString } from '../../taro-shared';
+import { isBoolean, isString } from '@spcsn/taro/runtime';
 import { isVirtualModule } from '../shared';
 
 const rawRE = /(?:\?|&)raw(?:&|$)/;

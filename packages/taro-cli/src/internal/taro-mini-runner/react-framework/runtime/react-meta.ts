@@ -1,5 +1,5 @@
 import type * as React from 'react';
-import { EMPTY_OBJ } from '../../../taro-shared';
+import { EMPTY_OBJ } from '@spcsn/taro/runtime';
 
 interface ReactMeta {
   PageContext: React.Context<string>;

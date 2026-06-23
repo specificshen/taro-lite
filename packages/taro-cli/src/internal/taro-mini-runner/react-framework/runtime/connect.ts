@@ -22,7 +22,7 @@ import {
 import type React from 'react';
 import type TReactDOM from 'react-dom';
 import type TReactDOMClient from 'react-dom/client';
-import { EMPTY_OBJ, ensure, hooks } from '../../../taro-shared';
+import { EMPTY_OBJ, ensure, hooks } from '@spcsn/taro/runtime';
 import { reactMeta } from './react-meta';
 import { ensureIsArray, HOOKS_APP_ID, isClassComponent, setDefaultDescriptor, setRouterParams } from './utils';
 

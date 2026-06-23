@@ -2,6 +2,39 @@ import { internalComponents } from './components';
 
 export { internalComponents } from './components';
 
+export const EMPTY_OBJ: unknown = {};
+
+export const EMPTY_ARR: unknown[] = [];
+
+export const noop = (..._: unknown[]) => {};
+
+/**
+ * Boxed value.
+ *
+ * @typeparam T Value type.
+ */
+export interface Box<T> {
+  v: T;
+}
+
+/**
+ * box creates a boxed value.
+ *
+ * @typeparam T Value type.
+ * @param v Value.
+ * @returns Boxed value.
+ */
+export const box = <T>(v: T) => ({ v });
+
+/**
+ * box creates a boxed value.
+ *
+ * @typeparam T Value type.
+ * @param b Boxed value.
+ * @returns Value.
+ */
+export const unbox = <T>(b: Box<T>) => b.v;
+
 export function toDashed(s: string) {
   return s.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
 }
@@ -32,11 +65,81 @@ const objectHasOwnProperty = Object.prototype.hasOwnProperty;
 
 export const hasOwn = (val: Record<string, unknown>, key: string) => objectHasOwnProperty.call(val, key);
 
+/**
+ * ensure takes a condition and throw a error if the condition fails,
+ * like failure::ensure: https://docs.rs/failure/0.1.1/failure/macro.ensure.html
+ * @param condition condition.
+ * @param msg error message.
+ */
+export function ensure(condition: boolean, msg: string): asserts condition {
+  if (!condition) {
+    throw new Error(msg);
+  }
+}
+
+export function warn(condition: boolean, msg: string) {
+  if (process.env.NODE_ENV !== 'production') {
+    if (condition) {
+      console.warn(`[taro warn] ${msg}`);
+    }
+  }
+}
+
+export function queryToJson(str: string): Record<string, string | string[]> {
+  const dec = decodeURIComponent;
+  const qp = str.split('&');
+  const ret: Record<string, string | string[]> = {};
+  let name: string;
+  let val: string;
+  for (let i = 0, l = qp.length, item: string; i < l; ++i) {
+    item = qp[i];
+    if (item.length) {
+      const s = item.indexOf('=');
+      if (s < 0) {
+        name = dec(item);
+        val = '';
+      } else {
+        name = dec(item.slice(0, s));
+        val = dec(item.slice(s + 1));
+      }
+      const prev = ret[name];
+      if (typeof prev === 'string') {
+        // inline'd type check
+        ret[name] = [prev];
+      }
+
+      const current = ret[name];
+      if (Array.isArray(current)) {
+        current.push(val);
+      } else {
+        ret[name] = val;
+      }
+    }
+  }
+  return ret; // Object
+}
+
 let _uniqueId = 1;
 const _loadTime = new Date().getTime().toString();
 
 export function getUniqueKey() {
   return _loadTime + _uniqueId++;
+}
+
+const cacheData: Record<string, unknown> = {};
+
+export function cacheDataSet(key: string, val: unknown) {
+  cacheData[key] = val;
+}
+
+export function cacheDataGet(key: string, delelteAfterGet?: boolean) {
+  const temp = cacheData[key];
+  delelteAfterGet && delete cacheData[key];
+  return temp;
+}
+
+export function cacheDataHas(key: string) {
+  return key in cacheData;
 }
 
 export function mergeInternalComponents(components: Record<string, Record<string, string>>) {
@@ -121,4 +224,36 @@ export function indent(str: string, size: number): string {
       return indent + line;
     })
     .join('\n');
+}
+
+export enum TTRenderType {
+  V1 = 1,
+  V2 = 2,
+}
+
+interface TaroTTNamespace {
+  getRenderMode?(): TTRenderType;
+  __$enableTTDom$__?: boolean;
+  [key: string]: unknown;
+}
+
+declare const tt: TaroTTNamespace;
+let ttUseV2TTDom: boolean | undefined;
+
+export function isEnableTTDom() {
+  // 目前仅对于 react 支持 ttdom
+  if (process.env.TARO_ENV !== 'tt' || process.env.FRAMEWORK !== 'react' || typeof tt === 'undefined') {
+    return false;
+  }
+  if (ttUseV2TTDom !== undefined) return ttUseV2TTDom;
+
+  const ttMode = tt.getRenderMode ? tt.getRenderMode() : TTRenderType.V1;
+
+  if (ttMode === TTRenderType.V2 && tt.__$enableTTDom$__) {
+    ttUseV2TTDom = true;
+  } else {
+    ttUseV2TTDom = false;
+  }
+
+  return ttUseV2TTDom;
 }

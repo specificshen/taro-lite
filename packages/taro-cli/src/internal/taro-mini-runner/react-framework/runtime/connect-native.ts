@@ -26,7 +26,7 @@ import {
 import type React from 'react';
 import type TReactDOM from 'react-dom';
 import type TReactDOMClient from 'react-dom/client';
-import { EMPTY_OBJ, ensure, hooks, isUndefined } from '../../../taro-shared';
+import { EMPTY_OBJ, ensure, hooks, isUndefined } from '@spcsn/taro/runtime';
 import { setReconciler } from './connect';
 import { reactMeta } from './react-meta';
 import { isClassComponent } from './utils';

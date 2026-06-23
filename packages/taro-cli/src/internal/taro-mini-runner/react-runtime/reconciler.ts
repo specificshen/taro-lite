@@ -4,7 +4,7 @@ import { createContext } from 'react';
 import type { Fiber, HostConfig } from 'react-reconciler';
 import Reconciler from 'react-reconciler';
 import { DefaultEventPriority, NoEventPriority } from 'react-reconciler/constants';
-import { isBoolean, isUndefined, noop } from '../../taro-shared';
+import { isBoolean, isUndefined, noop } from '@spcsn/taro/runtime';
 import { precacheFiberNode, updateFiberProps } from './component-tree';
 import { getUpdatePayload, Props, updateProps, updatePropsByPayload } from './props';
 

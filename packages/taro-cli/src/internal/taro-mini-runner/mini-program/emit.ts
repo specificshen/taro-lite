@@ -3,7 +3,7 @@ import type { Config } from '@spcsn/taro';
 import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/vite-compiler-context';
 import type { PluginOption, Rolldown } from 'vite';
 import { promoteRelativePath } from '../../taro-helper';
-import { isFunction, isString, toDashed } from '../../taro-shared';
+import { isFunction, isString, toDashed } from '@spcsn/taro/runtime';
 import { getComponentName, prettyPrintJson } from '../shared';
 import { componentConfig } from '../shared/component';
 import { baseCompName, baseTemplateName, customWrapperName } from '../shared/constants';

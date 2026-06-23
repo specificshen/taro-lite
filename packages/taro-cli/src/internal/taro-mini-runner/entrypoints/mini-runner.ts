@@ -1,7 +1,7 @@
 import type { ViteMiniBuildConfig } from '@spcsn/taro/types/compile/vite-compiler-context';
 import type { Logger, UserConfig } from 'vite';
 import { build, createLogger } from 'vite';
-import { isFunction } from '../../taro-shared';
+import { isFunction } from '@spcsn/taro/runtime';
 import miniPreset from '../mini-program';
 import { convertCopyOptions } from '../shared';
 import { TaroCompilerContext } from '../shared/compiler/mini';

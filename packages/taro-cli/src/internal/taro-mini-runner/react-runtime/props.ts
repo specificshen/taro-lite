@@ -8,7 +8,7 @@ import {
   isObject,
   isString,
   toCamelCase,
-} from '../../taro-shared';
+} from '@spcsn/taro/runtime';
 
 export type Props = Record<string, unknown>;
 

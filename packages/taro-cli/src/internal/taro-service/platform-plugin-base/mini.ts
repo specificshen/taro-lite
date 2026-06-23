@@ -4,7 +4,7 @@ import type { RecursiveTemplate, UnRecursiveTemplate } from '@spcsn/taro/runtime
 import type { ViteMiniBuildConfig } from '@spcsn/taro/types/compile/vite-compiler-context';
 import { recursiveMerge, taroJsMiniComponentsPath } from '../../taro-helper';
 import miniRunner from '../../taro-mini-runner';
-import { isObject } from '../../taro-shared';
+import { isObject } from '@spcsn/taro/runtime';
 import { getPkgVersion } from '../utils/package';
 import { serviceProfiler } from '../utils/profile.js';
 import type { TConfig } from '../utils/types';
