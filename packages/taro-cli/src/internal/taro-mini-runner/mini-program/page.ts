@@ -1,8 +1,8 @@
 import path from 'node:path';
+import { internalComponents, toDashed } from '@spcsn/taro/runtime';
 import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/vite-compiler-context';
 import type { PluginOption, ResolvedConfig } from 'vite';
 import { resolveMainFilePath, swc } from '../../taro-helper';
-import { internalComponents, toDashed } from '@spcsn/taro/runtime';
 import { appendVirtualModulePrefix, escapePath, prettyPrintJson, stripVirtualModulePrefix } from '../shared';
 import { componentConfig, resetComponentConfigIncludes } from '../shared/component';
 import { createFilterWithCompileOptions } from '../shared/create-filter';

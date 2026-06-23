@@ -4,8 +4,8 @@
  * Author Tobias Rich Harris @richard.a.harris@gmail.com
  */
 import path from 'node:path';
-import pm from 'picomatch';
 import { isArray, isFunction } from '@spcsn/taro/runtime';
+import pm from 'picomatch';
 
 type FilterPattern = ReadonlyArray<string | RegExp> | string | RegExp | null | undefined;
 

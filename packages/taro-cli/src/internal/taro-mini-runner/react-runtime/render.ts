@@ -1,7 +1,7 @@
 import type { TaroElement, TaroEvent } from '@spcsn/taro/runtime';
+import { hooks } from '@spcsn/taro/runtime';
 import type { ReactNode } from 'react';
 import type { OpaqueRoot } from 'react-reconciler';
-import { hooks } from '@spcsn/taro/runtime';
 import { markContainerAsRoot } from './component-tree';
 import { getEventPriority } from './constant';
 import { markShouldFlushAfterEvent } from './event';

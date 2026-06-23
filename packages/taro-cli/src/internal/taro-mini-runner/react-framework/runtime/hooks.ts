@@ -7,9 +7,10 @@ import {
   getOnShowEventKey,
   getPageInstance,
   injectPageInstance,
+  isArray,
+  isFunction,
 } from '@spcsn/taro/runtime';
 import type { Func } from '@spcsn/taro/types/compile';
-import { isArray, isFunction } from '../../../taro-shared';
 import { reactMeta } from './react-meta';
 import { HOOKS_APP_ID } from './utils';
 

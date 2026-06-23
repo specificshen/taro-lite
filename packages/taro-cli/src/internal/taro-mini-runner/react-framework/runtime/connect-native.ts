@@ -5,6 +5,8 @@ import {
   CONTEXT_ACTIONS,
   Current,
   document,
+  EMPTY_OBJ,
+  ensure,
   eventCenter,
   eventHandler,
   getOnHideEventKey,
@@ -12,8 +14,10 @@ import {
   getOnShowEventKey,
   getPageInstance,
   getPath,
+  hooks,
   incrementId,
   injectPageInstance,
+  isUndefined,
   ON_HIDE,
   ON_READY,
   ON_SHOW,
@@ -26,7 +30,6 @@ import {
 import type React from 'react';
 import type TReactDOM from 'react-dom';
 import type TReactDOMClient from 'react-dom/client';
-import { EMPTY_OBJ, ensure, hooks, isUndefined } from '@spcsn/taro/runtime';
 import { setReconciler } from './connect';
 import { reactMeta } from './react-meta';
 import { isClassComponent } from './utils';

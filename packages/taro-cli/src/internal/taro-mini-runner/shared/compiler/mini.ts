@@ -1,5 +1,6 @@
 import path from 'node:path';
 import type { PageConfig } from '@spcsn/taro';
+import { isArray, isFunction } from '@spcsn/taro/runtime';
 import type {
   ViteAppMeta,
   ViteFileType,
@@ -17,7 +18,6 @@ import {
   replaceAliasPath,
   resolveMainFilePath,
 } from '../../../taro-helper';
-import { isArray, isFunction } from '../../../taro-shared';
 import defaultConfig from '../../mini-program/default-config';
 import { miniTemplateLoader, QUERY_IS_NATIVE_COMP } from '../../mini-program/native-support';
 import { getComponentName } from '..';

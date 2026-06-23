@@ -1,6 +1,6 @@
 import type { TaroElement } from '@spcsn/taro/runtime';
-import type { ReactNode } from 'react';
 import { ensure, isFunction } from '@spcsn/taro/runtime';
+import type { ReactNode } from 'react';
 import { internalInstanceKey } from './constant';
 import { finishEventHandler } from './event';
 import { flushSync, TaroReconciler } from './reconciler';

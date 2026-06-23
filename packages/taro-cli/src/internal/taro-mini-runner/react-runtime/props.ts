@@ -1,7 +1,8 @@
 import type { Style, TaroElement } from '@spcsn/taro/runtime';
-import { convertNumber2PX, FormElement } from '@spcsn/taro/runtime';
 import {
   capitalize,
+  convertNumber2PX,
+  FormElement,
   internalComponents,
   isFunction,
   isNumber,

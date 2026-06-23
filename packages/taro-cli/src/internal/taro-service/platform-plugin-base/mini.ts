@@ -1,10 +1,10 @@
 import { existsSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import type { RecursiveTemplate, UnRecursiveTemplate } from '@spcsn/taro/runtime';
+import { isObject } from '@spcsn/taro/runtime';
 import type { ViteMiniBuildConfig } from '@spcsn/taro/types/compile/vite-compiler-context';
 import { recursiveMerge, taroJsMiniComponentsPath } from '../../taro-helper';
 import miniRunner from '../../taro-mini-runner';
-import { isObject } from '@spcsn/taro/runtime';
 import { getPkgVersion } from '../utils/package';
 import { serviceProfiler } from '../utils/profile.js';
 import type { TConfig } from '../utils/types';

@@ -1,7 +1,6 @@
 import type { Router } from '@spcsn/taro/runtime';
-import { Current } from '@spcsn/taro/runtime';
+import { Current, isArray, isFunction } from '@spcsn/taro/runtime';
 import type * as React from 'react';
-import { isArray, isFunction } from '../../../taro-shared';
 
 export const HOOKS_APP_ID = 'taro-app';
 
