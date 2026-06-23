@@ -259,6 +259,9 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
               },
               chunkFileNames: taroConfig.output!.chunkFileNames,
               manualChunks: getManualChunks(),
+              // 避免 comp/custom-wrapper 等入口 chunk 的代码被提升到 taro.js 末尾，
+              // 导致 Component() 注册调用不在微信初始化阶段而被警告。
+              hoistTransitiveImports: false,
             },
           },
           commonjsOptions: {

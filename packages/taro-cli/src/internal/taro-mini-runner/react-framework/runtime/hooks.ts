@@ -104,19 +104,15 @@ export const usePageNotFound = createTaroHook('onPageNotFound');
 export const useLoad = createTaroHook('onLoad');
 export const usePageScroll = createTaroHook('onPageScroll');
 export const usePullDownRefresh = createTaroHook('onPullDownRefresh');
-export const usePullIntercept = createTaroHook('onPullIntercept');
 export const useReachBottom = createTaroHook('onReachBottom');
 export const useResize = createTaroHook('onResize');
 export const useUnload = createTaroHook('onUnload');
 
 /** Mini-Program */
 export const useAddToFavorites = createTaroHook('onAddToFavorites');
-export const useOptionMenuClick = createTaroHook('onOptionMenuClick');
-export const useKeyboardHeight = createTaroHook('onKeyboardHeight');
 export const useSaveExitState = createTaroHook('onSaveExitState');
 export const useShareAppMessage = createTaroHook('onShareAppMessage');
 export const useShareTimeline = createTaroHook('onShareTimeline');
-export const useTitleClick = createTaroHook('onTitleClick');
 
 /** Router */
 export const useReady = createTaroHook('onReady');

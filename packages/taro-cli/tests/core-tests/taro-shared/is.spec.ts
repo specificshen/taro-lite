@@ -10,7 +10,7 @@ import {
   isObjectStringLiteral,
   isString,
   isUndefined,
-} from '../../../src/internal/taro-shared/is';
+} from '../../../../taro/src/runtime/shared-compat/is';
 
 describe('taro-shared is', () => {
   describe('isString', () => {

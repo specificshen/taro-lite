@@ -121,30 +121,6 @@ declare module '../index' {
     useRouter<TParams extends Partial<Record<string, string>> = Partial<Record<string, string>>>(dynamic?: boolean): RouterInfo<TParams>
 
     /**
-     * 键盘高度变化时的回调。
-     * @supported weapp
-     */
-    useKeyboardHeight(callback: (obj: { height: number }) => void): void
-
-    /**
-     * 用户点击右上角胶囊按钮“选项菜单”时的回调。
-     * @supported weapp
-     */
-    useOptionMenuClick(callback: () => void): void
-
-    /**
-     * 下拉刷新被中断时的回调。
-     * @supported weapp
-     */
-    usePullIntercept(callback: () => void): void
-
-    /**
-     * 页面标题被点击时的回调。
-     * @supported weapp
-     */
-    useTitleClick(callback: () => void): void
-
-    /**
      * 获取当前自定义组件实例。在 React 实现中固定返回 undefined。
      * @supported weapp
      */

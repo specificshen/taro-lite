@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { Events } from '../../../src/internal/taro-shared/event-emitter';
+import { Events } from '../../../../taro/src/runtime/event-emitter';
 
 describe('taro-shared event-emitter', () => {
   it('triggers registered callbacks', () => {

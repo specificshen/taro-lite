@@ -7,7 +7,7 @@ import {
   toCamelCase,
   toDashed,
   toKebabCase,
-} from '../../../src/internal/taro-shared/utils';
+} from '../../../../taro/src/runtime/shared-compat/utils';
 
 describe('taro-shared utils', () => {
   describe('toDashed', () => {
