@@ -3,7 +3,7 @@ import { Events } from './event-emitter';
 import { isFunction } from './shared-primitives';
 import type { Shortcuts } from './shortcuts';
 
-type TFunc = (...args: unknown[]) => unknown;
+export type TFunc = (...args: unknown[]) => unknown;
 
 export enum HOOK_TYPE {
   SINGLE,

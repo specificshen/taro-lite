@@ -59,7 +59,8 @@ export * from './perf';
 // Polyfills
 export * from './polyfill';
 export { processApis } from './process-apis';
-export { hooks } from './runtime-hooks';
+export type { TFunc } from './runtime-hooks';
+export { HOOK_TYPE, hooks, TaroHook, TaroHooks } from './runtime-hooks';
 export { toCamelCase } from './shared-primitives';
 export { Shortcuts } from './shortcuts';
 export { RecursiveTemplate, UnRecursiveTemplate } from './template-adapter';
