@@ -52,12 +52,16 @@ function isIdentifier(node: acorn.Node): node is acorn.Identifier {
   return node.type === 'Identifier';
 }
 
+const KNOWN_JS_EXTS = new Set(['.js', '.mjs', '.cjs', '.json']);
+
 function addLiteral(literal: acorn.Node | null | undefined, specifiers: Specifier[]) {
   if (!literal || !isLiteral(literal) || typeof literal.value !== 'string') return;
   const text = literal.value;
-  if (text.startsWith('.') && path.extname(text) === '') {
-    specifiers.push({ start: literal.start, end: literal.end, text });
-  }
+  if (!text.startsWith('.')) return;
+  const ext = path.extname(text);
+  // 只有以 .js/.mjs/.cjs/.json 结尾才视为已处理；.mini/.config 等文件名需要补 .js
+  if (ext && KNOWN_JS_EXTS.has(ext)) return;
+  specifiers.push({ start: literal.start, end: literal.end, text });
 }
 
 function isImportMetaResolveCall(node: acorn.CallExpression): boolean {
