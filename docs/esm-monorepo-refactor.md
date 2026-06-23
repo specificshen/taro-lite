@@ -1,6 +1,6 @@
 # ESM 改造与 Monorepo 合包规划
 
-> 状态：阶段一已完成，阶段二/三待评估  
+> 状态：阶段一、二已完成，阶段三待落地  
 > 目标版本：1.2.0  
 > 核心原则：包数量收敛到 3 个，内部实现从 `@spcsn/taro/runtime` 统一引用，避免 ESM 下的状态分裂。
 
@@ -49,9 +49,9 @@
 | `hooks` | `src/internal/taro-shared/runtime-hooks.ts` | `src/runtime/runtime-hooks.ts` | **高** | 已收敛 ✅ |
 | `event-emitter` | `src/internal/taro-shared/event-emitter.ts` | `src/runtime/event-emitter.ts` | **高** | 已收敛 ✅ |
 | `shared-compat` 工具函数/常量/组件配置 | `src/internal/taro-shared/` | `src/runtime/shared-compat/` | **高** | 已收敛 ✅ |
-| `Current` / 全局上下文 | 通过 `@spcsn/taro/runtime` 导入 | `src/runtime/current.ts` | 中 | 目前从 runtime 导入，未发现内部副本 |
-| `instances` | 通过 `@spcsn/taro/runtime` 导入 | `src/runtime/dsl/common.ts` | 中 | 目前从 runtime 导入，未发现内部副本 |
-| `options` | `src/internal/taro-shared/` 未明显存在 | `src/runtime/options.ts` | 低 | 目前未发现内部副本 |
+| `Current` / 全局上下文 | 通过 `@spcsn/taro/runtime` 导入 | `src/runtime/current.ts` | 低 | 已确认无内部副本 ✅ |
+| `instances` | 通过 `@spcsn/taro/runtime` 导入 | `src/runtime/dsl/common.ts` | 低 | 已确认无内部副本 ✅ |
+| `options` | 未在 cli 内部实现 | `src/runtime/options.ts` | 低 | 已确认无内部副本 ✅ |
 
 ## 4. 收敛计划
 
@@ -79,21 +79,23 @@
    - 删除 cli 重复的 `components.ts`、`constants.ts`、`is.ts`、`native-apis.ts`、`shortcuts.ts`、`template.ts`、`utils.ts`
    - `taro-cli/src/internal/taro-shared/` 仅保留 cli 特有的 `event-channel.ts`
 
-### 阶段二：配置与工具函数收敛
+### 阶段二：配置与工具函数收敛（已完成 ✅）
 
-1. **`components` / `Shortcuts`**
-   - 评估是否可以从 `@spcsn/taro/runtime` 导出并复用
-   - 如果 cli 有历史差异，先对齐差异再收敛
+1. **`components` / `Shortcuts` / `native-apis` / `template`**
+   - 已全部下沉到 `runtime/shared-compat`
+   - cli 重复文件已删除
 
 2. **纯工具函数**
-   - `is.ts`、`utils.ts` 中的纯函数可以保留在 cli 内部，也可以收敛到 runtime
-   - 建议收敛到 runtime，减少重复代码，但优先级最低
+   - `is.ts` 中的 `isUndefined` / `isNull` / `isObject` / `isBoolean` / `isArray` 已下沉
+   - `utils.ts` 中的 `EMPTY_OBJ` / `EMPTY_ARR` / `noop` / `box` / `unbox` / `ensure` / `warn` / `queryToJson` / `cacheData*` / `isEnableTTDom` 已下沉
+   - cli 重复文件已删除
 
-### 阶段三：长期目标
+### 阶段三：长期目标（待落地）
 
-- `taro-cli/src/internal/taro-shared/` 只保留 cli 特有的逻辑
-- `taro-cli` 是 `@spcsn/taro/runtime` 的消费者，而不是复制者
+- `taro-cli/src/internal/taro-shared/` 只保留 cli 特有的逻辑 ✅ 当前已达成
+- `taro-cli` 是 `@spcsn/taro/runtime` 的消费者，而不是复制者 ✅ 当前已达成
 - 建立规则：新增内部模块时，先判断它是否属于 runtime 能力；如果是，加到 `packages/taro/src/runtime/`，不要复制进 cli
+- 建议把这条规则写入 `AGENTS.md` 或 `CONTRIBUTING.md`，防止后续 PR 重新引入复制代码
 
 ## 5. 验证清单
 
