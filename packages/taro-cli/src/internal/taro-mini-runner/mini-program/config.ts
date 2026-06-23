@@ -190,15 +190,21 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
       return true;
     }
 
+    // comp/custom-wrapper 模板必须保留在各自入口 chunk 中，否则 Component()
+    // 注册调用会被合并到 common/taro chunk，导致微信初始化阶段警告。
+    const taroTemplateEntries = /taro-mini-runner[\/]templates[\/](comp|custom-wrapper)(?:\.js)?$/;
+
     switch (framework) {
       case 'react':
         return (id, { getModuleInfo }) => {
           REG_NODE_MODULES_DIR.lastIndex = 0;
           const moduleInfo = getModuleInfo(id);
+          if (taroTemplateEntries.test(id)) return undefined;
           if (testByReg2DExpList([taroMiniRunnerDeps])(id)) return null;
           if (testByReg2DExpList([babelDeps, commonjsHelpersDeps])(id)) return 'babelHelpers';
           if (testByReg2DExpList([reactRelatedDeps])(id)) return 'common';
-          if (testByReg2DExpList([taroDeps, tslibDeps])(id)) return 'taro';
+          if (testByReg2DExpList([taroDeps])(id)) return 'common';
+          if (testByReg2DExpList([tslibDeps])(id)) return 'vendors';
           if (testByReg2DExpList([nodeModulesDeps])(id)) return 'vendors';
           if (isPrivateToSinglePage(id, getModuleInfo)) return undefined;
           if (moduleInfo?.importers?.length && moduleInfo.importers.length > 1) return 'common';
