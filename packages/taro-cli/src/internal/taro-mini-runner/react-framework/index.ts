@@ -1,7 +1,7 @@
 import { isString } from '@spcsn/taro/runtime';
 import reactPlugin from '@vitejs/plugin-react';
 import type { PluginOption } from 'vite';
-import { miniVitePlugin } from './vite.mini';
+import { miniVitePlugin } from './vite-mini';
 
 export type Frameworks = 'react';
 
