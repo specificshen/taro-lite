@@ -1,6 +1,6 @@
 {
   "name": "@spcsn/taro-cli",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "SPCSN Taro Lite CLI for React WeApp mini programs",
   "author": "Samuel Ouyang",
   "license": "MIT",
@@ -67,7 +67,6 @@
     "debug": "^4.4.3",
     "dotenv": "^17.4.2",
     "dotenv-expand": "^13.0.0",
-
     "inquirer": "^14.0.2",
     "joi": "^18.2.3",
     "lightningcss": "^1.32.0",
