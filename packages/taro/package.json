@@ -1,6 +1,6 @@
 {
   "name": "@spcsn/taro",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "SPCSN Taro runtime API entry",
   "author": "Samuel Ouyang",
   "license": "MIT",
@@ -74,7 +74,7 @@
     "vitest": "^4.1.9"
   },
   "peerDependencies": {
-    "@spcsn/taro-components": "^1.2.2",
+    "@spcsn/taro-components": "^1.2.3",
     "react": "^19",
     "@types/react": "^19"
   },
