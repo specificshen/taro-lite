@@ -391,11 +391,14 @@ export class TaroElement extends TaroNode {
 
     if (sideEffect !== false && !this.isAnyEventBinded() && SPECIAL_NODES.indexOf(name) > -1) {
       const componentsAlias = getComponentsAlias();
-      const alias = componentsAlias[name]._num;
-      this.enqueueUpdate({
-        path: `${this._path}.${Shortcuts.NodeName}`,
-        value: alias,
-      });
+      const alias = componentsAlias[name]?._num;
+      // alias 缺失时跳过 nn 更新：元素保持当前模板，仅损失 pure/static 模板优化
+      if (alias != null) {
+        this.enqueueUpdate({
+          path: `${this._path}.${Shortcuts.NodeName}`,
+          value: alias,
+        });
+      }
     }
 
     super.addEventListener(type, handler, options);
@@ -412,11 +415,14 @@ export class TaroElement extends TaroNode {
     if (sideEffect !== false && !this.isAnyEventBinded() && SPECIAL_NODES.indexOf(name) > -1) {
       const componentsAlias = getComponentsAlias();
       const value = isHasExtractProp(this) ? `static-${name}` : `pure-${name}`;
-      const valueAlias = componentsAlias[value]._num;
-      this.enqueueUpdate({
-        path: `${this._path}.${Shortcuts.NodeName}`,
-        value: valueAlias,
-      });
+      const valueAlias = componentsAlias[value]?._num;
+      // 别名表不含 pure-text / pure-image 时跳过 nn 更新，避免 commit 阶段抛错
+      if (valueAlias != null) {
+        this.enqueueUpdate({
+          path: `${this._path}.${Shortcuts.NodeName}`,
+          value: valueAlias,
+        });
+      }
     }
   }
 
