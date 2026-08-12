@@ -25,12 +25,12 @@
 ```json
 {
   "dependencies": {
-    "@spcsn/taro": "1.2.6",
-    "@spcsn/taro-components": "1.2.6",
+    "@spcsn/taro": "1.2.7",
+    "@spcsn/taro-components": "1.2.7",
     "react": "^19.2.0"
   },
   "devDependencies": {
-    "@spcsn/taro-cli": "1.2.6"
+    "@spcsn/taro-cli": "1.2.7"
   }
 }
 ```
@@ -174,11 +174,11 @@ pnpm -r --filter './packages/*' publish --access public --tag latest
 ```json
 {
   "dependencies": {
-    "@spcsn/taro": "1.2.6",
-    "@spcsn/taro-components": "1.2.6"
+    "@spcsn/taro": "1.2.7",
+    "@spcsn/taro-components": "1.2.7"
   },
   "devDependencies": {
-    "@spcsn/taro-cli": "1.2.6"
+    "@spcsn/taro-cli": "1.2.7"
   }
 }
 ```
