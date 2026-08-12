@@ -164,30 +164,49 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
     const testByReg2DExpList = (reg2DExpList: RegExp[][]) => (id: string) =>
       reg2DExpList.some((regExpList) => regExpList.some((regExp) => regExp.test(id)));
 
-    /** 提取模块所属页面/特性作用域，例如 pages/form-lab 或 features/form-lab */
-    function getPageScope(id: string): string | null {
-      const match = id.match(/[\\/](pages|features)[\\/]([^\\/]+)(?:[\\/]|$)/);
-      return match ? `${match[1]}/${match[2]}` : null;
-    }
-
-    /** 若一个模块的所有引用方都来自同一个页面作用域，则它应留在页面 chunk，不进 common */
-    function isPrivateToSinglePage(
-      id: string,
-      getModuleInfo: (id: string) => { importers?: string[] } | null | undefined,
-    ): boolean {
-      const moduleInfo = getModuleInfo(id);
-      if (!moduleInfo?.importers?.length) return false;
-      let commonScope: string | undefined;
-      for (const importerId of moduleInfo.importers) {
-        const scope = getPageScope(importerId);
-        if (!scope) return false;
-        if (commonScope === undefined) {
-          commonScope = scope;
-        } else if (commonScope !== scope) {
-          return false;
+    /**
+     * 传递分析：模块沿 importers 链向上可达的入口（页面 / app / comp 虚拟入口）集合。
+     * rolldown 会把「被多个入口引用、又未被 manualChunks 显式归组」的模块自动拆成
+     * 独立 chunk，其 wxss 没有任何页面引用会整包丢失（组件样式全灭）；只看直接
+     * 引用方会把「直接引用方同属一个 pages|features 作用域、但经中间模块传递后被
+     * 多个入口引用」的模块误判为页面私有，因此必须按传递可达的入口数归组。
+     */
+    type MiniModuleInfo =
+      | {
+          importers?: string[];
+          dynamicImporters?: string[];
+          isEntry?: boolean;
         }
+      | null
+      | undefined;
+    const reachableEntriesCache = new Map<string, Set<string>>();
+    function collectReachableEntries(
+      id: string,
+      getModuleInfo: (id: string) => MiniModuleInfo,
+      visiting: Set<string> = new Set(),
+    ): Set<string> {
+      const cached = reachableEntriesCache.get(id);
+      if (cached) return cached;
+      // 循环依赖：本轮不再上溯以避免死循环，该分支入口由其他路径补足
+      if (visiting.has(id)) return new Set();
+      const moduleInfo = getModuleInfo(id);
+      const importers = [...(moduleInfo?.importers ?? []), ...(moduleInfo?.dynamicImporters ?? [])];
+      let entries: Set<string>;
+      if (!moduleInfo || moduleInfo.isEntry || importers.length === 0) {
+        // 入口模块自身（或无引用方的顶层模块）即上溯终点
+        entries = new Set([id]);
+      } else {
+        visiting.add(id);
+        entries = new Set();
+        for (const importerId of importers) {
+          for (const entryId of collectReachableEntries(importerId, getModuleInfo, visiting)) {
+            entries.add(entryId);
+          }
+        }
+        visiting.delete(id);
       }
-      return true;
+      reachableEntriesCache.set(id, entries);
+      return entries;
     }
 
     // comp/custom-wrapper 模板必须保留在各自入口 chunk 中，否则 Component()
@@ -198,7 +217,6 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
       case 'react':
         return (id, { getModuleInfo }) => {
           REG_NODE_MODULES_DIR.lastIndex = 0;
-          const moduleInfo = getModuleInfo(id);
           if (taroTemplateEntries.test(id)) return undefined;
           if (testByReg2DExpList([taroMiniRunnerDeps])(id)) return null;
           if (testByReg2DExpList([babelDeps, commonjsHelpersDeps])(id)) return 'babelHelpers';
@@ -206,17 +224,18 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
           if (testByReg2DExpList([taroDeps])(id)) return 'common';
           if (testByReg2DExpList([tslibDeps])(id)) return 'vendors';
           if (testByReg2DExpList([nodeModulesDeps])(id)) return 'vendors';
-          if (isPrivateToSinglePage(id, getModuleInfo)) return undefined;
-          if (moduleInfo?.importers?.length && moduleInfo.importers.length > 1) return 'common';
+          // 单入口私有模块留在所在 chunk；多入口共享模块显式归入 common，
+          // 避免被自动拆成无 wxss 引用的孤儿 chunk
+          if (collectReachableEntries(id, getModuleInfo).size <= 1) return undefined;
+          return 'common';
         };
       default:
         return (id, { getModuleInfo }) => {
           REG_NODE_MODULES_DIR.lastIndex = 0;
-          const moduleInfo = getModuleInfo(id);
           if (testByReg2DExpList([taroMiniRunnerDeps])(id)) return null;
           if (testByReg2DExpList([nodeModulesDeps, commonjsHelpersDeps])(id)) return 'vendors';
-          if (isPrivateToSinglePage(id, getModuleInfo)) return undefined;
-          if (moduleInfo?.importers?.length && moduleInfo.importers.length > 1) return 'common';
+          if (collectReachableEntries(id, getModuleInfo).size <= 1) return undefined;
+          return 'common';
         };
     }
   }
