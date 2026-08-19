@@ -1,6 +1,6 @@
 {
   "name": "taro",
-  "version": "1.2.7",
+  "version": "1.2.8",
   "description": "React 微信小程序（Skyline / glass-easel）现代化底座",
   "homepage": "https://github.com/specificshen/taro-lite#readme",
   "author": "Samuel Ouyang",
@@ -42,7 +42,7 @@
     "@biomejs/biome": "^2.5.0",
     "@types/node": "^25.9.3",
     "chalk": "^5.6.2",
-    "typescript": "~7.0.1-rc",
+    "typescript": "~7.0.2",
     "vitest": "^4.1.9"
   },
   "engines": {

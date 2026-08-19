@@ -1,6 +1,6 @@
 {
   "name": "@spcsn/taro-cli",
-  "version": "1.2.7",
+  "version": "1.2.8",
   "description": "SPCSN Taro Lite CLI for React WeApp mini programs",
   "author": "Samuel Ouyang",
   "license": "MIT",
@@ -55,12 +55,12 @@
   },
   "dependencies": {
     "@spcsn/taro": "workspace:*",
-    "@swc/core": "^1.15.41",
-    "@vitejs/plugin-react": "^6.0.2",
+    "@swc/core": "^1.16.0",
+    "@vitejs/plugin-react": "^6.0.5",
     "acorn": "^8.17.0",
     "acorn-walk": "^8.3.5",
-    "autoprefixer": "^10.5.0",
-    "browserslist": "^4.28.2",
+    "autoprefixer": "^10.5.4",
+    "browserslist": "^4.28.8",
     "chalk": "^5.6.2",
     "chokidar": "^5.0.0",
     "cross-spawn": "^7.0.6",
@@ -69,12 +69,12 @@
     "dotenv-expand": "^13.0.0",
     "inquirer": "^14.0.2",
     "joi": "^18.2.3",
-    "lightningcss": "^1.32.0",
+    "lightningcss": "^1.33.0",
     "lodash": "^4.18.1",
     "ora": "^9.4.0",
     "picomatch": "^4.0.4",
     "pirates": "^4.0.7",
-    "postcss": "^8.5.15",
+    "postcss": "^8.5.26",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-reconciler": "0.33.0",
@@ -82,7 +82,7 @@
     "resolve": "^1.22.12",
     "sax": "1.6.0",
     "tapable": "^2.3.3",
-    "vite": "^8.0.16",
+    "vite": "^8.2.1",
     "vite-plugin-static-copy": "^4.1.1"
   },
   "devDependencies": {
@@ -98,7 +98,7 @@
     "@types/resolve": "^1.20.6",
     "@types/sax": "1.2.7",
     "@vitest/coverage-istanbul": "^4.1.9",
-    "typescript": "~7.0.1-rc",
+    "typescript": "~7.0.2",
     "vitest": "^4.1.9"
   }
 }
