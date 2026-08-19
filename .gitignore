@@ -26,6 +26,7 @@ temp
 
 # dotenv environment variables file
 .env
+!packages/taro-cli/tests/fixtures/**/.env
 
 # OS X temporary files
 .DS_Store
