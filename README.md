@@ -169,6 +169,8 @@ pnpm -r --filter './packages/*' publish --access public --tag latest --dry-run
 pnpm -r --filter './packages/*' publish --access public --tag latest
 ```
 
+> 注意：本地手动发布后，不要再为同一版本推送 `v*` tag。`publish.yml` 会在推送 `v*` tag 时触发 CI 发布，同一版本号重复发布会被 npm 拒绝。两条发布路径二选一：要么本地 `pnpm publish`，要么提交版本后推 `v<version>` tag 走 CI。
+
 发布完成后，在业务工程把本地 `link:` 依赖切成 npm 版本并验证：
 
 ```json
