@@ -29,7 +29,6 @@
 - `src/internal/kernel/`：插件内核（Kernel、Config、Plugin）与插件解析。
 - `src/internal/helper/`：工具集（fs 兼容层、dotenv、终端、路径解析等）。
 - `src/internal/runner/`：Vite 小程序编译链路（mini-program、react-framework、plugins）。
-- `src/internal/shared/`：cli 内部共享纯工具（不得复制 `@spcsn/taro/runtime` 的能力，见根 AGENTS.md）。
 - `src/presets/`：内置命令、hooks、文件生成逻辑。
 - `src/platform-weapp/`：微信小程序平台插件实现。
 - `templates/`：`taro init` 项目模板。

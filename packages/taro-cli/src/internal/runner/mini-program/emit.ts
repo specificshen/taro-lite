@@ -147,19 +147,6 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
           }
 
           // emit: custom-wrapper.json, custom-wrapper.xml
-          const customWrapperConfig = {
-            filePath: customWrapperName,
-            config: {
-              component: true,
-              styleIsolation: 'apply-shared',
-              usingComponents: {
-                [customWrapperName]: `./${customWrapperName}`,
-              },
-            },
-          };
-          if (!template.isSupportRecursive) {
-            (customWrapperConfig.config.usingComponents as Record<string, string>)[baseCompName] = `./${baseCompName}`;
-          }
           generateConfigFile(this, viteCompilerContext, {
             filePath: customWrapperName,
             config: {

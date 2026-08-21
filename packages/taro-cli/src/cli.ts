@@ -24,7 +24,6 @@ type Command = (typeof SUPPORTED_COMMANDS)[number];
 const ARG_ALIASES = new Map<string, string>([
   ['env-prefix', 'envPrefix'],
   ['h', 'help'],
-  ['p', 'port'],
   ['t', 'type'],
   ['v', 'version'],
 ]);

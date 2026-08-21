@@ -11,7 +11,6 @@ export default (ctx: IPluginContext) => {
       '--env [env]': 'Value for process.env.NODE_ENV',
       '--pages': 'Specify the pages to be compiled, separate multiple by comma',
       '--mode [mode]': 'Value of dotenv extname',
-      '-p, --port [port]': 'Specified port',
       '--no-build': 'Do not build project',
       '--blended': 'Blended Taro project in an original MiniApp project',
       '--env-prefix [envPrefix]': "Provide the dotEnv variables's prefix",
