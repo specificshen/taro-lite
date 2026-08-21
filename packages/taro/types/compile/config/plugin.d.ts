@@ -31,7 +31,6 @@ export interface ILoaderMeta {
   frameworkArgs: string
   isNeedRawLoader?: boolean
   mockAppStatement: string
-  modifyConfig?: (config: Record<string, any>, source: string) => void
   modifyResolveId?: (res: {
     source?: string
     importer?: string
