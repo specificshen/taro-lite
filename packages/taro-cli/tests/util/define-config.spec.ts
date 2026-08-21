@@ -3,7 +3,7 @@ import { defineConfig } from '../../src/util/define-config';
 
 describe('defineConfig', () => {
   it('returns a plain config object as-is', () => {
-    const config = { compiler: 'vite' };
+    const config = { compiler: 'vite' } as const;
     expect(defineConfig(config)).toBe(config);
   });
 

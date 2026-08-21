@@ -39,6 +39,7 @@ interface MiniElementData {
 }
 
 interface MiniTextData {
+  sid: string;
   [Shortcuts.Text]: string;
   [Shortcuts.NodeName]: string;
 }

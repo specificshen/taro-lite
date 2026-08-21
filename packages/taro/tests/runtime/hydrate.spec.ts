@@ -2,6 +2,7 @@ import { describe, expect, it } from 'bun:test';
 import { TaroElement } from '../../src/runtime/dom/element';
 import { TaroText } from '../../src/runtime/dom/text';
 import { hydrate } from '../../src/runtime/hydrate';
+import type { MiniElementData } from '../../src/runtime/interface';
 import { Shortcuts } from '../../src/runtime/shortcuts';
 
 describe('hydrate', () => {
@@ -21,7 +22,7 @@ describe('hydrate', () => {
     el.setAttribute('class', 'container');
     el.setAttribute('style', 'color: red;');
 
-    const data = hydrate(el);
+    const data = hydrate(el) as MiniElementData;
 
     expect(data[Shortcuts.NodeName]).toBeDefined();
     expect(data.sid).toBeDefined();

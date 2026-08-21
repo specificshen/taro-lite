@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'bun:test';
 import type { IProjectConfig } from '@spcsn/taro/types/compile';
 import Config from '../../../src/internal/kernel/service-config';
 
-function createConfig(initialConfig: Partial<IProjectConfig> = {}) {
+function createConfig(initialConfig: Record<string, unknown> = {}) {
   const config = new Config({ appPath: '/tmp' });
   config.initialConfig = initialConfig as IProjectConfig;
   return config;

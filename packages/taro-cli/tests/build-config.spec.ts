@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, type MockInstance, vi } from 'bun:test';
+import { afterEach, beforeEach, describe, expect, it, type Mock, vi } from 'bun:test';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { run } from './utils';
@@ -25,7 +25,7 @@ describe('构建配置测试', () => {
 
   describe('小程序', () => {
     it(`项目 output.clean = clean: { keep: ['project.config.json'] } ==> 清空dist文件夹但保留指定文件`, async () => {
-      const exitSpy = vi.spyOn(process, 'exit') as MockInstance<[], never>;
+      const exitSpy = vi.spyOn(process, 'exit') as Mock<() => never>;
       const logSpy = vi.spyOn(console, 'log');
       logSpy.mockImplementation(() => {});
       exitSpy.mockImplementation(() => {

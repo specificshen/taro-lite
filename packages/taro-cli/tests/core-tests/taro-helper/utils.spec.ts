@@ -169,11 +169,13 @@ describe('helper utils', () => {
     });
 
     it('recursively merges plain objects', () => {
-      expect(recursiveMerge({ a: { b: 1 } }, { a: { c: 2 } })).toEqual({ a: { b: 1, c: 2 } });
+      expect(recursiveMerge<{ a: Record<string, number> }>({ a: { b: 1 } }, { a: { c: 2 } })).toEqual({
+        a: { b: 1, c: 2 },
+      });
     });
 
     it('overrides when types differ', () => {
-      expect(recursiveMerge({ a: 1 }, { a: 'str' })).toEqual({ a: 'str' });
+      expect(recursiveMerge<{ a: unknown }>({ a: 1 }, { a: 'str' })).toEqual({ a: 'str' });
     });
 
     it('ignores undefined args', () => {
@@ -189,7 +191,11 @@ describe('helper utils', () => {
     });
 
     it('recursively merges nested visitor objects', () => {
-      expect(mergeVisitors({ a: { enter: 1 } }, { a: { enter: 2 } })).toEqual({ a: { enter: [1, 2] } });
+      const enter1 = () => {};
+      const enter2 = () => {};
+      expect(mergeVisitors({ a: { enter: enter1 } }, { a: { enter: enter2 } })).toEqual({
+        a: { enter: [enter1, enter2] },
+      });
     });
   });
 
@@ -210,7 +216,7 @@ describe('helper utils', () => {
           enter: [() => calls.push(1)],
         },
       });
-      (obj.a.enter as (...args: unknown[]) => void)();
+      (obj.a as Record<string, (...args: unknown[]) => void>).enter();
       expect(calls).toEqual([1]);
     });
   });

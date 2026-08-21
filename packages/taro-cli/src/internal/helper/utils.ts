@@ -423,8 +423,8 @@ export function resolveScriptPath(p: string): string {
   return resolveMainFilePath(p);
 }
 
-export function generateEnvList(env: Record<string, string>): Record<string, string> {
-  const res: Record<string, string> = {};
+export function generateEnvList(env: Record<string, string>): Record<string, unknown> {
+  const res: Record<string, unknown> = {};
   if (env && !isEmptyObject(env)) {
     for (const key in env) {
       try {
@@ -732,7 +732,7 @@ export function addPlatforms(platform: string) {
 }
 
 // 兼容 CJS（__esModule 标记）与原生 ESM 模块命名空间（有 default 导出）两种形态
-export const getModuleDefaultExport = (exports: { __esModule?: boolean; default?: unknown }) =>
+export const getModuleDefaultExport = (exports: Record<string, unknown>) =>
   exports?.__esModule || (exports != null && typeof exports === 'object' && 'default' in exports)
     ? exports.default
     : exports;
