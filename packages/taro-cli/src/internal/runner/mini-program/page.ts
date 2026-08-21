@@ -14,6 +14,10 @@ const nativeUniqueKeyMap = new WeakMap<ResolvedConfig, UniqueKeyMap<string>>();
 const importNativeComponentName = 'importNativeComponent';
 const defineConfigNames = new Set(['defineAppConfig', 'definePageConfig']);
 const internalComponentNames = new Set(Object.keys(internalComponents));
+/** defineAppConfig/definePageConfig 宏擦除只针对 *.config.{ts,tsx,js,jsx} 文件 */
+const configFileReg = /\.config\.(t|j)sx?$/;
+/** 只有 .jsx/.tsx 会以含 JSX 的 lang 解析（见 getParseLang），才可能从 JSX 收集到组件 */
+const jsxFileReg = /\.[jt]sx$/;
 
 interface AstNode {
   type: string;
@@ -57,9 +61,11 @@ function collectAstNodes(node: unknown, visitor: (node: AstNode) => void) {
     visitor(node);
   }
 
-  for (const [key, value] of Object.entries(node)) {
+  // for...in 替代 Object.entries，消除每节点一次的数组分配；
+  // oxc AST 节点是无继承可枚举属性的纯对象，for...in 与 Object.entries 遍历结果一致
+  for (const key in node) {
     if (key === 'loc') continue;
-    collectAstNodes(value, visitor);
+    collectAstNodes(node[key], visitor);
   }
 }
 
@@ -82,38 +88,6 @@ function getJsxElementName(node: unknown): string | undefined {
     // 只收集根对象（如 <Custom.View /> 收集 Custom），跳过非组件节点
     return getJsxElementName(node.object);
   }
-}
-
-function collectUsedComponents(ast: AstNode, usedComponents: Set<string>) {
-  collectAstNodes(ast, (node) => {
-    if (node.type !== 'JSXOpeningElement') return;
-    const tagName = getJsxElementName(node.name);
-    if (tagName && internalComponentNames.has(tagName)) {
-      usedComponents.add(toDashed(tagName));
-    }
-  });
-}
-
-function hasLocalImportNativeComponent(ast: AstNode): boolean {
-  let hasLocalBinding = false;
-
-  collectAstNodes(ast, (node) => {
-    if (hasLocalBinding) return;
-
-    if (node.type === 'FunctionDeclaration' || node.type === 'VariableDeclarator') {
-      hasLocalBinding = getIdentifierName(node.id) === importNativeComponentName;
-      return;
-    }
-
-    if (node.type === 'ImportDeclaration') {
-      const specifiers = Array.isArray(node.specifiers) ? node.specifiers : [];
-      hasLocalBinding = specifiers.some(
-        (specifier) => getIdentifierName((specifier as AstNode).local) === importNativeComponentName,
-      );
-    }
-  });
-
-  return hasLocalBinding;
 }
 
 type JsxLang = 'js' | 'jsx' | 'ts' | 'tsx';
@@ -148,9 +122,48 @@ export function transformNativeComponents(
   const ast = parseAst(code, { sourceType: 'module', lang: getParseLang(id) }, id) as unknown as AstNode;
 
   const usedComponents = new Set<string>();
-  collectUsedComponents(ast, usedComponents);
+  const pendingCallExpressions: AstNode[] = [];
+  let hasLocalBinding = false;
 
-  if (hasLocalImportNativeComponent(ast)) {
+  // 单遍遍历完成三件事：收集 JSX 内使用的内部组件、检测本地 importNativeComponent 绑定、
+  // 收集待处理的 CallExpression。注意后者的副作用（宏擦除、组件注册、改写）必须等整棵树
+  // 确认无本地绑定后再应用，否则本地绑定存在时仍会误改写，与原三遍遍历的行为不一致。
+  collectAstNodes(ast, (node) => {
+    switch (node.type) {
+      case 'JSXOpeningElement': {
+        const tagName = getJsxElementName(node.name);
+        if (tagName && internalComponentNames.has(tagName)) {
+          usedComponents.add(toDashed(tagName));
+        }
+        break;
+      }
+      case 'FunctionDeclaration':
+      case 'VariableDeclarator': {
+        if (!hasLocalBinding) {
+          hasLocalBinding = getIdentifierName(node.id) === importNativeComponentName;
+        }
+        break;
+      }
+      case 'ImportDeclaration': {
+        if (!hasLocalBinding) {
+          const specifiers = Array.isArray(node.specifiers) ? node.specifiers : [];
+          hasLocalBinding = specifiers.some(
+            (specifier) => getIdentifierName((specifier as AstNode).local) === importNativeComponentName,
+          );
+        }
+        break;
+      }
+      case 'CallExpression': {
+        const calleeName = getIdentifierName(node.callee);
+        if (defineConfigNames.has(calleeName || '') || calleeName === importNativeComponentName) {
+          pendingCallExpressions.push(node);
+        }
+        break;
+      }
+    }
+  });
+
+  if (hasLocalBinding) {
     return {
       code,
       enableImportComponent: false,
@@ -160,20 +173,19 @@ export function transformNativeComponents(
 
   const sourceEdits: SourceEdit[] = [];
 
-  collectAstNodes(ast, (node) => {
-    if (node.type !== 'CallExpression') return;
+  for (const node of pendingCallExpressions) {
     const calleeName = getIdentifierName(node.callee);
 
-    if (defineConfigNames.has(calleeName || '') && /\.config\.(t|j)sx?$/.test(id)) {
+    if (defineConfigNames.has(calleeName || '') && configFileReg.test(id)) {
       sourceEdits.push({
         start: node.start,
         end: node.end,
         value: '',
       });
-      return;
+      continue;
     }
 
-    if (calleeName !== importNativeComponentName) return;
+    if (calleeName !== importNativeComponentName) continue;
 
     const callArguments = Array.isArray(node.arguments) ? node.arguments : [];
     const pathArg = callArguments[0];
@@ -197,7 +209,7 @@ export function transformNativeComponents(
       end: node.end,
       value: JSON.stringify(key),
     });
-  });
+  }
 
   const transformedCode = sourceEdits
     .sort((leftEdit, rightEdit) => rightEdit.start - leftEdit.start)
@@ -260,11 +272,7 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
 
         const pageConfig = prettyPrintJson(page.config);
 
-        let instantiatePage = `var inst = Page(createPageConfig(component, '${page.name}', {root:{cn:[]}}, config || {}))`;
-
-        if (typeof viteCompilerContext.loaderMeta.modifyInstantiate === 'function') {
-          instantiatePage = viteCompilerContext.loaderMeta.modifyInstantiate(instantiatePage, 'page');
-        }
+        const instantiatePage = `var inst = Page(createPageConfig(component, '${page.name}', {root:{cn:[]}}, config || {}))`;
 
         const deps = await viteCompilerContext.collectedDeps(this, escapePath(rawId), filter);
         const ncObj: Record<string, string> = {};
@@ -299,6 +307,17 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
     },
     transform(code, id) {
       if (!/\.m?[jt]sx?$/.test(id) || typeof filter !== 'function' || !filter(id)) return;
+
+      // 快速跳过：三种能力分支都不可能命中的模块不做 parseAst——
+      // 组件收集只发生在含 JSX 的 .jsx/.tsx（getParseLang 中 .ts/.mts/.js/.mjs 均按无 JSX 解析）；
+      // defineAppConfig/definePageConfig 宏擦除只针对 configFileReg 命中的文件；
+      // importNativeComponent 改写（含本地绑定检测）要求代码中出现该标识符。
+      if (!jsxFileReg.test(id) && !configFileReg.test(id) && !code.includes(importNativeComponentName)) {
+        // 与走全量流程时 nCompCache.set(id, {}) 等价（读取侧 nCompCache.get(dep) || {}），
+        // 同时清掉 watch 模式下该文件可能残留的旧原生组件条目
+        nCompCache.delete(id);
+        return;
+      }
 
       const scopeNativeComp = new Map<string, string>();
       const result = transformNativeComponents(code, id, viteCompilerContext, nCompUniqueKeyMap, scopeNativeComp);

@@ -45,15 +45,17 @@ export default function createFilter(
   options?: { resolve?: string | false },
 ) {
   const resolutionBase = options && options.resolve;
-  const getMatcher = (id: string | RegExp) =>
-    id instanceof RegExp
-      ? id
-      : {
-          test: (what: string) => {
-            const pattern = getMatcherString(id, resolutionBase ?? '');
-            return new Bun.Glob(pattern).match(what);
-          },
-        };
+  const getMatcher = (id: string | RegExp) => {
+    if (id instanceof RegExp) {
+      return id;
+    }
+    // matcher 字符串与 Bun.Glob 实例只依赖过滤器创建时的入参（id 与 resolutionBase），
+    // 一次性构造，避免每次 test 都重新 normalizePath/resolve/转义并 new Glob
+    const glob = new Bun.Glob(getMatcherString(id, resolutionBase ?? ''));
+    return {
+      test: (what: string) => glob.match(what),
+    };
+  };
   const includeMatchers = ensureArray(include).map(getMatcher);
   const excludeMatchers = ensureArray(exclude).map(getMatcher);
   return function result(id: unknown) {
