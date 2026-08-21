@@ -155,3 +155,9 @@ runtime 热路径：
 `globalThis` 兜底从只有 `hooks` 扩展到全部状态单例（`Current`、`eventSource`、`instances`、`eventCenter`、`env`、`cacheData`、`customWrapperCache`、`eventsBatch`），统一经 `shared-primitives.ts` 的 `getGlobalSingleton` 实现；新增状态单例必须复用该 helper（已写入 AGENTS.md §4.4）。
 
 `process.env.NODE_ENV` 的 define 从预构建写死 `production` 下放给业务构建（cli 侧本就有 `process.env.NODE_ENV` define），dev 构建恢复 runtime 的 12 处 `warn`，生产产物不变。
+
+### 6.5 产物体积对账（业务工程实测）
+
+ali-your-space-miniapp 同一 lockfile 下对拍（sourcemap VLQ 归因到模块级）：1.2.8 与 2.0 产物构成逐项一致，JS 总量 972KB vs 975KB（构建横幅同为 1.97MB），构建耗时 1.53s → 1.0s。**2.0 无体积回归**；曾出现的 +177KB 为改造期间中间态 dist 残留，重新构建即消失。
+
+注意：`NODE_ENV=development` 的 dev 构建会带入 react-dom development 与 jsx-dev-runtime，业务工程实测 JS +324KB（横幅 2.29MB，超微信 2048KB 主包限额）。**上传或量体积前必须使用 `NODE_ENV=production taro build`（`bun run build`）的产物**，不要在 dev watch 状态下上传。
