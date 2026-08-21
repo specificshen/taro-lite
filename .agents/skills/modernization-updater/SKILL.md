@@ -29,16 +29,13 @@ Business projects should explicitly install only:
 
 Business projects also provide their own `react` dependency.
 
-Treat the following as internal implementation packages unless current code proves a different contract:
+The former internal implementation packages no longer exist as publishable packages and are not on npm; their capabilities have been inlined:
 
-- `@spcsn/taro-service`
-- `@spcsn/taro-vite-runner`
-- `@spcsn/taro-helper`
-- `@spcsn/taro-shared`
-- `@spcsn/taro-runtime`
-- native binding packages
+- `@spcsn/taro-service`, `@spcsn/taro-vite-runner`, `@spcsn/taro-helper`, `@spcsn/taro-shared` → inlined into `packages/taro-cli/src/internal/`; archived read-only snapshots live at `archives/packages/`.
+- `@spcsn/taro-runtime` → inlined into `packages/taro/src/runtime/`, consumed as `@spcsn/taro/runtime`.
+- native binding packages → removed entirely; do not reintroduce them.
 
-Do not tell business projects to explicitly install internal packages as a normal solution. If an internal package must be installed directly to make a scenario work, treat that as a packaging boundary bug or temporary workaround.
+Do not tell business projects to explicitly install these former internal packages; there is nothing to install. If a scenario seems to require one of them, treat that as a packaging boundary bug in the three public packages.
 
 ### Modernization progress already reflected in docs
 
@@ -46,10 +43,10 @@ The following package moves are current status, not future plans:
 
 - `@spcsn/taro-plugin-generator` is folded into `@spcsn/taro-cli`.
 - `@spcsn/taro-plugin-platform-weapp` is folded into `@spcsn/taro-cli`.
-- `@spcsn/taro-plugin-framework-react` and `@spcsn/taro-react` are folded into `@spcsn/taro-vite-runner`.
+- `@spcsn/taro-plugin-framework-react` and `@spcsn/taro-react` are folded into `@spcsn/taro-cli` (`src/internal/runner/`).
 - `@spcsn/taro-api` is folded into `@spcsn/taro`.
-- `@spcsn/taro-runner-utils` is folded into `@spcsn/taro-service` and `@spcsn/taro-vite-runner`.
-- `babel-preset-taro` is exposed as `@spcsn/taro-cli/babel-preset-taro` instead of a public package.
+- `@spcsn/taro-runner-utils` is folded into `@spcsn/taro-cli` (`src/internal/`).
+- `babel-preset-taro` is removed along with the Babel pipeline; the maintained compiler path is Vite + SWC inside `@spcsn/taro-cli`.
 - Historical Babel/PostCSS plugin packages are excluded from the active workspace.
 
 ### When updating modernization docs
@@ -58,7 +55,7 @@ Before changing `docs/taro-react-only-modernization.md`:
 
 1. Read `README.md` for current public business guidance.
 2. Read `docs/package-consolidation.md` for package-surface decisions.
-3. Check `pnpm-workspace.yaml` before claiming a package is active in workspace commands.
+3. Check the root `package.json` `workspaces` field before claiming a package is active in workspace commands.
 4. Check relevant package `package.json` files before claiming a package is public, private, or folded.
 
 Keep the modernization document split between:
@@ -76,5 +73,5 @@ For documentation-only updates:
 
 For package-boundary changes:
 
-- Run `pnpm run release:check -- --skip-bindings`.
-- Run `pnpm run verify:fixture:weapp` when the change can affect business build behavior.
+- Run `bun run release:check`.
+- Run `bun run verify:fixture:weapp` when the change can affect business build behavior.

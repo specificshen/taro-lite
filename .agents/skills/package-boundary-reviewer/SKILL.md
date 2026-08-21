@@ -20,9 +20,9 @@ Do not make business projects explicitly install internal implementation package
 ### Before changing packages
 
 1. Read current `package.json` files for the package being changed and its direct dependents.
-2. Read `pnpm-workspace.yaml` before assuming a package participates in recursive workspace commands.
+2. Read the root `package.json` `workspaces` field before assuming a package participates in workspace commands.
 3. Check `docs/package-consolidation.md` for whether the package is being retained, folded into another package, or excluded from the public surface.
-4. Search exact dependency names in `packages`, `crates/native_binding`, `npm`, `README.md`, and release scripts before removing or renaming dependencies.
+4. Search exact dependency names in `packages`, `archives/packages`, `fixtures`, `README.md`, and release scripts before removing or renaming dependencies.
 
 ### Dependency rules
 
@@ -43,9 +43,8 @@ Do not make business projects explicitly install internal implementation package
 
 Use the narrowest useful command first:
 
-- Package build: `pnpm --filter <package-name> run build`
-- CLI version check: `node packages/taro-cli/bin/taro --version`
-- Version-only release readiness: `pnpm run release:check -- --skip-bindings`
-- Full release readiness after artifacts: `pnpm run release:check`
+- Package build: `cd packages/<package-dir> && bun run build` (`@spcsn/taro-cli` has no build step; `bin/taro` runs `src/cli.ts` directly under Bun)
+- CLI version check: `bun packages/taro-cli/bin/taro --version`
+- Release readiness: `bun run release:check`
 
 For changes that affect business install/runtime behavior, validate in a real business project with its `npm run build` when possible.

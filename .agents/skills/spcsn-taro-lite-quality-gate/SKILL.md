@@ -41,6 +41,6 @@ After code edits:
 - Run `read_lints` on modified files when available.
 - Run `git diff --check`.
 - Run the narrowest relevant build/test command.
-- For WeApp build-chain changes, run `pnpm run verify:fixture:weapp`.
+- For WeApp build-chain changes, run `bun run verify:fixture:weapp`.
 
 If an existing package script contains `tsc || true`, report whether TypeScript errors are pre-existing or introduced by the current change. Do not add new hidden-failure scripts.

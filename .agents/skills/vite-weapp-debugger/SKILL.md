@@ -25,11 +25,11 @@ Do not broaden a fix to unsupported upstream Taro platforms or frameworks unless
 2. Search exact error text, config key, package name, or function name first.
 3. Identify which layer owns the behavior before editing:
    - CLI command and config loading: `packages/taro-cli`
-   - Plugin/service orchestration: `archives/packages/taro-service`
-   - Vite build and mini output generation: `archives/packages/taro-mini-runner`
-   - React integration: runner framework-react output or legacy framework package code if still referenced
-   - WeApp platform behavior: CLI-integrated platform code or remaining platform package code if still referenced
-   - Runtime APIs and DOM-like behavior: `packages/taro` and `archives/packages/taro-runtime`
+   - Plugin/service orchestration: `packages/taro-cli/src/internal/kernel/`
+   - Vite build and mini output generation: `packages/taro-cli/src/internal/runner/`
+   - React integration: `packages/taro-cli/src/internal/runner/` (react-framework)
+   - WeApp platform behavior: `packages/taro-cli/src/platform-weapp/`
+   - Runtime APIs and DOM-like behavior: `packages/taro/src/runtime/` (exported as `@spcsn/taro/runtime`)
    - Components: `packages/taro-components`
 
 ### Config contract
@@ -60,8 +60,8 @@ When changing config behavior, preserve this path unless intentionally changing 
 
 Pick validation based on touched layer:
 
-- CLI tests: `pnpm --filter @spcsn/taro-cli test:ci -- cli.spec.ts build-config.spec.ts --runInBand`
-- Runner build: `pnpm --filter @spcsn/taro-vite-runner run build`
-- Runtime build/test: `pnpm --filter @spcsn/taro-runtime run build` or `pnpm --filter @spcsn/taro-runtime run test:ci`
-- Components tests: `pnpm --filter @spcsn/taro-components test:ci`
-- Business proof: run the real business project's `npm run build` when the change affects integration.
+- CLI tests: `cd packages/taro-cli && bun test --isolate cli.spec.ts build-config.spec.ts` (or `bun run test` for the full suite)
+- Runner build: runner and React framework runtime live inside `@spcsn/taro-cli` (`src/internal/runner/`) with no separate build step; validate via CLI tests
+- Runtime build/test: `cd packages/taro && bun run build` or `cd packages/taro && bun run test`
+- Components tests: `cd packages/taro-components && bun run test`
+- Business proof: `bun run verify:fixture:weapp`, or the real business project's build when the change affects integration.

@@ -1,46 +1,40 @@
 ---
 name: release-binding-preparer
-description: Use when preparing releases, aligning versions, checking native binding artifacts, platform packages, or publish readiness.
+description: Use when preparing releases, aligning versions, or checking publish readiness of the public @spcsn packages.
 ---
 
 ## Release Binding Preparer
 
-Use this skill when preparing a release, changing versions, touching `@spcsn/taro-binding`, modifying `npm/*` platform packages, or checking publish readiness in `taro-lite`.
+Use this skill when preparing a release, changing versions, or checking publish readiness of the public `@spcsn` packages in `taro-lite`.
 
 ### Release model
 
 - `@spcsn` packages are intended to be published and installed as a consistent group.
 - Current stable line starts at `1.0.0` and does not map to upstream Taro `4.x`.
 - Public packages must keep versions aligned with the root `package.json` version.
-- Native binding packages must be released with the CLI/bottom packages because install-time binding resolution depends on them.
+- The publish surface is exactly three packages; there are no native binding or platform packages anymore.
 
-### Binding package map
+### Publish surface
 
-Core package:
+Published in dependency order by `scripts/publish.ts`:
 
-- `crates/native_binding` publishes `@spcsn/taro-binding`.
+- `@spcsn/taro-components` -> `packages/taro-components`
+- `@spcsn/taro` -> `packages/taro`
+- `@spcsn/taro-cli` -> `packages/taro-cli`
 
-Platform packages under `npm/*`:
-
-- `@spcsn/taro-binding-darwin-arm64` -> `npm/darwin-arm64`
-- `@spcsn/taro-binding-darwin-x64` -> `npm/darwin-x64`
-- `@spcsn/taro-binding-linux-arm64-gnu` -> `npm/linux-arm64-gnu`
-- `@spcsn/taro-binding-linux-x64-gnu` -> `npm/linux-x64-gnu`
-- `@spcsn/taro-binding-linux-x64-musl` -> `npm/linux-x64-musl`
-- `@spcsn/taro-binding-win32-x64-msvc` -> `npm/win32-x64-msvc`
+Prerelease versions (e.g. `2.0.0-alpha.0`) publish under the `next` tag; stable versions publish under `latest`.
 
 ### Readiness checks
 
 Use these commands from the repo root:
 
 ```bash
-pnpm run release:check -- --skip-bindings
-pnpm run artifacts
-pnpm run release:check
-node packages/taro-cli/bin/taro --version
+bun run build
+bun run release:check
+bun packages/taro-cli/bin/taro --version
 ```
 
-`release:check` validates public package versions and, unless `--skip-bindings` is provided, verifies expected `.node` artifacts in platform packages.
+`release:check` validates public package versions, the publish surface, dependency boundaries, and the README/docs/fixture/template contracts.
 
 ### Publishing workflow
 
@@ -48,17 +42,15 @@ node packages/taro-cli/bin/taro --version
    - `npm config get registry`
    - `npm whoami`
 2. Build packages:
-   - `pnpm run build`
-3. Prepare native binding artifacts:
-   - `pnpm run artifacts`
-4. Run full release readiness:
-   - `pnpm run release:check`
-5. Dry-run publish before real publish:
-   - `pnpm -r --filter './packages/*' --filter './npm/*' --filter './crates/native_binding' publish --access public --tag latest --dry-run`
-6. Only publish for real after dry-run output and binding artifacts are correct.
+   - `bun run build`
+3. Run release readiness:
+   - `bun run release:check`
+4. Dry-run publish before real publish:
+   - `bun scripts/publish.ts --dry-run`
+5. Publish for real only after the dry-run output is correct:
+   - `bun scripts/publish.ts`
 
 ### Safety rules
 
-- If `release:check` reports a missing `.node` file, do not publish that platform package.
 - Do not advise partial replacement of only CLI, runtime, or one plugin package unless the user explicitly wants a risky workaround.
-- After publishing, validate a real business project by switching local `link:` dependencies to npm versions and running `npm run build`.
+- After publishing, validate a real business project by switching its `@spcsn/*` dependencies to the published npm versions and running its build.

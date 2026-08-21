@@ -41,9 +41,9 @@ Treat these historical package names as internal implementation details that hav
 
 1. Read `README.md` before making high-level claims.
 2. Check `package.json` scripts and root version before suggesting commands or releases.
-3. Check `pnpm-workspace.yaml` because several legacy upstream packages are intentionally excluded.
+3. Check the root `package.json` `workspaces` field because archived legacy packages are intentionally excluded from the workspace.
 4. For code changes, search by concrete package, class, function, or config key before editing.
-5. Prefer package-scoped commands, for example `pnpm --filter @spcsn/taro-cli run build`, over broad root commands when validating a localized change.
+5. Prefer package-scoped commands, for example `cd packages/taro-components && bun run build`, over broad root commands when validating a localized change. (`@spcsn/taro-cli` has no build step; `bin/taro` runs `src/cli.ts` directly under Bun.)
 
 ### Default validation mindset
 

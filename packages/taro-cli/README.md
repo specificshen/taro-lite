@@ -10,8 +10,10 @@
 
 ## 安装
 
+> 本包为 Bun-only（`engines.bun >= 1.4`），`bin/taro` 直跑 TS 源码。
+
 ```shell
-pnpm add -g @spcsn/taro-cli
+bun add -g @spcsn/taro-cli
 ```
 
 ## 使用

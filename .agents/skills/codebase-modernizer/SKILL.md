@@ -1,6 +1,6 @@
 ---
 name: codebase-modernizer
-description: Use when planning, reviewing, or implementing code optimization in this 8-package Taro Lite monorepo, especially ESM-first imports/exports, package directory organization, and kebab-case file or directory naming.
+description: Use when planning, reviewing, or implementing code optimization in this Taro Lite monorepo (3 published packages), especially ESM-first imports/exports, package directory organization, and kebab-case file or directory naming.
 ---
 
 ## Codebase Modernizer
@@ -11,7 +11,7 @@ This skill is for source-level modernization work. For modernization document/st
 
 ### Project direction
 
-The repository has converged to 8 active packages. The next phase is code optimization toward a fully modernized codebase that is easier to understand as a mini-program base implementation.
+The repository has converged to 3 published packages (`@spcsn/taro`, `@spcsn/taro-components`, `@spcsn/taro-cli`) plus internal fixtures. The next phase is code optimization toward a fully modernized codebase that is easier to understand as a mini-program base implementation.
 
 Optimize for:
 
@@ -119,7 +119,7 @@ Choose the smallest validation set that proves the change:
 
 - Run lints or type checks for touched packages when available.
 - Run focused tests for moved or refactored modules.
-- Run `pnpm run verify:fixture:weapp` when build/runtime behavior can affect business projects.
-- Run `pnpm run release:check -- --skip-bindings` when package entrypoints, exports, or publish surface changes.
+- Run `bun run verify:fixture:weapp` when build/runtime behavior can affect business projects.
+- Run `bun run release:check` when package entrypoints, exports, or publish surface changes.
 
 Do not suppress TypeScript, lint, or format checks to complete modernization. Fix the underlying issue.

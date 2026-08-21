@@ -14,7 +14,6 @@
       "!node_modules",
       "!**/*.d.ts",
       "!packages/taro-cli/templates",
-      "!packages/taro-helper/swc",
       "!archives/packages"
     ]
   },

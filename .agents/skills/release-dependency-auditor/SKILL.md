@@ -24,7 +24,7 @@ Run through this list before every release or dependency change.
 
 ### 3. Missing type declarations
 
-- Adding/removing packages can prune phantom `@types/*` packages from `node_modules` even if they are not in `pnpm-lock.yaml`.
+- Adding/removing packages can prune phantom `@types/*` packages from `node_modules` even if they are not in `bun.lock`.
 - If `tsc` reports `Could not find a declaration file for module '...'`, add the corresponding `@types/*` package to the package that imports it.
 - Example: `@babel/generator` and `@babel/traverse` need `@types/babel__generator` and `@types/babel__traverse`.
 
@@ -32,7 +32,7 @@ Run through this list before every release or dependency change.
 
 - Root `package.json` version and all publishable `@spcsn/*` package versions must be identical.
 - README installation examples and test fixture dependencies must match the release version.
-- Use `release-binding-preparer` for native binding/platform-package alignment.
+- Use `release-binding-preparer` for publish-surface and version alignment.
 
 ## Verification commands
 
@@ -40,22 +40,17 @@ From the repo root:
 
 ```bash
 # Reinstall to make sure lockfile reflects the declared graph
-pnpm install
+bun install
 
 # Full validation
-pnpm run typecheck
-pnpm run build
-pnpm run test
-pnpm run release:check -- --skip-bindings
-
-# If releasing with native bindings
-pnpm run artifacts
-pnpm run release:check
+bun run typecheck
+bun run build
+bun run test
+bun run release:check
 ```
 
 ## What to do if release:check fails
 
 1. Read the exact failure message.
-2. If it is a missing `.node` artifact, do not publish that platform package.
-3. If it is a version mismatch, update the offending `package.json` and re-run `pnpm install`.
-4. If it is a dependency audit failure, fix the graph and remove the unsafe package/code before continuing.
+2. If it is a version mismatch, update the offending `package.json` and re-run `bun install`.
+3. If it is a dependency audit failure, fix the graph and remove the unsafe package/code before continuing.
