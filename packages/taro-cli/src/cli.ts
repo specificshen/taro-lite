@@ -43,7 +43,6 @@ function parseCliArgs(argv: string[]): CliArgs {
     build: true,
     check: true,
     help: false,
-    'inject-global-style': true,
     version: false,
   };
 
@@ -92,11 +91,6 @@ function parseCliArgs(argv: string[]): CliArgs {
 function getStringArg(args: CliArgs, key: string): string | undefined {
   const value = args[key];
   return typeof value === 'string' ? value : undefined;
-}
-
-function getNumberArg(args: CliArgs, key: string): number | undefined {
-  const value = args[key];
-  return typeof value === 'number' ? value : undefined;
 }
 
 function warnInternalRuntimeDeps(appPath: string) {
@@ -205,12 +199,8 @@ export default class CLI {
           isBuildNativeComp: restArgs[0] === 'native-components',
           newBlended: Boolean(args['new-blended']),
           withoutBuild: !args.build,
-          noInjectGlobalStyle: !args['inject-global-style'],
           noCheck: !args.check,
-          port: getNumberArg(args, 'port'),
           env,
-          deviceType: getStringArg(args, 'platform'),
-          qr: !!args.qr,
           blended: Boolean(args.blended),
           h: args.help,
         }),

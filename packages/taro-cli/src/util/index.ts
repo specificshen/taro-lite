@@ -5,8 +5,6 @@ import { fs } from '../internal/helper';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-import type { FileStat } from './types';
-
 type ProfileEntry = {
   name: string;
   durationMs: number;
@@ -67,17 +65,6 @@ export function getPkgVersion(): string {
 export function printPkgVersion(): void {
   console.log(`👽 SPCSN Taro v${getPkgVersion()}`);
   console.log();
-}
-
-export function readDirWithFileTypes(folder: string): FileStat[] {
-  return fs.readdirSync(folder).map((name: string) => {
-    const stat = fs.statSync(path.join(folder, name));
-    return { name, isDirectory: stat.isDirectory(), isFile: stat.isFile() };
-  });
-}
-
-export function isNil(value: unknown): value is null | undefined {
-  return value === null || value === undefined;
 }
 
 export function clearConsole(): void {

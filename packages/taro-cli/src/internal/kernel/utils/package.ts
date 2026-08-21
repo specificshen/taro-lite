@@ -13,7 +13,3 @@ export function getPkgVersion(): string {
   const packageJsonContent = fs.readFileSync(packageJsonPath, 'utf8');
   return JSON.parse(packageJsonContent).version;
 }
-
-export function printPkgVersion() {
-  process.stdout.write(`👽 SPCSN Taro v${getPkgVersion()}\n\n`);
-}

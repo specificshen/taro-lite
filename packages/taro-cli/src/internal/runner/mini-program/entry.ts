@@ -38,19 +38,14 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
           }
         }, '');
 
-        const { importFrameworkStatement, frameworkArgs, creator, creatorLocation, modifyInstantiate } =
-          viteCompilerContext.loaderMeta;
+        const { importFrameworkStatement, frameworkArgs, creator, creatorLocation } = viteCompilerContext.loaderMeta;
         const createApp = `${creator}(component, ${frameworkArgs})`;
 
         const appConfigStr = prettyPrintJson(appConfig);
 
-        let instantiateApp = taroConfig.blended
+        const instantiateApp = taroConfig.blended
           ? [`\nvar app = ${createApp}`, 'app.onLaunch()', 'exports.taroApp = app'].join('\n')
           : `var inst = App(${createApp})`;
-
-        if (typeof modifyInstantiate === 'function') {
-          instantiateApp = modifyInstantiate(instantiateApp, 'app');
-        }
 
         // pages
         viteCompilerContext.pages.forEach(async (page) => {

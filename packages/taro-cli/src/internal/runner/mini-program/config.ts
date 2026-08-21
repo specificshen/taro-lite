@@ -160,7 +160,6 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
       ? ManualChunks
       : never
     : never {
-    const { framework } = taroConfig;
     const reactRelatedDeps: RegExp[] = [
       /node_modules[\\/]react-reconciler[\\/]/,
       /node_modules[\\/]react[\\/]/,
@@ -224,31 +223,20 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
     // 注册调用会被合并到 common/taro chunk，导致微信初始化阶段警告。
     const taroTemplateEntries = /runner[\/]templates[\/](comp|custom-wrapper)(?:\.js)?$/;
 
-    switch (framework) {
-      case 'react':
-        return (id, { getModuleInfo }) => {
-          REG_NODE_MODULES_DIR.lastIndex = 0;
-          if (taroTemplateEntries.test(id)) return undefined;
-          if (testByReg2DExpList([taroMiniRunnerDeps])(id)) return null;
-          if (testByReg2DExpList([babelDeps, commonjsHelpersDeps])(id)) return 'babelHelpers';
-          if (testByReg2DExpList([reactRelatedDeps])(id)) return 'common';
-          if (testByReg2DExpList([taroDeps])(id)) return 'common';
-          if (testByReg2DExpList([tslibDeps])(id)) return 'vendors';
-          if (testByReg2DExpList([nodeModulesDeps])(id)) return 'vendors';
-          // 单入口私有模块留在所在 chunk；多入口共享模块显式归入 common，
-          // 避免被自动拆成无 wxss 引用的孤儿 chunk
-          if (collectReachableEntries(id, getModuleInfo).size <= 1) return undefined;
-          return 'common';
-        };
-      default:
-        return (id, { getModuleInfo }) => {
-          REG_NODE_MODULES_DIR.lastIndex = 0;
-          if (testByReg2DExpList([taroMiniRunnerDeps])(id)) return null;
-          if (testByReg2DExpList([nodeModulesDeps, commonjsHelpersDeps])(id)) return 'vendors';
-          if (collectReachableEntries(id, getModuleInfo).size <= 1) return undefined;
-          return 'common';
-        };
-    }
+    return (id, { getModuleInfo }) => {
+      REG_NODE_MODULES_DIR.lastIndex = 0;
+      if (taroTemplateEntries.test(id)) return undefined;
+      if (testByReg2DExpList([taroMiniRunnerDeps])(id)) return null;
+      if (testByReg2DExpList([babelDeps, commonjsHelpersDeps])(id)) return 'babelHelpers';
+      if (testByReg2DExpList([reactRelatedDeps])(id)) return 'common';
+      if (testByReg2DExpList([taroDeps])(id)) return 'common';
+      if (testByReg2DExpList([tslibDeps])(id)) return 'vendors';
+      if (testByReg2DExpList([nodeModulesDeps])(id)) return 'vendors';
+      // 单入口私有模块留在所在 chunk；多入口共享模块显式归入 common，
+      // 避免被自动拆成无 wxss 引用的孤儿 chunk
+      if (collectReachableEntries(id, getModuleInfo).size <= 1) return undefined;
+      return 'common';
+    };
   }
 
   return {

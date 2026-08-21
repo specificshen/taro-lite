@@ -10,7 +10,6 @@ export default (ctx: IPluginContext) => {
       '--watch': 'Watch mode',
       '--env [env]': 'Value for process.env.NODE_ENV',
       '--pages': 'Specify the pages to be compiled, separate multiple by comma',
-      '--components': 'Specify the components to be compiled, separate multiple by comma',
       '--mode [mode]': 'Value of dotenv extname',
       '-p, --port [port]': 'Specified port',
       '--no-build': 'Do not build project',
@@ -21,7 +20,7 @@ export default (ctx: IPluginContext) => {
     synopsisList: ['taro build', 'taro build --watch', 'taro build --env production'],
     async fn(opts) {
       const { options, config, _ } = opts;
-      const { isWatch, blended, withoutBuild, noInjectGlobalStyle, noCheck } = options;
+      const { isWatch, blended, withoutBuild, noCheck } = options;
       const { fs, chalk, PROJECT_CONFIG } = ctx.helper;
       const { outputPath, configPath } = ctx.paths;
       const args = (options.args as Record<string, unknown>) || {};
@@ -58,9 +57,8 @@ export default (ctx: IPluginContext) => {
             blended,
             isBuildNativeComp,
             withoutBuild,
-            noInjectGlobalStyle,
             async modifyAppConfig(appConfig: Record<string, unknown>) {
-              extractCompileEntry(appConfig, args, ctx);
+              extractCompileEntry(appConfig, args);
               await ctx.applyPlugins({ name: hooks.MODIFY_APP_CONFIG, opts: { appConfig } });
             },
             async modifyViteConfig(viteConfig: unknown, data: unknown, viteCompilerContext: unknown) {

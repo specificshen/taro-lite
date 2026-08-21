@@ -1,34 +1,9 @@
-import * as child_process from 'node:child_process';
-import { createHash } from 'node:crypto';
 import * as nativeFs from 'node:fs';
 import * as os from 'node:os';
 import * as path from 'node:path';
 
-import {
-  CSS_EXT,
-  PLATFORMS,
-  processTypeEnum,
-  processTypeMap,
-  REG_CSS_IMPORT,
-  REG_JSON,
-  REG_NODE_MODULES,
-  SCRIPT_EXT,
-  TARO_CONFIG_FOLDER,
-} from './constants';
+import { PLATFORMS, processTypeEnum, processTypeMap, REG_JSON, SCRIPT_EXT } from './constants';
 import { chalk } from './terminal';
-
-interface SwcNode {
-  type: string;
-  [key: string]: unknown;
-}
-
-interface SwcVisitor {
-  [key: string]: SwcVisitorFunc | SwcVisitor | SwcVisitorFunc[];
-}
-
-type SwcVisitorFunc = (astPath: SwcNode, ...args: unknown[]) => void;
-
-const execSync = child_process.execSync;
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
   if (value === null || typeof value !== 'object') {
@@ -36,16 +11,6 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
   }
   const prototype = Object.getPrototypeOf(value);
   return prototype === Object.prototype || prototype === null;
-}
-
-function toCamelCase(value: string): string {
-  return value
-    .replace(/^[\s_-]+|[\s_-]+$/g, '')
-    .replace(/[-_\s]+(.)?/g, (_, character: string = '') => character.toUpperCase());
-}
-
-function normalizeVisitor(value: unknown): SwcVisitor {
-  return typeof value === 'function' ? { enter: value as SwcVisitorFunc } : (value as SwcVisitor);
 }
 
 interface NativeFsCompat {
@@ -148,17 +113,11 @@ export function normalizePath(path: string) {
   return path.replace(/\\/g, '/').replace(/\/{2,}/g, '/');
 }
 
-export const isNodeModule = (filename: string): boolean => REG_NODE_MODULES.test(filename);
-
 export function isNpmPkg(name: string): boolean {
   if (/^(\.|\/)/.test(name)) {
     return false;
   }
   return true;
-}
-
-export function isQuickAppPkg(name: string): boolean {
-  return /^@(system|service)\.[a-zA-Z]{1,}/.test(name);
 }
 
 export function isAliasPath(name: string, pathAlias: Record<string, string> = {}): boolean {
@@ -203,24 +162,6 @@ export function promoteRelativePath(fPath: string): string {
     return fPathArr.join('/');
   }
   return normalizePath(fPath);
-}
-
-export function resolveStylePath(p: string): string {
-  const realPath = p;
-  const removeExtPath = p.replace(path.extname(p), '');
-  const taroEnv = process.env.TARO_ENV;
-  for (let i = 0; i < CSS_EXT.length; i++) {
-    const item = CSS_EXT[i];
-    if (taroEnv) {
-      if (fs.existsSync(`${removeExtPath}.${taroEnv}${item}`)) {
-        return `${removeExtPath}.${taroEnv}${item}`;
-      }
-    }
-    if (fs.existsSync(`${p}${item}`)) {
-      return `${p}${item}`;
-    }
-  }
-  return realPath;
 }
 
 export function printLog(type: processTypeEnum, tag: string, filePath?: string) {
@@ -320,50 +261,6 @@ export function getUserHomeDir(): string {
   return typeof (os.homedir as (() => string) | undefined) === 'function' ? os.homedir() : homedir();
 }
 
-export function getTaroPath(): string {
-  const taroPath = path.join(getUserHomeDir(), TARO_CONFIG_FOLDER);
-  if (!fs.existsSync(taroPath)) {
-    fs.ensureDirSync(taroPath);
-  }
-  return taroPath;
-}
-
-export function getConfig(): Record<string, unknown> {
-  const configPath = path.join(getTaroPath(), 'config.json');
-  if (fs.existsSync(configPath)) {
-    return fs.readJSONSync(configPath);
-  }
-  return {};
-}
-
-export function getHash(text: Buffer | string): string {
-  return createHash('sha256').update(text).digest('hex').substring(0, 8);
-}
-
-export function getSystemUsername(): string {
-  const userHome = getUserHomeDir();
-  const systemUsername = process.env.USER || path.basename(userHome);
-  return systemUsername;
-}
-
-export function shouldUseYarn(): boolean {
-  try {
-    execSync('yarn --version', { stdio: 'ignore' });
-    return true;
-  } catch (_e) {
-    return false;
-  }
-}
-
-export function shouldUseCnpm(): boolean {
-  try {
-    execSync('cnpm --version', { stdio: 'ignore' });
-    return true;
-  } catch (_e) {
-    return false;
-  }
-}
-
 export function isEmptyObject(obj: object | null | undefined): boolean {
   if (obj == null) {
     return true;
@@ -422,91 +319,6 @@ export function resolveScriptPath(p: string): string {
   return resolveMainFilePath(p);
 }
 
-export function generateEnvList(env: Record<string, string>): Record<string, unknown> {
-  const res: Record<string, unknown> = {};
-  if (env && !isEmptyObject(env)) {
-    for (const key in env) {
-      try {
-        res[`process.env.${key}`] = JSON.parse(env[key]);
-      } catch (_err) {
-        res[`process.env.${key}`] = env[key];
-      }
-    }
-  }
-  return res;
-}
-
-/**
- * 获取 npm 文件或者依赖的绝对路径
- *
- * @param {string} 参数 1 - 组件路径
- * @param {string} 参数 2 - 文件扩展名
- * @returns {string} npm 文件绝对路径
- */
-export function getNpmPackageAbsolutePath(npmPath: string, defaultFile = 'index'): string | null {
-  try {
-    let packageName = '';
-    let componentRelativePath = '';
-    const packageParts = npmPath.split(path.sep);
-
-    // 获取 npm 包名和指定的包文件路径
-    // taro-loader/path/index => packageName = taro-loader, componentRelativePath = path/index
-    // @spcsn/taro-runtime/path/index => packageName = @spcsn/taro-runtime, componentRelativePath = path/index
-    if (npmPath.startsWith('@')) {
-      packageName = packageParts.slice(0, 2).join(path.sep);
-      componentRelativePath = packageParts.slice(2).join(path.sep);
-    } else {
-      packageName = packageParts[0];
-      componentRelativePath = packageParts.slice(1).join(path.sep);
-    }
-
-    // 没有指定的包文件路径统一使用 defaultFile
-    componentRelativePath ||= defaultFile;
-    const packageJsonPath = Bun.resolveSync(`${packageName}/package.json`, process.cwd());
-
-    return path.join(path.dirname(packageJsonPath), `./${componentRelativePath}`);
-  } catch (_error) {
-    return null;
-  }
-}
-
-export function generateConstantsList(constants: Record<string, unknown>): Record<string, unknown> {
-  const res: Record<string, unknown> = {};
-  if (constants && !isEmptyObject(constants)) {
-    for (const key in constants) {
-      const value = constants[key];
-      if (isPlainObject(value)) {
-        res[key] = generateConstantsList(value);
-      } else if (typeof value === 'string') {
-        try {
-          res[key] = JSON.parse(value);
-        } catch (_err) {
-          res[key] = value;
-        }
-      } else {
-        res[key] = value;
-      }
-    }
-  }
-  return res;
-}
-
-export function cssImports(content: string): string[] {
-  const results: string[] = [];
-  const cssImportRegExp = new RegExp(REG_CSS_IMPORT);
-  let match: RegExpExecArray | null;
-
-  content = String(content).replace(/\/\*.+?\*\/|\/\/.*(?=[\n\r])/g, '');
-
-  match = cssImportRegExp.exec(content);
-  while (match) {
-    results.push(match[2]);
-    match = cssImportRegExp.exec(content);
-  }
-
-  return results;
-}
-
 const retries = process.platform === 'win32' ? 100 : 1;
 export function emptyDirectory(
   dirPath: string,
@@ -547,9 +359,6 @@ export function emptyDirectory(
     });
   }
 }
-
-export const pascalCase: (str: string) => string = (str: string): string =>
-  str.charAt(0).toUpperCase() + toCamelCase(str.slice(1));
 
 export function getInstalledNpmPkgPath(pkgName: string, basedir: string): string | null {
   try {
@@ -637,93 +446,6 @@ export function isEqual(a: unknown, b: unknown): boolean {
   return false;
 }
 
-export const mergeVisitors = (src: SwcVisitor, ...args: SwcVisitor[]) => {
-  const validFuncs = ['exit', 'enter'];
-
-  for (const arg of args) {
-    if (!arg) continue;
-
-    for (const key of Object.keys(arg)) {
-      const value = src[key];
-      const sourceValue = arg[key];
-
-      if (!Object.hasOwn(src, key)) {
-        src[key] = sourceValue;
-        continue;
-      }
-
-      const shouldMergeToArray = validFuncs.includes(key);
-      if (shouldMergeToArray) {
-        src[key] = [value, sourceValue].flat() as SwcVisitorFunc[];
-        continue;
-      }
-
-      src[key] = mergeVisitors(normalizeVisitor(value), normalizeVisitor(sourceValue));
-    }
-  }
-
-  return src;
-};
-
-export const applyArrayedVisitors = (obj: SwcVisitor) => {
-  let key: string;
-  for (key in obj) {
-    const funcs = obj[key];
-    if (Array.isArray(funcs)) {
-      obj[key] = (astPath: SwcNode, ...args: unknown[]) => {
-        funcs.forEach((func) => {
-          func(astPath, ...args);
-        });
-      };
-    } else if (funcs && typeof funcs === 'object' && !Array.isArray(funcs)) {
-      applyArrayedVisitors(funcs as SwcVisitor);
-    }
-  }
-  return obj;
-};
-
-export const getAllFilesInFolder = async (folder: string, filter: string[] = []): Promise<string[]> => {
-  let files: string[] = [];
-  const list = readDirWithFileTypes(folder);
-
-  await Promise.all(
-    list.map(async (item) => {
-      const itemPath = path.join(folder, item.name);
-      if (item.isDirectory) {
-        const _files = await getAllFilesInFolder(itemPath, filter);
-        files = [...files, ..._files];
-      } else if (item.isFile) {
-        if (!filter.find((rule) => rule === item.name)) files.push(itemPath);
-      }
-    }),
-  );
-
-  return files;
-};
-
-export interface FileStat {
-  name: string;
-  isDirectory: boolean;
-  isFile: boolean;
-}
-
-export function readDirWithFileTypes(folder: string): FileStat[] {
-  const list = fs.readdirSync(folder);
-  const res = list.map((name) => {
-    const stat = fs.statSync(path.join(folder, name));
-    return {
-      name,
-      isDirectory: stat.isDirectory(),
-      isFile: stat.isFile(),
-    };
-  });
-  return res;
-}
-
-export function extnameExpRegOf(filePath: string): RegExp {
-  return new RegExp(`${path.extname(filePath)}$`);
-}
-
 export function addPlatforms(platform: string) {
   const upperPlatform = platform.toLocaleUpperCase();
   if (PLATFORMS[upperPlatform]) return;
@@ -735,10 +457,6 @@ export const getModuleDefaultExport = (exports: Record<string, unknown>) =>
   exports?.__esModule || (exports != null && typeof exports === 'object' && 'default' in exports)
     ? exports.default
     : exports;
-
-export function removeHeadSlash(str: string) {
-  return str.replace(/^(\/|\\)/, '');
-}
 
 // read page config from a sfc file instead of the regular config file
 function readSFCPageConfig(configPath: string) {

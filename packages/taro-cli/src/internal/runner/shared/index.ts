@@ -1,16 +1,10 @@
 import path from 'node:path';
-import querystring from 'node:querystring';
 import type { Func, IPostcssOption, IPxTransformOption } from '@spcsn/taro/types/compile';
-import type { TRollupResolveMethod } from '@spcsn/taro/types/compile/config/plugin';
-import type {
-  ViteMiniBuildConfig,
-  ViteMiniCompilerContext,
-  VitePageMeta,
-} from '@spcsn/taro/types/compile/vite-compiler-context';
+import type { ViteMiniBuildConfig, ViteMiniCompilerContext } from '@spcsn/taro/types/compile/vite-compiler-context';
 import type { AcceptedPlugin } from 'postcss';
 import type { CSSModulesOptions } from 'vite';
-import { isNpmPkg, normalizePath, REG_NODE_MODULES, recursiveMerge, resolveSync } from '../../helper';
-import { backSlashRegEx, MINI_EXCLUDE_POSTCSS_PLUGIN_NAME, needsEscapeRegEx, quoteNewlineRegEx } from './constants';
+import { isNpmPkg, REG_NODE_MODULES, recursiveMerge, resolveSync } from '../../helper';
+import { backSlashRegEx, MINI_EXCLUDE_POSTCSS_PLUGIN_NAME } from './constants';
 import { logger } from './logger';
 import type { StaticCopyTarget } from './static-copy';
 
@@ -89,11 +83,6 @@ export function stripMultiPlatformExt(id: string): string {
   return id.replace(/\.(weapp|mini)$/, '');
 }
 
-export const addLeadingSlash = (url = '') => (url.charAt(0) === '/' ? url : '/' + url);
-export const addTrailingSlash = (url = '') => (url.charAt(url.length - 1) === '/' ? url : url + '/');
-export const stripTrailingSlash = (url = '') =>
-  url.charAt(url.length - 1) === '/' ? url.substring(0, url.length - 1) : url;
-
 export function getMode(config: ViteMiniBuildConfig) {
   const preMode = config.mode || process.env.NODE_ENV;
   const modes: ('production' | 'development' | 'none')[] = ['production', 'development', 'none'];
@@ -101,26 +90,6 @@ export function getMode(config: ViteMiniBuildConfig) {
     modes.find((e) => e === preMode) ||
     (!config.isWatch || process.env.NODE_ENV === 'production' ? 'production' : 'development');
   return mode;
-}
-
-export function genRouterResource(page: VitePageMeta) {
-  return [
-    'Object.assign({',
-    `  path: '${page.name}',`,
-    '  load: async function(context, params) {',
-    `    const page = await import("${normalizePath(page.scriptPath)}")`,
-    '    return [page, context, params]',
-    '  }',
-    `}, ${JSON.stringify(page.config)})`,
-  ].join('\n');
-}
-
-export function getQueryParams(path: string) {
-  return querystring.parse(path.split('?')[1]);
-}
-
-export function generateQueryString(params: { [key: string]: string }): string {
-  return querystring.stringify(params);
 }
 
 export async function getPostcssPlugins(
@@ -206,95 +175,4 @@ export function getCSSModulesOptions(taroConfig: ViteMiniBuildConfig): false | C
 }
 export function escapePath(p: string) {
   return p.replace(/\\{1,2}/g, '/');
-}
-
-export function parseRelativePath(from: string, to: string) {
-  const relativePath = escapePath(path.relative(from, to));
-
-  return /^\.{1,2}[\\/]/.test(relativePath)
-    ? relativePath
-    : /^\.{1,2}$/.test(relativePath)
-      ? `${relativePath}/`
-      : `./${relativePath}`;
-}
-
-export function escapeId(id: string): string {
-  if (!needsEscapeRegEx.test(id)) return id;
-  return id.replace(backSlashRegEx, '\\\\').replace(quoteNewlineRegEx, '\\$1');
-}
-
-export function resolveAbsoluteRequire({
-  name = '',
-  importer = '',
-  outputRoot = '',
-  targetRoot = '',
-  code = '',
-  resolve,
-  modifyResolveId,
-}: {
-  importer: string;
-  code: string;
-  name?: string;
-  outputRoot?: string;
-  targetRoot?: string;
-  resolve?: TRollupResolveMethod;
-  modifyResolveId?: unknown;
-}) {
-  outputRoot = escapePath(outputRoot);
-  targetRoot = escapePath(targetRoot);
-  const resolveId = typeof modifyResolveId === 'function' ? modifyResolveId : undefined;
-  return code.replace(/(?:import\s|from\s|require\()['"]([^.][^'"\s]+)['"]\)?/g, (src: string, source: string) => {
-    importer = stripVirtualModulePrefix(importer);
-    const absolutePath: string = escapePath(
-      resolveId
-        ? resolveId({
-            source,
-            importer,
-            options: {
-              isEntry: false,
-              skipSelf: true,
-            },
-            name,
-            resolve,
-          })?.id || source
-        : source,
-    );
-    let parsePath = '';
-    if (absolutePath.startsWith(outputRoot)) {
-      let outputPath = importer;
-      if (path.isAbsolute(outputPath)) {
-        const commonPath = getCommonPath(targetRoot, importer);
-        outputPath = path.relative(commonPath, importer);
-      }
-      const outputFile = path.resolve(outputRoot, outputPath);
-      const outputDir = path.dirname(outputFile);
-      parsePath = src.replace(source, parseRelativePath(outputDir, absolutePath));
-    } else if (absolutePath.startsWith(targetRoot)) {
-      parsePath = src.replace(source, parseRelativePath(path.dirname(importer), absolutePath));
-    } else {
-      parsePath = src.replace(source, absolutePath);
-    }
-    return parsePath;
-  });
-}
-
-let lastCommonPath = '';
-function getCommonPath(a: string, b: string) {
-  const aArr = path.normalize(a).split(/[\\/]/);
-  const bArr = path.normalize(b).split(/[\\/]/);
-  let i = 0;
-  while (aArr[i] === bArr[i]) {
-    i++;
-  }
-
-  if (aArr.length > i) {
-    // Note: 项目外部文件，仅返回所有外部文件的最短公共路径
-    if (!lastCommonPath || lastCommonPath.split(/[\\/]/).length > i) {
-      lastCommonPath = aArr.slice(0, i).join('/');
-    }
-    return lastCommonPath;
-  } else {
-    // Note: 项目内部文件，返回项目根路径
-    return a;
-  }
 }

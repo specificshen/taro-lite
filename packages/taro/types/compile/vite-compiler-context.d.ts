@@ -97,7 +97,6 @@ export interface ViteCompilerContext<T> {
   frameworkExts: string[]
   app: ViteAppMeta
   pages: VitePageMeta[]
-  components?: VitePageMeta[]
   loaderMeta: any
   logger
   filesConfig: IMiniFilesConfig
@@ -111,10 +110,8 @@ export interface ViteCompilerContext<T> {
   getPages: () => Promise<VitePageMeta[]>
   isApp: (id: string) => boolean
   isPage: (id: string) => boolean
-  isComponent: (id: string) => boolean
   isNativePageORComponent: (templatePath: string) => boolean
   getPageById: (id: string) => VitePageMeta| undefined
-  getComponentById: (id: string) => VitePageMeta| undefined
   getConfigFilePath: (filePath: string) => string
   getTargetFilePath: (filePath: string, targetExtName: string) => string
 }

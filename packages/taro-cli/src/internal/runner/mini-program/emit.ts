@@ -49,7 +49,6 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
             }
           }
 
-          const isUsingCustomWrapper = true;
           if (!componentConfig.thirdPartyComponents.has(customWrapperName)) {
             componentConfig.thirdPartyComponents.set(customWrapperName, new Set());
           }
@@ -69,15 +68,13 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
                 ...pageConfig.usingComponents,
               };
               const usingComponents = pageConfig.usingComponents;
-              if (isUsingCustomWrapper) {
-                const importCustomWrapperPath = promoteRelativePath(
-                  path.relative(
-                    page.scriptPath,
-                    path.join(sourceDir, viteCompilerContext.getTargetFilePath(customWrapperName, '')),
-                  ),
-                );
-                usingComponents[customWrapperName] = importCustomWrapperPath;
-              }
+              const importCustomWrapperPath = promoteRelativePath(
+                path.relative(
+                  page.scriptPath,
+                  path.join(sourceDir, viteCompilerContext.getTargetFilePath(customWrapperName, '')),
+                ),
+              );
+              usingComponents[customWrapperName] = importCustomWrapperPath;
               if (!template.isSupportRecursive) {
                 const importBaseCompPath = promoteRelativePath(
                   path.relative(
@@ -138,9 +135,7 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
                 [baseCompName]: `./${baseCompName}`,
               },
             } as Config & { component?: boolean; usingComponents: Record<string, string> };
-            if (isUsingCustomWrapper) {
-              baseCompConfig.usingComponents[customWrapperName] = `./${customWrapperName}`;
-            }
+            baseCompConfig.usingComponents[customWrapperName] = `./${customWrapperName}`;
             generateConfigFile(this, viteCompilerContext, {
               filePath: baseCompName,
               config: baseCompConfig,
@@ -152,38 +147,33 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
           }
 
           // emit: custom-wrapper.json, custom-wrapper.xml
-          if (isUsingCustomWrapper) {
-            const customWrapperConfig = {
-              filePath: customWrapperName,
-              config: {
-                component: true,
-                styleIsolation: 'apply-shared',
-                usingComponents: {
-                  [customWrapperName]: `./${customWrapperName}`,
-                },
+          const customWrapperConfig = {
+            filePath: customWrapperName,
+            config: {
+              component: true,
+              styleIsolation: 'apply-shared',
+              usingComponents: {
+                [customWrapperName]: `./${customWrapperName}`,
               },
-            };
-            if (!template.isSupportRecursive) {
-              (customWrapperConfig.config.usingComponents as Record<string, string>)[baseCompName] =
-                `./${baseCompName}`;
-            }
-            generateConfigFile(this, viteCompilerContext, {
-              filePath: customWrapperName,
-              config: {
-                component: true,
-                styleIsolation: 'apply-shared',
-                usingComponents: {
-                  [customWrapperName]: `./${customWrapperName}`,
-                },
-              },
-            });
-            generateTemplateFile(this, viteCompilerContext, {
-              filePath: customWrapperName,
-              content: template.buildCustomComponentTemplate(viteCompilerContext.fileType.templ),
-            });
-          } else {
-            delete bundle[viteCompilerContext.getScriptPath(customWrapperName)];
+            },
+          };
+          if (!template.isSupportRecursive) {
+            (customWrapperConfig.config.usingComponents as Record<string, string>)[baseCompName] = `./${baseCompName}`;
           }
+          generateConfigFile(this, viteCompilerContext, {
+            filePath: customWrapperName,
+            config: {
+              component: true,
+              styleIsolation: 'apply-shared',
+              usingComponents: {
+                [customWrapperName]: `./${customWrapperName}`,
+              },
+            },
+          });
+          generateTemplateFile(this, viteCompilerContext, {
+            filePath: customWrapperName,
+            content: template.buildCustomComponentTemplate(viteCompilerContext.fileType.templ),
+          });
         }
       },
     },

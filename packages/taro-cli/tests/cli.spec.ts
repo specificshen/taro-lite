@@ -48,7 +48,6 @@ describe('cli', () => {
         blended: false,
         isBuildNativeComp: false,
         newBlended: false,
-        noInjectGlobalStyle: false,
         noCheck: false,
       },
       isHelp: false,
@@ -62,9 +61,6 @@ describe('cli', () => {
       const opts = Object.assign({}, baseOpts);
       opts.options = Object.assign({}, baseOpts.options, {
         isWatch: true,
-        port: 8080,
-        deviceType: undefined,
-        qr: false,
       });
 
       expect(ins.run).toHaveBeenCalledWith({

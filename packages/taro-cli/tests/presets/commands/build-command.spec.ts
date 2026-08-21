@@ -52,7 +52,6 @@ describe('build command', () => {
         isWatch: false,
         blended: false,
         withoutBuild: false,
-        noInjectGlobalStyle: false,
         noCheck: false,
         args: {},
       },

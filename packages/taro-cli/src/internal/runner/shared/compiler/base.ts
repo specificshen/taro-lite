@@ -22,12 +22,10 @@ interface LoaderMeta {
 
 import type { Rolldown } from 'vite';
 import { fs, isEmptyObject, readConfig, resolveMainFilePath, SCRIPT_EXT } from '../../../helper';
-import { VITE_COMPILER_LABEL } from '../../../kernel/runner-utils/constant';
 import { stripMultiPlatformExt } from '..';
 import { logger } from '../logger';
 
 export class CompilerContext<T extends ViteMiniBuildConfig> implements ViteCompilerContext<T> {
-  static label = VITE_COMPILER_LABEL;
   cwd: string;
   sourceDir!: string;
   taroConfig!: T;
@@ -35,7 +33,6 @@ export class CompilerContext<T extends ViteMiniBuildConfig> implements ViteCompi
   frameworkExts!: string[];
   app!: ViteAppMeta;
   pages!: VitePageMeta[];
-  components?: VitePageMeta[];
   loaderMeta: LoaderMeta = {
     importFrameworkStatement: `
 import * as React from 'react'
@@ -168,21 +165,6 @@ import ReactDOM from 'react-dom'
     return pagesList;
   }
 
-  async getComponents(): Promise<VitePageMeta[]> {
-    const appConfig = this.app.config;
-
-    if (!appConfig.components?.length) {
-      this.logger.error('全局配置缺少 components 字段，请检查！');
-      process.exit(1);
-    }
-
-    const components: VitePageMeta[] = [];
-    for (const pageName of appConfig.components) {
-      components.push(await this.compilePage(pageName));
-    }
-    return components;
-  }
-
   /** 工具函数 */
 
   isApp(id: string): boolean {
@@ -193,26 +175,12 @@ import ReactDOM from 'react-dom'
     return this.pages.findIndex((page) => page.scriptPath === id) > -1;
   }
 
-  isComponent(id: string): boolean {
-    if (this.components && this.components.length) {
-      return this.components.findIndex((component) => component.scriptPath === id) > -1;
-    }
-
-    return false;
-  }
-
   isNativePageORComponent(templatePath: string): boolean {
     return fs.existsSync(templatePath);
   }
 
   getPageById(id: string) {
     return this.pages.find((page) => page.scriptPath === id);
-  }
-
-  getComponentById(id: string) {
-    if (this.components && this.components.length) {
-      return this.components.find((component) => component.scriptPath === id);
-    }
   }
 
   getConfigFilePath(filePath: string) {

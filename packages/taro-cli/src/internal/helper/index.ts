@@ -19,6 +19,5 @@ export const createDebug = (id: string) => {
 
 export * from './constants';
 export * from './dotenv';
-export * as npm from './npm';
 export * from './terminal';
 export * from './utils';
