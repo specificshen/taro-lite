@@ -13,34 +13,26 @@ jobs:
   publish:
     name: Publish packages
     runs-on: ubuntu-latest
-    env:
-      PUPPETEER_SKIP_DOWNLOAD: 'true'
     steps:
       - name: Checkout
         uses: actions/checkout@v5
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
+      - name: Setup Bun
+        uses: oven/setup-bun@v2
         with:
-          node-version: 22
-          cache: 'pnpm'
-          registry-url: 'https://registry.npmjs.org'
+          bun-version: 1.4.0
 
       - name: Install dependencies
-        run: pnpm -r install --frozen-lockfile
+        run: bun install --frozen-lockfile
 
       - name: Build
-        run: pnpm build
-        env:
-          NODE_OPTIONS: --max_old_space_size=4096
+        run: bun run build
 
       - name: Release readiness check
-        run: pnpm run release:check
+        run: bun run release:check
+
+      - name: Configure npm authentication
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
 
       - name: Publish
-        run: pnpm publish --registry=https://registry.npmjs.org/ -r --filter=./packages/* --no-git-checks
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: bun scripts/publish.ts
