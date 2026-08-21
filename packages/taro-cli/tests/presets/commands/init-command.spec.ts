@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'bun:test';
 import type { IPluginContext } from '../../../src/internal/taro-service';
 import initCommand from '../../../src/presets/commands/init';
 

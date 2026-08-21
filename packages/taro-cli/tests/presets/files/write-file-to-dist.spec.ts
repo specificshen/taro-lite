@@ -1,7 +1,7 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from 'bun:test';
 import * as fs from 'node:fs';
 import * as os from 'node:os';
 import * as path from 'node:path';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import * as helper from '../../../src/internal/taro-helper';
 import type { IPluginContext } from '../../../src/internal/taro-service';
 import writeFileToDistPreset from '../../../src/presets/files/write-file-to-dist';

@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'bun:test';
 import * as helper from '../../../src/internal/taro-helper';
 import type { IPluginContext } from '../../../src/internal/taro-service';
 import generateFrameworkInfoPreset from '../../../src/presets/files/generate-framework-info';

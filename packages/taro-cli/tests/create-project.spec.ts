@@ -1,7 +1,7 @@
+import { afterEach, describe, expect, it, vi } from 'bun:test';
 import * as fs from 'node:fs';
 import * as os from 'node:os';
 import * as path from 'node:path';
-import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createProject, NpmType } from '../src/create/template-creator';
 
 const packageRoot = path.resolve(__dirname, '..');

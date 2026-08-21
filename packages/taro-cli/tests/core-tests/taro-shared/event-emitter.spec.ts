@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'bun:test';
 import { Events } from '../../../../taro/src/runtime/event-emitter';
 
 describe('taro-shared event-emitter', () => {

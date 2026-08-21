@@ -52,8 +52,8 @@
     "build": "bun run clean && bun scripts/build.ts",
     "clean": "bun ../../scripts/clean.ts dist",
     "dev": "bun scripts/build.ts --watch",
-    "test": "vitest run",
-    "test:ci": "vitest run --coverage"
+    "test": "bun test",
+    "test:ci": "bun test --coverage"
   },
   "repository": {
     "type": "git",
@@ -66,10 +66,6 @@
   "keywords": [
     "taro"
   ],
-  "devDependencies": {
-    "@vitest/coverage-istanbul": "^4.1.9",
-    "vitest": "^4.1.9"
-  },
   "peerDependencies": {
     "@spcsn/taro-components": "^2.0.0-alpha.0",
     "@types/react": "^19",

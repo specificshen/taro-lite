@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'bun:test';
 import { MessageKind, validateConfig } from '../../../src/doctor/validators';
 
 describe('validateConfig', () => {

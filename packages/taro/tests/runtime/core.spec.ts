@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'bun:test';
 import { Current, getCurrentInstance, setCurrentApp, whenAppReady } from '../../src/runtime/current';
 import { TaroDocument } from '../../src/runtime/dom/document';
 import { TaroRootElement } from '../../src/runtime/dom/root';

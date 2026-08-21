@@ -1,7 +1,7 @@
+import { describe, expect, it } from 'bun:test';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { describe, expect, it } from 'vitest';
 import { MINI_APP_TYPES } from '../scripts/constants';
 import * as components from '../src/index';
 
@@ -111,7 +111,7 @@ describe('package support boundary', () => {
     expect(packageJson.files).toEqual(['dist', 'types', 'global.css']);
   });
 
-  it('uses Vitest instead of the old Stencil/Jest runner', () => {
+  it('uses Bun test instead of the old Stencil/Jest runner', () => {
     const packageJson = JSON.parse(readPackageFile('package.json'));
     const serializedScripts = JSON.stringify(packageJson.scripts);
     const serializedDependencies = JSON.stringify({
@@ -119,9 +119,9 @@ describe('package support boundary', () => {
       devDependencies: packageJson.devDependencies,
     });
 
-    expect(packageJson.scripts.test).toBe('vitest run');
-    expect(serializedScripts).not.toMatch(/stencil test|jest|puppeteer/);
-    expect(serializedDependencies).not.toMatch(/@stencil\/core|jest|puppeteer|hls\.js|swiper/);
+    expect(packageJson.scripts.test).toBe('bun test');
+    expect(serializedScripts).not.toMatch(/stencil test|jest|puppeteer|vitest/);
+    expect(serializedDependencies).not.toMatch(/@stencil\/core|jest|puppeteer|vitest|hls\.js|swiper/);
   });
 
   it('keeps the public type entry free of non-WeChat component exports', () => {

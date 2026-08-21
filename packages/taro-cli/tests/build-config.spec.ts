@@ -1,6 +1,6 @@
+import { afterEach, beforeEach, describe, expect, it, type MockInstance, vi } from 'bun:test';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { afterEach, beforeEach, describe, expect, it, type MockInstance, vi } from 'vitest';
 import { run } from './utils';
 
 const runBuild = run('build', ['commands/build', path.resolve(__dirname, '../dist/platform-weapp')]);

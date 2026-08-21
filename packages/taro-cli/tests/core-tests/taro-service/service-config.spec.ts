@@ -1,5 +1,5 @@
+import { describe, expect, it, vi } from 'bun:test';
 import type { IProjectConfig } from '@spcsn/taro/types/compile';
-import { describe, expect, it, vi } from 'vitest';
 import Config from '../../../src/internal/taro-service/service-config';
 
 function createConfig(initialConfig: Partial<IProjectConfig> = {}) {

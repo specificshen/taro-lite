@@ -1,10 +1,13 @@
-import { afterEach, beforeAll, beforeEach, describe, expect, it, type MockedClass, vi } from 'vitest';
-import CLI from '../src/cli';
-import { Kernel } from '../src/internal/taro-service';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'bun:test';
+import * as path from 'node:path';
+import type CLI from '../src/cli';
 import { getPkgVersion } from '../src/util/index';
+import { mockTaroService } from './utils/mock-service';
 
-vi.mock('../src/internal/taro-service');
-const MockedKernel = Kernel as unknown as MockedClass<typeof Kernel>;
+// 先注册 mock 再动态加载 cli：bun 的 mock.module 不提升，
+// 静态 import cli.ts 会让 taro-service 的真实绑定先行固化；
+// modulePath 必须传绝对路径（mock.module 按 helper 文件位置解析相对路径）
+const { kernelInstances } = mockTaroService(path.resolve(__dirname, '../src/internal/taro-service'));
 const APP_PATH = '/a/b/c';
 
 function setProcessArgv(cmd: string) {
@@ -14,19 +17,20 @@ function setProcessArgv(cmd: string) {
 describe('cli', () => {
   let cli: CLI;
 
-  beforeAll(() => {
-    cli = new CLI(APP_PATH);
+  beforeAll(async () => {
+    const { default: CLIClass } = await import('../src/cli');
+    cli = new CLIClass(APP_PATH);
   });
 
   beforeEach(() => {
-    MockedKernel.mockClear();
+    kernelInstances.length = 0;
     process.argv = [];
     delete process.env.NODE_ENV;
     delete process.env.TARO_ENV;
   });
 
   afterEach(() => {
-    MockedKernel.mockClear();
+    kernelInstances.length = 0;
     process.argv = [];
     delete process.env.NODE_ENV;
     delete process.env.TARO_ENV;
@@ -53,7 +57,7 @@ describe('cli', () => {
     it('should make configs with default weapp platform', async () => {
       setProcessArgv('taro build --watch --port 8080');
       await cli.run();
-      const ins = MockedKernel.mock.instances[0];
+      const ins = kernelInstances[0];
 
       const opts = Object.assign({}, baseOpts);
       opts.options = Object.assign({}, baseOpts.options, {
@@ -93,7 +97,7 @@ describe('cli', () => {
       const template = 'mobx';
       setProcessArgv('taro init temp --template mobx --css none');
       await cli.run();
-      const ins = MockedKernel.mock.instances[0];
+      const ins = kernelInstances[0];
       expect(ins.run).toHaveBeenCalledWith({
         name: 'init',
         opts: {
@@ -113,7 +117,7 @@ describe('cli', () => {
       const projectName = 'demo';
       setProcessArgv('taro init --name demo');
       await cli.run();
-      const ins = MockedKernel.mock.instances[0];
+      const ins = kernelInstances[0];
       expect(ins.run).toHaveBeenCalledWith({
         name: 'init',
         opts: {
@@ -138,7 +142,7 @@ describe('cli', () => {
       setProcessArgv('taro inspect entry --type weapp');
       await cli.run();
 
-      expect(MockedKernel).not.toHaveBeenCalled();
+      expect(kernelInstances).toHaveLength(0);
       expect(spy).toHaveBeenCalledWith('当前 CLI 仅支持 build 和 init 命令。');
 
       spy.mockRestore();

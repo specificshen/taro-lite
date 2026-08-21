@@ -36,7 +36,7 @@
     "format:check": "biome format .",
     "typecheck": "bun scripts/typecheck.ts",
     "typecheck:fixtures": "tsc --noEmit -p fixtures/taro-lite-sunshine-lab/tsconfig.json",
-    "test": "(cd packages/taro-components && bun run test:ci) && (cd packages/taro && bun run test:ci) && (cd packages/taro-cli && bun run test:ci)",
+    "test": "(cd packages/taro-components && bun run test) && (cd packages/taro && bun run test) && (cd packages/taro-cli && bun run test)",
     "verify:fixture:weapp": "bun run build && (cd fixtures/taro-lite-sunshine-lab && bun run build)",
     "release:check": "bun scripts/check-release-readiness.ts"
   },
@@ -44,7 +44,6 @@
     "@biomejs/biome": "^2.5.0",
     "@types/node": "^25.9.3",
     "bun-types": "^1.4.0",
-    "typescript": "~7.0.2",
-    "vitest": "^4.1.9"
+    "typescript": "~7.0.2"
   }
 }

@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'bun:test';
 import * as helper from '../../src/internal/taro-helper';
 import type { IPluginContext } from '../../src/internal/taro-service';
 import Weapp from '../../src/platform-weapp/program';

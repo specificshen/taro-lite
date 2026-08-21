@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'bun:test';
 import type { IPluginContext } from '../../../src/internal/taro-service';
 import buildHooksPreset from '../../../src/presets/hooks/build';
 

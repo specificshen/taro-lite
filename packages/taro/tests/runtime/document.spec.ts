@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'bun:test';
 import { AnchorElement } from '../../src/runtime/dom/anchor-element';
 import { TaroDocument } from '../../src/runtime/dom/document';
 import { TaroElement } from '../../src/runtime/dom/element';

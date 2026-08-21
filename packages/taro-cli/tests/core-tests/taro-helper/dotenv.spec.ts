@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'bun:test';
 import { dotenvParse, formatPrefix, patchEnv } from '../../../src/internal/taro-helper/dotenv';
 
 describe('taro-helper dotenv', () => {

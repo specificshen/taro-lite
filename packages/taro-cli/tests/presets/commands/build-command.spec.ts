@@ -1,12 +1,18 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, mock, vi } from 'bun:test';
 import * as helper from '../../../src/internal/taro-helper';
 import type { IPluginContext } from '../../../src/internal/taro-service';
-import buildCommand from '../../../src/presets/commands/build';
 
-vi.mock('../../../src/doctor/validators', () => ({
+// bun 的 mock.module 不提升，build 命令须在注册 mock 后动态加载
+mock.module('../../../src/doctor/validators', () => ({
   MessageKind: { Error: 'error', Warning: 'warning' },
-  validateConfig: vi.fn(async () => ({ isValid: true, messages: [] })),
+  validateConfig: mock(async () => ({ isValid: true, messages: [] })),
 }));
+
+let buildCommand: typeof import('../../../src/presets/commands/build')['default'];
+
+beforeAll(async () => {
+  ({ default: buildCommand } = await import('../../../src/presets/commands/build'));
+});
 
 describe('build command', () => {
   let ctx: IPluginContext;

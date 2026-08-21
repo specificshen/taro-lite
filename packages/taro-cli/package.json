@@ -19,11 +19,8 @@
     "prod": "bun run build",
     "prepack": "bun run build",
     "pretest": "bun run build",
-    "test": "vitest run",
-    "test:ci": "vitest run --coverage",
-    "test:dev": "vitest",
-    "test:coverage": "vitest run --coverage",
-    "updateSnapshot": "vitest run --update",
+    "test": "bun test --isolate",
+    "test:ci": "bun test --isolate --coverage",
     "prebuild": "bun run clean",
     "build": "tsc && bun ./scripts/fix-esm-imports.ts dist",
     "typecheck": "tsc --noEmit",
@@ -97,8 +94,6 @@
     "@types/react-reconciler": "^0.33.0",
     "@types/resolve": "^1.20.6",
     "@types/sax": "1.2.7",
-    "@vitest/coverage-istanbul": "^4.1.9",
-    "typescript": "~7.0.2",
-    "vitest": "^4.1.9"
+    "typescript": "~7.0.2"
   }
 }
