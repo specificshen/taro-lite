@@ -9,13 +9,14 @@ import type {
 } from '@spcsn/taro/types/compile/vite-compiler-context';
 import type { AcceptedPlugin } from 'postcss';
 import type { CSSModulesOptions } from 'vite';
-import type { Target } from 'vite-plugin-static-copy';
 import { isNpmPkg, normalizePath, REG_NODE_MODULES, recursiveMerge, resolveSync } from '../../helper';
 import { backSlashRegEx, MINI_EXCLUDE_POSTCSS_PLUGIN_NAME, needsEscapeRegEx, quoteNewlineRegEx } from './constants';
 import { logger } from './logger';
+import type { StaticCopyTarget } from './static-copy';
+
 export function convertCopyOptions(taroConfig: ViteMiniBuildConfig) {
   const copy = taroConfig.copy;
-  const copyOptions: Target[] = [];
+  const copyOptions: StaticCopyTarget[] = [];
   copy?.patterns.forEach(({ from, to }) => {
     const { base, ext } = path.parse(to);
     to = to.replace(new RegExp('^' + taroConfig.outputRoot + '/'), '');
@@ -24,8 +25,6 @@ export function convertCopyOptions(taroConfig: ViteMiniBuildConfig) {
     if (ext) {
       to = to.replace(base, '');
       rename = base;
-    } else {
-      rename = '/';
     }
 
     copyOptions.push({

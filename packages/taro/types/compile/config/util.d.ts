@@ -74,7 +74,7 @@ export interface ICopyOptions {
     transform?: Func
     watch?: boolean
   }[]
-  options: {
+  options?: {
     ignore?: string[]
   }
 }

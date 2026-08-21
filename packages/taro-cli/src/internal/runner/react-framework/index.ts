@@ -1,5 +1,4 @@
 import { isString } from '@spcsn/taro/runtime';
-import reactPlugin from '@vitejs/plugin-react';
 import type { PluginOption } from 'vite';
 import { miniVitePlugin } from './vite-mini';
 
@@ -58,5 +57,22 @@ export default (ctx: FrameworkPluginContext) => {
 };
 
 function VitePresetPlugin(): PluginOption {
-  return reactPlugin();
+  // 小程序产物没有 HMR，@vitejs/plugin-react 的实质作用只剩 JSX automatic runtime 转换；
+  // rolldown（oxc）内置了该能力，直接用 transform.jsx 配置替代。
+  return {
+    name: 'taro:vite-react-jsx',
+    config: (_config, env) => ({
+      build: {
+        rolldownOptions: {
+          transform: {
+            jsx: {
+              runtime: 'automatic' as const,
+              importSource: 'react',
+              development: env.mode !== 'production',
+            },
+          },
+        },
+      },
+    }),
+  };
 }

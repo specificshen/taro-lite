@@ -4,7 +4,6 @@ import * as nativeFs from 'node:fs';
 import * as os from 'node:os';
 import * as path from 'node:path';
 
-import { parseSync } from '@swc/core';
 import {
   CSS_EXT,
   PLATFORMS,
@@ -741,91 +740,6 @@ export function removeHeadSlash(str: string) {
   return str.replace(/^(\/|\\)/, '');
 }
 
-// converts swc ast nodes to js object
-function swcExprToObject(node: SwcNode | undefined | null): unknown {
-  if (!node) return undefined;
-
-  const literalTypes = ['BooleanLiteral', 'StringLiteral', 'NumericLiteral'];
-  if (literalTypes.includes(node.type)) {
-    return node.value;
-  }
-
-  if (node.type === 'Identifier' && node.value === 'undefined') {
-    return undefined;
-  }
-
-  if (node.type === 'NullLiteral') {
-    return null;
-  }
-
-  if (node.type === 'ObjectExpression') {
-    return swcGenProps(node.properties as SwcNode[]);
-  }
-
-  if (node.type === 'ArrayExpression') {
-    return (node.elements as SwcNode[]).reduce((acc: unknown[], el: SwcNode | undefined | null) => {
-      if (!el) return acc;
-      if (el.spread) {
-        return [...acc, ...((swcExprToObject(el.expression as SwcNode) as unknown[]) || [])];
-      }
-      return [...acc, swcExprToObject(el.expression as SwcNode)];
-    }, []);
-  }
-
-  return undefined;
-}
-
-// converts swc ObjectExpressions to js object
-function swcGenProps(props: SwcNode[]) {
-  return props.reduce((acc: Record<string, unknown>, prop: SwcNode) => {
-    if (prop.type === 'SpreadElement') {
-      return {
-        ...acc,
-        ...(swcExprToObject(prop.arguments as SwcNode) as Record<string, unknown>),
-      };
-    }
-
-    if (prop.type === 'KeyValueProperty') {
-      const key = (prop.key as SwcNode).value;
-      const value = swcExprToObject(prop.value as SwcNode);
-      if (value !== undefined && key !== undefined) {
-        return { ...acc, [key as string]: value };
-      }
-    }
-
-    return acc;
-  }, {});
-}
-
-function findSwcCallExpressions(
-  node: Record<string, unknown> | undefined | null,
-  calleeName: string,
-  results: SwcNode[] = [],
-) {
-  if (!node || typeof node !== 'object') return results;
-
-  if (node.type === 'CallExpression') {
-    const callee = node.callee as SwcNode | undefined;
-    if (callee?.type === 'Identifier' && callee.value === calleeName) {
-      results.push(node as SwcNode);
-    }
-  }
-
-  for (const value of Object.values(node)) {
-    if (value && typeof value === 'object') {
-      if (Array.isArray(value)) {
-        for (const item of value) {
-          findSwcCallExpressions(item as Record<string, unknown>, calleeName, results);
-        }
-      } else {
-        findSwcCallExpressions(value as Record<string, unknown>, calleeName, results);
-      }
-    }
-  }
-
-  return results;
-}
-
 // read page config from a sfc file instead of the regular config file
 function readSFCPageConfig(configPath: string) {
   if (!fs.existsSync(configPath)) return {};
@@ -837,12 +751,15 @@ function readSFCPageConfig(configPath: string) {
   let result: Record<string, unknown> = {};
 
   if (matches && matches.length === 1) {
-    const configSource = matches[0];
-    const ast = parseSync(configSource, { syntax: 'typescript', tsx: true });
-    const calls = findSwcCallExpressions(ast as unknown as Record<string, unknown>, 'definePageConfig');
-    if (calls.length === 1) {
-      const configNode = (calls[0].arguments as SwcNode[])[0]?.expression as SwcNode;
-      result = swcExprToObject(configNode) as Record<string, unknown>;
+    try {
+      // Bun 原生转译剥离类型标注后直接求值；配置是构建机的可信用户代码（.config.ts 本就原生 import 执行）
+      const js = new Bun.Transpiler({ loader: 'tsx' }).transformSync(matches[0]);
+      const definePageConfig = (config: Record<string, unknown>) => config;
+      result = (new Function('definePageConfig', `return (${js.replace(/;?\s*$/, '')})`) as Function)(
+        definePageConfig,
+      ) as Record<string, unknown>;
+    } catch (_error) {
+      result = {};
     }
   }
 

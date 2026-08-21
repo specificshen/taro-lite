@@ -7,6 +7,7 @@ import { convertCopyOptions } from '../shared';
 import { TaroCompilerContext } from '../shared/compiler/mini';
 import { componentConfig } from '../shared/component';
 import { buildProfiler } from '../shared/profile.js';
+import { viteStaticCopy } from '../shared/static-copy';
 
 const VITE_BUILDING_ENVIRONMENT_MESSAGE = /^vite v\S+ building \S+ environment for \S+\.\.\.$/;
 
@@ -37,12 +38,7 @@ export default async function (appPath: string, rawTaroConfig: ViteMiniBuildConf
 
   // copy-plugin
   if (taroConfig.copy?.patterns?.length) {
-    const { viteStaticCopy } = await import('vite-plugin-static-copy');
-    plugins.push(
-      viteStaticCopy({
-        targets: convertCopyOptions(taroConfig),
-      }),
-    );
+    plugins.push(viteStaticCopy(convertCopyOptions(taroConfig)));
   }
 
   // custom vite plugins

@@ -1,8 +1,7 @@
 import path from 'node:path';
 import { internalComponents, toDashed } from '@spcsn/taro/runtime';
 import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/vite-compiler-context';
-import * as swc from '@swc/core';
-import type { PluginOption, ResolvedConfig } from 'vite';
+import { type PluginOption, parseAst, type ResolvedConfig } from 'vite';
 import { resolveMainFilePath } from '../../helper';
 import { appendVirtualModulePrefix, escapePath, prettyPrintJson, stripVirtualModulePrefix } from '../shared';
 import { componentConfig, resetComponentConfigIncludes } from '../shared/component';
@@ -16,52 +15,10 @@ const importNativeComponentName = 'importNativeComponent';
 const defineConfigNames = new Set(['defineAppConfig', 'definePageConfig']);
 const internalComponentNames = new Set(Object.keys(internalComponents));
 
-function getJsxElementName(node: SwcNode): string | undefined {
-  // SWC represents JSX identifiers as plain Identifier nodes.
-  if (node.type === 'Identifier') {
-    return typeof node.value === 'string' ? node.value : undefined;
-  }
-  if (node.type === 'JSXMemberExpression') {
-    // Only collect the root object for namespaced usage (e.g. <Custom.View />).
-    // This skips collecting non-component nodes while keeping common patterns working.
-    return getJsxElementName(node.object as SwcNode);
-  }
-  return undefined;
-}
-
-function collectUsedComponents(node: unknown, usedComponents: Set<string>) {
-  if (Array.isArray(node)) {
-    for (const item of node) {
-      collectUsedComponents(item, usedComponents);
-    }
-    return;
-  }
-  if (!isSwcNode(node)) return;
-
-  if (node.type === 'JSXElement' || node.type === 'JSXOpeningElement') {
-    const nameNode = (node.name || (node as unknown as { opening?: { name: SwcNode } }).opening?.name) as
-      | SwcNode
-      | undefined;
-    const tagName = nameNode ? getJsxElementName(nameNode) : undefined;
-    if (tagName && internalComponentNames.has(tagName)) {
-      usedComponents.add(toDashed(tagName));
-    }
-  }
-
-  for (const [key, value] of Object.entries(node)) {
-    if (key === 'span') continue;
-    collectUsedComponents(value, usedComponents);
-  }
-}
-
-interface SourceSpan {
+interface AstNode {
+  type: string;
   start: number;
   end: number;
-}
-
-interface SwcNode {
-  type?: string;
-  span?: SourceSpan;
   [key: string]: unknown;
 }
 
@@ -81,76 +38,87 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
 }
 
-function isSwcNode(value: unknown): value is SwcNode {
+function isAstNode(value: unknown): value is AstNode {
   return isRecord(value) && typeof value.type === 'string';
 }
 
-function getIdentifierValue(node: unknown): string | undefined {
-  if (!isSwcNode(node) || node.type !== 'Identifier') return;
-  return typeof node.value === 'string' ? node.value : undefined;
-}
-
-function getStringLiteralValue(node: unknown): string | undefined {
-  if (!isSwcNode(node) || node.type !== 'StringLiteral') return;
-  return typeof node.value === 'string' ? node.value : undefined;
-}
-
-function getSourceRange(span: SourceSpan): Pick<SourceEdit, 'start' | 'end'> {
-  return {
-    start: span.start - 1,
-    end: span.end - 1,
-  };
-}
-
-function collectSwcNodes(node: unknown, visitor: (node: SwcNode) => void) {
+/** oxc（ESTree 兼容）AST 的通用递归遍历，跳过 loc 位置信息 */
+function collectAstNodes(node: unknown, visitor: (node: AstNode) => void) {
   if (Array.isArray(node)) {
     for (const item of node) {
-      collectSwcNodes(item, visitor);
+      collectAstNodes(item, visitor);
     }
     return;
   }
 
   if (!isRecord(node)) return;
 
-  if (isSwcNode(node)) {
+  if (isAstNode(node)) {
     visitor(node);
   }
 
   for (const [key, value] of Object.entries(node)) {
-    if (key === 'span') continue;
-    collectSwcNodes(value, visitor);
+    if (key === 'loc') continue;
+    collectAstNodes(value, visitor);
   }
 }
 
-function hasLocalImportNativeComponent(ast: SwcNode): boolean {
+function getIdentifierName(node: unknown): string | undefined {
+  if (!isAstNode(node) || node.type !== 'Identifier') return;
+  return typeof node.name === 'string' ? node.name : undefined;
+}
+
+function getStringLiteralValue(node: unknown): string | undefined {
+  if (!isAstNode(node) || node.type !== 'Literal') return;
+  return typeof node.value === 'string' ? node.value : undefined;
+}
+
+function getJsxElementName(node: unknown): string | undefined {
+  if (!isAstNode(node)) return;
+  if (node.type === 'JSXIdentifier') {
+    return typeof node.name === 'string' ? node.name : undefined;
+  }
+  if (node.type === 'JSXMemberExpression') {
+    // 只收集根对象（如 <Custom.View /> 收集 Custom），跳过非组件节点
+    return getJsxElementName(node.object);
+  }
+}
+
+function collectUsedComponents(ast: AstNode, usedComponents: Set<string>) {
+  collectAstNodes(ast, (node) => {
+    if (node.type !== 'JSXOpeningElement') return;
+    const tagName = getJsxElementName(node.name);
+    if (tagName && internalComponentNames.has(tagName)) {
+      usedComponents.add(toDashed(tagName));
+    }
+  });
+}
+
+function hasLocalImportNativeComponent(ast: AstNode): boolean {
   let hasLocalBinding = false;
 
-  collectSwcNodes(ast, (node) => {
+  collectAstNodes(ast, (node) => {
     if (hasLocalBinding) return;
 
-    if (node.type === 'FunctionDeclaration') {
-      hasLocalBinding = getIdentifierValue(node.identifier) === importNativeComponentName;
-      return;
-    }
-
-    if (node.type === 'VariableDeclarator') {
-      hasLocalBinding = getIdentifierValue(node.id) === importNativeComponentName;
+    if (node.type === 'FunctionDeclaration' || node.type === 'VariableDeclarator') {
+      hasLocalBinding = getIdentifierName(node.id) === importNativeComponentName;
       return;
     }
 
     if (node.type === 'ImportDeclaration') {
       const specifiers = Array.isArray(node.specifiers) ? node.specifiers : [];
-      hasLocalBinding = specifiers.some((specifier) => {
-        if (!isSwcNode(specifier)) return false;
-        return getIdentifierValue(specifier.local) === importNativeComponentName;
-      });
+      hasLocalBinding = specifiers.some(
+        (specifier) => getIdentifierName((specifier as AstNode).local) === importNativeComponentName,
+      );
     }
   });
 
   return hasLocalBinding;
 }
 
-function getSwcParseOptions(id: string): swc.ParseOptions {
+type JsxLang = 'js' | 'jsx' | 'ts' | 'tsx';
+
+function getParseLang(id: string): JsxLang {
   const cleanId = id.split('?')[0].split('#')[0];
   const ext = path.extname(cleanId).toLowerCase();
 
@@ -158,28 +126,26 @@ function getSwcParseOptions(id: string): swc.ParseOptions {
     case '.ts':
     case '.mts':
     case '.cts':
-      return { syntax: 'typescript', tsx: false };
-    case '.tsx':
-      return { syntax: 'typescript', tsx: true };
+      return 'ts';
     case '.js':
     case '.mjs':
     case '.cjs':
-      return { syntax: 'ecmascript', jsx: false };
+      return 'js';
     case '.jsx':
-      return { syntax: 'ecmascript', jsx: true };
+      return 'jsx';
     default:
-      return { syntax: 'typescript', tsx: true };
+      return 'tsx';
   }
 }
 
-function transformNativeComponents(
+export function transformNativeComponents(
   code: string,
   id: string,
   viteCompilerContext: ViteMiniCompilerContext,
   nCompUniqueKeyMap: UniqueKeyMap<string>,
   scopeNativeComp: Map<string, string>,
 ): NativeComponentTransformResult {
-  const ast = swc.parseSync(code, getSwcParseOptions(id)) as unknown as SwcNode;
+  const ast = parseAst(code, { sourceType: 'module', lang: getParseLang(id) }, id) as unknown as AstNode;
 
   const usedComponents = new Set<string>();
   collectUsedComponents(ast, usedComponents);
@@ -194,13 +160,14 @@ function transformNativeComponents(
 
   const sourceEdits: SourceEdit[] = [];
 
-  collectSwcNodes(ast, (node) => {
-    if (!node.span || node.type !== 'CallExpression') return;
-    const calleeName = getIdentifierValue(node.callee);
+  collectAstNodes(ast, (node) => {
+    if (node.type !== 'CallExpression') return;
+    const calleeName = getIdentifierName(node.callee);
 
     if (defineConfigNames.has(calleeName || '') && /\.config\.(t|j)sx?$/.test(id)) {
       sourceEdits.push({
-        ...getSourceRange(node.span),
+        start: node.start,
+        end: node.end,
         value: '',
       });
       return;
@@ -209,9 +176,9 @@ function transformNativeComponents(
     if (calleeName !== importNativeComponentName) return;
 
     const callArguments = Array.isArray(node.arguments) ? node.arguments : [];
-    const pathArg = isRecord(callArguments[0]) ? callArguments[0].expression : undefined;
-    const nameArg = isRecord(callArguments[1]) ? callArguments[1].expression : undefined;
-    const exportNameArg = isRecord(callArguments[2]) ? callArguments[2].expression : undefined;
+    const pathArg = callArguments[0];
+    const nameArg = callArguments[1];
+    const exportNameArg = callArguments[2];
     let nativeComponentPath = viteCompilerContext.resolvePageImportPath(id, getStringLiteralValue(pathArg) || '');
 
     if (nativeComponentPath.startsWith('.')) {
@@ -226,7 +193,8 @@ function transformNativeComponents(
     scopeNativeComp.set(key, nativeComponentPath);
 
     sourceEdits.push({
-      ...getSourceRange(node.span),
+      start: node.start,
+      end: node.end,
       value: JSON.stringify(key),
     });
   });
