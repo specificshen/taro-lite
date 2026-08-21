@@ -46,7 +46,7 @@ The following package moves are current status, not future plans:
 - `@spcsn/taro-plugin-framework-react` and `@spcsn/taro-react` are folded into `@spcsn/taro-cli` (`src/internal/runner/`).
 - `@spcsn/taro-api` is folded into `@spcsn/taro`.
 - `@spcsn/taro-runner-utils` is folded into `@spcsn/taro-cli` (`src/internal/`).
-- `babel-preset-taro` is removed along with the Babel pipeline; the maintained compiler path is Vite + SWC inside `@spcsn/taro-cli`.
+- `babel-preset-taro` is removed along with the Babel pipeline; the maintained compiler path is Vite (rolldown/oxc) inside `@spcsn/taro-cli`.
 - Historical Babel/PostCSS plugin packages are excluded from the active workspace.
 
 ### When updating modernization docs

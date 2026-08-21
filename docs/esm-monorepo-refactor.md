@@ -1,6 +1,7 @@
 # ESM 改造与 Monorepo 合包规划
 
 > 状态：阶段一、二已完成，阶段三待落地  
+> 本文是 1.2.0 改造的历史记录；当前工具链（Bun）与命令以 docs/bun-migration.md 和根 package.json 为准。  
 > 目标版本：1.2.0  
 > 核心原则：包数量收敛到 3 个，内部实现从 `@spcsn/taro/runtime` 统一引用，避免 ESM 下的状态分裂。
 
@@ -104,10 +105,10 @@
 ```bash
 # 底座仓库
 cd /Users/shen/Desktop/study/taro-lite
-pnpm run typecheck
-pnpm run lint
-pnpm --filter @spcsn/taro run build
-pnpm --filter @spcsn/taro-cli run build
+bun run typecheck
+bun run lint
+bun run build
+bun run test
 
 # 业务工程
 cd /Users/shen/Desktop/main/ali-your-space-miniapp

@@ -26,7 +26,7 @@ Treat these historical package names as internal implementation details that hav
 
 - `@spcsn/taro-runtime` → inlined into `packages/taro/src/runtime/`, exposed as `@spcsn/taro/runtime` for CLI build-time use.
 - `@spcsn/taro-service`, `@spcsn/taro-mini-runner`, `@spcsn/taro-helper`, `@spcsn/taro-shared` → inlined into `packages/taro-cli/src/internal/`.
-- Vite, PostCSS, LightningCSS, Babel/SWC, React Refresh, and other runner/framework internals.
+- Vite (rolldown/oxc), PostCSS, LightningCSS, and other runner/framework internals.
 
 ### Module map
 

@@ -1,6 +1,7 @@
 # Taro Monorepo React-only 现代化改造方案
 
 > 本文是底座内部历史改造方案和当前状态记录，不是业务接入指导。业务接入请以仓库根目录 `README.md` 的最小依赖和配置示例为准。
+> 本文记录 1.x 改造过程；2.0 Bun 工具链改造见 docs/bun-migration.md。文中 pnpm/vitest 等命令为历史快照，当前命令以根 package.json scripts 为准。
 > 目标读者：负责改造 fork 后 Taro monorepo 的 AI / 工程师。
 > 核心目标：把 Taro 从“多框架、多平台、多历史编译器兼容”的通用框架，收敛为“React 19 开发微信小程序/Skyline 优先”的现代小程序构建与运行框架。
 
@@ -13,17 +14,17 @@
 - 活跃 `packages/` 下只保留三个业务入口包：`@spcsn/taro`、`@spcsn/taro-components`、`@spcsn/taro-cli`。
 - 业务侧最小显式依赖收敛为 `@spcsn/taro`、`@spcsn/taro-components`、`@spcsn/taro-cli`，外加业务自身的 `react`。
 - 原内部包 `@spcsn/taro-runtime` 已源码级内联到 `packages/taro/src/runtime/`，由 `@spcsn/taro` 统一构建并通过 `@spcsn/taro/runtime` 子路径暴露，供 CLI 构建期引用。
-- 原内部包 `@spcsn/taro-helper`、`@spcsn/taro-service`、`@spcsn/taro-mini-runner`、`@spcsn/taro-shared` 已源码级内联到 `packages/taro-cli/src/internal/{taro-helper,taro-service,taro-mini-runner,taro-shared}/`。
+- 原内部包 `@spcsn/taro-helper`、`@spcsn/taro-service`、`@spcsn/taro-mini-runner`、`@spcsn/taro-shared` 已源码级内联到 `packages/taro-cli/src/internal/`，现按职责重组为 `helper/`、`kernel/`、`runner/`；原 `taro-shared/` 目录已删除，共享能力已收敛至 `@spcsn/taro/runtime`。
 - 历史归档目录 `archives/packages/` 已整体移除，原内部包只读快照可从 git 历史找回。
 - `@spcsn/taro` 与 `@spcsn/taro-cli` 均已清空 `bundleDependencies`。
 - `release:check` 只认可三个公开业务入口包，并持续检查内部包依赖边界、发布面与业务可见类型边界。
 - `@spcsn/taro-plugin-generator` 已并入 `@spcsn/taro-cli`。
 - `@spcsn/taro-plugin-platform-weapp` 已并入 `@spcsn/taro-cli`，WeApp 平台能力保留在 CLI 内部实现。
-- `@spcsn/taro-plugin-framework-react` 与 `@spcsn/taro-react` 已随原 `@spcsn/taro-mini-runner` 一并内联到 `packages/taro-cli/src/internal/taro-mini-runner/`，不再作为业务或公开插件入口。
+- `@spcsn/taro-plugin-framework-react` 与 `@spcsn/taro-react` 已随原 `@spcsn/taro-mini-runner` 一并内联到 `packages/taro-cli/src/internal/runner/`，不再作为业务或公开插件入口。
 - `@spcsn/taro-api` 已并入 `@spcsn/taro`。
 - `@spcsn/taro-runner-utils` 已并入 CLI 内部 service/runner。
 - `babel-preset-taro` 已改为 `@spcsn/taro-cli` 内部实现，不再作为公开包。
-- PostCSS / Babel 历史插件包已从公开接入面移除，相关历史包已从 `pnpm-workspace.yaml` 排除。
+- PostCSS / Babel 历史插件包已从公开接入面移除，相关历史包已从 workspace 配置中排除。
 - 已建立 `fixtures/taro-lite-sunshine-lab`，用于验证 React 19 开发 WeApp + Skyline / glass-easel 构建链路。
 - `scripts/check-release-readiness.ts` 已作为发布前防回退检查，覆盖公开包版本、发布面和业务可见类型注释边界。
 - 临时包 `@spcsn/taro-core` 已合并回 `@spcsn/taro-cli`：`taro-core` 的现代 ESM-first 源码和模板成为 `taro-cli` 的实现，`taro-core` 包本身已删除，业务侧仍只依赖 `@spcsn/taro-cli`。
@@ -76,10 +77,10 @@ packages/
   taro-components/             # React 小程序组件：View/Text/Image/ScrollView 等
   taro-cli/                    # 命令入口：读取配置、内置 WeApp 平台插件、调用内部 runner
     src/internal/              # 原内部实现包源码内联目录
-      taro-helper/             # 构建期内部工具
-      taro-service/            # CLI 插件和命令编排服务
-      taro-mini-runner/        # 小程序构建 runner：构建插件、小程序产物生成、React framework 集成
-      taro-shared/             # React + weapp 仍需要的共享工具
+      helper/                  # 构建期内部工具（原 taro-helper）
+      kernel/                  # CLI 插件内核与配置加载（原 taro-service）
+      runner/                  # 小程序构建 runner：构建插件、小程序产物生成、React framework 集成（原 taro-mini-runner）
+                                 # 原 taro-shared/ 目录已删除，共享能力收敛至 @spcsn/taro/runtime
 ```
 
 当前业务可感知入口已经收敛为：
@@ -147,7 +148,7 @@ packages/
 
 ### 4.3 React framework 集成
 
-当前状态：`@spcsn/taro-react` 已随原 `@spcsn/taro-mini-runner` 一并内联到 `packages/taro-cli/src/internal/taro-mini-runner/`，不再作为业务或公开插件入口。
+当前状态：`@spcsn/taro-react` 已随原 `@spcsn/taro-mini-runner` 一并内联到 `packages/taro-cli/src/internal/runner/`，不再作为业务或公开插件入口。
 
 职责：提供 React 19 框架适配、页面组件挂载、生命周期 hooks 与小程序运行时桥接。
 
@@ -228,9 +229,9 @@ export default defineAppConfig({
 });
 ```
 
-### 4.6 `@spcsn/taro-mini-runner`（已内联至 `packages/taro-cli/src/internal/taro-mini-runner/`）
+### 4.6 `@spcsn/taro-mini-runner`（已内联至 `packages/taro-cli/src/internal/runner/`）
 
-当前状态：原 `@spcsn/taro-mini-runner` 包已源码级内联到 `packages/taro-cli/src/internal/taro-mini-runner/`，作为 `@spcsn/taro-cli` 的内部实现，不再作为独立包或业务可感知入口。
+当前状态：原 `@spcsn/taro-mini-runner` 包已源码级内联到 `packages/taro-cli/src/internal/runner/`，作为 `@spcsn/taro-cli` 的内部实现，不再作为独立包或业务可感知入口。
 
 职责：唯一编译 runner。
 
@@ -325,7 +326,7 @@ export default defineMiniappConfig({
 
 ### 4.9 `@spcsn/taro-shared` 与 `@spcsn/taro-helper`
 
-当前状态：这两个原内部包已源码级内联到 `packages/taro-cli/src/internal/taro-shared/` 与 `packages/taro-cli/src/internal/taro-helper/`，作为 `@spcsn/taro-cli` 的内部实现，不再独立发布。
+当前状态：`@spcsn/taro-helper` 已源码级内联到 `packages/taro-cli/src/internal/helper/`，作为 `@spcsn/taro-cli` 的内部实现，不再独立发布；`@spcsn/taro-shared` 对应的 `internal/taro-shared/` 目录已删除，共享能力已收敛至 `@spcsn/taro/runtime`。
 
 职责：内部共享工具。
 
@@ -344,7 +345,7 @@ export default defineMiniappConfig({
 
 - 在 fork 的 Taro monorepo 中跑通现有测试。
 - 用一个真实 React + weapp + Skyline 应用作为 fixture。
-- 固定 Node、pnpm、TypeScript、React、Vite 版本。
+- 固定 Bun、TypeScript、React、Vite 版本。
 - 记录当前 build 输出文件结构。
 
 验收：
@@ -591,13 +592,22 @@ Skyline 不等于 WebView。不要引入：
 }
 ```
 
-使用 link 方式前，fork 仓库里的相关包仍然需要先 build，否则业务工程可能解析到未编译源码或旧 dist。
+使用 link 方式前，fork 仓库里的相关包仍然需要先 build（`@spcsn/taro` 与 `@spcsn/taro-components` 由 Bun.build 构建；`@spcsn/taro-cli` 为 Bun-only 直跑 TS，无构建步骤），否则业务工程可能解析到未编译源码或旧 dist。
 
 ```bash
 cd ../taro-lite
-pnpm --filter @spcsn/taro run build
-pnpm --filter @spcsn/taro-components run build
-pnpm --filter @spcsn/taro-cli run build
+bun run build
+```
+
+底座仓库的完整验证清单（仓库根目录执行）：
+
+```bash
+bun run typecheck
+bun run lint
+bun run build
+bun run test
+bun run release:check
+bun run verify:fixture:weapp
 ```
 
 安装并构建业务工程：
@@ -610,33 +620,20 @@ pnpm run build
 
 如果业务工程使用 `bun run dev` 或 `npm run build` 启动也可以，关键是依赖来源必须统一，并且不要把内部包重新写回业务 `package.json`。
 
-### 11.3 本地 tarball 验证
+### 11.3 发布演练（dry-run）验证
 
-更接近发布场景时，可以把三个入口包打成本地 tarball，再安装到业务工程：
+更接近发布场景时，不再手动打本地 tarball，而是走底座统一的发布脚本演练，确认各包 tarball 内容和依赖版本：
 
 ```bash
-mkdir -p ../taro-lite-packs
-pnpm --filter @spcsn/taro pack --pack-destination ../taro-lite-packs
-pnpm --filter @spcsn/taro-components pack --pack-destination ../taro-lite-packs
-pnpm --filter @spcsn/taro-cli pack --pack-destination ../taro-lite-packs
+cd ../taro-lite
+bun run build
+bun run release:check
+bun scripts/publish.ts --dry-run
 ```
 
-业务工程中写入实际生成的 tarball 文件名：
+dry-run 会按 `taro-components → taro → taro-cli` 的顺序逐包执行 `bun publish --dry-run`，输出每个包将发布的文件清单、版本与 tag（prerelease 版本自动走 `next` tag），不会真正发布。确认无误后的正式发布流程见根 `README.md` 的「发布流程」一节。
 
-```json
-{
-  "dependencies": {
-    "@spcsn/taro": "file:../taro-lite-packs/spcsn-taro-1.2.0.tgz",
-    "@spcsn/taro-components": "file:../taro-lite-packs/spcsn-taro-components-1.2.0.tgz",
-    "react": "^19.2.0"
-  },
-  "devDependencies": {
-    "@spcsn/taro-cli": "file:../taro-lite-packs/spcsn-taro-cli-1.2.0.tgz"
-  }
-}
-```
-
-注意：`package.json` 里不能使用 `*` 通配符，必须填 `pnpm pack` 生成的完整文件名。
+业务工程本地验证优先使用 11.2 的 `link:` 方式；发布完成后把 `link:` 依赖切换为 npm 版本再完整验证一遍。
 
 ### 11.4 不推荐：业务显式安装内部包
 
@@ -666,6 +663,8 @@ pnpm why @spcsn/taro
 pnpm why @spcsn/taro-components
 pnpm why @spcsn/taro-cli
 ```
+
+> 注：`pnpm why` 是业务工程侧命令，业务工程可自行选择包管理器（业务工程用 pnpm 是允许的）；底座仓库统一使用 Bun。
 
 确认业务直接声明的只有 `@spcsn/taro`、`@spcsn/taro-components`、`@spcsn/taro-cli`，不再有任何 `@spcsn/*` 内部包作为传递依赖出现。
 
