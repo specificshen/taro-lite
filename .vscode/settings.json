@@ -22,10 +22,12 @@
     "DOMTERM",
     "dotenv",
     "emnapi",
+    "flac",
     "hapi",
     "htmltransform",
     "interceptorify",
     "jridgewell",
+    "jsnext",
     "KONSOLE",
     "lifecyle",
     "lightningcss",
@@ -51,6 +53,7 @@
     "vitejs",
     "vitest",
     "weapp",
+    "WXML",
     "wxss"
   ]
 }
