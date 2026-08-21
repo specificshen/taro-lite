@@ -1,17 +1,13 @@
-import { createRequire } from 'node:module';
 import * as path from 'node:path';
 import type { IProjectConfig } from '@spcsn/taro/types/compile';
 
-const require = createRequire(import.meta.url);
-
-import _ from 'lodash';
-import ora from 'ora';
 import {
-  createSwcRegister,
   ENTRY,
   fs,
   getModuleDefaultExport,
   getUserHomeDir,
+  installConfigMacros,
+  merge,
   OUTPUT_DIR,
   resolveScriptPath,
   SOURCE_DIR,
@@ -60,19 +56,15 @@ export default class Config {
       this.initGlobalConfig(configEnv.command);
       serviceProfiler.end('global config', globalConfigStartMs);
 
-      const swcRegisterStartMs = serviceProfiler.start();
-      createSwcRegister({
-        only: [(filePath) => filePath.indexOf(path.join(this.appPath, CONFIG_DIR_NAME)) >= 0],
-      });
-      serviceProfiler.end('swc register', swcRegisterStartMs);
-
       try {
         const importConfigStartMs = serviceProfiler.start();
-        const userExport = getModuleDefaultExport(require(this.configPath));
+        // Bun 原生加载 TS 配置，query 参数避免同一进程内重复运行时命中模块缓存
+        installConfigMacros();
+        const userExport = getModuleDefaultExport(await import(`${this.configPath}?t=${Date.now()}`));
         serviceProfiler.end('import config', importConfigStartMs);
 
         const evaluateConfigStartMs = serviceProfiler.start();
-        this.initialConfig = typeof userExport === 'function' ? await userExport(_.merge, configEnv) : userExport;
+        this.initialConfig = typeof userExport === 'function' ? await userExport(merge, configEnv) : userExport;
         serviceProfiler.end('evaluate config', evaluateConfigStartMs);
         this.isInitSuccess = true;
       } catch (err) {
@@ -88,13 +80,10 @@ export default class Config {
     if (!homedir) return console.error('获取不到用户 home 路径');
     const globalPluginConfigPath = path.join(getUserHomeDir(), TARO_GLOBAL_CONFIG_DIR, TARO_GLOBAL_CONFIG_FILE);
     if (!fs.existsSync(globalPluginConfigPath)) return;
-    const spinner = ora(`开始获取 taro 全局配置文件： ${globalPluginConfigPath}`).start();
     try {
       this.initialGlobalConfig = fs.readJSONSync(globalPluginConfigPath) || {};
       this.initialGlobalConfig = filterGlobalConfig(this.initialGlobalConfig, command);
-      spinner.succeed('获取 taro 全局配置成功');
     } catch (_e) {
-      spinner.stop();
       console.warn(`获取全局配置失败，如果需要启用全局插件请查看配置文件: ${globalPluginConfigPath} `);
     }
   }

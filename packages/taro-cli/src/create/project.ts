@@ -1,9 +1,9 @@
 import * as path from 'node:path';
-import type { default as Inquirer, Question } from 'inquirer';
 import { chalk, fs } from '../internal/taro-helper';
 import { clearConsole, getPkgVersion, getRootPath } from '../util/index';
 import { TEMPLATE_CREATOR_FILES } from './constants';
 import Creator from './creator';
+import { input, select } from './prompt';
 import { createProject, NpmType, type ProjectConfig, type TemplateHandlers } from './template-creator';
 
 export interface IProjectConf {
@@ -56,58 +56,54 @@ export default class Project extends Creator {
   }
 
   async ask(): Promise<IProjectConfOptions> {
-    const { default: inquirer } = (await import('inquirer')) as { default: typeof Inquirer };
-    const prompts: Question<IProjectConf>[] = [];
+    const answers: IProjectConfOptions = {};
 
     if (typeof this.conf.projectName !== 'string') {
-      prompts.push({
-        type: 'input',
-        name: 'projectName',
-        message: '请输入项目名称！',
-        validate(input) {
-          if (!input) return '项目名不能为空！';
-          if (fs.existsSync(input)) return '当前目录已经存在同名项目，请换一个项目名！';
-          return true;
-        },
-      });
+      answers.projectName = await this.askProjectName();
     }
 
     if (typeof this.conf.description !== 'string') {
-      prompts.push({
-        type: 'input',
-        name: 'description',
-        message: '请输入项目介绍',
-      });
+      answers.description = await input('请输入项目介绍');
     }
 
     if (typeof this.conf.npm !== 'string') {
-      prompts.push({
-        type: 'list',
-        name: 'npm',
-        message: '请选择包管理工具',
-        choices: [
-          { name: 'pnpm', value: NpmType.Pnpm },
-          { name: 'yarn', value: NpmType.Yarn },
-          { name: 'npm', value: NpmType.Npm },
-        ],
-        default: NpmType.Pnpm,
-      });
+      answers.npm = await select('请选择包管理工具', [
+        { name: 'pnpm', value: NpmType.Pnpm },
+        { name: 'yarn', value: NpmType.Yarn },
+        { name: 'npm', value: NpmType.Npm },
+      ]);
     }
 
-    const answers = await inquirer.prompt<IProjectConf>(prompts);
-    const templateAnswer = await this.askTemplate(inquirer);
+    const templateAnswer = await this.askTemplate();
 
     return { ...answers, ...templateAnswer };
   }
 
-  async askTemplate(inquirer: typeof Inquirer): Promise<Pick<IProjectConf, 'template'>> {
+  private async askProjectName(): Promise<string> {
+    const message = '请输入项目名称！';
+    // 非交互环境下 input 直接返回空默认值，无法反复追问，跳过校验以免死循环
+    if (!process.stdin.isTTY) return input(message);
+
+    for (;;) {
+      const projectName = await input(message);
+      if (!projectName) {
+        console.log(chalk.red('项目名不能为空！'));
+        continue;
+      }
+      if (fs.existsSync(projectName)) {
+        console.log(chalk.red('当前目录已经存在同名项目，请换一个项目名！'));
+        continue;
+      }
+      return projectName;
+    }
+  }
+
+  async askTemplate(): Promise<Pick<IProjectConf, 'template'>> {
     if (this.conf.template) return { template: this.conf.template };
 
-    const answer = await inquirer.prompt<IProjectConf>([
-      { type: 'list', name: 'template', message: '请选择模板', choices: [{ name: '默认模板', value: 'default' }] },
-    ]);
+    const template = await select('请选择模板', [{ name: '默认模板', value: 'default' }]);
 
-    return { template: answer.template };
+    return { template };
   }
 
   async write(): Promise<void> {

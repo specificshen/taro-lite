@@ -153,7 +153,7 @@ export default class CLI {
 
     const appPath = this.appPath;
     const packageRoot = path.resolve(__dirname, '..');
-    const commandsPath = path.join(packageRoot, 'dist', 'presets', 'commands');
+    const commandsPath = path.join(packageRoot, 'src', 'presets', 'commands');
 
     const env = getStringArg(args, 'env');
     const envPrefix = getStringArg(args, 'envPrefix');
@@ -177,7 +177,7 @@ export default class CLI {
 
     const kernel = new Kernel({
       appPath,
-      presets: [path.join(packageRoot, 'dist', 'presets', 'index.js')],
+      presets: [path.join(packageRoot, 'src', 'presets', 'index.ts')],
       config,
       plugins: [],
     });
@@ -187,15 +187,15 @@ export default class CLI {
       kernel.config.initialConfig.env = patchEnv(kernel.config.initialConfig, expandEnv);
     }
 
-    kernel.optsPlugins.push(path.join(commandsPath, `${command}.js`));
+    kernel.optsPlugins.push(path.join(commandsPath, `${command}.ts`));
     kernel.cliCommandsPath = commandsPath;
     kernel.cliCommands = [...SUPPORTED_COMMANDS];
 
     if (command === 'build') {
       warnInternalRuntimeDeps(appPath);
-      kernel.optsPlugins.push(path.join(packageRoot, 'dist', 'platform-weapp'));
+      kernel.optsPlugins.push(path.join(packageRoot, 'src', 'platform-weapp', 'index.ts'));
       kernel.optsPlugins.push(
-        path.join(packageRoot, 'dist', 'internal', 'taro-mini-runner', 'react-framework', 'index.js'),
+        path.join(packageRoot, 'src', 'internal', 'taro-mini-runner', 'react-framework', 'index.ts'),
       );
 
       await cliProfiler.measure('build command', () =>

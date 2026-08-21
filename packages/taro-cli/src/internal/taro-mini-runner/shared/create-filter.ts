@@ -2,10 +2,11 @@
  * Modify from https://github.com/rollup/plugins/blob/master/packages/pluginutils/src/createFilter.ts
  * MIT License http://www.opensource.org/licenses/mit-license.php
  * Author Tobias Rich Harris @richard.a.harris@gmail.com
+ *
+ * glob 匹配使用 Bun 原生 Bun.Glob（替代 picomatch）
  */
 import path from 'node:path';
 import { isArray, isFunction } from '@spcsn/taro/runtime';
-import pm from 'picomatch';
 
 type FilterPattern = ReadonlyArray<string | RegExp> | string | RegExp | null | undefined;
 
@@ -49,11 +50,8 @@ export default function createFilter(
       ? id
       : {
           test: (what: string) => {
-            // this refactor is a tad overly verbose but makes for easy debugging
             const pattern = getMatcherString(id, resolutionBase ?? '');
-            const fn = pm(pattern, { dot: true });
-            const result = fn(what);
-            return result;
+            return new Bun.Glob(pattern).match(what);
           },
         };
   const includeMatchers = ensureArray(include).map(getMatcher);

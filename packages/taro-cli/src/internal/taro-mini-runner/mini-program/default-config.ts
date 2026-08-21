@@ -25,12 +25,6 @@ const defaultConfig: Partial<ViteMiniBuildConfig> = {
     limit: MEDIA_LIMIT,
   },
   postcss: {
-    autoprefixer: {
-      enable: true,
-      config: {
-        flexbox: 'no-2009',
-      },
-    },
     pxtransform: {
       enable: true,
       config: {

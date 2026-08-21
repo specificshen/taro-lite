@@ -1,5 +1,4 @@
 import type { Func, IPostcssOption, IPxTransformOption } from '@spcsn/taro/types/compile';
-import autoprefixerPlugin from 'autoprefixer';
 import postcssPxTransform from '../style-transforms/px-transform';
 
 export const getDefaultPostcssConfig = function ({
@@ -11,8 +10,9 @@ export const getDefaultPostcssConfig = function ({
   deviceRatio: Record<string, number>;
   postcssOption?: IPostcssOption<'mini'>;
 }): [string, { enable?: boolean; config?: Record<string, unknown> | IPxTransformOption } | undefined, Func?][] {
+  // autoprefixer 已移除：CSS 经 LightningCSS 按固定 targets 降级与补前缀，无需 postcss 再跑一遍
   const {
-    autoprefixer,
+    autoprefixer: _autoprefixer,
     pxtransform = {},
     cssModules: _cssModules,
     htmltransform: _htmltransform,
@@ -27,9 +27,5 @@ export const getDefaultPostcssConfig = function ({
     pxtransform.config!.deviceRatio = deviceRatio;
   }
 
-  return [
-    ['autoprefixer', autoprefixer, autoprefixerPlugin],
-    ['postcss-pxtransform', pxtransform, postcssPxTransform],
-    ...Object.entries(options),
-  ];
+  return [['postcss-pxtransform', pxtransform, postcssPxTransform], ...Object.entries(options)];
 };

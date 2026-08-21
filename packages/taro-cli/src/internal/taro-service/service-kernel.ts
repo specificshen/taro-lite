@@ -1,9 +1,6 @@
 import { EventEmitter } from 'node:events';
 import * as path from 'node:path';
 import type { Func, IProjectConfig, PluginItem } from '@spcsn/taro/types/compile';
-import Joi from 'joi';
-import _ from 'lodash';
-import { AsyncSeriesWaterfallHook } from 'tapable';
 import * as helper from '../taro-helper';
 import * as runnerUtils from './runner-utils';
 import type Config from './service-config';
@@ -96,7 +93,7 @@ export default class Kernel extends EventEmitter {
     this.debugger('initRunnerUtils');
   }
 
-  initPresetsAndPlugins() {
+  async initPresetsAndPlugins() {
     const initialConfig = this.initialConfig;
     const initialGlobalConfig = this.initialGlobalConfig;
     const cliAndProjectConfigPresets = mergePlugins(this.optsPresets || [], initialConfig.presets || [])();
@@ -105,65 +102,53 @@ export default class Kernel extends EventEmitter {
     const globalPresets = convertPluginsToObject(initialGlobalConfig.presets || [])();
     this.debugger('initPresetsAndPlugins', cliAndProjectConfigPresets, cliAndProjectPlugins);
     this.debugger('globalPresetsAndPlugins', globalPlugins, globalPresets);
-    if (process.env.NODE_ENV !== 'test') {
-      const swcRegisterStartMs = serviceProfiler.start();
-      helper.createSwcRegister({
-        only: [
-          ...Object.keys(cliAndProjectConfigPresets),
-          ...Object.keys(cliAndProjectPlugins),
-          ...Object.keys(globalPresets),
-          ...Object.keys(globalPlugins),
-        ],
-      });
-      serviceProfiler.end('plugin swc register', swcRegisterStartMs);
-    }
     this.plugins = new Map();
     this.extraPlugins = {};
     this.globalExtraPlugins = {};
     const resolvePresetsStartMs = serviceProfiler.start();
-    this.resolvePresets(cliAndProjectConfigPresets, globalPresets);
+    await this.resolvePresets(cliAndProjectConfigPresets, globalPresets);
     serviceProfiler.end('resolve presets', resolvePresetsStartMs);
     const resolvePluginsStartMs = serviceProfiler.start();
-    this.resolvePlugins(cliAndProjectPlugins, globalPlugins);
+    await this.resolvePlugins(cliAndProjectPlugins, globalPlugins);
     serviceProfiler.end('resolve plugins', resolvePluginsStartMs);
   }
 
-  resolvePresets(cliAndProjectPresets: IPluginsObject, globalPresets: IPluginsObject) {
+  async resolvePresets(cliAndProjectPresets: IPluginsObject, globalPresets: IPluginsObject) {
     const resolvedCliAndProjectPresets = resolvePresetsOrPlugins(this.appPath, cliAndProjectPresets, PluginType.Preset);
     while (resolvedCliAndProjectPresets.length) {
-      this.initPreset(resolvedCliAndProjectPresets.shift()!);
+      await this.initPreset(resolvedCliAndProjectPresets.shift()!);
     }
 
     const globalConfigRootPath = path.join(helper.getUserHomeDir(), helper.TARO_GLOBAL_CONFIG_DIR);
     const resolvedGlobalPresets = resolvePresetsOrPlugins(globalConfigRootPath, globalPresets, PluginType.Plugin, true);
     while (resolvedGlobalPresets.length) {
-      this.initPreset(resolvedGlobalPresets.shift()!, true);
+      await this.initPreset(resolvedGlobalPresets.shift()!, true);
     }
   }
 
-  resolvePlugins(cliAndProjectPlugins: IPluginsObject, globalPlugins: IPluginsObject) {
-    cliAndProjectPlugins = _.merge(this.extraPlugins, cliAndProjectPlugins);
+  async resolvePlugins(cliAndProjectPlugins: IPluginsObject, globalPlugins: IPluginsObject) {
+    cliAndProjectPlugins = helper.merge(this.extraPlugins, cliAndProjectPlugins);
     const resolvedCliAndProjectPlugins = resolvePresetsOrPlugins(this.appPath, cliAndProjectPlugins, PluginType.Plugin);
 
-    globalPlugins = _.merge(this.globalExtraPlugins, globalPlugins);
+    globalPlugins = helper.merge(this.globalExtraPlugins, globalPlugins);
     const globalConfigRootPath = path.join(helper.getUserHomeDir(), helper.TARO_GLOBAL_CONFIG_DIR);
     const resolvedGlobalPlugins = resolvePresetsOrPlugins(globalConfigRootPath, globalPlugins, PluginType.Plugin, true);
 
     const resolvedPlugins = resolvedCliAndProjectPlugins.concat(resolvedGlobalPlugins);
 
     while (resolvedPlugins.length) {
-      this.initPlugin(resolvedPlugins.shift()!);
+      await this.initPlugin(resolvedPlugins.shift()!);
     }
 
     this.extraPlugins = {};
     this.globalExtraPlugins = {};
   }
 
-  initPreset(preset: IPreset, isGlobalConfigPreset?: boolean) {
+  async initPreset(preset: IPreset, isGlobalConfigPreset?: boolean): Promise<void> {
     this.debugger('initPreset', preset);
     const { id, path, opts, apply } = preset;
     const pluginCtx = this.initPluginCtx({ id, path, ctx: this });
-    const { presets, plugins } = apply()(pluginCtx, opts) || {};
+    const { presets, plugins } = (await apply())(pluginCtx, opts) || {};
     this.registerPlugin(preset);
     if (Array.isArray(presets)) {
       const _presets = resolvePresetsOrPlugins(
@@ -173,11 +158,11 @@ export default class Kernel extends EventEmitter {
         isGlobalConfigPreset,
       );
       while (_presets.length) {
-        this.initPreset(_presets.shift()!, isGlobalConfigPreset);
+        await this.initPreset(_presets.shift()!, isGlobalConfigPreset);
       }
     }
     if (Array.isArray(plugins)) {
-      const mergedPlugins = _.merge(
+      const mergedPlugins = helper.merge(
         isGlobalConfigPreset ? this.globalExtraPlugins : this.extraPlugins,
         convertPluginsToObject(plugins)(),
       );
@@ -189,32 +174,29 @@ export default class Kernel extends EventEmitter {
     }
   }
 
-  initPlugin(plugin: IPlugin) {
+  async initPlugin(plugin: IPlugin) {
     const { id, path, opts, apply } = plugin;
     const pluginCtx = this.initPluginCtx({ id, path, ctx: this });
     this.debugger('initPlugin', plugin);
     this.registerPlugin(plugin);
-    apply()(pluginCtx, opts);
+    (await apply())(pluginCtx, opts);
     this.checkPluginOpts(pluginCtx, opts);
   }
 
-  applyCliCommandPlugin(commandNames: string[] = []) {
+  async applyCliCommandPlugin(commandNames: string[] = []) {
     const existsCliCommand: string[] = [];
     for (let i = 0; i < commandNames.length; i++) {
       const commandName = commandNames[i];
-      const commandFilePath = path.resolve(this.cliCommandsPath, `${commandName}.js`);
+      const commandFilePath = path.resolve(this.cliCommandsPath, `${commandName}.ts`);
       if (this.cliCommands.includes(commandName)) existsCliCommand.push(commandFilePath);
     }
     const commandPlugins = convertPluginsToObject(existsCliCommand || [])();
-    const commandSwcRegisterStartMs = serviceProfiler.start();
-    helper.createSwcRegister({ only: [...Object.keys(commandPlugins)] });
-    serviceProfiler.end('command swc register', commandSwcRegisterStartMs);
     const resolveCommandPluginsStartMs = serviceProfiler.start();
     const resolvedCommandPlugins = resolvePresetsOrPlugins(this.appPath, commandPlugins, PluginType.Plugin);
     serviceProfiler.end('resolve command plugins', resolveCommandPluginsStartMs);
     while (resolvedCommandPlugins.length) {
       const initCommandPluginStartMs = serviceProfiler.start();
-      this.initPlugin(resolvedCommandPlugins.shift()!);
+      await this.initPlugin(resolvedCommandPlugins.shift()!);
       serviceProfiler.end('init command plugin', initCommandPluginStartMs);
     }
   }
@@ -224,8 +206,8 @@ export default class Kernel extends EventEmitter {
       return;
     }
     this.debugger('checkPluginOpts', pluginCtx);
-    const schema = pluginCtx.optsSchema(Joi);
-    if (!Joi.isSchema(schema)) {
+    const schema = pluginCtx.optsSchema() as { validate?: (opts: unknown) => { error?: Error } } | undefined;
+    if (!schema || typeof schema.validate !== 'function') {
       throw new Error(`插件${pluginCtx.id}中设置参数检查 schema 有误，请检查！`);
     }
     const { error } = schema.validate(opts);
@@ -304,35 +286,27 @@ export default class Kernel extends EventEmitter {
     if (typeof name !== 'string') {
       throw new Error('调用失败，未传入正确的名称！');
     }
-    const hooks = this.hooks.get(name) || [];
+    const hooks = sortHooks(this.hooks.get(name) || []);
     if (!hooks.length) {
       return await initialVal;
     }
-    const waterfall = new AsyncSeriesWaterfallHook(['arg']);
-    if (hooks.length) {
-      const resArr: unknown[] = [];
-      for (const hook of hooks) {
-        waterfall.tapPromise(
-          {
-            name: hook.plugin!,
-            stage: hook.stage || 0,
-            before: hook.before,
-          },
-          async (arg) => {
-            const res = await hook.fn(opts, arg);
-            if (IS_MODIFY_HOOK.test(name) || IS_EVENT_HOOK.test(name)) {
-              return res;
-            }
-            if (IS_ADD_HOOK.test(name)) {
-              resArr.push(res);
-              return resArr;
-            }
-            return null;
-          },
-        );
+    // AsyncSeriesWaterfallHook 语义的无依赖实现：hook 串行执行，上一个 hook 的返回值作为下一个的入参
+    const isWaterfall = IS_MODIFY_HOOK.test(name) || IS_EVENT_HOOK.test(name);
+    const isAdd = IS_ADD_HOOK.test(name);
+    let result = await initialVal;
+    const resArr: unknown[] = [];
+    for (const hook of hooks) {
+      const res = await hook.fn(opts, result);
+      if (isWaterfall) {
+        result = res;
+      } else if (isAdd) {
+        resArr.push(res);
+        result = resArr;
+      } else {
+        result = null;
       }
     }
-    return await waterfall.promise(initialVal);
+    return result;
   }
 
   runWithPlatform(platform: string) {
@@ -378,7 +352,7 @@ export default class Kernel extends EventEmitter {
 
     this.debugger('initPresetsAndPlugins');
     const initPluginsStartMs = serviceProfiler.start();
-    this.initPresetsAndPlugins();
+    await this.initPresetsAndPlugins();
     serviceProfiler.end('init presets/plugins', initPluginsStartMs);
 
     await serviceProfiler.measure('onReady hooks', () => this.applyPlugins('onReady'));
@@ -418,4 +392,20 @@ export default class Kernel extends EventEmitter {
     );
     serviceProfiler.print('kernel command timings');
   }
+}
+
+/** tapable 的 stage/before 排序语义子集：stage 升序稳定排列，before 指定时插到目标插件之前 */
+function sortHooks(hooks: IHook[]): IHook[] {
+  const sorted = hooks.slice().sort((a, b) => (a.stage || 0) - (b.stage || 0));
+  for (let i = 0; i < sorted.length; i++) {
+    const hook = sorted[i];
+    if (!hook.before) continue;
+    const beforeNames = Array.isArray(hook.before) ? hook.before : [hook.before];
+    const targetIndex = sorted.findIndex((item, index) => index !== i && beforeNames.includes(item.plugin!));
+    if (targetIndex < 0) continue;
+    sorted.splice(i, 1);
+    sorted.splice(targetIndex > i ? targetIndex - 1 : targetIndex, 0, hook);
+    i = Math.max(i - 1, -1);
+  }
+  return sorted;
 }

@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { isEqual } from '../../taro-helper';
 
 export class UniqueKeyMap<T = unknown> {
   store: Map<string, T>;
@@ -13,7 +13,7 @@ export class UniqueKeyMap<T = unknown> {
     if (!this.store.has(key)) {
       this.store.set(key, value);
       return key;
-    } else if (_.isEqual(this.store.get(key), value)) {
+    } else if (isEqual(this.store.get(key), value)) {
       return key;
     }
 

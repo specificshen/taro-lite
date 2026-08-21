@@ -1,11 +1,8 @@
 {
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    "outDir": "dist",
-    "rootDir": "./src",
-    "sourceMap": true,
-    "declaration": true
+    "types": ["node", "bun-types"]
   },
-  "include": ["./src", "./src/internal/**/*"],
+  "include": ["./src", "./bin"],
   "exclude": ["./src/__tests__", "node_modules", "dist"]
 }

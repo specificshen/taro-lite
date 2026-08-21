@@ -5,31 +5,20 @@
   "author": "Samuel Ouyang",
   "license": "MIT",
   "type": "module",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "default": "./dist/index.js"
-    },
+    ".": "./src/index.ts",
     "./package.json": "./package.json"
   },
   "scripts": {
-    "prod": "bun run build",
-    "prepack": "bun run build",
-    "pretest": "bun run build",
     "test": "bun test --isolate",
     "test:ci": "bun test --isolate --coverage",
-    "prebuild": "bun run clean",
-    "build": "tsc && bun ./scripts/fix-esm-imports.ts dist",
-    "typecheck": "tsc --noEmit",
-    "dev": "tsc -w",
-    "clean": "bun ../../scripts/clean.ts dist"
+    "typecheck": "tsc --noEmit"
   },
   "files": [
     "bin",
-    "dist",
+    "src",
     "templates"
   ],
   "repository": {
@@ -48,7 +37,7 @@
     "weapp"
   ],
   "engines": {
-    "node": ">= 22.15.0"
+    "bun": ">= 1.4.0"
   },
   "dependencies": {
     "@spcsn/taro": "workspace:*",
@@ -56,44 +45,22 @@
     "@vitejs/plugin-react": "^6.0.5",
     "acorn": "^8.17.0",
     "acorn-walk": "^8.3.5",
-    "autoprefixer": "^10.5.4",
-    "browserslist": "^4.28.8",
     "chalk": "^5.6.2",
-    "chokidar": "^5.0.0",
-    "cross-spawn": "^7.0.6",
-    "debug": "^4.4.3",
-    "dotenv": "^17.4.2",
-    "dotenv-expand": "^13.0.0",
-    "inquirer": "^14.0.2",
-    "joi": "^18.2.3",
     "lightningcss": "^1.33.0",
-    "lodash": "^4.18.1",
-    "ora": "^9.4.0",
-    "picomatch": "^4.0.4",
-    "pirates": "^4.0.7",
     "postcss": "^8.5.26",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-reconciler": "0.33.0",
     "regenerator-runtime": "~0.14.1",
-    "resolve": "^1.22.12",
     "sax": "1.6.0",
-    "tapable": "^2.3.3",
     "vite": "^8.2.1",
     "vite-plugin-static-copy": "^4.1.1"
   },
   "devDependencies": {
-    "@types/cross-spawn": "^6.0.6",
-    "@types/debug": "^4.1.13",
-    "@types/inquirer": "^9.0.10",
-    "@types/lodash": "^4.17.24",
     "@types/node": "^25.9.3",
-    "@types/picomatch": "^4.0.3",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@types/react-reconciler": "^0.33.0",
-    "@types/resolve": "^1.20.6",
-    "@types/sax": "1.2.7",
-    "typescript": "~7.0.2"
+    "@types/sax": "1.2.7"
   }
 }

@@ -1,12 +1,10 @@
 import fs from 'node:fs';
-import { createRequire } from 'node:module';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { PluginOption } from 'vite';
-import { defaultMainFields, resolveSync } from '../../taro-helper';
+import { resolveSync } from '../../taro-helper';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const require = createRequire(import.meta.url);
 
 import type { FrameworkPluginContext, Frameworks } from './index';
 import { getLoaderMeta } from './loader-meta';
@@ -32,19 +30,9 @@ function injectLoaderMeta(ctx: FrameworkPluginContext, framework: Frameworks): P
   };
 }
 
-function resolvePackageDir(
-  id: string,
-  resolveOptions: { basedir: string; mainFields: string[] },
-  extraBasedirs: string[] = [],
-): string {
-  for (const basedir of [resolveOptions.basedir, ...extraBasedirs, __dirname, path.resolve(__dirname, '../../')]) {
-    try {
-      return path.dirname(require.resolve(`${id}/package.json`, { paths: [basedir] }));
-    } catch (_error) {
-      // fallback to @spcsn/taro-helper resolver below
-    }
-
-    const pkgPath = resolveSync(`${id}/package.json`, { ...resolveOptions, basedir });
+function resolvePackageDir(id: string, basedir: string, extraBasedirs: string[] = []): string {
+  for (const dir of [basedir, ...extraBasedirs, __dirname, path.resolve(__dirname, '../../')]) {
+    const pkgPath = resolveSync(`${id}/package.json`, { basedir: dir });
     if (pkgPath) {
       return path.dirname(pkgPath);
     }
@@ -64,16 +52,12 @@ function resolvePackageFile(packageDir: string, candidates: string[]): string {
 
 function aliasPlugin(ctx: FrameworkPluginContext): PluginOption {
   let jsxDevRuntimeShim = '';
-  const taroReactFile = path.resolve(__dirname, '../react-runtime/index.js');
+  const taroReactFile = path.resolve(__dirname, '../react-runtime/index.ts');
 
   return {
     name: 'taro-react:alias',
     config(config) {
-      const mainFields = ['unpkg', ...defaultMainFields];
-      const resolveOptions = {
-        basedir: process.cwd(),
-        mainFields,
-      };
+      const basedir = process.cwd();
       const alias: { find: string | RegExp; replacement: string }[] = [
         { find: /react-dom$/, replacement: taroReactFile },
         { find: /react-dom\/client$/, replacement: taroReactFile },
@@ -81,13 +65,10 @@ function aliasPlugin(ctx: FrameworkPluginContext): PluginOption {
 
       const isProd = config.mode === 'production';
       if (!isProd && ctx.initialConfig.mini?.debugReact !== true) {
-        const reactDir = resolvePackageDir('react', resolveOptions);
-        const reactDomDir = resolvePackageDir('react-dom', resolveOptions);
-        const reconcilerDir = resolvePackageDir('react-reconciler', resolveOptions, [path.resolve(__dirname, '..')]);
-        const schedulerDir = resolvePackageDir('scheduler', resolveOptions, [
-          path.resolve(__dirname, '..'),
-          reactDomDir,
-        ]);
+        const reactDir = resolvePackageDir('react', basedir);
+        const reactDomDir = resolvePackageDir('react-dom', basedir);
+        const reconcilerDir = resolvePackageDir('react-reconciler', basedir, [path.resolve(__dirname, '..')]);
+        const schedulerDir = resolvePackageDir('scheduler', basedir, [path.resolve(__dirname, '..'), reactDomDir]);
 
         // 开发模式下默认使用 production 版本的 react 减小体积。debugReact 时保留 dev 版本。
         alias.push({

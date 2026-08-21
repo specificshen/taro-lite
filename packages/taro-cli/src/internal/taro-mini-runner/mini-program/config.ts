@@ -1,13 +1,10 @@
-import { createRequire } from 'node:module';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { ViteMiniCompilerContext } from '@spcsn/taro/types/compile/vite-compiler-context';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const require = createRequire(import.meta.url);
 
-import browserslist from 'browserslist';
-import { browserslistToTargets } from 'lightningcss';
+import type { Targets } from 'lightningcss';
 import type { PluginOption, UserConfig } from 'vite';
 import {
   defaultMainFields,
@@ -27,8 +24,22 @@ type RolldownInjectOptions = Record<string, string | [string, string]>;
 
 function resolveModulePath(id: string, basedir: string): string {
   if (path.isAbsolute(id)) return id;
-  return require.resolve(id, { paths: [basedir, __dirname] });
+  try {
+    return Bun.resolveSync(id, basedir);
+  } catch {
+    return Bun.resolveSync(id, __dirname);
+  }
 }
+
+/** lightningcss 版本号编码：major << 16 | minor << 8 | patch */
+const version = (major: number, minor = 0, patch = 0) => (major << 16) | (minor << 8) | patch;
+
+/** 等价于 browserslist('iOS >= 12, Chrome >= 80, Firefox >= 78') 的 lightningcss targets */
+const CSS_TARGETS: Targets = {
+  ios_saf: version(12),
+  chrome: version(80),
+  firefox: version(78),
+};
 
 function normalizeInjectValue(value: string | string[]): string | [string, string] {
   if (!Array.isArray(value)) return value;
@@ -321,7 +332,7 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
             // 小程序 Skyline 对现代 CSS 简写（如 inset、#RRGGBBAA）支持有限，
             // 将 CSS targets 锁定在较早浏览器版本，避免 LightningCSS 生成这些语法。
             // wxss-compat 后处理仍会兜底转换，形成双重保险。
-            targets: browserslistToTargets(browserslist('iOS >= 12, Chrome >= 80, Firefox >= 78')),
+            targets: CSS_TARGETS,
           },
         },
       };

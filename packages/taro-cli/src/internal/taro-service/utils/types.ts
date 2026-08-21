@@ -1,7 +1,6 @@
 import type { AppConfig } from '@spcsn/taro';
 import type { Func, IMiniFilesConfig, IProjectConfig } from '@spcsn/taro/types/compile';
 import type { IModifyChainData } from '@spcsn/taro/types/compile/hooks';
-import type joi from 'joi';
 import type * as helper from '../../taro-helper';
 import type * as runnerUtils from '../runner-utils';
 import type { PluginType } from './constants';
@@ -118,9 +117,9 @@ export declare interface IPluginContext {
    */
   applyPlugins: (args: string | { name: string; initialVal?: unknown; opts?: unknown }) => Promise<unknown>;
   /**
-   * 为插件添加入参校验
+   * 为插件添加入参校验，fn 返回带 validate 方法的 schema 对象
    */
-  addPluginOptsSchema: (fn: (joi: joi.Root) => void) => void;
+  addPluginOptsSchema: (fn: () => { validate: (opts: unknown) => { error?: Error } }) => void;
   /**
    * 编译开始
    */

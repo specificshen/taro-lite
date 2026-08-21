@@ -1,16 +1,10 @@
 import * as child_process from 'node:child_process';
 import { createHash } from 'node:crypto';
 import * as nativeFs from 'node:fs';
-import { createRequire } from 'node:module';
 import * as os from 'node:os';
 import * as path from 'node:path';
 
-const require = createRequire(import.meta.url);
-
 import { parseSync } from '@swc/core';
-import type TResolve from 'resolve';
-import resolvePath from 'resolve';
-import { loadUserConfigModule } from './config-module-loader';
 import {
   CSS_EXT,
   PLATFORMS,
@@ -383,19 +377,9 @@ export function isEmptyObject(obj: object | null | undefined): boolean {
   return true;
 }
 
-export function resolveSync(id: string, opts: TResolve.SyncOpts & { mainFields?: string[] } = {}): string | null {
+export function resolveSync(id: string, opts: { basedir?: string } = {}): string | null {
   try {
-    return resolvePath.sync(id, {
-      ...opts,
-      packageFilter(pkg, pkgFile, dir) {
-        if (opts.packageFilter) {
-          pkg = opts.packageFilter(pkg, pkgFile, dir);
-        } else if (opts.mainFields?.length) {
-          pkg.main = pkg[opts.mainFields.find((field) => pkg[field] && typeof pkg[field] === 'string') || 'main'];
-        }
-        return pkg;
-      },
-    });
+    return Bun.resolveSync(id, opts.basedir || process.cwd());
   } catch (_error) {
     return null;
   }
@@ -479,14 +463,9 @@ export function getNpmPackageAbsolutePath(npmPath: string, defaultFile = 'index'
 
     // 没有指定的包文件路径统一使用 defaultFile
     componentRelativePath ||= defaultFile;
-    // require.resolve 解析的路径会包含入口文件路径，通过正则过滤一下
-    const match = require.resolve(packageName).match(new RegExp('.*' + packageName));
+    const packageJsonPath = Bun.resolveSync(`${packageName}/package.json`, process.cwd());
 
-    if (!match?.length) return null;
-
-    const packagePath = match[0];
-
-    return path.join(packagePath, `./${componentRelativePath}`);
+    return path.join(path.dirname(packageJsonPath), `./${componentRelativePath}`);
   } catch (_error) {
     return null;
   }
@@ -575,7 +554,7 @@ export const pascalCase: (str: string) => string = (str: string): string =>
 
 export function getInstalledNpmPkgPath(pkgName: string, basedir: string): string | null {
   try {
-    return resolvePath.sync(`${pkgName}/package.json`, { basedir });
+    return Bun.resolveSync(`${pkgName}/package.json`, basedir);
   } catch (_err) {
     return null;
   }
@@ -613,6 +592,53 @@ export const recursiveMerge = <T = unknown>(src: Partial<T>, ...args: (Partial<T
 
   return src as T;
 };
+
+function mergeValue(target: unknown, source: unknown): unknown {
+  // 与 lodash merge 一致：source 为 undefined 时保留 target
+  if (source === undefined) return target;
+  if (isPlainObject(target) && isPlainObject(source)) {
+    const result: Record<string, unknown> = { ...target };
+    for (const key of Object.keys(source)) {
+      result[key] = mergeValue(result[key], source[key]);
+    }
+    return result;
+  }
+  if (Array.isArray(target) && Array.isArray(source)) {
+    // lodash merge 对数组按下标合并，而非拼接
+    const result = target.slice();
+    for (let i = 0; i < source.length; i++) {
+      result[i] = i in result ? mergeValue(result[i], source[i]) : source[i];
+    }
+    return result;
+  }
+  return source;
+}
+
+/** lodash _.merge 语义的无依赖实现（纯函数，不改入参） */
+export function merge<T = unknown>(target: T, ...sources: unknown[]): T {
+  let result: unknown = target;
+  for (const source of sources) {
+    result = mergeValue(result, source);
+  }
+  return result as T;
+}
+
+/** lodash _.isEqual 语义的无依赖深比较（覆盖 JSON 可用类型） */
+export function isEqual(a: unknown, b: unknown): boolean {
+  if (Object.is(a, b)) return true;
+  if (typeof a !== typeof b) return false;
+  if (Array.isArray(a) && Array.isArray(b)) {
+    return a.length === b.length && a.every((item, index) => isEqual(item, b[index]));
+  }
+  if (isPlainObject(a) && isPlainObject(b)) {
+    const keysA = Object.keys(a);
+    const keysB = Object.keys(b);
+    return (
+      keysA.length === keysB.length && keysA.every((key) => Object.hasOwn(b, key) && isEqual(a[key], b[key]))
+    );
+  }
+  return false;
+}
 
 export const mergeVisitors = (src: SwcVisitor, ...args: SwcVisitor[]) => {
   const validFuncs = ['exit', 'enter'];
@@ -707,8 +733,11 @@ export function addPlatforms(platform: string) {
   PLATFORMS[upperPlatform] = platform;
 }
 
+// 兼容 CJS（__esModule 标记）与原生 ESM 模块命名空间（有 default 导出）两种形态
 export const getModuleDefaultExport = (exports: { __esModule?: boolean; default?: unknown }) =>
-  exports?.__esModule ? exports.default : exports;
+  exports?.__esModule || (exports != null && typeof exports === 'object' && 'default' in exports)
+    ? exports.default
+    : exports;
 
 export function removeHeadSlash(str: string) {
   return str.replace(/^(\/|\\)/, '');
@@ -846,35 +875,27 @@ interface IReadConfigOptions {
   defineConstants?: Record<string, string>;
 }
 
-export async function readConfig<T extends IReadConfigOptions>(configPath: string, options: T = {} as T) {
+/**
+ * 配置文件源码中允许直接使用 defineAppConfig/definePageConfig/importNativeComponent 宏。
+ * 原生 import() 无法像旧 swc+vm 链路那样改写源码，这里改为向 globalThis 注册同名函数。
+ */
+export function installConfigMacros() {
+  const g = globalThis as Record<string, unknown>;
+  g.defineAppConfig ||= (config: unknown) => config;
+  g.definePageConfig ||= (config: unknown) => config;
+  g.importNativeComponent ||= (_path = '', name = '', _exportName = 'default') => name;
+}
+
+export async function readConfig<T extends IReadConfigOptions>(configPath: string, _options: T = {} as T) {
   let result: Record<string, unknown> = {};
   if (fs.existsSync(configPath)) {
     if (REG_JSON.test(configPath)) {
       result = fs.readJSONSync(configPath) as Record<string, unknown>;
     } else {
-      result = (await loadUserConfigModule(configPath, {
-        customConfig: {
-          alias: options.alias || {},
-          define: {
-            define: 'define',
-            ...(options.defineConstants || {}),
-          },
-        },
-        customSwcConfig: {
-          jsc: {
-            parser: {
-              syntax: 'typescript',
-              decorators: true,
-            },
-            transform: {
-              legacyDecorator: true,
-            },
-            experimental: {
-              plugins: [],
-            },
-          },
-        },
-      })) as Record<string, unknown>;
+      // Bun 原生加载 TS/JS 配置文件，query 参数避免模块缓存导致 watch 模式读到旧配置
+      installConfigMacros();
+      const mod = await import(`${configPath}?t=${Date.now()}`);
+      result = (getModuleDefaultExport(mod) || {}) as Record<string, unknown>;
     }
   } else {
     result = readPageConfig(configPath);

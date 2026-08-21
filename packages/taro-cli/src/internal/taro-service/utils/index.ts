@@ -1,10 +1,7 @@
-import { createRequire } from 'node:module';
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { IProjectConfig, PluginItem } from '@spcsn/taro/types/compile';
-import _ from 'lodash';
-import resolve from 'resolve';
-import { chalk, getModuleDefaultExport } from '../../taro-helper';
+import { chalk, getModuleDefaultExport, merge } from '../../taro-helper';
 import { PluginType } from './constants';
 import type { IPlugin, IPluginsObject } from './types';
 
@@ -13,20 +10,18 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export const isNpmPkg: (name: string) => boolean = (name) => !/^(\.|\/)/.test(name);
 
 const removedLegacyPlugins = new Set(['@spcsn/taro-plugin-generator']);
-const runtimeRequire = createRequire(import.meta.url);
+
+/** 当前文件位于 src/internal/taro-service/utils，向上四级即 CLI 包根目录 */
+const cliPackageRoot = path.resolve(__dirname, '../../../..');
 
 const cliBuiltinPlugins: Record<string, string> = {
-  '@spcsn/taro-plugin-platform-weapp': 'dist/platform-weapp/index.js',
+  '@spcsn/taro-plugin-platform-weapp': 'src/platform-weapp/index.ts',
 };
 
-function resolveCliBuiltinPlugin(item: string, root: string): string | undefined {
+function resolveCliBuiltinPlugin(item: string): string | undefined {
   const builtinPath = cliBuiltinPlugins[item];
   if (!builtinPath) return;
-
-  const cliPackageJson = runtimeRequire.resolve('@spcsn/taro-cli/package.json', {
-    paths: [__dirname, root].filter(Boolean),
-  });
-  return path.join(path.dirname(cliPackageJson), builtinPath);
+  return path.join(cliPackageRoot, builtinPath);
 }
 
 export function getPluginPath(pluginPath: string) {
@@ -56,11 +51,18 @@ export function mergePlugins(dist: PluginItem[], src: PluginItem[]) {
   return () => {
     const srcObj = convertPluginsToObject(src)();
     const distObj = convertPluginsToObject(dist)();
-    return _.merge(distObj, srcObj);
+    return merge(distObj, srcObj);
   };
 }
 
-// getModuleDefaultExport
+function resolveModule(item: string, basedir: string): string | undefined {
+  try {
+    return Bun.resolveSync(item, basedir);
+  } catch {
+    return undefined;
+  }
+}
+
 export function resolvePresetsOrPlugins(
   root: string,
   args: IPluginsObject,
@@ -76,39 +78,23 @@ export function resolvePresetsOrPlugins(
       continue;
     }
 
-    let fPath: string | undefined;
-    try {
-      fPath = resolve.sync(item, {
-        basedir: root,
-        extensions: ['.js', '.ts'],
-      });
-    } catch (err) {
-      if ((err as NodeJS.ErrnoException).code === 'MODULE_NOT_FOUND') {
-        try {
-          fPath = resolveCliBuiltinPlugin(item, root);
-        } catch (_e) {}
-      }
-      if (!fPath && (err as NodeJS.ErrnoException).code === 'MODULE_NOT_FOUND') {
-        try {
-          const cliPath = runtimeRequire.resolve('@spcsn/taro-cli/package.json', {
-            paths: [__dirname, root].filter(Boolean),
-          });
-          fPath = resolve.sync(item, { basedir: path.dirname(cliPath), extensions: ['.js', '.ts'] });
-        } catch (_e) {}
-      }
-      if (!fPath) {
-        const backup = (args[item] as Record<string, unknown> | null)?.backup;
-        if (backup) {
-          // 如果项目中没有，可以使用 CLI 中的插件
-          fPath = backup as string;
-        } else if (skipError) {
-          // 如果跳过报错，那么 log 提醒，并且不使用该插件
-          console.log(chalk.yellow(`找不到插件依赖 "${item}"，请先在项目中安装，项目路径：${root}`));
-          continue;
-        } else {
-          console.log(chalk.red(`找不到插件依赖 "${item}"，请先在项目中安装，项目路径：${root}`));
-          process.exit(1);
-        }
+    let fPath = resolveModule(item, root);
+    // 项目中找不到时，依次尝试 CLI 内置插件与 CLI 包自身依赖
+    if (!fPath) {
+      fPath = resolveCliBuiltinPlugin(item) ?? resolveModule(item, cliPackageRoot);
+    }
+    if (!fPath) {
+      const backup = (args[item] as Record<string, unknown> | null)?.backup;
+      if (backup) {
+        // 如果项目中没有，可以使用 CLI 中的插件
+        fPath = backup as string;
+      } else if (skipError) {
+        // 如果跳过报错，那么 log 提醒，并且不使用该插件
+        console.log(chalk.yellow(`找不到插件依赖 "${item}"，请先在项目中安装，项目路径：${root}`));
+        continue;
+      } else {
+        console.log(chalk.red(`找不到插件依赖 "${item}"，请先在项目中安装，项目路径：${root}`));
+        process.exit(1);
       }
     }
     if (!fPath) {
@@ -116,7 +102,7 @@ export function resolvePresetsOrPlugins(
     }
     const existingPlugin = resolvedPresetsOrPlugins.find((plugin) => plugin.id === fPath);
     if (existingPlugin) {
-      existingPlugin.opts = _.merge({}, existingPlugin.opts, args[item] || {});
+      existingPlugin.opts = merge({}, existingPlugin.opts, args[item] || {});
       continue;
     }
     const resolvedItem = {
@@ -124,9 +110,9 @@ export function resolvePresetsOrPlugins(
       path: fPath,
       type,
       opts: args[item] || {},
-      apply() {
+      async apply() {
         try {
-          return getModuleDefaultExport(runtimeRequire(fPath));
+          return getModuleDefaultExport(await import(fPath));
         } catch (error) {
           console.error(error);
           // 全局的插件运行报错，不抛出 Error 影响主流程，而是通过 log 提醒然后把插件 filter 掉，保证主流程不变
