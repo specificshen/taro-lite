@@ -11,7 +11,7 @@ import {
 import env from '../env';
 import type { EventOptions, MpEvent } from '../interface';
 import { hooks } from '../runtime-hooks';
-import { EMPTY_OBJ, isUndefined } from '../shared-primitives';
+import { EMPTY_OBJ, getGlobalSingleton, isUndefined } from '../shared-primitives';
 import { isParentBound } from '../utils';
 import type { TaroElement } from './element';
 
@@ -74,11 +74,9 @@ export class TaroEvent {
     const cacheTarget = this.cacheTarget;
     if (!cacheTarget) {
       const target = Object.create(this.mpEvent?.target || null);
-      const currentEle = env.document.getElementById(target.dataset?.sid || target.id || null);
       const element = env.document.getElementById(target.dataset?.sid || target.id || null);
 
       target.dataset = {
-        ...(currentEle !== null ? currentEle.dataset : EMPTY_OBJ),
         ...(element !== null ? element.dataset : EMPTY_OBJ),
       };
 
@@ -144,7 +142,7 @@ export function createEvent(event: MpEvent, node?: TaroElement) {
   return domEv;
 }
 
-const eventsBatch: Record<string, (() => void)[]> = {};
+const eventsBatch = getGlobalSingleton<Record<string, (() => void)[]>>('__TARO_EVENTS_BATCH__', () => ({}));
 
 function getEventCBResult(event: MpEvent) {
   const result = event[EVENT_CALLBACK_RESULT];

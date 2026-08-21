@@ -55,6 +55,21 @@ interface MpEvent {
   currentTarget: Target;
 }
 
+const BUBBLE_EVENTS = new Set([
+  'touchstart',
+  'touchmove',
+  'touchcancel',
+  'touchend',
+  'touchforcechange',
+  'tap',
+  'longpress',
+  'longtap',
+  'transitionend',
+  'animationstart',
+  'animationiteration',
+  'animationend',
+]);
+
 const defaultMiniLifecycle: MiniLifecycle = {
   app: ['onLaunch', 'onShow', 'onHide'],
   page: [
@@ -225,24 +240,7 @@ const hooksInstance =
 
     getEventCenter: TaroHook(HOOK_TYPE.SINGLE, (Events) => new (Events as new () => Events)()),
 
-    isBubbleEvents: TaroHook(HOOK_TYPE.SINGLE, (eventName) => {
-      const BUBBLE_EVENTS = new Set([
-        'touchstart',
-        'touchmove',
-        'touchcancel',
-        'touchend',
-        'touchforcechange',
-        'tap',
-        'longpress',
-        'longtap',
-        'transitionend',
-        'animationstart',
-        'animationiteration',
-        'animationend',
-      ]);
-
-      return BUBBLE_EVENTS.has(eventName as string);
-    }),
+    isBubbleEvents: TaroHook(HOOK_TYPE.SINGLE, (eventName) => BUBBLE_EVENTS.has(eventName as string)),
 
     getSpecialNodes: TaroHook(HOOK_TYPE.SINGLE, () => ['view', 'text', 'image']),
 

@@ -5,7 +5,7 @@ import { NodeType } from '../dom/node-types';
 import type { TaroText } from '../dom/text';
 import type { TFunc } from '../interface';
 import { getComponentsAlias as _getComponentsAlias, internalComponents } from '../internal-components-registry';
-import { isFunction } from '../shared-primitives';
+import { getGlobalSingleton, isFunction } from '../shared-primitives';
 import { Shortcuts } from '../shortcuts';
 
 export const incrementId = () => {
@@ -93,7 +93,10 @@ export function shortcutAttr(key: string): string {
   }
 }
 
-export const customWrapperCache = new Map<string, Record<string, unknown>>();
+export const customWrapperCache = getGlobalSingleton(
+  '__TARO_CUSTOM_WRAPPER_CACHE__',
+  () => new Map<string, Record<string, unknown>>(),
+);
 
 interface Ctor {
   new (...args: unknown[]): unknown;

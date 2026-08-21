@@ -23,13 +23,21 @@ import type { MpInstance, PageConfig, TFunc } from '../interface';
 import { getComponentsAlias, internalComponents } from '../internal-components-registry';
 import { perf } from '../perf';
 import { hooks } from '../runtime-hooks';
-import { EMPTY_OBJ, ensure, isArray, isFunction, isString, isUndefined } from '../shared-primitives';
+import {
+  EMPTY_OBJ,
+  ensure,
+  getGlobalSingleton,
+  isArray,
+  isFunction,
+  isString,
+  isUndefined,
+} from '../shared-primitives';
 import { Shortcuts } from '../shortcuts';
 import { customWrapperCache, incrementId } from '../utils';
 import { addLeadingSlash } from '../utils/router';
 import type { Instance, PageInstance, PageProps } from './instance';
 
-const instances = new Map<string, Instance>();
+const instances = getGlobalSingleton('__TARO_PAGE_INSTANCES__', () => new Map<string, Instance>());
 const pageId = incrementId();
 
 export function injectPageInstance(inst: Instance<PageProps>, id: string) {

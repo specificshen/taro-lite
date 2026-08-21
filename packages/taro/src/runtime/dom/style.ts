@@ -1,5 +1,6 @@
 import { PROPERTY_THRESHOLD } from '../constants';
 import { MutationObserver, MutationRecordType } from '../dom-external/mutation-observer';
+import type { MiniData } from '../interface';
 import { hooks } from '../runtime-hooks';
 import { isArray, isNull, isString, isUndefined, toCamelCase, toDashed, warn } from '../shared-primitives';
 import { Shortcuts } from '../shortcuts';
@@ -20,7 +21,8 @@ function enqueueUpdate(obj: Style) {
   if (element._root) {
     element.enqueueUpdate({
       path: `${element._path}.${Shortcuts.Style}`,
-      value: obj.cssText,
+      // 惰性求值（见 root.ts performUpdate）：同批次多次入队只在 flush 时计算一次最终 cssText
+      value: () => obj.cssText as unknown as MiniData,
     });
   }
 }

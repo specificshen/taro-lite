@@ -1,3 +1,4 @@
+import { getGlobalSingleton, toCamelCase, toDashed } from '../shared-primitives';
 import { internalComponents } from './components';
 
 export { internalComponents } from './components';
@@ -35,23 +36,8 @@ export const box = <T>(v: T) => ({ v });
  */
 export const unbox = <T>(b: Box<T>) => b.v;
 
-export function toDashed(s: string) {
-  return s.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
-}
-
-export function toCamelCase(s: string) {
-  let camel = '';
-  let nextCap = false;
-  for (let i = 0; i < s.length; i++) {
-    if (s[i] !== '-') {
-      camel += nextCap ? s[i].toUpperCase() : s[i];
-      nextCap = false;
-    } else {
-      nextCap = true;
-    }
-  }
-  return camel;
-}
+// toDashed/toCamelCase 复用 shared-primitives 的唯一实现（带缓存），保持本模块导出面不变
+export { toCamelCase, toDashed };
 
 export const toKebabCase = function (string: string) {
   return string.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
@@ -126,7 +112,7 @@ export function getUniqueKey() {
   return _loadTime + _uniqueId++;
 }
 
-const cacheData: Record<string, unknown> = {};
+const cacheData = getGlobalSingleton<Record<string, unknown>>('__TARO_CACHE_DATA__', () => ({}));
 
 export function cacheDataSet(key: string, val: unknown) {
   cacheData[key] = val;

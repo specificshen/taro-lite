@@ -1,4 +1,5 @@
 import { AppInstance, PageInstance } from './dsl/instance';
+import { getGlobalSingleton } from './shared-primitives';
 
 export interface Router {
   params: Record<string, unknown>;
@@ -17,11 +18,11 @@ interface Current {
   preloadData?: unknown;
 }
 
-export const Current: Current = {
+export const Current: Current = getGlobalSingleton('__TARO_CURRENT__', () => ({
   app: null,
   router: null,
   page: null,
-};
+}));
 
 type AppReadyCallback = (app: AppInstance) => void;
 

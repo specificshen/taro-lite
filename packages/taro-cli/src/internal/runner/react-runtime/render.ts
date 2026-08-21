@@ -10,6 +10,9 @@ import { isTextInputElement } from './text-input';
 
 export const ContainerMap: WeakMap<TaroElement, Root> = new WeakMap();
 
+// createRoot 内 modifyTaroEvent hook 的幂等标记，详见 createRoot
+let modifyTaroEventTapped = false;
+
 type Renderer = typeof TaroReconciler;
 
 type CreateRootOptions = {
@@ -119,15 +122,21 @@ export function createRoot(domContainer: TaroElement, options: CreateRootOptions
     });
   });
 
-  // input/change 事件结束后需要立即把 state 落位，避免受控 input 出现闪烁。
-  hooks.tap('modifyTaroEvent', (event: unknown, element: unknown) => {
-    const e = event as TaroEvent;
-    const node = element as TaroElement;
+  // modifyTaroEvent 是 MULTI 型 hook，重复 tap 会累积回调；
+  // blended/多实例场景 createRoot 会被多次调用，需保证只 tap 一次。
+  if (!modifyTaroEventTapped) {
+    modifyTaroEventTapped = true;
 
-    if (isTextInputElement(node) && (e.type === 'input' || e.type === 'change')) {
-      markShouldFlushAfterEvent();
-    }
-  });
+    // input/change 事件结束后需要立即把 state 落位，避免受控 input 出现闪烁。
+    hooks.tap('modifyTaroEvent', (event: unknown, element: unknown) => {
+      const e = event as TaroEvent;
+      const node = element as TaroElement;
+
+      if (isTextInputElement(node) && (e.type === 'input' || e.type === 'change')) {
+        markShouldFlushAfterEvent();
+      }
+    });
+  }
 
   return root;
 }

@@ -1,3 +1,4 @@
+import { getGlobalSingleton } from '../shared-primitives';
 import type { TaroNode } from './node';
 
 interface IEventSource extends Map<string | undefined | null, TaroNode> {
@@ -21,4 +22,4 @@ class EventSource extends Map {
   }
 }
 
-export const eventSource: IEventSource = new EventSource();
+export const eventSource: IEventSource = getGlobalSingleton('__TARO_EVENT_SOURCE__', () => new EventSource());

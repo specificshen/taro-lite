@@ -80,7 +80,9 @@ export class TaroEventTarget {
 
     process.env.NODE_ENV !== 'production' && warn(index === -1, `事件: '${type}' 没有注册在 DOM 中，因此不会被移除。`);
 
-    handlers.splice(index, 1);
+    if (index >= 0) {
+      handlers.splice(index, 1);
+    }
   }
 
   public isAnyEventBinded(): boolean {

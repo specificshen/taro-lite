@@ -24,7 +24,6 @@ async function buildJs() {
       ENABLE_SIZE_APIS: 'false',
       ENABLE_TEMPLATE_CONTENT: 'false',
       ENABLE_MUTATION_OBSERVER: 'false',
-      'process.env.NODE_ENV': isWatch ? '"development"' : '"production"',
     },
   });
 
