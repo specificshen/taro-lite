@@ -10,12 +10,12 @@
     "dev": "NODE_ENV=development TARO_MINIFY=true taro build --watch"
   },
   "dependencies": {
-    "@spcsn/taro": "link:../../packages/taro",
-    "@spcsn/taro-components": "link:../../packages/taro-components",
+    "@spcsn/taro": "workspace:*",
+    "@spcsn/taro-components": "workspace:*",
     "react": "^19.2.7"
   },
   "devDependencies": {
-    "@spcsn/taro-cli": "link:../../packages/taro-cli",
+    "@spcsn/taro-cli": "workspace:*",
     "@types/react": "^19.2.17"
   }
 }

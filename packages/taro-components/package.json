@@ -1,6 +1,6 @@
 {
   "name": "@spcsn/taro-components",
-  "version": "1.2.8",
+  "version": "2.0.0-alpha.0",
   "description": "Taro 组件库",
   "type": "module",
   "main": "dist/index.js",
@@ -25,10 +25,10 @@
     "global.css"
   ],
   "scripts": {
-    "prod": "pnpm run build:ci",
-    "prepack": "pnpm run build",
-    "build:ci": "pnpm run build",
-    "build": "pnpm run build:runtime && pnpm run sync:types",
+    "prod": "bun run build:ci",
+    "prepack": "bun run build",
+    "build:ci": "bun run build",
+    "build": "bun run build:runtime && bun run sync:types",
     "build:runtime": "tsc -p tsconfig.json",
     "sync:types": "bun scripts/json-schema-to-types.ts",
     "test": "vitest run",
@@ -46,9 +46,6 @@
   "homepage": "https://github.com/specificshen/taro-lite#readme",
   "author": "Samuel Ouyang",
   "license": "MIT",
-  "engines": {
-    "node": ">= 22.15.0"
-  },
   "peerDependencies": {
     "@types/react": "^19",
     "react": "^19"

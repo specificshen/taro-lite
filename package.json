@@ -1,6 +1,6 @@
 {
   "name": "taro",
-  "version": "1.2.8",
+  "version": "2.0.0-alpha.0",
   "description": "React 微信小程序（Skyline / glass-easel）现代化底座",
   "homepage": "https://github.com/specificshen/taro-lite#readme",
   "author": "Samuel Ouyang",
@@ -20,32 +20,31 @@
     "type": "git",
     "url": "git+https://github.com/specificshen/taro-lite.git"
   },
-  "packageManager": "pnpm@10.22.0",
+  "packageManager": "bun@1.4.0",
+  "workspaces": [
+    "packages/*",
+    "packages/taro-cli/tests/fixtures/default",
+    "fixtures/*"
+  ],
   "scripts": {
-    "preinstall": "npx only-allow pnpm",
-    "build": "pnpm -r --aggregate-output --filter=./packages/* prod",
-    "build:serial": "pnpm -r --workspace-concurrency=1 --aggregate-output --filter=./packages/* prod",
+    "build": "bun scripts/build.ts",
     "clear-all": "bun scripts/clean.ts --node-modules",
     "lint": "biome lint .",
     "check": "biome check .",
     "check:write": "biome check --write .",
     "format": "biome format --write .",
     "format:check": "biome format .",
-    "typecheck": "pnpm -r --aggregate-output --filter=./packages/* exec tsc --noEmit && tsc --noEmit -p tsconfig.json",
-    "typecheck:fixtures": "pnpm --filter @spcsn/fixture-taro-lite-sunshine-lab exec tsc --noEmit -p tsconfig.json",
-    "test": "pnpm --filter @spcsn/taro-components test:ci && pnpm --filter @spcsn/taro test:ci && pnpm --filter @spcsn/taro-cli test:ci -- --runInBand",
-    "updateSnapshot": "pnpm --if-present -r --aggregate-output --filter=./packages/* updateSnapshot",
-    "verify:fixture:weapp": "pnpm -r --workspace-concurrency=1 --aggregate-output --filter @spcsn/taro-cli... --filter @spcsn/taro... run build && pnpm --filter @spcsn/fixture-taro-lite-sunshine-lab run build",
+    "typecheck": "bun scripts/typecheck.ts",
+    "typecheck:fixtures": "tsc --noEmit -p fixtures/taro-lite-sunshine-lab/tsconfig.json",
+    "test": "(cd packages/taro-components && bun run test:ci) && (cd packages/taro && bun run test:ci) && (cd packages/taro-cli && bun run test:ci)",
+    "verify:fixture:weapp": "bun run build && (cd fixtures/taro-lite-sunshine-lab && bun run build)",
     "release:check": "bun scripts/check-release-readiness.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.0",
     "@types/node": "^25.9.3",
-    "chalk": "^5.6.2",
+    "bun-types": "^1.4.0",
     "typescript": "~7.0.2",
     "vitest": "^4.1.9"
-  },
-  "engines": {
-    "node": ">= 22.15.0"
   }
 }

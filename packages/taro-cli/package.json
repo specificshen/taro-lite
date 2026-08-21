@@ -1,6 +1,6 @@
 {
   "name": "@spcsn/taro-cli",
-  "version": "1.2.8",
+  "version": "2.0.0-alpha.0",
   "description": "SPCSN Taro Lite CLI for React WeApp mini programs",
   "author": "Samuel Ouyang",
   "license": "MIT",
@@ -16,15 +16,15 @@
     "./package.json": "./package.json"
   },
   "scripts": {
-    "prod": "pnpm run build",
-    "prepack": "pnpm run build",
-    "pretest": "pnpm run build",
+    "prod": "bun run build",
+    "prepack": "bun run build",
+    "pretest": "bun run build",
     "test": "vitest run",
     "test:ci": "vitest run --coverage",
     "test:dev": "vitest",
     "test:coverage": "vitest run --coverage",
     "updateSnapshot": "vitest run --update",
-    "prebuild": "pnpm run clean",
+    "prebuild": "bun run clean",
     "build": "tsc && bun ./scripts/fix-esm-imports.ts dist",
     "typecheck": "tsc --noEmit",
     "dev": "tsc -w",

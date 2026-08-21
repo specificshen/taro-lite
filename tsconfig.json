@@ -1,6 +1,9 @@
 {
   "compileOnSave": true,
   "extends": "./packages/tsconfig.base.json",
+  "compilerOptions": {
+    "types": ["node", "bun-types"]
+  },
   "include": ["scripts/**/*.ts", "packages/*/scripts/**/*.ts", "vitest.config.ts"],
   "exclude": ["node_modules", "fixtures"]
 }
