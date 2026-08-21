@@ -5,11 +5,12 @@
 ## 1. 项目基本信息
 
 - **名称**：taro-lite
-- **版本**：1.2.0
-- **包管理器**：pnpm（强制，见 `package.json` 中 `preinstall`）
+- **版本**：2.0.0-alpha.0
+- **运行时/包管理器**：Bun（>= 1.4，强制；见 `package.json` 中 `packageManager`）
 - **语言**：TypeScript
 - **模块系统**：ESM（所有包均设置 `"type": "module"`）
-- **构建工具**：Rolldown（`@spcsn/taro`）、tsc（`@spcsn/taro-cli`）
+- **构建工具**：Bun.build（`@spcsn/taro`、`@spcsn/taro-components`）；`@spcsn/taro-cli` 为 Bun-only，`bin/taro` 直跑 `src/*.ts`，无构建步骤
+- **测试**：`bun test`（无 vitest）
 - **代码风格**：Biome（配置见 `biome.json`）
 
 ## 2. 仓库结构
@@ -29,17 +30,17 @@
 ### 3.1 提交前必须执行
 
 ```bash
-pnpm run check:write
-pnpm run typecheck
-pnpm run lint
-pnpm --filter @spcsn/taro run build
-pnpm --filter @spcsn/taro-cli run build
+bun run check:write
+bun run typecheck
+bun run lint
+bun run build
+bun run test
 ```
 
 如果涉及生命周期、页面实例、事件总线等改动，还需在业务工程执行：
 
 ```bash
-pnpm run build
+bun run verify:fixture:weapp
 ```
 
 ### 3.2 提交信息
@@ -70,6 +71,8 @@ pnpm run build
 - 其他共享：`EMPTY_OBJ`、`EMPTY_ARR`、`noop`、`ensure`、`warn`、`toDashed`、`toCamelCase`、`capitalize` 等
 
 **不允许**在 `packages/taro-cli/src/internal/` 下创建与 `packages/taro/src/runtime/` 功能重复的文件。
+
+cli 内部目录约定：`internal/kernel`（插件内核与配置加载）、`internal/helper`（工具集）、`internal/runner`（Vite 小程序编译链路）、`internal/shared`（cli 内部共享的纯工具）。
 
 ### 4.2 为什么这条规则如此重要
 
@@ -103,7 +106,7 @@ ESM 不像 CJS 那样天然通过 `require` 缓存保证单例。如果同一份
 ### ❌ 反模式 1：在 cli 内部复制 runtime 文件
 
 ```ts
-// packages/taro-cli/src/internal/taro-shared/event-emitter.ts
+// packages/taro-cli/src/internal/shared/event-emitter.ts
 export class Events { ... } // ❌ 错误：与 runtime/event-emitter.ts 重复
 ```
 
@@ -117,7 +120,7 @@ import { Events } from '@spcsn/taro/runtime'; // ✅ 正确
 ### ❌ 反模式 2：在 cli 内部 new 一个共享 hooks 实例
 
 ```ts
-// packages/taro-cli/src/internal/taro-shared/runtime-hooks.ts
+// packages/taro-cli/src/internal/shared/runtime-hooks.ts
 export const hooks = new TaroHooks({ ... }); // ❌ 错误：与 runtime hooks 分裂
 ```
 
@@ -129,4 +132,5 @@ export { hooks } from '@spcsn/taro/runtime'; // ✅ 正确
 
 ## 6. 参考文档
 
-- `docs/esm-monorepo-refactor.md`：本次 ESM 改造与合包的详细记录
+- `docs/bun-migration.md`：2.0 Bun 化改造的详细记录
+- `docs/esm-monorepo-refactor.md`：1.2 ESM 改造与合包的详细记录

@@ -51,46 +51,39 @@
 
 ## 开发环境
 
-- Node.js 22+
-- pnpm 10+
+- Bun 1.4+
 - React 19
 
 安装依赖：
 
 ```bash
-pnpm install
+bun install
 ```
 
 构建底座：
 
 ```bash
-pnpm run build
+bun run build
 ```
 
-局部调试 CLI 时可以只构建入口包：
+查看 CLI 版本（CLI 为 Bun-only，`bin/taro` 直跑 TS 源码，无需构建）：
 
 ```bash
-pnpm --filter @spcsn/taro-cli run build
-```
-
-查看 CLI 版本：
-
-```bash
-node packages/taro-cli/bin/taro --version
+bun packages/taro-cli/bin/taro --version
 ```
 
 ## 常用脚本
 
 ```bash
-pnpm run lint            # biome lint
-pnpm run format:check    # biome format 检查
-pnpm run format          # biome format 自动修复
-pnpm run typecheck       # 所有 packages 的 TypeScript 检查
-pnpm run typecheck:fixtures  # 示例工程的 TypeScript 检查
-pnpm run build           # 构建所有 packages
-pnpm run test            # 运行 packages 测试
-pnpm run verify:fixture:weapp  # 构建示例小程序
-pnpm run release:check   # 发布前检查
+bun run lint            # biome lint
+bun run format:check    # biome format 检查
+bun run format          # biome format 自动修复
+bun run typecheck       # 所有 packages 的 TypeScript 检查
+bun run typecheck:fixtures  # 示例工程的 TypeScript 检查
+bun run build           # 构建需要预构建的 packages（taro / taro-components）
+bun run test            # 运行 packages 测试（bun test）
+bun run verify:fixture:weapp  # 构建示例小程序
+bun run release:check   # 发布前检查
 ```
 
 ## 业务接入示例
@@ -107,14 +100,14 @@ export default {
 业务工程验证：
 
 ```bash
-pnpm install
-npm run build
+bun install
+bun run build
 ```
 
 构建输出应显示当前 `@spcsn/taro-cli` 版本，例如：
 
 ```text
-SPCSN Taro v1.2.0
+SPCSN Taro v2.0.0-alpha.0
 ```
 
 ## 发版前检查
@@ -124,21 +117,21 @@ SPCSN Taro v1.2.0
 - 所有发布包版本一致。
 - README 的最小依赖集与业务工程实际依赖一致。
 - 业务工程没有显式安装底座内部实现依赖。
-- `node packages/taro-cli/bin/taro --version` 输出正确版本。
-- 真实业务工程 `npm run build` 通过。
+- `bun packages/taro-cli/bin/taro --version` 输出正确版本。
+- 真实业务工程 `bun run build` 通过。
 
 常用检查命令：
 
 ```bash
-pnpm run release:check
-pnpm run verify:fixture:weapp
+bun run release:check
+bun run verify:fixture:weapp
 ```
 
 `release:check` 会检查 `packages/*` 的版本、发布面和业务工程依赖契约是否与当前 `@spcsn` 底座边界一致。
 
 ## 发布流程
 
-`1.0.0` 是 `@spcsn` 独立稳定版本线起点。发布前先确认登录到了目标 npm registry：
+发布前先确认登录到了目标 npm registry：
 
 ```bash
 npm config get registry
@@ -148,28 +141,28 @@ npm whoami
 构建底座包：
 
 ```bash
-pnpm run build
+bun run build
 ```
 
 运行发布前检查：
 
 ```bash
-pnpm run release:check
+bun run release:check
 ```
 
 先 dry-run，确认 tarball 内容和依赖版本：
 
 ```bash
-pnpm -r --filter './packages/*' publish --access public --tag latest --dry-run
+bun scripts/publish.ts --dry-run
 ```
 
-确认无误后正式发布：
+确认无误后正式发布（prerelease 版本自动发布到 `next` tag）：
 
 ```bash
-pnpm -r --filter './packages/*' publish --access public --tag latest
+bun scripts/publish.ts
 ```
 
-> 注意：本地手动发布后，不要再为同一版本推送 `v*` tag。`publish.yml` 会在推送 `v*` tag 时触发 CI 发布，同一版本号重复发布会被 npm 拒绝。两条发布路径二选一：要么本地 `pnpm publish`，要么提交版本后推 `v<version>` tag 走 CI。
+> 注意：本地手动发布后，不要再为同一版本推送 `v*` tag。`publish.yml` 会在推送 `v*` tag 时触发 CI 发布，同一版本号重复发布会被 npm 拒绝。两条发布路径二选一：要么本地 `bun scripts/publish.ts`，要么提交版本后推 `v<version>` tag 走 CI。
 
 发布完成后，在业务工程把本地 `link:` 依赖切成 npm 版本并验证：
 
@@ -186,8 +179,8 @@ pnpm -r --filter './packages/*' publish --access public --tag latest
 ```
 
 ```bash
-pnpm install
-npm run build
+bun install
+bun run build
 ```
 ## License
 
