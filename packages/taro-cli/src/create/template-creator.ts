@@ -5,6 +5,7 @@ import { chalk } from '../internal/helper';
 import { TEMPLATE_CREATOR_FILES } from './constants';
 
 export enum NpmType {
+  Bun = 'Bun',
   Yarn = 'Yarn',
   Cnpm = 'Cnpm',
   Pnpm = 'Pnpm',
@@ -42,6 +43,7 @@ export type TemplateHandlers = Record<string, TemplateHandler>;
 const FILE_FILTER = new Set([...TEMPLATE_CREATOR_FILES, '.DS_Store', '.npmrc']);
 const MEDIA_FILE_PATTERN = /\.(png|jpe?g|gif|svg|webp|jar|keystore|tgz)$/i;
 const PACKAGE_MANAGERS: Record<NpmType, string> = {
+  [NpmType.Bun]: 'bun',
   [NpmType.Yarn]: 'yarn',
   [NpmType.Cnpm]: 'cnpm',
   [NpmType.Pnpm]: 'pnpm',

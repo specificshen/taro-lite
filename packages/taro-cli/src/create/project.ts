@@ -68,6 +68,7 @@ export default class Project extends Creator {
 
     if (typeof this.conf.npm !== 'string') {
       answers.npm = await select('请选择包管理工具', [
+        { name: 'bun', value: NpmType.Bun },
         { name: 'pnpm', value: NpmType.Pnpm },
         { name: 'yarn', value: NpmType.Yarn },
         { name: 'npm', value: NpmType.Npm },
