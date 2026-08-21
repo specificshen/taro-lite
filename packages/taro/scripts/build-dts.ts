@@ -1,3 +1,6 @@
+#!/usr/bin/env bun
+
+/** 生成 dist 下的 .d.ts（tsc --emitDeclarationOnly）。 */
 import { spawnSync } from 'node:child_process';
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
