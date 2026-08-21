@@ -31,7 +31,7 @@ Business projects also provide their own `react` dependency.
 
 The former internal implementation packages no longer exist as publishable packages and are not on npm; their capabilities have been inlined:
 
-- `@spcsn/taro-service`, `@spcsn/taro-vite-runner`, `@spcsn/taro-helper`, `@spcsn/taro-shared` → inlined into `packages/taro-cli/src/internal/`; archived read-only snapshots live at `archives/packages/`.
+- `@spcsn/taro-service`, `@spcsn/taro-vite-runner`, `@spcsn/taro-helper`, `@spcsn/taro-shared` → inlined into `packages/taro-cli/src/internal/`.
 - `@spcsn/taro-runtime` → inlined into `packages/taro/src/runtime/`, consumed as `@spcsn/taro/runtime`.
 - native binding packages → removed entirely; do not reintroduce them.
 

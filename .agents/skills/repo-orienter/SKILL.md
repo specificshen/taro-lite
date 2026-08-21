@@ -33,9 +33,7 @@ Treat these historical package names as internal implementation details that hav
 - `packages/taro-cli`: CLI entry, command orchestration, generator/platform integration, business-facing `taro` binary. Contains inlined internal implementations under `src/internal/`.
 - `packages/taro`: main runtime/API entry consumed by business code. Contains the inlined runtime under `src/runtime/`.
 - `packages/taro-components`: component package consumed by business code.
-- `archives/packages/`: historical read-only snapshots of the former internal packages, no longer in the workspace or publish surface.
 - `docs/package-consolidation.md`: current package surface consolidation state.
-- `docs/package-archive-plan.md`: archive plan and current public/private package boundaries.
 
 ### First-pass workflow
 

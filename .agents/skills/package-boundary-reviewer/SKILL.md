@@ -22,7 +22,7 @@ Do not make business projects explicitly install internal implementation package
 1. Read current `package.json` files for the package being changed and its direct dependents.
 2. Read the root `package.json` `workspaces` field before assuming a package participates in workspace commands.
 3. Check `docs/package-consolidation.md` for whether the package is being retained, folded into another package, or excluded from the public surface.
-4. Search exact dependency names in `packages`, `archives/packages`, `fixtures`, `README.md`, and release scripts before removing or renaming dependencies.
+4. Search exact dependency names in `packages`, `fixtures`, `README.md`, and release scripts before removing or renaming dependencies.
 
 ### Dependency rules
 
@@ -34,8 +34,8 @@ Do not make business projects explicitly install internal implementation package
 
 ### Common package areas
 
-- CLI consolidation: `packages/taro-cli`; active internals under `packages/taro-cli/src/internal/`; archived read-only snapshots at `archives/packages/taro-service`, `archives/packages/taro-mini-runner`, `archives/packages/taro-helper`, `archives/packages/taro-shared`.
-- Runtime consolidation: `packages/taro` with inlined runtime at `packages/taro/src/runtime/`; archived read-only snapshot at `archives/packages/taro-runtime`.
+- CLI consolidation: `packages/taro-cli`; active internals under `packages/taro-cli/src/internal/`.
+- Runtime consolidation: `packages/taro` with inlined runtime at `packages/taro/src/runtime/`.
 - Component dependency cleanup: `packages/taro-components` and its peer relationship to React/`@spcsn/taro`.
 - Native binding surface: already removed; do not reintroduce `crates/native_binding` or `npm/*` platform packages.
 

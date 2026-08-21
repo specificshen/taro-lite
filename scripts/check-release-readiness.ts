@@ -42,12 +42,7 @@ const TARO_DISALLOWED_DEV_DEPENDENCIES = ['@spcsn/taro-components'];
 const TARO_ALLOWED_DIRECT_DEPENDENCIES: string[] = [];
 
 const README_PATH = 'README.md';
-const INTERNAL_GUIDANCE_DOC_PATHS = [
-  'docs/package-consolidation.md',
-  'docs/taro-react-only-modernization.md',
-  'docs/package-archive-plan.md',
-];
-const ARCHIVE_PACKAGES_DIR = 'archives/packages';
+const INTERNAL_GUIDANCE_DOC_PATHS = ['docs/package-consolidation.md', 'docs/taro-react-only-modernization.md'];
 const BUSINESS_FIXTURE_PACKAGE_JSON_PATH = 'fixtures/taro-lite-sunshine-lab/package.json';
 const BUSINESS_FIXTURE_CONFIG_PATH = 'fixtures/taro-lite-sunshine-lab/config/index.ts';
 const CLI_DEFAULT_FIXTURE_PACKAGE_JSON_PATH = 'packages/taro-cli/tests/fixtures/default/package.json';
@@ -61,7 +56,6 @@ let hasDependencyBoundaryErrors = false;
 let hasReadmeContractErrors = false;
 let hasPublishSurfaceErrors = false;
 let hasBusinessFixtureContractErrors = false;
-let hasArchivePlanErrors = false;
 
 const expectedPublicPackageNames = BUSINESS_ENTRY_PACKAGES;
 const publicPackageJsonPaths = collectPublicPackageJsonPaths();
@@ -80,7 +74,6 @@ checkBusinessEntryPeerDependencyContract();
 checkReadmeBusinessDependencyContract();
 checkReadmeInternalPackageContract();
 checkInternalGuidanceDocContract();
-checkArchivePlanContract();
 checkBusinessFixtureDependencyContract();
 checkCliDefaultFixtureDependencyContract();
 checkBusinessFixtureConfigContract();
@@ -112,10 +105,6 @@ if (errors.length > 0) {
     globalThis.console.log('- Keep package publish surface aligned with docs/package-consolidation.md.');
   if (hasBusinessFixtureContractErrors)
     globalThis.console.log('- Keep the business fixture limited to public business-facing @spcsn packages.');
-  if (hasArchivePlanErrors)
-    globalThis.console.log(
-      '- Keep the archive directory and package archive plan aligned with docs/package-archive-plan.md.',
-    );
   process.exit(1);
 }
 
@@ -367,51 +356,6 @@ function checkInternalGuidanceDocContract() {
       `${docPath}: internal docs that mention package consolidation must state they are not business guidance.`,
     );
   }
-}
-
-function checkArchivePlanContract() {
-  const archiveDirPath = path.join(rootDir, ARCHIVE_PACKAGES_DIR);
-  if (!fs.existsSync(archiveDirPath)) {
-    hasArchivePlanErrors = true;
-    errors.push(`${ARCHIVE_PACKAGES_DIR}: archive packages directory must exist.`);
-    return;
-  }
-
-  const archiveReadmePath = path.join(archiveDirPath, 'README.md');
-  if (!fs.existsSync(archiveReadmePath)) {
-    hasArchivePlanErrors = true;
-    errors.push(`${ARCHIVE_PACKAGES_DIR}/README.md: archive directory must document its purpose and current state.`);
-  }
-
-  const archivePackageNames = collectArchivedPackageNames();
-  const unexpectedlyPublicArchivePackageNames = archivePackageNames.filter((packageName) =>
-    expectedPublicPackageNames.includes(packageName),
-  );
-
-  if (unexpectedlyPublicArchivePackageNames.length > 0) {
-    hasArchivePlanErrors = true;
-    errors.push(
-      `${ARCHIVE_PACKAGES_DIR}: archived packages must not be in the active public release surface: ${unexpectedlyPublicArchivePackageNames.join(', ')}`,
-    );
-  }
-}
-
-function collectArchivedPackageNames(): string[] {
-  const archiveDirPath = path.join(rootDir, ARCHIVE_PACKAGES_DIR);
-  if (!fs.existsSync(archiveDirPath)) return [];
-
-  const entries = fs.readdirSync(archiveDirPath, { withFileTypes: true });
-  const packageNames: string[] = [];
-
-  for (const entry of entries) {
-    if (!entry.isDirectory()) continue;
-    const packageJsonPath = path.join(archiveDirPath, entry.name, 'package.json');
-    if (!fs.existsSync(packageJsonPath)) continue;
-    const packageJson = readJson(packageJsonPath);
-    if (isString(packageJson.name)) packageNames.push(packageJson.name);
-  }
-
-  return packageNames;
 }
 
 function checkBusinessFixtureDependencyContract() {
@@ -1110,7 +1054,7 @@ function printPublishSurface() {
   }
 
   if (privateWorkspacePackageNames.length > 0) {
-    globalThis.console.log('\nPrivate workspace packages (bundled or archived):\n');
+    globalThis.console.log('\nPrivate workspace packages (bundled):\n');
     printPackageGroup(privateWorkspacePackageNames);
   }
 }

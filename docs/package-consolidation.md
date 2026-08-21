@@ -50,7 +50,7 @@
 
 ## 内部包处理方向
 
-以下包已改为内部实现，不再作为业务可感知发布包，并迁入 `archives/packages/`：
+以下包已改为内部实现，不再作为业务可感知发布包：
 
 - `@spcsn/taro-service`
 - `@spcsn/taro-mini-runner`
@@ -84,12 +84,10 @@
 
 ## 历史包归档
 
-按 `docs/package-archive-plan.md`，以下内部实现包已迁入 `archives/packages/`，不再出现在 `packages/` 活跃目录，也不再作为公开发布包：
+以下内部实现包曾迁入 `archives/packages/` 保留只读快照；归档目录现已整体移除，历史内容可从 git 记录找回。这些名称不再出现在 `packages/` 活跃目录，也不再作为公开发布包：
 
 - `@spcsn/taro-runtime`
 - `@spcsn/taro-shared`
 - `@spcsn/taro-service`
 - `@spcsn/taro-mini-runner`
 - `@spcsn/taro-helper`
-
-这些归档目录仅保留历史 `package.json`、测试与 README，已不再出现在 `pnpm-workspace.yaml` 中，不参与 workspace 安装、`pnpm -r build` 与 `release:check`。

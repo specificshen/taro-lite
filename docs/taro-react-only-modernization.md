@@ -14,7 +14,7 @@
 - 业务侧最小显式依赖收敛为 `@spcsn/taro`、`@spcsn/taro-components`、`@spcsn/taro-cli`，外加业务自身的 `react`。
 - 原内部包 `@spcsn/taro-runtime` 已源码级内联到 `packages/taro/src/runtime/`，由 `@spcsn/taro` 统一构建并通过 `@spcsn/taro/runtime` 子路径暴露，供 CLI 构建期引用。
 - 原内部包 `@spcsn/taro-helper`、`@spcsn/taro-service`、`@spcsn/taro-mini-runner`、`@spcsn/taro-shared` 已源码级内联到 `packages/taro-cli/src/internal/{taro-helper,taro-service,taro-mini-runner,taro-shared}/`。
-- `archives/packages/` 仅保留历史 `package.json`/测试/README，不再出现在 `pnpm-workspace.yaml`，不参与 workspace 安装、递归构建与 `release:check`。
+- 历史归档目录 `archives/packages/` 已整体移除，原内部包只读快照可从 git 历史找回。
 - `@spcsn/taro` 与 `@spcsn/taro-cli` 均已清空 `bundleDependencies`。
 - `release:check` 只认可三个公开业务入口包，并持续检查内部包依赖边界、发布面与业务可见类型边界。
 - `@spcsn/taro-plugin-generator` 已并入 `@spcsn/taro-cli`。
@@ -33,7 +33,7 @@
 - 发布检查已新增依赖边界闸门：防止 `@spcsn/taro-cli` 回退直连 `@spcsn/taro-components/@spcsn/taro-shared`，防止 `@spcsn/taro` 回退直连 `@spcsn/taro-shared` 或恢复 `@spcsn/taro-components` 开发依赖。
 - CLI 当前仅支持 `init` 与 `build` 命令。
 
-> 最新包结构、归档细节和发布面约定，请优先参考 `docs/package-consolidation.md` 与 `docs/package-archive-plan.md`。
+> 最新包结构和发布面约定，请优先参考 `docs/package-consolidation.md`。
 
 ## 1. 改造目标
 
@@ -90,9 +90,9 @@ packages/
 @spcsn/taro-cli
 ```
 
-原 `@spcsn/taro-runtime`、 `@spcsn/taro-service`、 `@spcsn/taro-mini-runner`、 `@spcsn/taro-helper`、 `@spcsn/taro-shared` 已源码级内联到上述两个入口包中，不再作为独立发布包或安装兼容包存在。`archives/packages/` 仅保留历史资料，已不再参与 workspace 安装与 `release:check`。原 Rust crate、二进制扩展和平台 npm 包链路已移除，`createProject` 改由 `@spcsn/taro-cli` 内部 TypeScript 实现。
+原 `@spcsn/taro-runtime`、 `@spcsn/taro-service`、 `@spcsn/taro-mini-runner`、 `@spcsn/taro-helper`、 `@spcsn/taro-shared` 已源码级内联到上述两个入口包中，不再作为独立发布包或安装兼容包存在。原 Rust crate、二进制扩展和平台 npm 包链路已移除，`createProject` 改由 `@spcsn/taro-cli` 内部 TypeScript 实现。
 
-> 详细状态请参见 `docs/package-consolidation.md` 与 `docs/package-archive-plan.md`。
+> 详细状态请参见 `docs/package-consolidation.md`。
 
 ## 4. 包级改造策略
 
@@ -655,7 +655,7 @@ pnpm --filter @spcsn/taro-cli pack --pack-destination ../taro-lite-packs
 babel-preset-taro
 ```
 
-这些能力已内联到 `@spcsn/taro` 或 `@spcsn/taro-cli`，或已归档到 `archives/packages/`。如果业务显式依赖这些名称，说明入口包的依赖闭包或构建产物还有问题，应该回到底座修复，而不是扩大业务接入面。
+这些能力已内联到 `@spcsn/taro` 或 `@spcsn/taro-cli`。如果业务显式依赖这些名称，说明入口包的依赖闭包或构建产物还有问题，应该回到底座修复，而不是扩大业务接入面。
 
 ### 11.5 业务工程验证清单
 
