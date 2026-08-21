@@ -14,11 +14,9 @@ import type {
 
 interface LoaderMeta {
   importFrameworkStatement: string;
-  mockAppStatement: string;
   frameworkArgs: string;
   creator: string;
   creatorLocation: string;
-  importFrameworkName: string;
   [key: string]: unknown;
 }
 
@@ -43,17 +41,9 @@ export class CompilerContext<T extends ViteMiniBuildConfig> implements ViteCompi
 import * as React from 'react'
 import ReactDOM from 'react-dom'
 `,
-    mockAppStatement: `
-class App extends React.Component {
-  render () {
-    return this.props.children
-  }
-}
-`,
     frameworkArgs: 'React, ReactDOM, config',
     creator: 'createReactApp',
     creatorLocation: path.resolve(__dirname, '../../react-framework/runtime'),
-    importFrameworkName: 'React',
   };
 
   logger = logger;

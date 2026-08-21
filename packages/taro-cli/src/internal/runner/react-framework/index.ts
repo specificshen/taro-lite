@@ -12,9 +12,6 @@ export interface FrameworkPluginContext {
     };
   };
   modifyRunnerOpts: (fn: (args: { opts?: RunnerOptions }) => void) => void;
-  runnerUtils: {
-    getViteMiniCompilerContext: (rollupContext: unknown) => { loaderMeta?: Record<string, unknown> } | undefined;
-  };
 }
 
 interface RunnerOptions {
@@ -52,7 +49,7 @@ export default (ctx: FrameworkPluginContext) => {
 
     compiler.vitePlugins ||= [];
     compiler.vitePlugins.push(VitePresetPlugin());
-    compiler.vitePlugins.push(miniVitePlugin(ctx, framework));
+    compiler.vitePlugins.push(miniVitePlugin(ctx));
   });
 };
 

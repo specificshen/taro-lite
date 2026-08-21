@@ -6,28 +6,12 @@ import { resolveSync } from '../../helper';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-import type { FrameworkPluginContext, Frameworks } from './index';
-import { getLoaderMeta } from './loader-meta';
+import type { FrameworkPluginContext } from './index';
 
 const JSX_DEV_RUNTIME_SHIM_ID = '\0taro-react-jsx-dev-runtime-shim';
 
-export function miniVitePlugin(ctx: FrameworkPluginContext, framework: Frameworks): PluginOption {
-  return [injectLoaderMeta(ctx, framework), aliasPlugin(ctx)];
-}
-
-function injectLoaderMeta(ctx: FrameworkPluginContext, framework: Frameworks): PluginOption {
-  return {
-    name: 'taro-react:loader-meta',
-    buildStart() {
-      const { runnerUtils } = ctx;
-      const { getViteMiniCompilerContext } = runnerUtils;
-      const viteCompilerContext = getViteMiniCompilerContext(this);
-      if (viteCompilerContext) {
-        viteCompilerContext.loaderMeta ||= {};
-        Object.assign(viteCompilerContext.loaderMeta, getLoaderMeta(framework));
-      }
-    },
-  };
+export function miniVitePlugin(ctx: FrameworkPluginContext): PluginOption {
+  return [aliasPlugin(ctx)];
 }
 
 function resolvePackageDir(id: string, basedir: string, extraBasedirs: string[] = []): string {

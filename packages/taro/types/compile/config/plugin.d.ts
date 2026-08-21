@@ -22,20 +22,3 @@ export type TRollupResolveMethod = (
   importer?: string,
   options?: IRollupPluginResolveIdOptions
 ) => Promise<RollupResolvedId | null>
-
-export interface ILoaderMeta {
-  importFrameworkStatement: string
-  importFrameworkName: string
-  creator: string
-  creatorLocation: string
-  frameworkArgs: string
-  isNeedRawLoader?: boolean
-  mockAppStatement: string
-  modifyResolveId?: (res: {
-    source?: string
-    importer?: string
-    options?: IRollupPluginResolveIdOptions
-    name?: string
-    resolve: TRollupResolveMethod
-  }) => Promise<RollupResolveIdResult> | RollupResolveIdResult
-}
