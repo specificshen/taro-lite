@@ -13,8 +13,6 @@ describe('preset hooks constants', () => {
     expect(hooks.MODIFY_VITE_CONFIG).toBe('modifyViteConfig');
     expect(hooks.MODIFY_BUILD_ASSETS).toBe('modifyBuildAssets');
     expect(hooks.MODIFY_MINI_CONFIGS).toBe('modifyMiniConfigs');
-    expect(hooks.MODIFY_COMPONENT_CONFIG).toBe('modifyComponentConfig');
     expect(hooks.MODIFY_RUNNER_OPTS).toBe('modifyRunnerOpts');
-    expect(hooks.ON_PARSE_CREATE_ELEMENT).toBe('onParseCreateElement');
   });
 });

@@ -18,6 +18,6 @@ describe('build hooks preset', () => {
     expect(registered).toContain('onBuildStart');
     expect(registered).toContain('onBuildFinish');
     expect(registered).toContain('onBuildComplete');
-    expect(registered).toHaveLength(10);
+    expect(registered).toHaveLength(8);
   });
 });

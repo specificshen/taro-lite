@@ -290,7 +290,7 @@ describe('helper utils', () => {
 
   describe('getInstalledNpmPkgPath', () => {
     it('returns package.json path for existing dependency', () => {
-      const pkgPath = getInstalledNpmPkgPath('acorn', process.cwd());
+      const pkgPath = getInstalledNpmPkgPath('vite', process.cwd());
       expect(pkgPath).not.toBeNull();
       expect(pkgPath!.endsWith('package.json')).toBe(true);
     });
@@ -302,7 +302,7 @@ describe('helper utils', () => {
 
   describe('getInstalledNpmPkgVersion', () => {
     it('returns version for existing dependency', () => {
-      const version = getInstalledNpmPkgVersion('acorn', process.cwd());
+      const version = getInstalledNpmPkgVersion('vite', process.cwd());
       expect(version).not.toBeNull();
       expect(version).toMatch(/^\d+\.\d+\.\d+/);
     });

@@ -6,6 +6,7 @@
       "name": "taro",
       "devDependencies": {
         "@biomejs/biome": "^2.5.0",
+        "@types/node": "^26.2.0",
         "bun-types": "^1.4.0",
         "typescript": "~7.0.2",
       },

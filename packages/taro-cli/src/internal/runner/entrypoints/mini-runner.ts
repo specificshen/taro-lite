@@ -1,4 +1,3 @@
-import { isFunction } from '@spcsn/taro/runtime';
 import type { ViteMiniBuildConfig } from '@spcsn/taro/types/compile/vite-compiler-context';
 import type { Logger, UserConfig } from 'vite';
 import { build, createLogger } from 'vite';
@@ -52,11 +51,6 @@ export default async function (appPath: string, rawTaroConfig: ViteMiniBuildConf
     logLevel: 'silent',
     plugins,
   };
-
-  const modifyComponentConfig = taroConfig.modifyComponentConfig;
-  if (isFunction(modifyComponentConfig)) {
-    modifyComponentConfig(componentConfig, taroConfig);
-  }
 
   const modifyViteConfigStartMs = buildProfiler.start();
   taroConfig.modifyViteConfig?.(
