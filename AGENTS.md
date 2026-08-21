@@ -101,6 +101,8 @@ ESM 不像 CJS 那样天然通过 `require` 缓存保证单例。如果同一份
 
 优先使用模块导入共享；只有在无法避免代码复制时，才使用 `globalThis` 兜底。
 
+runtime 侧的所有状态单例（`hooks`、`Current`、`eventSource`、`instances`、`eventCenter`、`env`、`cacheData`、`customWrapperCache`、`eventsBatch`）已统一经 `shared-primitives.ts` 的 `getGlobalSingleton` 兜底；新增状态单例时必须复用该 helper，不要手写一次性的 globalThis 判断。
+
 ## 5. 常见反模式
 
 ### ❌ 反模式 1：在 cli 内部复制 runtime 文件
