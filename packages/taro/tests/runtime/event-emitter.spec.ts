@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'bun:test';
-import { Events } from '../../../../taro/src/runtime/event-emitter';
+import { Events } from '../../src/runtime/event-emitter';
 
-describe('taro-shared event-emitter', () => {
+describe('runtime event-emitter', () => {
   it('triggers registered callbacks', () => {
     const events = new Events();
     const cb = vi.fn();

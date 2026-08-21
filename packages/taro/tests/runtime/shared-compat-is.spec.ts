@@ -10,9 +10,9 @@ import {
   isObjectStringLiteral,
   isString,
   isUndefined,
-} from '../../../../taro/src/runtime/shared-compat/is';
+} from '../../src/runtime/shared-compat/is';
 
-describe('taro-shared is', () => {
+describe('runtime is', () => {
   describe('isString', () => {
     it('returns true for string', () => expect(isString('x')).toBe(true));
     it('returns false for number', () => expect(isString(1)).toBe(false));

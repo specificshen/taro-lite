@@ -7,9 +7,9 @@ import {
   toCamelCase,
   toDashed,
   toKebabCase,
-} from '../../../../taro/src/runtime/shared-compat/utils';
+} from '../../src/runtime/shared-compat/utils';
 
-describe('taro-shared utils', () => {
+describe('runtime utils', () => {
   describe('toDashed', () => {
     it('converts camelCase to dashed', () => {
       expect(toDashed('helloWorld')).toBe('hello-world');
