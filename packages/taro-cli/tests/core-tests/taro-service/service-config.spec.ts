@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'bun:test';
 import type { IProjectConfig } from '@spcsn/taro/types/compile';
-import Config from '../../../src/internal/taro-service/service-config';
+import Config from '../../../src/internal/kernel/service-config';
 
 function createConfig(initialConfig: Partial<IProjectConfig> = {}) {
   const config = new Config({ appPath: '/tmp' });
@@ -8,7 +8,7 @@ function createConfig(initialConfig: Partial<IProjectConfig> = {}) {
   return config;
 }
 
-describe('taro-service service-config', () => {
+describe('kernel service-config', () => {
   describe('getConfigWithNamed', () => {
     it('defaults framework to react', () => {
       const config = createConfig();

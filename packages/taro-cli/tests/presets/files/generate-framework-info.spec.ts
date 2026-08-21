@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'bun:test';
-import * as helper from '../../../src/internal/taro-helper';
-import type { IPluginContext } from '../../../src/internal/taro-service';
+import * as helper from '../../../src/internal/helper';
+import type { IPluginContext } from '../../../src/internal/kernel';
 import generateFrameworkInfoPreset from '../../../src/presets/files/generate-framework-info';
 
 describe('generateFrameworkInfo preset', () => {

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'bun:test';
-import { dotenvParse, formatPrefix, patchEnv } from '../../../src/internal/taro-helper/dotenv';
+import { dotenvParse, formatPrefix, patchEnv } from '../../../src/internal/helper/dotenv';
 
-describe('taro-helper dotenv', () => {
+describe('helper dotenv', () => {
   describe('formatPrefix', () => {
     it('returns default TARO_APP_ prefix', () => {
       expect(formatPrefix()).toEqual(['TARO_APP_']);

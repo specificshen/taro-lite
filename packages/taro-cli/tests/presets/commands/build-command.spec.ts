@@ -1,6 +1,6 @@
 import { afterEach, beforeAll, beforeEach, describe, expect, it, mock, vi } from 'bun:test';
-import * as helper from '../../../src/internal/taro-helper';
-import type { IPluginContext } from '../../../src/internal/taro-service';
+import * as helper from '../../../src/internal/helper';
+import type { IPluginContext } from '../../../src/internal/kernel';
 
 // bun 的 mock.module 不提升，build 命令须在注册 mock 后动态加载
 mock.module('../../../src/doctor/validators', () => ({

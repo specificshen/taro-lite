@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test';
-import * as helper from '../../src/internal/taro-helper';
-import type { IPluginContext } from '../../src/internal/taro-service';
+import * as helper from '../../src/internal/helper';
+import type { IPluginContext } from '../../src/internal/kernel';
 import Weapp from '../../src/platform-weapp/program';
 
 describe('platform-weapp program', () => {

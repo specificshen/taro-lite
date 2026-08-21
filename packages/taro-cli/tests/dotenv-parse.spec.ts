@@ -1,13 +1,13 @@
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'bun:test';
 import * as path from 'node:path';
 import type CLI from '../src/cli';
-import { dotenvParse } from '../src/internal/taro-helper';
+import { dotenvParse } from '../src/internal/helper';
 import { mockTaroService } from './utils/mock-service';
 
 // 先注册 mock 再动态加载 cli：bun 的 mock.module 不提升，
-// 静态 import cli.ts 会让 taro-service 的真实绑定先行固化；
+// 静态 import cli.ts 会让 kernel 的真实绑定先行固化；
 // modulePath 必须传绝对路径（mock.module 按 helper 文件位置解析相对路径）
-const { kernelInstances } = mockTaroService(path.resolve(__dirname, '../src/internal/taro-service'));
+const { kernelInstances } = mockTaroService(path.resolve(__dirname, '../src/internal/kernel'));
 const APP_PATH = path.join(__dirname, 'fixtures/default');
 
 function setProcessArgv(cmd: string) {

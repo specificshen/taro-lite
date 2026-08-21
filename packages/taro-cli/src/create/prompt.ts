@@ -1,5 +1,5 @@
 import { createInterface } from 'node:readline';
-import { chalk } from '../internal/taro-helper';
+import { chalk } from '../internal/helper';
 
 export interface SelectOption<T> {
   name: string;

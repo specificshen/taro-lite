@@ -1,5 +1,5 @@
 import * as path from 'node:path';
-import { chalk, fs } from '../internal/taro-helper';
+import { chalk, fs } from '../internal/helper';
 import { clearConsole, getPkgVersion, getRootPath } from '../util/index';
 import { TEMPLATE_CREATOR_FILES } from './constants';
 import Creator from './creator';

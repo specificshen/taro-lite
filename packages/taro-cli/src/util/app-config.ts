@@ -1,4 +1,4 @@
-import type { IPluginContext } from '../internal/taro-service';
+import type { IPluginContext } from '../internal/kernel';
 
 export function extractCompileEntry(
   appConfig: Record<string, unknown>,

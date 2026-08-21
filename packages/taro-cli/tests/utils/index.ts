@@ -1,6 +1,6 @@
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { Config, Kernel } from '../../src/internal/taro-service';
+import { Config, Kernel } from '../../src/internal/kernel';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 

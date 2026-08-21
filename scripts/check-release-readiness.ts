@@ -522,7 +522,7 @@ function checkBusinessVisibleTypeContract() {
     'packages/taro/types/compile/config/plugin.d.ts',
     'packages/taro/types/compile/config/project.d.ts',
     'packages/taro/types/compile/config/util.d.ts',
-    'packages/taro/types/compile/viteCompilerContext.d.ts',
+    'packages/taro/types/compile/vite-compiler-context.d.ts',
   ];
   const externalBuildTypeImportPattern = /from ['"](webpack|webpack-chain|rollup|postcss)['"]/g;
   const unsupportedCompilerContextPattern = /Vite(H5|Harmony)(BuildConfig|CompilerContext)|IH5Config|IHarmonyConfig/g;

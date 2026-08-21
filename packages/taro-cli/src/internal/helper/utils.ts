@@ -1,0 +1,919 @@
+import * as child_process from 'node:child_process';
+import { createHash } from 'node:crypto';
+import * as nativeFs from 'node:fs';
+import * as os from 'node:os';
+import * as path from 'node:path';
+
+import { parseSync } from '@swc/core';
+import {
+  CSS_EXT,
+  PLATFORMS,
+  processTypeEnum,
+  processTypeMap,
+  REG_CSS_IMPORT,
+  REG_JSON,
+  REG_NODE_MODULES,
+  SCRIPT_EXT,
+  TARO_CONFIG_FOLDER,
+} from './constants';
+import { chalk } from './terminal';
+
+interface SwcNode {
+  type: string;
+  [key: string]: unknown;
+}
+
+interface SwcVisitor {
+  [key: string]: SwcVisitorFunc | SwcVisitor | SwcVisitorFunc[];
+}
+
+type SwcVisitorFunc = (astPath: SwcNode, ...args: unknown[]) => void;
+
+const execSync = child_process.execSync;
+
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  if (value === null || typeof value !== 'object') {
+    return false;
+  }
+  const prototype = Object.getPrototypeOf(value);
+  return prototype === Object.prototype || prototype === null;
+}
+
+function toCamelCase(value: string): string {
+  return value
+    .replace(/^[\s_-]+|[\s_-]+$/g, '')
+    .replace(/[-_\s]+(.)?/g, (_, character: string = '') => character.toUpperCase());
+}
+
+function normalizeVisitor(value: unknown): SwcVisitor {
+  return typeof value === 'function' ? { enter: value as SwcVisitorFunc } : (value as SwcVisitor);
+}
+
+interface NativeFsCompat {
+  access: typeof nativeFs.access;
+  constants: typeof nativeFs.constants;
+  existsSync: typeof nativeFs.existsSync;
+  lstatSync: typeof nativeFs.lstatSync;
+  mkdirSync: typeof nativeFs.mkdirSync;
+  rmdirSync: typeof nativeFs.rmdirSync;
+  readFile: typeof nativeFs.promises.readFile;
+  readFileSync: typeof nativeFs.readFileSync;
+  readdir: typeof nativeFs.promises.readdir;
+  readdirSync: typeof nativeFs.readdirSync;
+  realpathSync: typeof nativeFs.realpathSync;
+  remove: (targetPath: nativeFs.PathLike) => Promise<void>;
+  renameSync: typeof nativeFs.renameSync;
+  rmSync: typeof nativeFs.rmSync;
+  stat: typeof nativeFs.promises.stat;
+  statSync: typeof nativeFs.statSync;
+  unlinkSync: typeof nativeFs.unlinkSync;
+  writeFile: typeof nativeFs.promises.writeFile;
+  writeFileSync: typeof nativeFs.writeFileSync;
+  ensureDirSync: (directoryPath: nativeFs.PathLike) => void;
+  mkdir: typeof nativeFs.promises.mkdir;
+  mkdirp: (directoryPath: nativeFs.PathLike) => Promise<string | undefined>;
+  move: (sourcePath: string, targetPath: string, options?: { overwrite?: boolean }) => Promise<void>;
+  pathExists: (targetPath: nativeFs.PathLike) => Promise<boolean>;
+  createFile: (filePath: nativeFs.PathLike) => Promise<void>;
+  readJSON: <T = unknown>(filePath: nativeFs.PathLike) => Promise<T>;
+  readJSONSync: <T = unknown>(filePath: nativeFs.PathOrFileDescriptor) => T;
+  writeJSON: (filePath: nativeFs.PathLike, data: unknown) => Promise<void>;
+}
+
+const fs: NativeFsCompat = {
+  access: nativeFs.access,
+  constants: nativeFs.constants,
+  existsSync: nativeFs.existsSync,
+  lstatSync: nativeFs.lstatSync,
+  mkdirSync: nativeFs.mkdirSync,
+  rmdirSync: nativeFs.rmdirSync,
+  readFile: nativeFs.promises.readFile,
+  readFileSync: nativeFs.readFileSync,
+  readdir: nativeFs.promises.readdir,
+  readdirSync: nativeFs.readdirSync,
+  realpathSync: nativeFs.realpathSync,
+  renameSync: nativeFs.renameSync,
+  rmSync: nativeFs.rmSync,
+  stat: nativeFs.promises.stat,
+  statSync: nativeFs.statSync,
+  unlinkSync: nativeFs.unlinkSync,
+  writeFile: nativeFs.promises.writeFile,
+  writeFileSync: nativeFs.writeFileSync,
+  async createFile(filePath) {
+    const targetFilePath = filePath.toString();
+    await nativeFs.promises.mkdir(path.dirname(targetFilePath), { recursive: true });
+    const fileHandle = await nativeFs.promises.open(targetFilePath, 'a');
+    await fileHandle.close();
+  },
+  ensureDirSync(directoryPath) {
+    nativeFs.mkdirSync(directoryPath, { recursive: true });
+  },
+  async readJSON(filePath) {
+    return JSON.parse(await nativeFs.promises.readFile(filePath, 'utf8'));
+  },
+  readJSONSync(filePath) {
+    return JSON.parse(nativeFs.readFileSync(filePath, 'utf8'));
+  },
+  async writeJSON(filePath, data) {
+    const targetFilePath = filePath.toString();
+    await nativeFs.promises.mkdir(path.dirname(targetFilePath), { recursive: true });
+    await nativeFs.promises.writeFile(targetFilePath, JSON.stringify(data, null, 2));
+  },
+  async remove(targetPath) {
+    await nativeFs.promises.rm(targetPath, { recursive: true, force: true });
+  },
+  mkdir: nativeFs.promises.mkdir,
+  async mkdirp(directoryPath) {
+    return nativeFs.promises.mkdir(directoryPath, { recursive: true });
+  },
+  async move(sourcePath, targetPath, options = {}) {
+    if (options.overwrite) {
+      await nativeFs.promises.rm(targetPath, { recursive: true, force: true });
+    }
+    await nativeFs.promises.mkdir(path.dirname(targetPath), { recursive: true });
+    await nativeFs.promises.rename(sourcePath, targetPath).catch(async (error: NodeJS.ErrnoException) => {
+      if (error.code !== 'EXDEV') throw error;
+      await nativeFs.promises.cp(sourcePath, targetPath, { recursive: true });
+      await nativeFs.promises.rm(sourcePath, { recursive: true, force: true });
+    });
+  },
+  async pathExists(targetPath) {
+    return nativeFs.promises
+      .access(targetPath)
+      .then(() => true)
+      .catch(() => false);
+  },
+};
+
+export function normalizePath(path: string) {
+  return path.replace(/\\/g, '/').replace(/\/{2,}/g, '/');
+}
+
+export const isNodeModule = (filename: string): boolean => REG_NODE_MODULES.test(filename);
+
+export function isNpmPkg(name: string): boolean {
+  if (/^(\.|\/)/.test(name)) {
+    return false;
+  }
+  return true;
+}
+
+export function isQuickAppPkg(name: string): boolean {
+  return /^@(system|service)\.[a-zA-Z]{1,}/.test(name);
+}
+
+export function isAliasPath(name: string, pathAlias: Record<string, string> = {}): boolean {
+  const prefixes = Object.keys(pathAlias);
+  if (prefixes.length === 0) {
+    return false;
+  }
+  return prefixes.includes(name) || new RegExp(`^(${prefixes.join('|')})/`).test(name);
+}
+
+export function replaceAliasPath(filePath: string, name: string, pathAlias: Record<string, string> = {}) {
+  // 后续的 path.join 在遇到符号链接时将会解析为真实路径，如果
+  // 这里的 filePath 没有做同样的处理，可能会导致 import 指向
+  // 源代码文件，导致文件被意外修改
+  filePath = fs.realpathSync(filePath);
+
+  const prefixes = Object.keys(pathAlias);
+  if (prefixes.includes(name)) {
+    return promoteRelativePath(path.relative(filePath, fs.realpathSync(resolveScriptPath(pathAlias[name]))));
+  }
+  const reg = new RegExp(`^(${prefixes.join('|')})/(.*)`);
+  name = name.replace(reg, function (_m, $1, $2) {
+    return promoteRelativePath(path.relative(filePath, path.join(pathAlias[$1], $2)));
+  });
+  return name;
+}
+
+export function promoteRelativePath(fPath: string): string {
+  const fPathArr = fPath.split(path.sep);
+  let dotCount = 0;
+  fPathArr.forEach((item) => {
+    if (item.indexOf('..') >= 0) {
+      dotCount++;
+    }
+  });
+  if (dotCount === 1) {
+    fPathArr.splice(0, 1, '.');
+    return fPathArr.join('/');
+  }
+  if (dotCount > 1) {
+    fPathArr.splice(0, 1);
+    return fPathArr.join('/');
+  }
+  return normalizePath(fPath);
+}
+
+export function resolveStylePath(p: string): string {
+  const realPath = p;
+  const removeExtPath = p.replace(path.extname(p), '');
+  const taroEnv = process.env.TARO_ENV;
+  for (let i = 0; i < CSS_EXT.length; i++) {
+    const item = CSS_EXT[i];
+    if (taroEnv) {
+      if (fs.existsSync(`${removeExtPath}.${taroEnv}${item}`)) {
+        return `${removeExtPath}.${taroEnv}${item}`;
+      }
+    }
+    if (fs.existsSync(`${p}${item}`)) {
+      return `${p}${item}`;
+    }
+  }
+  return realPath;
+}
+
+export function printLog(type: processTypeEnum, tag: string, filePath?: string) {
+  const typeShow = processTypeMap[type];
+  const tagLen = tag.replace(/[\u0391-\uFFE5]/g, 'aa').length;
+  const tagFormatLen = 8;
+  if (tagLen < tagFormatLen) {
+    const rightPadding = new Array(tagFormatLen - tagLen + 1).join(' ');
+    tag += rightPadding;
+  }
+  const padding = '';
+  filePath = filePath || '';
+  if (typeof typeShow.color === 'string') {
+    console.log(
+      (chalk as unknown as Record<string, (s: string) => string>)[typeShow.color](typeShow.name),
+      padding,
+      tag,
+      padding,
+      filePath,
+    );
+  } else {
+    console.log(typeShow.color(typeShow.name), padding, tag, padding, filePath);
+  }
+}
+
+interface WorkspacePackageJson {
+  workspaces?: string[] | { packages?: string[] };
+}
+
+function hasWorkspaces(packageJson: WorkspacePackageJson): boolean {
+  if (Array.isArray(packageJson.workspaces)) {
+    return packageJson.workspaces.length > 0;
+  }
+  return Array.isArray(packageJson.workspaces?.packages) && packageJson.workspaces.packages.length > 0;
+}
+
+function findWorkspaceRoot(startPath: string): string | null {
+  let currentPath = startPath;
+
+  while (true) {
+    const packageJsonPath = path.join(currentPath, 'package.json');
+    if (fs.existsSync(packageJsonPath)) {
+      try {
+        if (hasWorkspaces(fs.readJSONSync<WorkspacePackageJson>(packageJsonPath))) {
+          return currentPath;
+        }
+      } catch {
+        // Ignore invalid package.json files while walking upward.
+      }
+    }
+
+    const parentPath = path.dirname(currentPath);
+    if (parentPath === currentPath) {
+      return null;
+    }
+    currentPath = parentPath;
+  }
+}
+
+export function recursiveFindNodeModules(filePath: string, lastFindPath?: string): string {
+  if (lastFindPath && normalizePath(filePath) === normalizePath(lastFindPath)) {
+    return filePath;
+  }
+  const dirname = path.dirname(filePath);
+  const workspaceRoot = findWorkspaceRoot(dirname);
+  const nodeModules = path.join(workspaceRoot || dirname, 'node_modules');
+  if (fs.existsSync(nodeModules)) {
+    return nodeModules;
+  }
+  if (dirname.split(path.sep).length <= 1) {
+    printLog(processTypeEnum.ERROR, `在${dirname}目录下`, '未找到node_modules文件夹，请先安装相关依赖库！');
+    return nodeModules;
+  }
+  return recursiveFindNodeModules(dirname, filePath);
+}
+
+export function getUserHomeDir(): string {
+  function homedir(): string {
+    const env = process.env;
+    const home = env.HOME;
+    const user = env.LOGNAME || env.USER || env.LNAME || env.USERNAME;
+
+    if (process.platform === 'win32') {
+      return env.USERPROFILE || '' + env.HOMEDRIVE + env.HOMEPATH || home || '';
+    }
+
+    if (process.platform === 'darwin') {
+      return home || (user ? '/Users/' + user : '');
+    }
+
+    if (process.platform === 'linux') {
+      return home || (process.getuid?.() === 0 ? '/root' : user ? '/home/' + user : '');
+    }
+
+    return home || '';
+  }
+  return typeof (os.homedir as (() => string) | undefined) === 'function' ? os.homedir() : homedir();
+}
+
+export function getTaroPath(): string {
+  const taroPath = path.join(getUserHomeDir(), TARO_CONFIG_FOLDER);
+  if (!fs.existsSync(taroPath)) {
+    fs.ensureDirSync(taroPath);
+  }
+  return taroPath;
+}
+
+export function getConfig(): Record<string, unknown> {
+  const configPath = path.join(getTaroPath(), 'config.json');
+  if (fs.existsSync(configPath)) {
+    return fs.readJSONSync(configPath);
+  }
+  return {};
+}
+
+export function getHash(text: Buffer | string): string {
+  return createHash('sha256').update(text).digest('hex').substring(0, 8);
+}
+
+export function getSystemUsername(): string {
+  const userHome = getUserHomeDir();
+  const systemUsername = process.env.USER || path.basename(userHome);
+  return systemUsername;
+}
+
+export function shouldUseYarn(): boolean {
+  try {
+    execSync('yarn --version', { stdio: 'ignore' });
+    return true;
+  } catch (_e) {
+    return false;
+  }
+}
+
+export function shouldUseCnpm(): boolean {
+  try {
+    execSync('cnpm --version', { stdio: 'ignore' });
+    return true;
+  } catch (_e) {
+    return false;
+  }
+}
+
+export function isEmptyObject(obj: object | null | undefined): boolean {
+  if (obj == null) {
+    return true;
+  }
+  for (const key in obj) {
+    if (Object.hasOwn(obj, key)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+export function resolveSync(id: string, opts: { basedir?: string } = {}): string | null {
+  try {
+    return Bun.resolveSync(id, opts.basedir || process.cwd());
+  } catch (_error) {
+    return null;
+  }
+}
+
+export function resolveMainFilePath(p: string, extArrs = SCRIPT_EXT): string {
+  if (p.startsWith('pages/') || p === 'app.config') {
+    return p;
+  }
+  const realPath = p;
+  const taroEnv = process.env.TARO_ENV;
+  for (let i = 0; i < extArrs.length; i++) {
+    const item = extArrs[i];
+    if (taroEnv) {
+      if (fs.existsSync(`${p}.${taroEnv}${item}`)) {
+        return `${p}.${taroEnv}${item}`;
+      }
+      if (fs.existsSync(`${p}${path.sep}index.${taroEnv}${item}`)) {
+        return `${p}${path.sep}index.${taroEnv}${item}`;
+      }
+      if (fs.existsSync(`${p.replace(/\/index$/, `.${taroEnv}/index`)}${item}`)) {
+        return `${p.replace(/\/index$/, `.${taroEnv}/index`)}${item}`;
+      }
+    }
+    if (fs.existsSync(`${p}${item}`)) {
+      return `${p}${item}`;
+    }
+    if (fs.existsSync(`${p}${path.sep}index${item}`)) {
+      return `${p}${path.sep}index${item}`;
+    }
+  }
+  // 存在多端页面但是对应的多端页面配置不存在时，使用该页面默认配置
+  if (taroEnv && path.parse(p).base.endsWith(`.${taroEnv}.config`)) {
+    const idx = p.lastIndexOf(`.${taroEnv}.config`);
+    return resolveMainFilePath(p.slice(0, idx) + '.config');
+  }
+  return realPath;
+}
+
+export function resolveScriptPath(p: string): string {
+  return resolveMainFilePath(p);
+}
+
+export function generateEnvList(env: Record<string, string>): Record<string, string> {
+  const res: Record<string, string> = {};
+  if (env && !isEmptyObject(env)) {
+    for (const key in env) {
+      try {
+        res[`process.env.${key}`] = JSON.parse(env[key]);
+      } catch (_err) {
+        res[`process.env.${key}`] = env[key];
+      }
+    }
+  }
+  return res;
+}
+
+/**
+ * 获取 npm 文件或者依赖的绝对路径
+ *
+ * @param {string} 参数 1 - 组件路径
+ * @param {string} 参数 2 - 文件扩展名
+ * @returns {string} npm 文件绝对路径
+ */
+export function getNpmPackageAbsolutePath(npmPath: string, defaultFile = 'index'): string | null {
+  try {
+    let packageName = '';
+    let componentRelativePath = '';
+    const packageParts = npmPath.split(path.sep);
+
+    // 获取 npm 包名和指定的包文件路径
+    // taro-loader/path/index => packageName = taro-loader, componentRelativePath = path/index
+    // @spcsn/taro-runtime/path/index => packageName = @spcsn/taro-runtime, componentRelativePath = path/index
+    if (npmPath.startsWith('@')) {
+      packageName = packageParts.slice(0, 2).join(path.sep);
+      componentRelativePath = packageParts.slice(2).join(path.sep);
+    } else {
+      packageName = packageParts[0];
+      componentRelativePath = packageParts.slice(1).join(path.sep);
+    }
+
+    // 没有指定的包文件路径统一使用 defaultFile
+    componentRelativePath ||= defaultFile;
+    const packageJsonPath = Bun.resolveSync(`${packageName}/package.json`, process.cwd());
+
+    return path.join(path.dirname(packageJsonPath), `./${componentRelativePath}`);
+  } catch (_error) {
+    return null;
+  }
+}
+
+export function generateConstantsList(constants: Record<string, unknown>): Record<string, unknown> {
+  const res: Record<string, unknown> = {};
+  if (constants && !isEmptyObject(constants)) {
+    for (const key in constants) {
+      const value = constants[key];
+      if (isPlainObject(value)) {
+        res[key] = generateConstantsList(value);
+      } else if (typeof value === 'string') {
+        try {
+          res[key] = JSON.parse(value);
+        } catch (_err) {
+          res[key] = value;
+        }
+      } else {
+        res[key] = value;
+      }
+    }
+  }
+  return res;
+}
+
+export function cssImports(content: string): string[] {
+  const results: string[] = [];
+  const cssImportRegExp = new RegExp(REG_CSS_IMPORT);
+  let match: RegExpExecArray | null;
+
+  content = String(content).replace(/\/\*.+?\*\/|\/\/.*(?=[\n\r])/g, '');
+
+  match = cssImportRegExp.exec(content);
+  while (match) {
+    results.push(match[2]);
+    match = cssImportRegExp.exec(content);
+  }
+
+  return results;
+}
+
+const retries = process.platform === 'win32' ? 100 : 1;
+export function emptyDirectory(
+  dirPath: string,
+  opts: { excludes: Array<string | RegExp> | string | RegExp } = { excludes: [] },
+) {
+  if (fs.existsSync(dirPath)) {
+    fs.readdirSync(dirPath).forEach((file) => {
+      const curPath = path.join(dirPath, file);
+      if (fs.lstatSync(curPath).isDirectory()) {
+        let removed = false;
+        let i = 0; // retry counter
+        while (!removed && i < retries) {
+          try {
+            const excludes = Array.isArray(opts.excludes) ? opts.excludes : [opts.excludes];
+            const canRemove =
+              !excludes.length ||
+              !excludes.some((item) => (typeof item === 'string' ? curPath.indexOf(item) >= 0 : item.test(curPath)));
+            if (canRemove) {
+              emptyDirectory(curPath);
+              fs.rmdirSync(curPath);
+            }
+            removed = true;
+          } catch {
+            // Retry because Windows can hold directory handles briefly.
+          } finally {
+            i++;
+          }
+        }
+      } else {
+        const excludes = Array.isArray(opts.excludes) ? opts.excludes : [opts.excludes];
+        const canRemove =
+          !excludes.length ||
+          !excludes.some((item) => (typeof item === 'string' ? curPath.indexOf(item) >= 0 : item.test(curPath)));
+        if (canRemove) {
+          fs.unlinkSync(curPath);
+        }
+      }
+    });
+  }
+}
+
+export const pascalCase: (str: string) => string = (str: string): string =>
+  str.charAt(0).toUpperCase() + toCamelCase(str.slice(1));
+
+export function getInstalledNpmPkgPath(pkgName: string, basedir: string): string | null {
+  try {
+    return Bun.resolveSync(`${pkgName}/package.json`, basedir);
+  } catch (_err) {
+    return null;
+  }
+}
+
+export function getInstalledNpmPkgVersion(pkgName: string, basedir: string): string | null {
+  const pkgPath = getInstalledNpmPkgPath(pkgName, basedir);
+  if (!pkgPath) {
+    return null;
+  }
+  return (fs.readJSONSync(pkgPath) as { version?: string }).version ?? null;
+}
+
+export const recursiveMerge = <T = unknown>(src: Partial<T>, ...args: (Partial<T> | undefined)[]): T => {
+  for (const arg of args) {
+    if (!arg) continue;
+
+    for (const key of Object.keys(arg) as Array<keyof T>) {
+      const value = src[key];
+      const sourceValue = arg[key];
+      const valueType = typeof value;
+      const sourceValueType = typeof sourceValue;
+
+      if (valueType !== sourceValueType) {
+        src[key] = sourceValue;
+      } else if (Array.isArray(value) && Array.isArray(sourceValue)) {
+        src[key] = value.concat(sourceValue) as T[keyof T];
+      } else if (isPlainObject(value) && isPlainObject(sourceValue)) {
+        src[key] = recursiveMerge(value, sourceValue) as T[keyof T];
+      } else {
+        src[key] = sourceValue;
+      }
+    }
+  }
+
+  return src as T;
+};
+
+function mergeValue(target: unknown, source: unknown): unknown {
+  // 与 lodash merge 一致：source 为 undefined 时保留 target
+  if (source === undefined) return target;
+  if (isPlainObject(target) && isPlainObject(source)) {
+    const result: Record<string, unknown> = { ...target };
+    for (const key of Object.keys(source)) {
+      result[key] = mergeValue(result[key], source[key]);
+    }
+    return result;
+  }
+  if (Array.isArray(target) && Array.isArray(source)) {
+    // lodash merge 对数组按下标合并，而非拼接
+    const result = target.slice();
+    for (let i = 0; i < source.length; i++) {
+      result[i] = i in result ? mergeValue(result[i], source[i]) : source[i];
+    }
+    return result;
+  }
+  return source;
+}
+
+/** lodash _.merge 语义的无依赖实现（纯函数，不改入参） */
+export function merge<T = unknown>(target: T, ...sources: unknown[]): T {
+  let result: unknown = target;
+  for (const source of sources) {
+    result = mergeValue(result, source);
+  }
+  return result as T;
+}
+
+/** lodash _.isEqual 语义的无依赖深比较（覆盖 JSON 可用类型） */
+export function isEqual(a: unknown, b: unknown): boolean {
+  if (Object.is(a, b)) return true;
+  if (typeof a !== typeof b) return false;
+  if (Array.isArray(a) && Array.isArray(b)) {
+    return a.length === b.length && a.every((item, index) => isEqual(item, b[index]));
+  }
+  if (isPlainObject(a) && isPlainObject(b)) {
+    const keysA = Object.keys(a);
+    const keysB = Object.keys(b);
+    return keysA.length === keysB.length && keysA.every((key) => Object.hasOwn(b, key) && isEqual(a[key], b[key]));
+  }
+  return false;
+}
+
+export const mergeVisitors = (src: SwcVisitor, ...args: SwcVisitor[]) => {
+  const validFuncs = ['exit', 'enter'];
+
+  for (const arg of args) {
+    if (!arg) continue;
+
+    for (const key of Object.keys(arg)) {
+      const value = src[key];
+      const sourceValue = arg[key];
+
+      if (!Object.hasOwn(src, key)) {
+        src[key] = sourceValue;
+        continue;
+      }
+
+      const shouldMergeToArray = validFuncs.includes(key);
+      if (shouldMergeToArray) {
+        src[key] = [value, sourceValue].flat() as SwcVisitorFunc[];
+        continue;
+      }
+
+      src[key] = mergeVisitors(normalizeVisitor(value), normalizeVisitor(sourceValue));
+    }
+  }
+
+  return src;
+};
+
+export const applyArrayedVisitors = (obj: SwcVisitor) => {
+  let key: string;
+  for (key in obj) {
+    const funcs = obj[key];
+    if (Array.isArray(funcs)) {
+      obj[key] = (astPath: SwcNode, ...args: unknown[]) => {
+        funcs.forEach((func) => {
+          func(astPath, ...args);
+        });
+      };
+    } else if (funcs && typeof funcs === 'object' && !Array.isArray(funcs)) {
+      applyArrayedVisitors(funcs as SwcVisitor);
+    }
+  }
+  return obj;
+};
+
+export const getAllFilesInFolder = async (folder: string, filter: string[] = []): Promise<string[]> => {
+  let files: string[] = [];
+  const list = readDirWithFileTypes(folder);
+
+  await Promise.all(
+    list.map(async (item) => {
+      const itemPath = path.join(folder, item.name);
+      if (item.isDirectory) {
+        const _files = await getAllFilesInFolder(itemPath, filter);
+        files = [...files, ..._files];
+      } else if (item.isFile) {
+        if (!filter.find((rule) => rule === item.name)) files.push(itemPath);
+      }
+    }),
+  );
+
+  return files;
+};
+
+export interface FileStat {
+  name: string;
+  isDirectory: boolean;
+  isFile: boolean;
+}
+
+export function readDirWithFileTypes(folder: string): FileStat[] {
+  const list = fs.readdirSync(folder);
+  const res = list.map((name) => {
+    const stat = fs.statSync(path.join(folder, name));
+    return {
+      name,
+      isDirectory: stat.isDirectory(),
+      isFile: stat.isFile(),
+    };
+  });
+  return res;
+}
+
+export function extnameExpRegOf(filePath: string): RegExp {
+  return new RegExp(`${path.extname(filePath)}$`);
+}
+
+export function addPlatforms(platform: string) {
+  const upperPlatform = platform.toLocaleUpperCase();
+  if (PLATFORMS[upperPlatform]) return;
+  PLATFORMS[upperPlatform] = platform;
+}
+
+// 兼容 CJS（__esModule 标记）与原生 ESM 模块命名空间（有 default 导出）两种形态
+export const getModuleDefaultExport = (exports: { __esModule?: boolean; default?: unknown }) =>
+  exports?.__esModule || (exports != null && typeof exports === 'object' && 'default' in exports)
+    ? exports.default
+    : exports;
+
+export function removeHeadSlash(str: string) {
+  return str.replace(/^(\/|\\)/, '');
+}
+
+// converts swc ast nodes to js object
+function swcExprToObject(node: SwcNode | undefined | null): unknown {
+  if (!node) return undefined;
+
+  const literalTypes = ['BooleanLiteral', 'StringLiteral', 'NumericLiteral'];
+  if (literalTypes.includes(node.type)) {
+    return node.value;
+  }
+
+  if (node.type === 'Identifier' && node.value === 'undefined') {
+    return undefined;
+  }
+
+  if (node.type === 'NullLiteral') {
+    return null;
+  }
+
+  if (node.type === 'ObjectExpression') {
+    return swcGenProps(node.properties as SwcNode[]);
+  }
+
+  if (node.type === 'ArrayExpression') {
+    return (node.elements as SwcNode[]).reduce((acc: unknown[], el: SwcNode | undefined | null) => {
+      if (!el) return acc;
+      if (el.spread) {
+        return [...acc, ...((swcExprToObject(el.expression as SwcNode) as unknown[]) || [])];
+      }
+      return [...acc, swcExprToObject(el.expression as SwcNode)];
+    }, []);
+  }
+
+  return undefined;
+}
+
+// converts swc ObjectExpressions to js object
+function swcGenProps(props: SwcNode[]) {
+  return props.reduce((acc: Record<string, unknown>, prop: SwcNode) => {
+    if (prop.type === 'SpreadElement') {
+      return {
+        ...acc,
+        ...(swcExprToObject(prop.arguments as SwcNode) as Record<string, unknown>),
+      };
+    }
+
+    if (prop.type === 'KeyValueProperty') {
+      const key = (prop.key as SwcNode).value;
+      const value = swcExprToObject(prop.value as SwcNode);
+      if (value !== undefined && key !== undefined) {
+        return { ...acc, [key as string]: value };
+      }
+    }
+
+    return acc;
+  }, {});
+}
+
+function findSwcCallExpressions(
+  node: Record<string, unknown> | undefined | null,
+  calleeName: string,
+  results: SwcNode[] = [],
+) {
+  if (!node || typeof node !== 'object') return results;
+
+  if (node.type === 'CallExpression') {
+    const callee = node.callee as SwcNode | undefined;
+    if (callee?.type === 'Identifier' && callee.value === calleeName) {
+      results.push(node as SwcNode);
+    }
+  }
+
+  for (const value of Object.values(node)) {
+    if (value && typeof value === 'object') {
+      if (Array.isArray(value)) {
+        for (const item of value) {
+          findSwcCallExpressions(item as Record<string, unknown>, calleeName, results);
+        }
+      } else {
+        findSwcCallExpressions(value as Record<string, unknown>, calleeName, results);
+      }
+    }
+  }
+
+  return results;
+}
+
+// read page config from a sfc file instead of the regular config file
+function readSFCPageConfig(configPath: string) {
+  if (!fs.existsSync(configPath)) return {};
+
+  const sfcSource = fs.readFileSync(configPath, 'utf8');
+  const dpcReg = /definePageConfig\(\{[\w\W]+?\}\)/g;
+  const matches = sfcSource.match(dpcReg);
+
+  let result: Record<string, unknown> = {};
+
+  if (matches && matches.length === 1) {
+    const configSource = matches[0];
+    const ast = parseSync(configSource, { syntax: 'typescript', tsx: true });
+    const calls = findSwcCallExpressions(ast as unknown as Record<string, unknown>, 'definePageConfig');
+    if (calls.length === 1) {
+      const configNode = (calls[0].arguments as SwcNode[])[0]?.expression as SwcNode;
+      result = swcExprToObject(configNode) as Record<string, unknown>;
+    }
+  }
+
+  return result;
+}
+
+export function readPageConfig(configPath: string) {
+  let result: Record<string, unknown> = {};
+  const extNames = ['.js', '.jsx', '.ts', '.tsx'];
+
+  // check source file extension
+  for (const ext of extNames) {
+    const tempPath = configPath.replace('.config', ext);
+    if (fs.existsSync(tempPath)) {
+      try {
+        result = readSFCPageConfig(tempPath);
+      } catch (_error) {
+        result = {};
+      }
+      break;
+    }
+  }
+  return result;
+}
+
+interface IReadConfigOptions {
+  alias?: Record<string, string>;
+  defineConstants?: Record<string, string>;
+}
+
+/**
+ * 配置文件源码中允许直接使用 defineAppConfig/definePageConfig/importNativeComponent 宏。
+ * 原生 import() 无法像旧 swc+vm 链路那样改写源码，这里改为向 globalThis 注册同名函数。
+ */
+export function installConfigMacros() {
+  const g = globalThis as Record<string, unknown>;
+  g.defineAppConfig ||= (config: unknown) => config;
+  g.definePageConfig ||= (config: unknown) => config;
+  g.importNativeComponent ||= (_path = '', name = '', _exportName = 'default') => name;
+}
+
+export async function readConfig<T extends IReadConfigOptions>(configPath: string, _options: T = {} as T) {
+  let result: Record<string, unknown> = {};
+  if (fs.existsSync(configPath)) {
+    if (REG_JSON.test(configPath)) {
+      result = fs.readJSONSync(configPath) as Record<string, unknown>;
+    } else {
+      // Bun 原生加载 TS/JS 配置文件，query 参数避免模块缓存导致 watch 模式读到旧配置
+      installConfigMacros();
+      const mod = await import(`${configPath}?t=${Date.now()}`);
+      result = (getModuleDefaultExport(mod) || {}) as Record<string, unknown>;
+    }
+  } else {
+    result = readPageConfig(configPath);
+  }
+  return result;
+}
+
+// 去除路径前缀，比如 /, ./
+export function removePathPrefix(filePath = '') {
+  const normalizedPath = path.normalize(filePath);
+  const parsedPath = path.parse(normalizedPath);
+  const { root, dir, base } = parsedPath;
+
+  let result = path.join(dir, base);
+
+  if (result.startsWith(root)) {
+    result = result.slice(root.length);
+  }
+
+  return result;
+}
+
+export { fs };

@@ -1,7 +1,7 @@
 import { mock } from 'bun:test';
 
 /**
- * taro-service 的手写 mock（bun:test 没有 vitest automock，
+ * kernel 的手写 mock（bun:test 没有 vitest automock，
  * 且 bun 的 mock 函数被 new 调用时不会执行实现体，因此用真实 class + mock 方法）。
  * mock.module 会覆盖已加载模块的同名导出，cli.ts 运行期读取绑定即可拿到 mock。
  */

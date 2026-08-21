@@ -1,5 +1,5 @@
 import { NpmType } from '../../create/template-creator';
-import type { IPluginContext } from '../../internal/taro-service';
+import type { IPluginContext } from '../../internal/kernel';
 
 export default (ctx: IPluginContext) => {
   ctx.registerCommand({

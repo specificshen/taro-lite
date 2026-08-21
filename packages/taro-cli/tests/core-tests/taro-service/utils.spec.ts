@@ -5,9 +5,9 @@ import {
   getPluginPath,
   isNpmPkg,
   mergePlugins,
-} from '../../../src/internal/taro-service/utils/index';
+} from '../../../src/internal/kernel/utils/index';
 
-describe('taro-service utils', () => {
+describe('kernel utils', () => {
   describe('isNpmPkg', () => {
     it('returns true for package names', () => {
       expect(isNpmPkg('lodash')).toBe(true);

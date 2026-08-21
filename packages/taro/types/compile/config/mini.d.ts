@@ -68,6 +68,11 @@ export interface IMiniAppConfig<T extends CompilerTypes = CompilerViteTypes> {
     include?: any[]
     /** 对应 Vite 小程序编译链路的文件过滤配置。 */
     filter?: (filename: string) => boolean
+    /**
+     * 是否注入 regenerator-runtime 别名。
+     * Skyline JSCore 已原生支持 async/await，默认关闭；旧代码如需 regenerator 可自行安装依赖后开启。
+     */
+    regenerator?: boolean
   }
 
   /** 插件内部使用 */

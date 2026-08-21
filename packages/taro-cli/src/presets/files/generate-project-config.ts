@@ -1,5 +1,5 @@
 import * as path from 'node:path';
-import type { IPluginContext } from '../../internal/taro-service';
+import type { IPluginContext } from '../../internal/kernel';
 
 export default (ctx: IPluginContext) => {
   ctx.registerMethod(

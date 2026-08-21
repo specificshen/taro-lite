@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'bun:test';
-import type { IPluginContext } from '../../../src/internal/taro-service';
+import type { IPluginContext } from '../../../src/internal/kernel';
 import buildHooksPreset from '../../../src/presets/hooks/build';
 
 describe('build hooks preset', () => {

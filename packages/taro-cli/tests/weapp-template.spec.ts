@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test';
-import { recursiveMerge } from '../src/internal/taro-helper';
-import { componentConfig } from '../src/internal/taro-mini-runner/shared/component';
+import { recursiveMerge } from '../src/internal/helper';
+import { componentConfig } from '../src/internal/runner/shared/component';
 import { components } from '../src/platform-weapp/components';
 import { Template } from '../src/platform-weapp/template';
 

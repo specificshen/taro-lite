@@ -17,7 +17,7 @@
     "skipLibCheck": true,
     "outDir": "lib",
     "rootDir": ".",
-    "types": ["node"],
+    "types": ["node", "bun-types"],
     "paths": {
       "@/*": ["./src/*"]
     }

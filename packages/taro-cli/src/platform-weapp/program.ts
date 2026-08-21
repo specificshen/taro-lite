@@ -1,6 +1,6 @@
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { type IPluginContext, TaroPlatformBase, type TConfig } from '../internal/taro-service';
+import { type IPluginContext, TaroPlatformBase, type TConfig } from '../internal/kernel';
 
 const __filename = fileURLToPath(import.meta.url);
 

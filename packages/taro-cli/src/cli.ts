@@ -5,8 +5,8 @@ import customCommand from './commands/custom-command';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-import { dotenvParse, patchEnv } from './internal/taro-helper';
-import { Config, Kernel } from './internal/taro-service';
+import { dotenvParse, patchEnv } from './internal/helper';
+import { Config, Kernel } from './internal/kernel';
 import { cliProfiler, getPkgVersion, printPkgVersion } from './util/index';
 import type { CliArgs } from './util/types';
 
@@ -194,9 +194,7 @@ export default class CLI {
     if (command === 'build') {
       warnInternalRuntimeDeps(appPath);
       kernel.optsPlugins.push(path.join(packageRoot, 'src', 'platform-weapp', 'index.ts'));
-      kernel.optsPlugins.push(
-        path.join(packageRoot, 'src', 'internal', 'taro-mini-runner', 'react-framework', 'index.ts'),
-      );
+      kernel.optsPlugins.push(path.join(packageRoot, 'src', 'internal', 'runner', 'react-framework', 'index.ts'));
 
       await cliProfiler.measure('build command', () =>
         customCommand(command, kernel, {

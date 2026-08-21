@@ -3,7 +3,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { run } from './utils';
 
-const runBuild = run('build', ['commands/build', path.resolve(__dirname, '../dist/platform-weapp')]);
+const runBuild = run('build', ['commands/build', path.resolve(__dirname, '../src/platform-weapp/index.ts')]);
 
 const APP_PATH = path.join(__dirname, 'fixtures/default');
 const OUTPUT_PATH = path.join(__dirname, 'fixtures/default/dist');

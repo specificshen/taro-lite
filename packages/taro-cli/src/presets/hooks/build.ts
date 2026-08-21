@@ -1,4 +1,4 @@
-import type { IPluginContext } from '../../internal/taro-service';
+import type { IPluginContext } from '../../internal/kernel';
 import * as hooks from '../constant/hooks';
 
 export default (ctx: IPluginContext) => {

@@ -1,7 +1,7 @@
 import * as path from 'node:path';
 import * as readline from 'node:readline';
 import { fileURLToPath } from 'node:url';
-import { fs } from '../internal/taro-helper';
+import { fs } from '../internal/helper';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 

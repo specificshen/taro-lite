@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'bun:test';
-import { PLATFORMS } from '../../../src/internal/taro-helper/constants';
+import { PLATFORMS } from '../../../src/internal/helper/constants';
 import {
   addPlatforms,
   applyArrayedVisitors,
@@ -23,9 +23,9 @@ import {
   recursiveMerge,
   removeHeadSlash,
   removePathPrefix,
-} from '../../../src/internal/taro-helper/utils';
+} from '../../../src/internal/helper/utils';
 
-describe('taro-helper utils', () => {
+describe('helper utils', () => {
   describe('normalizePath', () => {
     it('replaces backslashes with slashes', () => {
       expect(normalizePath('a\\b\\c')).toBe('a/b/c');
