@@ -15,6 +15,7 @@ import defaultConfig from '../../mini-program/default-config';
 import { miniTemplateLoader, QUERY_IS_NATIVE_COMP } from '../../mini-program/native-support';
 import { getComponentName } from '..';
 import { componentConfig } from '../component';
+import { baseCompName, customWrapperName } from '../constants';
 import { CompilerContext } from './base';
 
 export class TaroCompilerContext extends CompilerContext<ViteMiniBuildConfig> implements ViteMiniCompilerContext {
@@ -97,6 +98,11 @@ export class TaroCompilerContext extends CompilerContext<ViteMiniBuildConfig> im
     if (!usingComponents) return list;
 
     for (const [compName, value] of Object.entries(usingComponents)) {
+      // comp / custom-wrapper 是 emit 阶段注入的 runner 内置模板组件，源码目录中并不存在。
+      // page.config 对象在构建间被复用，watch 重建时它们会随 usingComponents 再次进入这里，
+      // 直接跳过，避免误报「找不到自定义组件」。
+      if (compName === baseCompName || compName === customWrapperName) continue;
+
       const compPath = Array.isArray(value) ? value[0] : value;
       usingComponents[compName] = this.resolvePageImportPath(scriptPath, compPath);
       const compScriptPath = resolveMainFilePath(path.resolve(path.dirname(scriptPath), compPath));
