@@ -485,17 +485,6 @@ export const internalComponents: Record<string, Record<string, string>> = {
   Script,
 };
 
-export const controlledComponent = new Set([
-  'input',
-  'checkbox',
-  'picker',
-  'picker-view',
-  'radio',
-  'slider',
-  'switch',
-  'textarea',
-]);
-
 export const focusComponents = new Set(['input', 'textarea']);
 
 export const voidElements = new Set([
