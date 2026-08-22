@@ -7,7 +7,7 @@
   "author": "Samuel Ouyang",
   "scripts": {
     "build": "taro build",
-    "dev": "NODE_ENV=development TARO_MINIFY=true taro build --watch"
+    "dev": "taro build --watch"
   },
   "dependencies": {
     "@spcsn/taro": "workspace:*",

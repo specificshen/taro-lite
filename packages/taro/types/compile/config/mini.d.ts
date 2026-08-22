@@ -21,9 +21,6 @@ export interface IMiniAppConfig<T extends CompilerTypes = CompilerViteTypes> {
   /** sourcemap 类型配置 */
   sourceMapType?: string
 
-  /** 指定 React 框架相关的代码是否使用开发环境（未压缩）代码，默认使用生产环境（压缩后）代码 */
-  debugReact?: boolean
-
   /** 是否跳过第三方依赖 usingComponent 的处理，默认为自动处理第三方依赖的自定义组件 */
   skipProcessUsingComponents?: boolean
 

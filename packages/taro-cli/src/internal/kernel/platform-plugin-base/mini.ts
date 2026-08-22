@@ -68,13 +68,13 @@ export abstract class TaroPlatformBase<T extends TConfig = TConfig> extends Taro
     if (process.env.NODE_ENV === 'test') return;
 
     const { chalk } = this.helper;
-    const isProduction = process.env.NODE_ENV === 'production';
-    const modeLabel = isProduction ? '生产模式' : '开发模式';
-    const modeHint = isProduction ? '准备端上桌，保持体面' : '小火预热，改完就尝';
+    // 产物恒为 production（含 watch），模式与压缩不再有开发态分支
+    const modeLabel = '生产模式';
+    const modeHint = '准备端上桌，保持体面';
     const watchLabel = this.config.isWatch ? '守炉模式' : '单炉出餐';
     const watchHint = this.config.isWatch ? '我看着烤箱，你放心加料' : '一炉定型，出炉就收工';
-    const minifyLabel = process.env.TARO_MINIFY === 'true' || isProduction ? '开启' : '关闭';
-    const humorLine = isProduction ? '小程序已出炉，适合端给用户。' : '烤箱常开，改完马上尝。';
+    const minifyLabel = '开启';
+    const humorLine = '小程序已出炉，适合端给用户。';
     const accent = chalk.hex('#ff4ecd');
     const dimAccent = chalk.hex('#ff9af0');
     const highlight = chalk.hex('#ff6fdd');

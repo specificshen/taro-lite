@@ -7,9 +7,6 @@ export type Frameworks = 'react';
 export interface FrameworkPluginContext {
   initialConfig: {
     framework?: unknown;
-    mini?: {
-      debugReact?: boolean;
-    };
   };
   modifyRunnerOpts: (fn: (args: { opts?: RunnerOptions }) => void) => void;
 }
@@ -49,27 +46,19 @@ export default (ctx: FrameworkPluginContext) => {
 
     compiler.vitePlugins ||= [];
     compiler.vitePlugins.push(VitePresetPlugin());
-    compiler.vitePlugins.push(miniVitePlugin(ctx));
+    compiler.vitePlugins.push(miniVitePlugin());
   });
 };
 
 function VitePresetPlugin(): PluginOption {
   // 小程序产物没有 HMR，@vitejs/plugin-react 的实质作用只剩 JSX automatic runtime 转换；
-  // rolldown（oxc）内置了该能力，直接用 transform.jsx 配置替代。
+  // rolldown（oxc）内置该能力，无需额外配置。唯一要钉死的是 development：
+  // Vite 8 把它默认绑定到 process.env.NODE_ENV，dev 环境下每个 jsx 调用都会带
+  // source/self 调试参数（业务工程实测 +171KB）。
   return {
     name: 'taro:vite-react-jsx',
-    config: (_config, env) => ({
-      build: {
-        rolldownOptions: {
-          transform: {
-            jsx: {
-              runtime: 'automatic' as const,
-              importSource: 'react',
-              development: env.mode !== 'production',
-            },
-          },
-        },
-      },
+    config: () => ({
+      oxc: { jsx: { development: false } },
     }),
   };
 }

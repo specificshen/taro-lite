@@ -17,7 +17,6 @@ export default defineConfig<'vite'>(
       },
       framework: 'react',
       compiler: 'vite',
-      ...(process.env.TARO_MINIFY === 'true' ? { jsMinimizer: 'oxc' as const } : {}),
       mini: {
         output: {
           clean: {

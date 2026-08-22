@@ -14,7 +14,7 @@ import {
   REG_TARO_SCOPED_PACKAGE,
   recursiveMerge,
 } from '../../helper';
-import { getCSSModulesOptions, getMinify, getMode, getPostcssPlugins, stripMultiPlatformExt } from '../shared';
+import { getCSSModulesOptions, getMinify, getPostcssPlugins, stripMultiPlatformExt } from '../shared';
 import { DEFAULT_TERSER_OPTIONS, MINI_EXCLUDE_POSTCSS_PLUGIN_NAME } from '../shared/constants';
 import { createDevBuildSummaryLogger } from '../shared/logger';
 import { buildProfiler } from '../shared/profile.js';
@@ -69,8 +69,7 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
   const { taroConfig, cwd: appPath } = viteCompilerContext;
   const outputRoot = path.join(appPath, taroConfig.outputRoot || 'dist');
   const enableSourceMap = taroConfig.enableSourceMap ?? false;
-  const compactWatch = taroConfig.isWatch && !enableSourceMap;
-  const minify = compactWatch && !taroConfig.jsMinimizer ? false : getMinify(taroConfig);
+  const minify = getMinify(taroConfig);
   function getDefineOption() {
     const {
       env = {},
@@ -83,7 +82,8 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
     env.FRAMEWORK = JSON.stringify(framework);
     env.TARO_ENV = JSON.stringify(buildAdapter);
     env.TARO_PLATFORM = JSON.stringify('mini');
-    env.NODE_ENV = JSON.stringify(process.env.NODE_ENV || getMode(taroConfig));
+    // 产物恒为 production（含 watch）；dev/prod 环境差异由 dotenv 的 mode 承担
+    env.NODE_ENV = JSON.stringify('production');
     env.SUPPORT_TARO_POLYFILL = env.SUPPORT_TARO_POLYFILL || '"disabled"';
     const envConstants = Object.keys(env).reduce(
       (target, key) => {
@@ -255,7 +255,7 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
       buildProfiler.end('vite config', configStartMs);
 
       return {
-        mode: getMode(taroConfig),
+        mode: 'production',
         customLogger: taroConfig.isWatch ? createDevBuildSummaryLogger(outputRoot) : undefined,
         build: {
           outDir: outputRoot,

@@ -360,9 +360,6 @@ export function createReactApp(
             const app = getAppInstance();
             app?.onError?.(error);
             triggerAppHook('onError', error);
-            if (process.env.NODE_ENV !== 'production' && error?.includes('Minified React error')) {
-              console.warn('React 出现压缩后的报错，请在编译配置中设置 mini.debugReact: true 以查看详细报错信息。');
-            }
           };
 
           waitAppWrapper(onError);

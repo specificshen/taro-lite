@@ -154,10 +154,22 @@ runtime 热路径：
 
 `globalThis` 兜底从只有 `hooks` 扩展到全部状态单例（`Current`、`eventSource`、`instances`、`eventCenter`、`env`、`cacheData`、`customWrapperCache`、`eventsBatch`），统一经 `shared-primitives.ts` 的 `getGlobalSingleton` 实现；新增状态单例必须复用该 helper（已写入 AGENTS.md §4.4）。
 
-`process.env.NODE_ENV` 的 define 从预构建写死 `production` 下放给业务构建（cli 侧本就有 `process.env.NODE_ENV` define），dev 构建恢复 runtime 的 12 处 `warn`，生产产物不变。
+`process.env.NODE_ENV` 的 define 从预构建写死 `production` 下放给业务构建（cli 侧本就有 `process.env.NODE_ENV` define），dev 构建恢复 runtime 的 12 处 `warn`，生产产物不变。（该中间态语义后被 §6.6 的恒生产方案取代，runtime 的 dev-only `warn` 在产物中恒被 DCE。）
 
 ### 6.5 产物体积对账（业务工程实测）
 
 ali-your-space-miniapp 同一 lockfile 下对拍（sourcemap VLQ 归因到模块级）：1.2.8 与 2.0 产物构成逐项一致，JS 总量 972KB vs 975KB（构建横幅同为 1.97MB），构建耗时 1.53s → 1.0s。**2.0 无体积回归**；曾出现的 +177KB 为改造期间中间态 dist 残留，重新构建即消失。
 
-注意：`NODE_ENV=development` 的 dev 构建会带入 react-dom development 与 jsx-dev-runtime，业务工程实测 JS +324KB（横幅 2.29MB，超微信 2048KB 主包限额）。**上传或量体积前必须使用 `NODE_ENV=production taro build`（`bun run build`）的产物**，不要在 dev watch 状态下上传。
+> 后续：本节记录的 dev 构建膨胀风险已由 §6.6 根除——dev/watch 与生产构建产物一致，`TARO_MINIFY` 变通与 `debugReact` 均已移除。
+
+### 6.6 构建恒为 production
+
+AI 写代码时代，dev 构建的调试收益趋近于零（自定义渲染器下 react-devtools 不可用），而 dev 产物超微信 2048KB 主包限额是实打实的上传风险。因此构建产物恒为 production：dev/watch 与正式构建的唯一差异是 dotenv 按 mode 加载的 `.env.<mode>` 变量值。
+
+- `getMode` 删除；Vite `mode` 与 `process.env.NODE_ENV` define 恒为 `'production'`（此前 define 会被环境变量 `NODE_ENV=development` 穿透）。
+- `getMinify` 移除 dev 短路；watch 下默认关压缩的 `compactWatch` 分支删除（压缩默认开启，`jsMinimizer` 选择与其 enable 开关保留）。
+- JSX：`oxc.jsx.development` 显式钉死 `false`——Vite 8 默认把它绑定到 `process.env.NODE_ENV`，dev 环境下每个 jsx 调用都携带 source/self 调试参数（业务工程实测 +171KB）；顺带移除冗余的 `build.rolldownOptions.transform.jsx` 配置（实测有无它产物逐字节一致）。
+- 失效机制清理：dev 下把 react/scheduler/react-reconciler/jsx-runtime 别名到 production 文件的整块逻辑（实测在业务工程未生效，dev 产物仍打 development 版）、`mini.debugReact` 配置项、`connect.ts` 里引用它的告警；模板与 fixture 里的 `TARO_MINIFY` + `jsMinimizer: 'oxc'` 变通同步移除。
+- 保留不动：dotenv 的 `--mode` / watch 默认 `development` 选文件逻辑（`.env.development` 照常加载）；banner 的 watch 行，「模式/压缩」行恒为生产/开启。
+
+验证：业务工程模拟 dev 脚本单跑（`NODE_ENV=development TARO_MINIFY=true taro build`）与 `NODE_ENV=production taro build` 产物逐文件 diff，除 common.js 中 dotenv 环境档位代码的预期差异（15 字节）外完全一致（JS 均 975KB，jsxDEV 清零）；fixture 413.96KB 不变。

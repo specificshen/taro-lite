@@ -83,15 +83,6 @@ export function stripMultiPlatformExt(id: string): string {
   return id.replace(/\.(weapp|mini)$/, '');
 }
 
-export function getMode(config: ViteMiniBuildConfig) {
-  const preMode = config.mode || process.env.NODE_ENV;
-  const modes: ('production' | 'development' | 'none')[] = ['production', 'development', 'none'];
-  const mode =
-    modes.find((e) => e === preMode) ||
-    (!config.isWatch || process.env.NODE_ENV === 'production' ? 'production' : 'development');
-  return mode;
-}
-
 export async function getPostcssPlugins(
   appPath: string,
   option = {} as IPostcssOption,
@@ -133,9 +124,7 @@ export async function getPostcssPlugins(
 }
 
 export function getMinify(taroConfig: ViteMiniBuildConfig): 'oxc' | 'terser' | 'esbuild' | boolean {
-  const isProd = getMode(taroConfig) === 'production';
   const hasExplicitJsMinimizer = typeof taroConfig.jsMinimizer === 'string';
-  if (!isProd && !hasExplicitJsMinimizer) return false;
 
   return taroConfig.jsMinimizer === 'terser'
     ? taroConfig.terser?.enable === false

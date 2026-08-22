@@ -21,7 +21,6 @@ export default defineConfig<'vite'>(
           { from: 'src/assets/logo.txt', to: 'assets/brand.txt' },
         ],
       },
-      ...(process.env.TARO_MINIFY === 'true' ? { jsMinimizer: 'oxc' as const } : {}),
       mini: {
         postcss: {
           cssModules: {

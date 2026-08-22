@@ -398,7 +398,7 @@ function checkBusinessFixtureScriptContract() {
   const buildScript = packageJson.scripts?.build;
   const devScript = packageJson.scripts?.dev;
 
-  if (buildScript === 'taro build' && devScript === 'NODE_ENV=development TARO_MINIFY=true taro build --watch') return;
+  if (buildScript === 'taro build' && devScript === 'taro build --watch') return;
 
   hasBusinessFixtureContractErrors = true;
   errors.push(
