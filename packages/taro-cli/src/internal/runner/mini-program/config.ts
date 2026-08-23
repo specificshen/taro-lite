@@ -221,7 +221,11 @@ export default function (viteCompilerContext: ViteMiniCompilerContext): PluginOp
 
     // comp/custom-wrapper 模板必须保留在各自入口 chunk 中，否则 Component()
     // 注册调用会被合并到 common/taro chunk，导致微信初始化阶段警告。
-    const taroTemplateEntries = /runner[\/]templates[\/](comp|custom-wrapper)(?:\.js)?$/;
+    // 注意 cli 直跑 TS 源码，模板模块 id 带 .ts 后缀；且 npm 安装后模板真实
+    // 路径落在 node_modules/@spcsn/taro-cli/ 下，会被下方 taroDeps /
+    // nodeModulesDeps 规则截胡归组，因此本豁免必须放在所有归组规则之前，
+    // 并覆盖 .ts/.js 等后缀形态。
+    const taroTemplateEntries = /runner[\/]templates[\/](comp|custom-wrapper)(\.[cm]?[jt]s)?$/;
 
     return (id, { getModuleInfo }) => {
       REG_NODE_MODULES_DIR.lastIndex = 0;
