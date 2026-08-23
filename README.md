@@ -25,12 +25,12 @@
 ```json
 {
   "dependencies": {
-    "@spcsn/taro": "2.0.0-alpha.1",
-    "@spcsn/taro-components": "2.0.0-alpha.1",
+    "@spcsn/taro": "2.0.0-alpha.2",
+    "@spcsn/taro-components": "2.0.0-alpha.2",
     "react": "^19.2.0"
   },
   "devDependencies": {
-    "@spcsn/taro-cli": "2.0.0-alpha.1"
+    "@spcsn/taro-cli": "2.0.0-alpha.2"
   }
 }
 ```
@@ -107,7 +107,7 @@ bun run build
 构建输出应显示当前 `@spcsn/taro-cli` 版本，例如：
 
 ```text
-SPCSN Taro v2.0.0-alpha.1
+SPCSN Taro v2.0.0-alpha.2
 ```
 
 ## 发版前检查
@@ -169,11 +169,11 @@ bun scripts/publish.ts
 ```json
 {
   "dependencies": {
-    "@spcsn/taro": "2.0.0-alpha.1",
-    "@spcsn/taro-components": "2.0.0-alpha.1"
+    "@spcsn/taro": "2.0.0-alpha.2",
+    "@spcsn/taro-components": "2.0.0-alpha.2"
   },
   "devDependencies": {
-    "@spcsn/taro-cli": "2.0.0-alpha.1"
+    "@spcsn/taro-cli": "2.0.0-alpha.2"
   }
 }
 ```
