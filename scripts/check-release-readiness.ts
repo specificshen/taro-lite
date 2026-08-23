@@ -42,6 +42,8 @@ const TARO_DISALLOWED_DEV_DEPENDENCIES = ['@spcsn/taro-components'];
 const TARO_ALLOWED_DIRECT_DEPENDENCIES: string[] = [];
 
 const README_PATH = 'README.md';
+const LOCKFILE_PATH = 'bun.lock';
+const PUBLISH_PACKAGE_DIRS = ['packages/taro-components', 'packages/taro', 'packages/taro-cli'];
 const INTERNAL_GUIDANCE_DOC_PATHS = ['docs/package-consolidation.md', 'docs/taro-react-only-modernization.md'];
 const BUSINESS_FIXTURE_PACKAGE_JSON_PATH = 'fixtures/taro-lite-sunshine-lab/package.json';
 const BUSINESS_FIXTURE_CONFIG_PATH = 'fixtures/taro-lite-sunshine-lab/config/index.ts';
@@ -65,6 +67,7 @@ const publicPackageNames = publicPackageJsonPaths
 const privateWorkspacePackageNames = collectPrivateWorkspacePackageNames();
 
 checkPackageVersions();
+checkLockfileWorkspaceVersions();
 checkPublishSurfaceContract();
 checkPublicDependencyBoundaries();
 checkBusinessEntryRuntimeDependencyContract();
@@ -121,6 +124,31 @@ function checkPackageVersions() {
       hasVersionErrors = true;
       errors.push(
         `${relative(packageJsonPath)}: ${packageJson.name} version is ${packageJson.version}, expected ${expectedVersion}`,
+      );
+    }
+  }
+}
+
+// bun publish 的 workspace:* 转换从 bun.lock 取版本，而 bun 在依赖结构不变时
+// 不同步 workspace 包版本到 lockfile（1.4 实测）：陈旧记录会让发布出的依赖
+// 声明指向旧版本（alpha.1 曾因此错发成依赖 alpha.0，cli 侧私有旧 runtime 与
+// 业务侧分裂）。这里强制 lockfile 记录与 package.json 版本一致。
+function checkLockfileWorkspaceVersions() {
+  const lockfilePath = path.join(rootDir, LOCKFILE_PATH);
+  if (!fs.existsSync(lockfilePath)) return;
+  const lockfileText = fs.readFileSync(lockfilePath, 'utf-8');
+
+  for (const packageDir of PUBLISH_PACKAGE_DIRS) {
+    const match = lockfileText.match(new RegExp(`"${packageDir}":\\s*\\{[^}]*?"version":\\s*"([^"]+)"`));
+    if (!match) {
+      hasVersionErrors = true;
+      errors.push(`${LOCKFILE_PATH}: missing workspace record for ${packageDir}`);
+      continue;
+    }
+    if (match[1] !== expectedVersion) {
+      hasVersionErrors = true;
+      errors.push(
+        `${LOCKFILE_PATH}: ${packageDir} version is ${match[1]}, expected ${expectedVersion} (sync bun.lock after bumping)`,
       );
     }
   }
