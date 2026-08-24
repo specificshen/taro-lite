@@ -2,13 +2,6 @@ const DEFAULT_EMPTY_ARRAY = '[]';
 const NO_DEFAULT_VALUE = '';
 const DEFAULT_TRUE = '!0';
 const DEFAULT_FALSE = '!1';
-/**
- * undefined 透传：绑定值为 undefined 时不向原生组件下发该属性。
- * 用于 focus 这类「显式设置才生效」的布尔属性——若携带恒 false 默认值，
- * 节点数据被重发（如兄弟节点增删触发 cn 重排）时会把 focus=false 推给
- * 正在聚焦的原生组件，导致强制失焦、键盘收起。
- */
-const UNDEFINED_PASSTHROUGH = 'undefined';
 
 export const touchEvents = {
   bindTouchStart: NO_DEFAULT_VALUE,
@@ -133,7 +126,7 @@ const Input = {
   disabled: NO_DEFAULT_VALUE,
   maxlength: '140',
   'cursor-spacing': '0',
-  focus: UNDEFINED_PASSTHROUGH,
+  focus: DEFAULT_FALSE,
   'confirm-type': singleQuote('done'),
   'confirm-hold': DEFAULT_FALSE,
   cursor: '-1',
@@ -228,7 +221,7 @@ const Textarea = {
   disabled: NO_DEFAULT_VALUE,
   maxlength: '140',
   'auto-focus': DEFAULT_FALSE,
-  focus: UNDEFINED_PASSTHROUGH,
+  focus: DEFAULT_FALSE,
   'auto-height': DEFAULT_FALSE,
   fixed: DEFAULT_FALSE,
   'cursor-spacing': '0',

@@ -47,10 +47,7 @@ class Weapp extends TaroPlatformBase {
     this.template.mergeComponents(this.ctx, components);
     this.template.voidElements.add('voip-room');
     this.template.voidElements.add('native-slot');
-    // Skyline 属性绑定是响应式的，input/textarea 的 focus 直接动态绑定即可，
-    // 不再继承 webview 时代的 focus/blur 双模板（一切换就销毁重建原生节点，
-    // 光标与内部滚动位置丢失）。editor 使用率低且未验证，保留双模板。
-    this.template.focusComponents = new Set(['editor']);
+    this.template.focusComponents.add('editor');
   }
 }
 

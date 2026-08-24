@@ -49,18 +49,7 @@ describe('platform-weapp program', () => {
 
     expect(program.template.voidElements.has('voip-room')).toBe(true);
     expect(program.template.voidElements.has('native-slot')).toBe(true);
-    expect(program.template.supportXS).toBe(true);
-  });
-
-  it('keeps focus double-template only for editor under Skyline', () => {
-    const ctx = makeCtx();
-    const program = new Weapp(ctx, {});
-    program.modifyTemplate();
-
-    // input/textarea 的 focus 走响应式绑定（单模板），不再销毁重建原生节点
-    expect(program.template.focusComponents.has('input')).toBe(false);
-    expect(program.template.focusComponents.has('textarea')).toBe(false);
-    // editor 未验证，保留双模板
     expect(program.template.focusComponents.has('editor')).toBe(true);
+    expect(program.template.supportXS).toBe(true);
   });
 });
