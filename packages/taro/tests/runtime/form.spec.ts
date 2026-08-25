@@ -26,30 +26,31 @@ describe('FormElement 受控 value 下发', () => {
     return { root, el };
   };
 
-  it('input 事件只同步 props，等值回写不再下发 setData', () => {
+  it('input 事件同步 props 并真实下发 setData 确认原生值', () => {
     const { root, el } = setup();
 
     el.dispatchEvent(fakeFormEvent('input', 'abc'));
     expect(el.props.value).toBe('abc');
     expect(el.value).toBe('abc');
-    expect(countWrites(root, 'abc')).toBe(0);
-
-    // React 受控回写相同值：仍然不下发
-    el.setAttribute('value', 'abc');
-    expect(countWrites(root, 'abc')).toBe(0);
+    expect(countWrites(root, 'abc')).toBe(1);
   });
 
-  it('回写值与原生已显示值不等时正常下发', () => {
+  it('受控回写不做等值跳过，一律真实下发', () => {
     const { root, el } = setup();
 
+    // 回归约束：曾按"原生已显示值"跳过等值回写（lastNativeValue），
+    // 在 AutocompleteInput 等场景导致输入被旧值整体回填，已回退。
     el.dispatchEvent(fakeFormEvent('input', 'abc'));
-    // 业务截断/改写：与原生值不等，必须下发纠正原生显示
-    el.setAttribute('value', 'ab');
-    expect(countWrites(root, 'ab')).toBe(1);
+    el.setAttribute('value', 'abc');
+    expect(countWrites(root, 'abc')).toBe(2);
+  });
 
-    // 纠正后再写相同值，不再重复下发
-    el.setAttribute('value', 'ab');
-    expect(countWrites(root, 'ab')).toBe(1);
+  it('change 事件只改 props，不下发 setData', () => {
+    const { root, el } = setup();
+
+    el.dispatchEvent(fakeFormEvent('change', 'abc'));
+    expect(el.props.value).toBe('abc');
+    expect(countWrites(root, 'abc')).toBe(0);
   });
 
   it('首次写入（未发生输入交互）正常下发', () => {
@@ -59,29 +60,7 @@ describe('FormElement 受控 value 下发', () => {
     expect(countWrites(root, '初始值')).toBe(1);
   });
 
-  it('change 事件只改 props，不下发 setData', () => {
-    const { root, el } = setup();
-
-    el.dispatchEvent(fakeFormEvent('change', 'abc'));
-    expect(el.props.value).toBe('abc');
-    expect(countWrites(root, 'abc')).toBe(0);
-
-    // change 上报后等值回写同样跳过
-    el.setAttribute('value', 'abc');
-    expect(countWrites(root, 'abc')).toBe(0);
-  });
-
-  it('removeAttribute 后跟踪值作废，恢复真实下发', () => {
-    const { root, el } = setup();
-
-    el.dispatchEvent(fakeFormEvent('input', 'abc'));
-    el.removeAttribute('value');
-    // 移除后再写回相同值，必须真实下发（原生侧已回落为空串）
-    el.setAttribute('value', 'abc');
-    expect(countWrites(root, 'abc')).toBe(1);
-  });
-
-  it('非字符串值按字符串化后与原生值比较', () => {
+  it('非字符串值照常下发', () => {
     const { root, el } = setup('slider');
 
     el.setAttribute('value', 50);
@@ -89,7 +68,6 @@ describe('FormElement 受控 value 下发', () => {
 
     el.dispatchEvent(fakeFormEvent('change', 50));
     el.dispatchEvent(fakeFormEvent('input', 50));
-    el.setAttribute('value', 50);
-    expect(countWrites(root, 50)).toBe(1);
+    expect(countWrites(root, 50)).toBe(2);
   });
 });
